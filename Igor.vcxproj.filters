@@ -1,0 +1,1400 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Balau">
+      <UniqueIdentifier>{b9a21c6f-dab1-45d6-8107-c29b47e404d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party">
+      <UniqueIdentifier>{3a60cfd7-dc90-4f42-b605-942c5ac0551f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\zlib">
+      <UniqueIdentifier>{7e139a33-8534-4c5d-860b-d13eb720c4fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\iconv">
+      <UniqueIdentifier>{4253f59f-9e2f-4e4b-8aab-37db28b0e548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\pthreads">
+      <UniqueIdentifier>{6878ebef-9add-4ea9-976d-3c544162acb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\libev">
+      <UniqueIdentifier>{decde396-18d8-46fd-94ac-2c349b60823e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Balau\win32\zlib\adler32.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\crc32.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\deflate.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\infback.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\inffast.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\inflate.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\inftrees.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\trees.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\uncompr.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\zlib\zutil.c">
+      <Filter>Third Party\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Main.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Async.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\BigInt.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\BLua.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\BRegex.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\BStream.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\BString.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Buffer.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Exceptions.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Handle.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\HelperTasks.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Http.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\HttpServer.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Input.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Local.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\LuaBigInt.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\LuaHandle.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\LuaTask.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Output.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Printer.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Selectable.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\SimpleMustache.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Socket.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\StdIO.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Task.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\TaskMan.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\Threads.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\ZHandle.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Igor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\iconv\iconv.c">
+      <Filter>Third Party\iconv</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\iconv\localcharset.c">
+      <Filter>Third Party\iconv</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\iconv\relocatable.c">
+      <Filter>Third Party\iconv</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\attr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\autostatic.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\barrier.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\cancel.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\cleanup.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\condvar.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\create.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\dll.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\errno.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\exit.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\fork.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\global.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\misc.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\mutex.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\nonportable.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\private.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_getdetachstate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_getinheritsched.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_getschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_getschedpolicy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_getscope.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_getstackaddr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_getstacksize.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_setdetachstate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_setinheritsched.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_setschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_setschedpolicy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_setscope.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_setstackaddr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_attr_setstacksize.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_barrier_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_barrier_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_barrier_wait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_barrierattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_barrierattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_barrierattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_barrierattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_cancel.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_cond_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_cond_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_cond_signal.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_cond_wait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_condattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_condattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_condattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_condattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_delay_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_detach.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_equal.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_exit.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_getconcurrency.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_getschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_getspecific.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_getunique_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_getw32threadhandle_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_join.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_key_create.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_key_delete.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_kill.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutex_consistent.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutex_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutex_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutex_lock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutex_timedlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutex_trylock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutex_unlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_getkind_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_getrobust.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_gettype.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_setkind_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_setrobust.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_mutexattr_settype.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_num_processors_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_once.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_rdlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_timedrdlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_timedwrlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_tryrdlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_trywrlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_unlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlock_wrlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlockattr_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlockattr_getpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlockattr_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_rwlockattr_setpshared.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_self.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_setcancelstate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_setcanceltype.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_setconcurrency.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_setschedparam.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_setspecific.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_spin_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_spin_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_spin_lock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_spin_trylock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_spin_unlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_testcancel.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_timechange_handler_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\pthread_win32_attach_detach_np.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_calloc.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_callUserDestroyRoutines.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_cond_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_getprocessors.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_is_attr.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_MCS_lock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_mutex_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_new.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_processInitialize.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_processTerminate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_relmillisecs.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_reuse.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_rwlock_cancelwrwait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_rwlock_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_semwait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_spinlock_check_need_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_threadDestroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_threadStart.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_throw.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_timespec.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_tkAssocCreate.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\ptw32_tkAssocDestroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\rwlock.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sched.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sched_get_priority_max.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sched_get_priority_min.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sched_getscheduler.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sched_setscheduler.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sched_yield.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_close.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_destroy.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_getvalue.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_init.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_open.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_post.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_post_multiple.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_timedwait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_trywait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_unlink.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sem_wait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\semaphore.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\signal.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\spin.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\sync.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\tsd.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\pthreads-win32\w32_CancelableWait.c">
+      <Filter>Third Party\pthreads</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\ev.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\ev_epoll.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\ev_kqueue.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\ev_poll.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\ev_port.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\ev_select.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\ev_win32.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libev\event.c">
+      <Filter>Third Party\libev</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Balau\win32\zlib\zutil.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\crc32.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\deflate.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\inffast.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\inffixed.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\inflate.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\inftrees.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\trees.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\zconf.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\zlib\zlib.h">
+      <Filter>Third Party\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Async.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\AtStartExit.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\BigInt.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\BLua.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\BRegex.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\BStdIO.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\BStream.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\BString.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Buffer.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\c++11-surrogates.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Exceptions.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Handle.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\HelperTasks.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Http.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\HttpServer.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Input.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Local.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\LuaBigInt.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\LuaHandle.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\LuaTask.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Main.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Output.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Printer.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Selectable.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\SimpleMustache.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Socket.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\StacklessTask.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Task.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\TaskMan.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\Threads.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\ZHandle.h">
+      <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\aliases.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\aliases_aix.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\aliases_dos.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\aliases_extra.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\aliases_osf1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\aliases2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\armscii_8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ascii.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\big5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\big5hkscs.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\c99.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ces_big5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ces_gbk.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cjk_variants.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_3.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_4.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_4a.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_4b.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_6.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_7.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_15.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cns11643_inv.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\converters.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp437.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp737.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp775.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp850.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp852.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp853.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp855.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp856.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp857.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp858.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp860.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp861.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp862.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp863.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp864.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp865.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp866.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp869.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp874.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp922.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp932.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp932ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp936ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp943.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp949.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp950.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp950ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1046.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1124.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1125.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1129.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1133.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1161.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1162.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1163.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1250.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1251.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1252.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1253.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1254.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1255.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1256.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1257.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\cp1258.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\dec_hanyu.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\dec_kanji.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\euc_cn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\euc_jisx0213.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\euc_jp.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\euc_kr.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\euc_tw.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\flags.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\flushwc.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gb2312.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gb12345.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gb12345ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gb18030.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gb18030ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gb18030uni.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gbk.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gbkext_inv.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gbkext1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\gbkext2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\georgian_academy.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\georgian_ps.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\hkscs.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\hp_roman8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\hz.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iconv.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iconv-config.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso646_cn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso646_jp.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso2022_cn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso2022_cnext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso2022_jp.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso2022_jp1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso2022_jp2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso2022_jp3.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso2022_kr.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_3.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_4.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_5.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_6.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_7.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_9.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_10.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_13.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_14.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_15.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\iso8859_16.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\isoir165.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\isoir165ext.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\java.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\jisx0201.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\jisx0208.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\jisx0212.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\jisx0213.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\johab.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\johab_hangul.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\koi8_r.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\koi8_ru.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\koi8_t.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\koi8_u.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ksc5601.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\libcharset.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\localcharset.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\loop_unicode.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\loop_wchar.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\loops.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_arabic.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_centraleurope.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_croatian.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_cyrillic.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_greek.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_hebrew.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_iceland.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_roman.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_romania.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_thai.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_turkish.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mac_ukraine.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\mulelao.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\nextstep.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\relocatable.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\riscos1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\shift_jisx0213.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\sjis.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\tcvn.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\tds565.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\tis620.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\translit.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs2be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs2internal.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs2le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs2swapped.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs4.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs4be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs4internal.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs4le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\ucs4swapped.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\uhc_1.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\uhc_2.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf7.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf8.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf16.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf16be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf16le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf32.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf32be.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\utf32le.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\vietcomb.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\iconv\viscii.h">
+      <Filter>Third Party\iconv</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\pthreads-win32\config.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\pthreads-win32\context.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\pthreads-win32\implement.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\pthreads-win32\need_errno.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\pthreads-win32\pthread.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\pthreads-win32\sched.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\pthreads-win32\semaphore.h">
+      <Filter>Third Party\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libev\ev.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libev\ev_vars.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libev\ev_wrap.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libev\ev++.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libev\event.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libev\event_compat.h">
+      <Filter>Third Party\libev</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Balau\win32\iconv\aliases.gperf">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\encodings.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\encodings_aix.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\encodings_dos.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\encodings_extra.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\encodings_local.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\encodings_osf1.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\Makefile.in">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\Makefile.msvc">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\Makefile.os2">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\Makefile.vms">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\win32\iconv\translit.def">
+      <Filter>Third Party\iconv</Filter>
+    </None>
+  </ItemGroup>
+</Project>

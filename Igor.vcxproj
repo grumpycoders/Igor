@@ -815,7 +815,12 @@
     <ClCompile Include="Balau\win32\zlib\trees.c" />
     <ClCompile Include="Balau\win32\zlib\uncompr.c" />
     <ClCompile Include="Balau\win32\zlib\zutil.c" />
-    <ClCompile Include="Igor.cpp" />
+    <ClCompile Include="src\cpu_x86.cpp" />
+    <ClCompile Include="src\Igor.cpp" />
+    <ClCompile Include="src\IgorAnalysis.cpp" />
+    <ClCompile Include="src\IgorDatabase.cpp" />
+    <ClCompile Include="src\IgorSection.cpp" />
+    <ClCompile Include="src\PELoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\includes\Async.h" />
@@ -1055,6 +1060,15 @@
     <ClInclude Include="Balau\win32\zlib\zconf.h" />
     <ClInclude Include="Balau\win32\zlib\zlib.h" />
     <ClInclude Include="Balau\win32\zlib\zutil.h" />
+    <ClInclude Include="src\cpuModule.h" />
+    <ClInclude Include="src\cpu_x86.h" />
+    <ClInclude Include="src\Igor.h" />
+    <ClInclude Include="src\IgorAnalysis.h" />
+    <ClInclude Include="src\IgorAPI.h" />
+    <ClInclude Include="src\IgorDatabase.h" />
+    <ClInclude Include="src\IgorSection.h" />
+    <ClInclude Include="src\PELoader.h" />
+    <ClInclude Include="src\yVector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Balau\win32\iconv\aliases.gperf" />

@@ -15,6 +15,8 @@ void MainTask::Do() {
 	if (argc < 2)
 		return;
 
+	Printer::enable(M_INFO);
+
 	IO<Input> reader(new Input(argv[1]));
 	reader->open();
 

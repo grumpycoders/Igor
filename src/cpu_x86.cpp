@@ -1,6 +1,10 @@
 #include "IgorDatabase.h"
 #include "cpu_x86.h"
 
+#include <Printer.h>
+
+using namespace Balau;
+
 igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 {
 	c_cpu_x86_state* pX86State = (c_cpu_x86_state*)pState->pCpuState;
@@ -29,12 +33,12 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	// opcode
 	switch(currentByte)
 	{
-	case 0xE8: // CALL
+	case 0xE8: // CALL (relative)
 		{
 			pState->m_mnemonic = INST_X86_CALL;
 
-			u32 jumpTarget = 0;
-			if (pState->pDataBase->readU32(pState->m_PC + 1, jumpTarget) != IGOR_SUCCESS)
+			s32 jumpTarget = 0;
+			if (pState->pDataBase->readS32(pState->m_PC + 1, jumpTarget) != IGOR_SUCCESS)
 			{
 				return IGOR_FAILURE;
 			}
@@ -42,6 +46,8 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 			jumpTarget += pState->m_PC + 5;
 
 			igor_add_code_analysis_task(jumpTarget);
+
+			Printer::log(M_INFO, "0x%08llX: CALL 0x%08llX", pState->m_PC, jumpTarget);
 
 			pState->m_PC += 5;
 

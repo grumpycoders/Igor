@@ -29,6 +29,7 @@ struct s_igorDatabase
 
 	s_igorSection* findSectionFromAddress(u64 address);
 	igor_result readByte(u64 address, u8& outputByte);
+	igor_result readS32(u64 address, s32& output);
 	igor_result readU32(u64 address, u32& output);
 };
 

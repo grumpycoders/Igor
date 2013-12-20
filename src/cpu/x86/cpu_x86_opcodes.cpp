@@ -6,14 +6,21 @@
 using namespace Balau;
 
 #define GET_MOD_REG_RM(pState) \
-u8 MOD_REG_RM = 0; \
+	u8 MOD_REG_RM = 0; \
 if (pState->pDataBase->readByte(pState->m_PC++, MOD_REG_RM) != IGOR_SUCCESS) \
 { \
 	return IGOR_FAILURE; \
 } \
-u8 MOD = (MOD_REG_RM >> 6) & 3; \
-u8 REG = (MOD_REG_RM >> 3) & 7; \
-u8 RM = MOD_REG_RM & 7;
+	u8 MOD = (MOD_REG_RM >> 6) & 3; \
+	u8 REG = (MOD_REG_RM >> 3) & 7; \
+	u8 RM = MOD_REG_RM & 7;
+
+#define GET_RM(pState) \
+	u8 RM = 0; \
+if (pState->pDataBase->readByte(pState->m_PC++, RM) != IGOR_SUCCESS) \
+{ \
+	return IGOR_FAILURE; \
+} 
 
 e_operandSize getOperandSize(c_cpu_x86_state* pX86State)
 {
@@ -94,6 +101,42 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	const char* operand2 = ((c_cpu_x86*)pState->pCpu)->getRegisterName(operandSize, RM);
 
 	Printer::log(M_INFO, "0x%08llX: MOV %s, %s", pState->m_PC, operand1, operand2);
+
+	return IGOR_SUCCESS;
+}
+
+igor_result x86_opcode_push(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	pState->m_mnemonic = INST_X86_PUSH;
+
+	u8 registerIdx = currentByte & 7;
+
+	e_operandSize operandSize = getOperandSize(pX86State);
+
+	const char* operand1 = ((c_cpu_x86*)pState->pCpu)->getRegisterName(operandSize, registerIdx);
+
+	Printer::log(M_INFO, "0x%08llX: PUSH %s", pState->m_PC, operand1);
+
+	return IGOR_SUCCESS;
+}
+
+igor_result x86_opcode_83(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	GET_RM(pState);
+
+	u8 varient = (RM >> 3) & 7;
+
+	switch (varient)
+	{
+	case 5:
+		pState->m_mnemonic = INST_X86_SUB;
+		break;
+	default:
+		Failure("");
+	}
+
+	return IGOR_FAILURE;
+
 
 	return IGOR_SUCCESS;
 }
@@ -196,7 +239,7 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	/* 0x55 */ &x86_opcode_push,
 	NULL,
 	NULL,
 	NULL,
@@ -248,7 +291,7 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	/* 0x83 */ &x86_opcode_83,
 	NULL,
 	NULL,
 	NULL,

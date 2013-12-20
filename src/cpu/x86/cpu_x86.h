@@ -30,6 +30,8 @@ enum e_instructions
 
 	INST_X86_CALL,
 	INST_X86_JMP,
+	INST_X86_PUSH,
+	INST_X86_SUB,
 };
 
 enum e_operandSize

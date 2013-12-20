@@ -33,6 +33,9 @@
     <Filter Include="Source Files\cpu\x86">
       <UniqueIdentifier>{a5800d68-f4f9-4529-9786-03d938764855}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party\regex">
+      <UniqueIdentifier>{d4b91360-07e7-4010-849a-0f665dbfd852}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Balau\win32\zlib\adler32.c">
@@ -661,6 +664,9 @@
     </ClCompile>
     <ClCompile Include="src\cpu_x86.cpp">
       <Filter>Source Files\cpu\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\regex\msvc-regex.c">
+      <Filter>Third Party\regex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1401,6 +1407,12 @@
     </ClInclude>
     <ClInclude Include="src\cpuModule.h">
       <Filter>Source Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\regex\regex.h">
+      <Filter>Third Party\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\msvc-config.h">
+      <Filter>Balau</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -53,33 +53,33 @@ int c_PELoader::loadPE(BFile reader)
 {
 	// DOS .EXE header
 	{
-		WORD   e_magic = reader->readBEU16().get(); // Magic number
-		WORD   e_cblp = reader->readU16().get(); // Bytes on last page of file
-		WORD   e_cp = reader->readU16().get(); // Pages in file
-		WORD   e_crlc = reader->readU16().get(); // Relocations
-		WORD   e_cparhdr = reader->readU16().get(); // Size of header in paragraphs
-		WORD   e_minalloc = reader->readU16().get(); // Minimum extra paragraphs needed
-		WORD   e_maxalloc = reader->readU16().get(); // Maximum extra paragraphs needed
-		WORD   e_ss = reader->readU16().get(); // Initial (relative) SS value
-		WORD   e_sp = reader->readU16().get(); // Initial SP value
-		WORD   e_csum = reader->readU16().get(); // Checksum
-		WORD   e_ip = reader->readU16().get(); // Initial IP value
-		WORD   e_cs = reader->readU16().get(); // Initial (relative) CS value
-		WORD   e_lfarlc = reader->readU16().get(); // File address of relocation table
-		WORD   e_ovno = reader->readU16().get(); // Overlay number
-		WORD   e_res[4]; // Reserved words
+		u16    e_magic = reader->readBEU16().get(); // Magic number
+		u16    e_cblp = reader->readU16().get(); // Bytes on last page of file
+		u16    e_cp = reader->readU16().get(); // Pages in file
+		u16    e_crlc = reader->readU16().get(); // Relocations
+		u16    e_cparhdr = reader->readU16().get(); // Size of header in paragraphs
+		u16    e_minalloc = reader->readU16().get(); // Minimum extra paragraphs needed
+		u16    e_maxalloc = reader->readU16().get(); // Maximum extra paragraphs needed
+		u16    e_ss = reader->readU16().get(); // Initial (relative) SS value
+		u16    e_sp = reader->readU16().get(); // Initial SP value
+		u16    e_csum = reader->readU16().get(); // Checksum
+		u16    e_ip = reader->readU16().get(); // Initial IP value
+		u16    e_cs = reader->readU16().get(); // Initial (relative) CS value
+		u16    e_lfarlc = reader->readU16().get(); // File address of relocation table
+		u16    e_ovno = reader->readU16().get(); // Overlay number
+		u16    e_res[4]; // Reserved words
 		for(int i=0; i<4; i++)
 		{
 			e_res[i] = reader->readU16().get();
 		}
-		WORD   e_oemid = reader->readU16().get(); // OEM identifier (for e_oeminfo)
-		WORD   e_oeminfo = reader->readU16().get(); // OEM information; e_oemid specific
-		WORD   e_res2[10]; // Reserved words
+		u16    e_oemid = reader->readU16().get(); // OEM identifier (for e_oeminfo)
+		u16    e_oeminfo = reader->readU16().get(); // OEM information; e_oemid specific
+		u16    e_res2[10]; // Reserved words
 		for(int i=0; i<10; i++)
 		{
 			e_res2[i] = reader->readU16().get();
 		}
-		LONG   e_lfanew = reader->readU32().get(); // File address of new exe header
+		u32    e_lfanew = reader->readU32().get(); // File address of new exe header
 
 		IAssert(e_magic == 0x4D5A, "magic isn't MZ: %016x", e_magic); // MZ
 		reader->seek(e_lfanew);
@@ -121,17 +121,17 @@ int c_PELoader::loadPE(BFile reader)
 	{
 		reader->seek(optionalHeaderOffset + m_SizeOfOptionalHeader + i*40);
 
-		BYTE    Name[8];
+		u8      Name[8];
 		reader->read(Name, 8);
-		DWORD   Misc = reader->readU32().get(); // DWORD PhysicalAddress union with DWORD VirtualSize; (depends if it's a DLL or a .EXE)
-		DWORD   VirtualAddress = reader->readU32().get();
-		DWORD   SizeOfRawData = reader->readU32().get();
-		DWORD   PointerToRawData = reader->readU32().get();
-		DWORD   PointerToRelocations = reader->readU32().get();
-		DWORD   PointerToLinenumbers = reader->readU32().get();
-		WORD    NumberOfRelocations = reader->readU16().get();
-		WORD    NumberOfLinenumbers = reader->readU16().get();
-		DWORD   Characteristics = reader->readU32().get();
+		u32     Misc = reader->readU32().get(); // u32   PhysicalAddress union with u32   VirtualSize; (depends if it's a DLL or a .EXE)
+		u32     VirtualAddress = reader->readU32().get();
+		u32     SizeOfRawData = reader->readU32().get();
+		u32     PointerToRawData = reader->readU32().get();
+		u32     PointerToRelocations = reader->readU32().get();
+		u32     PointerToLinenumbers = reader->readU32().get();
+		u16     NumberOfRelocations = reader->readU16().get();
+		u16     NumberOfLinenumbers = reader->readU16().get();
+		u32     Characteristics = reader->readU32().get();
 
 		igor_section_handle sectionHandle;
 		igor_create_section(m_ImageBase + VirtualAddress, Misc, sectionHandle);
@@ -166,39 +166,39 @@ int c_PELoader::loadPE(BFile reader)
 
 int c_PELoader::loadOptionalHeader386(BFile reader)
 {
-	WORD                 Magic = reader->readU16().get();
+	u16                  Magic = reader->readU16().get();
 	IAssert(Magic == 0x10b, "Magic isn't IMAGE_NT_OPTIONAL_HDR32_MAGIC: %016x", Magic); // IMAGE_NT_OPTIONAL_HDR32_MAGIC 
 
 
-	BYTE		         MajorLinkerVersion = reader->readU8().get();
-	BYTE                 MinorLinkerVersion = reader->readU8().get();
-	DWORD                SizeOfCode = reader->readU32().get();
-	DWORD                SizeOfInitializedData = reader->readU32().get();
-	DWORD                SizeOfUninitializedData = reader->readU32().get();
+	u8  		         MajorLinkerVersion = reader->readU8().get();
+	u8                   MinorLinkerVersion = reader->readU8().get();
+	u32                  SizeOfCode = reader->readU32().get();
+	u32                  SizeOfInitializedData = reader->readU32().get();
+	u32                  SizeOfUninitializedData = reader->readU32().get();
 	m_EntryPoint = reader->readU32().get();
-	DWORD                BaseOfCode = reader->readU32().get();
-	DWORD                BaseOfData = reader->readU32().get();
+	u32                  BaseOfCode = reader->readU32().get();
+	u32                  BaseOfData = reader->readU32().get();
 	m_ImageBase = reader->readU32().get();
-	DWORD                SectionAlignment = reader->readU32().get();
-	DWORD                FileAlignment = reader->readU32().get();
-	WORD                 MajorOperatingSystemVersion = reader->readU16().get();
-	WORD                 MinorOperatingSystemVersion = reader->readU16().get();
-	WORD                 MajorImageVersion = reader->readU16().get();
-	WORD                 MinorImageVersion = reader->readU16().get();
-	WORD                 MajorSubsystemVersion = reader->readU16().get();
-	WORD                 MinorSubsystemVersion = reader->readU16().get();
-	DWORD                Win32VersionValue = reader->readU32().get();
-	DWORD                SizeOfImage = reader->readU32().get();
-	DWORD                SizeOfHeaders = reader->readU32().get();
-	DWORD                CheckSum = reader->readU32().get();
-	WORD                 Subsystem = reader->readU16().get();
-	WORD                 DllCharacteristics = reader->readU16().get();
-	DWORD                SizeOfStackReserve = reader->readU32().get();
-	DWORD                SizeOfStackCommit = reader->readU32().get();
-	DWORD                SizeOfHeapReserve = reader->readU32().get();
-	DWORD                SizeOfHeapCommit = reader->readU32().get();
-	DWORD                LoaderFlags = reader->readU32().get();
-	DWORD                NumberOfRvaAndSizes = reader->readU32().get();
+	u32                  SectionAlignment = reader->readU32().get();
+	u32                  FileAlignment = reader->readU32().get();
+	u16                  MajorOperatingSystemVersion = reader->readU16().get();
+	u16                  MinorOperatingSystemVersion = reader->readU16().get();
+	u16                  MajorImageVersion = reader->readU16().get();
+	u16                  MinorImageVersion = reader->readU16().get();
+	u16                  MajorSubsystemVersion = reader->readU16().get();
+	u16                  MinorSubsystemVersion = reader->readU16().get();
+	u32                  Win32VersionValue = reader->readU32().get();
+	u32                  SizeOfImage = reader->readU32().get();
+	u32                  SizeOfHeaders = reader->readU32().get();
+	u32                  CheckSum = reader->readU32().get();
+	u16                  Subsystem = reader->readU16().get();
+	u16                  DllCharacteristics = reader->readU16().get();
+	u32                  SizeOfStackReserve = reader->readU32().get();
+	u32                  SizeOfStackCommit = reader->readU32().get();
+	u32                  SizeOfHeapReserve = reader->readU32().get();
+	u32                  SizeOfHeapCommit = reader->readU32().get();
+	u32                  LoaderFlags = reader->readU32().get();
+	u32                  NumberOfRvaAndSizes = reader->readU32().get();
 
 	// this should always be 16, read http://opcode0x90.wordpress.com/2007/04/22/windows-loader-does-it-differently/
 	TAssert(NumberOfRvaAndSizes == 0x10);
@@ -207,8 +207,8 @@ int c_PELoader::loadOptionalHeader386(BFile reader)
 
 	struct IMAGE_DATA_DIRECTORY
 	{
-		DWORD   VirtualAddress;
-		DWORD   Size;
+		u32     VirtualAddress;
+		u32     Size;
 	} imageDirectory[16];
 
 	//IMAGE_DATA_DIRECTORY
@@ -224,37 +224,37 @@ int c_PELoader::loadOptionalHeader386(BFile reader)
 int c_PELoader::loadOptionalHeader64(BFile reader)
 {
 	//IMAGE_OPTIONAL_HEADER64
-	WORD        Magic = reader->readU16().get();
+	u16         Magic = reader->readU16().get();
 	IAssert(Magic == 0x20b, "Magic isn't IMAGE_NT_OPTIONAL_HDR64_MAGIC: %016x", Magic); // IMAGE_NT_OPTIONAL_HDR64_MAGIC 
 
-	BYTE        MajorLinkerVersion = reader->readU8().get();
-	BYTE        MinorLinkerVersion = reader->readU8().get();
-	DWORD       SizeOfCode = reader->readU32().get();
-	DWORD       SizeOfInitializedData = reader->readU32().get();
-	DWORD       SizeOfUninitializedData = reader->readU32().get();
+	u8          MajorLinkerVersion = reader->readU8().get();
+	u8          MinorLinkerVersion = reader->readU8().get();
+	u32         SizeOfCode = reader->readU32().get();
+	u32         SizeOfInitializedData = reader->readU32().get();
+	u32         SizeOfUninitializedData = reader->readU32().get();
 	m_EntryPoint = reader->readU32().get();
-	DWORD       BaseOfCode = reader->readU32().get();
+	u32         BaseOfCode = reader->readU32().get();
 	m_ImageBase = reader->readU64().get();
-	DWORD       SectionAlignment = reader->readU32().get();
-	DWORD       FileAlignment = reader->readU32().get();
-	WORD        MajorOperatingSystemVersion = reader->readU16().get();
-	WORD        MinorOperatingSystemVersion = reader->readU16().get();
-	WORD        MajorImageVersion = reader->readU16().get();
-	WORD        MinorImageVersion = reader->readU16().get();
-	WORD        MajorSubsystemVersion = reader->readU16().get();
-	WORD        MinorSubsystemVersion = reader->readU16().get();
-	DWORD       Win32VersionValue = reader->readU32().get();
-	DWORD       SizeOfImage = reader->readU32().get();
-	DWORD       SizeOfHeaders = reader->readU32().get();
-	DWORD       CheckSum = reader->readU32().get();
-	WORD        Subsystem = reader->readU16().get();
-	WORD        DllCharacteristics = reader->readU16().get();
-	ULONGLONG   SizeOfStackReserve = reader->readU64().get();
-	ULONGLONG   SizeOfStackCommit = reader->readU64().get();
-	ULONGLONG   SizeOfHeapReserve = reader->readU64().get();
-	ULONGLONG   SizeOfHeapCommit = reader->readU64().get();
-	DWORD       LoaderFlags = reader->readU32().get();
-	DWORD       NumberOfRvaAndSizes = reader->readU32().get();
+	u32         SectionAlignment = reader->readU32().get();
+	u32         FileAlignment = reader->readU32().get();
+	u16         MajorOperatingSystemVersion = reader->readU16().get();
+	u16         MinorOperatingSystemVersion = reader->readU16().get();
+	u16         MajorImageVersion = reader->readU16().get();
+	u16         MinorImageVersion = reader->readU16().get();
+	u16         MajorSubsystemVersion = reader->readU16().get();
+	u16         MinorSubsystemVersion = reader->readU16().get();
+	u32         Win32VersionValue = reader->readU32().get();
+	u32         SizeOfImage = reader->readU32().get();
+	u32         SizeOfHeaders = reader->readU32().get();
+	u32         CheckSum = reader->readU32().get();
+	u16         Subsystem = reader->readU16().get();
+	u16         DllCharacteristics = reader->readU16().get();
+	u64         SizeOfStackReserve = reader->readU64().get();
+	u64         SizeOfStackCommit = reader->readU64().get();
+	u64         SizeOfHeapReserve = reader->readU64().get();
+	u64         SizeOfHeapCommit = reader->readU64().get();
+	u32         LoaderFlags = reader->readU32().get();
+	u32         NumberOfRvaAndSizes = reader->readU32().get();
 
 	// this should always be 16, read http://opcode0x90.wordpress.com/2007/04/22/windows-loader-does-it-differently/
 	TAssert(NumberOfRvaAndSizes == 0x10);
@@ -280,8 +280,8 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
 
 	struct IMAGE_DATA_DIRECTORY
 	{
-		DWORD   VirtualAddress;
-		DWORD   Size;
+		u32     VirtualAddress;
+		u32     Size;
 	} imageDirectory[16];
 
 	//IMAGE_DATA_DIRECTORY

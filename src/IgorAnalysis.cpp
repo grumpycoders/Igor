@@ -46,6 +46,6 @@ void IgorAnalysis::Do()
 		}
 
         m_status = IDLE;
-        yield();
+		yieldNoWait();
 	}
 }

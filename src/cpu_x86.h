@@ -17,14 +17,17 @@ public:
 	e_executionMode m_executionMode;
 };
 
+enum e_instructions
+{
+	INST_X86_MOV,
+
+	INST_X86_CALL,
+	INST_X86_JMP,
+};
+
 class c_cpu_x86 : public c_cpu_module
 {
 public:
-	enum e_instructions
-	{
-		INST_X86_MOV,
-		INST_X86_CALL,
-	};
 
 	igor_result analyze(s_analyzeState* pState);
 };

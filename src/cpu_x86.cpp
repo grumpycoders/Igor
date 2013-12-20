@@ -29,9 +29,26 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	// opcode
 	switch(currentByte)
 	{
-	case 0xE8:
-		pState->m_mnemonic = "call";
-		break;
+	case 0xE8: // CALL
+		{
+			pState->m_mnemonic = INST_X86_CALL;
+
+			u32 jumpTarget = 0;
+			if (pState->pDataBase->readU32(pState->m_PC + 1, jumpTarget) != IGOR_SUCCESS)
+			{
+				return IGOR_FAILURE;
+			}
+
+			jumpTarget += pState->m_PC + 5;
+
+			igor_add_code_analysis_task(jumpTarget);
+
+			pState->m_PC += 5;
+
+			break;
+		}
+	default:
+		return IGOR_FAILURE;
 	}
 
 	return IGOR_SUCCESS;

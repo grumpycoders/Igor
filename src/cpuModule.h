@@ -9,14 +9,22 @@ public:
 
 struct s_igorDatabase;
 
+enum e_analyzeResult
+{
+	stop_analysis,
+	continue_analysis,
+};
+
 struct s_analyzeState
 {
+	// input
 	u64 m_PC;
 	c_cpu_state* pCpuState;
 	s_igorDatabase* pDataBase;
 
 	// output
-	Balau::String m_mnemonic;
+	u32 m_mnemonic;
+	e_analyzeResult m_analyzeResult;
 };
 
 class c_cpu_module

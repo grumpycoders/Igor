@@ -31,7 +31,16 @@ void igor_analysis_run()
 			analyzeState.pCpuState = pCpuState;
 			analyzeState.pDataBase = pDatabase;
 
-			pCpu->analyze(&analyzeState);
+			analyzeState.m_mnemonic = -1;
+			analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
+
+			do
+			{
+				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
+				{
+					analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
+				}
+			} while (analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
 		}
 	}
 }

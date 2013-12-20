@@ -62,3 +62,25 @@ igor_result s_igorDatabase::readByte(u64 address, u8& outputByte)
 
 	return IGOR_SUCCESS;
 }
+
+igor_result s_igorDatabase::readU32(u64 address, u32& output)
+{
+	s_igorSection* pSection = findSectionFromAddress(address);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	u64 rawOffset = address - pSection->m_virtualAddress;
+
+	if (rawOffset > pSection->m_rawDataSize)
+	{
+		return IGOR_FAILURE;
+	}
+
+	output = *(u32*)(pSection->m_rawData + rawOffset);
+
+	return IGOR_SUCCESS;
+
+}

@@ -20,6 +20,11 @@ public:
 class c_cpu_x86 : public c_cpu_module
 {
 public:
+	enum e_instructions
+	{
+		INST_X86_CALL,
+	};
+
 	igor_result analyze(s_analyzeState* pState);
 };
 

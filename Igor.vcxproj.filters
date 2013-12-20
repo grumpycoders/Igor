@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -30,6 +26,12 @@
     </Filter>
     <Filter Include="Third Party\libev">
       <UniqueIdentifier>{decde396-18d8-46fd-94ac-2c349b60823e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cpu">
+      <UniqueIdentifier>{5ff300d1-7566-473f-99ec-e39d70c5e380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cpu\x86">
+      <UniqueIdentifier>{a5800d68-f4f9-4529-9786-03d938764855}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -642,9 +644,6 @@
     <ClCompile Include="Balau\libev\event.c">
       <Filter>Third Party\libev</Filter>
     </ClCompile>
-    <ClCompile Include="src\cpu_x86.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Igor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -659,6 +658,9 @@
     </ClCompile>
     <ClCompile Include="src\PELoader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu_x86.cpp">
+      <Filter>Source Files\cpu\x86</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1374,31 +1376,31 @@
       <Filter>Third Party\libev</Filter>
     </ClInclude>
     <ClInclude Include="src\cpu_x86.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cpuModule.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\cpu\x86</Filter>
     </ClInclude>
     <ClInclude Include="src\Igor.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorAnalysis.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorAPI.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorDatabase.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorSection.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\PELoader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\yVector.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpuModule.h">
+      <Filter>Source Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

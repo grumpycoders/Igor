@@ -2,6 +2,8 @@
 #include <Printer.h>
 #include <Input.h>
 #include <BStream.h>
+#include <Task.h>
+#include <TaskMan.h>
 
 #include "PELoader.h"
 #include "IgorDatabase.h"
@@ -23,5 +25,8 @@ void MainTask::Do() {
 	c_PELoader PELoader;
 	PELoader.loadPE(reader);
 
-	igor_analysis_run();
+    Events::TaskEvent evt;
+    Task * analysis = TaskMan::registerTask(new IgorAnalysis(), &evt);
+    waitFor(&evt);
+    yield();
 }

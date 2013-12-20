@@ -45,7 +45,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 
 			jumpTarget += pState->m_PC + 5;
 
-			igor_add_code_analysis_task(jumpTarget);
+			IgorAnalysis::igor_add_code_analysis_task(jumpTarget);
 
 			Printer::log(M_INFO, "0x%08llX: CALL 0x%08llX", pState->m_PC, jumpTarget);
 

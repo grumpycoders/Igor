@@ -1,25 +1,27 @@
 #include "IgorAnalysis.h"
-#include "IgorDatabase.h"
 
-void igor_add_code_analysis_task(u64 PC)
+void IgorAnalysis::igor_add_code_analysis_task(u64 PC)
 {
 	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
 
-	s_analysisRequest newAnalysisRequest;
-	newAnalysisRequest.m_pc = PC;
+    s_analysisRequest * newAnalysisRequest = new s_analysisRequest(PC);
 
-	pDatabase->m_analysisRequests.push_back(newAnalysisRequest);
+	pDatabase->m_analysisRequests.push(newAnalysisRequest);
 }
 
-void igor_analysis_run()
+void IgorAnalysis::Do()
 {
 	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
+    s_analysisRequest * pRequest;
 
-	for(int i=0; i<pDatabase->m_analysisRequests.size(); i++)
+    for (;;)
 	{
-		s_analysisRequest* pRequest = &pDatabase->m_analysisRequests[i];
+        m_status = RUNNING;
+        s_analysisRequest* pRequest = pDatabase->m_analysisRequests.pop();
 
 		u64 currentPC = pRequest->m_pc;
+
+        // if (currentPC == (u64) -1) m_status = STOPPING; // blah; something like that
 
 		c_cpu_module* pCpu = pDatabase->getCpuForAddress(currentPC);
 		c_cpu_state* pCpuState = pDatabase->getCpuStateForAddress(currentPC);
@@ -42,5 +44,8 @@ void igor_analysis_run()
 				}
 			} while (analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
 		}
+
+        m_status = IDLE;
+        yield();
 	}
 }

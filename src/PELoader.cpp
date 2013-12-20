@@ -159,7 +159,7 @@ int c_PELoader::loadPE(BFile reader)
 
 	}
 
-	igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
+	IgorAnalysis::igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
 
 	return 0;
 }

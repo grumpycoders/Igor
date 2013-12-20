@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <Task.h>
+
 #include "Igor.h"
 
 #include "yVector.h"
@@ -15,13 +17,14 @@ igor_result igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHan
 
 struct s_analysisRequest
 {
+    s_analysisRequest(u64 PC) : m_pc(PC) { }
 	u64 m_pc;
 };
 
 struct s_igorDatabase
 {
 	std::vector<c_cpu_module*> m_cpu_modules;
-	std::vector<s_analysisRequest> m_analysisRequests;
+	Balau::TQueue<s_analysisRequest> m_analysisRequests;
 	VECTOR<s_igorSection> m_sections;
 
 	c_cpu_module* getCpuForAddress(u64 PC);

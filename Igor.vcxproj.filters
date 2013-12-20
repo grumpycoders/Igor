@@ -662,11 +662,14 @@
     <ClCompile Include="src\PELoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cpu_x86.cpp">
-      <Filter>Source Files\cpu\x86</Filter>
-    </ClCompile>
     <ClCompile Include="Balau\win32\regex\msvc-regex.c">
       <Filter>Third Party\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\x86\cpu_x86.cpp">
+      <Filter>Source Files\cpu\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp">
+      <Filter>Source Files\cpu\x86</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1381,9 +1384,6 @@
     <ClInclude Include="Balau\libev\event_compat.h">
       <Filter>Third Party\libev</Filter>
     </ClInclude>
-    <ClInclude Include="src\cpu_x86.h">
-      <Filter>Source Files\cpu\x86</Filter>
-    </ClInclude>
     <ClInclude Include="src\Igor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1405,14 +1405,20 @@
     <ClInclude Include="src\yVector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cpuModule.h">
-      <Filter>Source Files\cpu</Filter>
-    </ClInclude>
     <ClInclude Include="Balau\win32\regex\regex.h">
       <Filter>Third Party\regex</Filter>
     </ClInclude>
     <ClInclude Include="Balau\msvc-config.h">
       <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\x86\cpu_x86.h">
+      <Filter>Source Files\cpu\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\cpuModule.h">
+      <Filter>Source Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\x86\cpu_x86_opcodes.h">
+      <Filter>Source Files\cpu\x86</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

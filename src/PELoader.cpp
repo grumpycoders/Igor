@@ -1,7 +1,7 @@
 #include "PELoader.h"
 #include "IgorAPI.h"
 #include "IgorDatabase.h"
-#include "cpu_x86.h"
+#include "cpu/x86/cpu_x86.h"
 
 #define IMAGE_FILE_RELOCS_STRIPPED           0x0001  // Relocation info stripped from file.
 #define IMAGE_FILE_EXECUTABLE_IMAGE          0x0002  // File is executable  (i.e. no unresolved externel references).

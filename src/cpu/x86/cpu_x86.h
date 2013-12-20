@@ -1,7 +1,8 @@
-#ifndef __CPU_X86_H__
-#define __CPU_X86_H__
+#pragma once
 
-#include "cpuModule.h"
+#include "cpu/cpuModule.h"
+
+class c_cpu_x86;
 
 class c_cpu_x86_state : public c_cpu_state
 {
@@ -14,6 +15,12 @@ public:
 		_64bits,
 	};
 
+	c_cpu_x86_state() :
+		m_executionMode(_32bits)
+	{
+
+	}
+
 	e_executionMode m_executionMode;
 };
 
@@ -25,11 +32,22 @@ enum e_instructions
 	INST_X86_JMP,
 };
 
+enum e_operandSize
+{
+	OPERAND_Unkown = -1,
+	OPERAND_8bit = 0,
+	OPERAND_16bit = 1,
+	OPERAND_32bit = 2,
+};
+
 class c_cpu_x86 : public c_cpu_module
 {
 public:
 
 	igor_result analyze(s_analyzeState* pState);
-};
+	const char* getRegisterName(e_operandSize size, u8 regIndex);
 
-#endif
+private:
+
+	c_cpu_x86_state m_defaultState;
+};

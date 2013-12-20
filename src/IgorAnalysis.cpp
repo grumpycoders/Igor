@@ -30,6 +30,7 @@ void IgorAnalysis::Do()
 		{
 			s_analyzeState analyzeState;
 			analyzeState.m_PC = currentPC;
+			analyzeState.pCpu = pCpu;
 			analyzeState.pCpuState = pCpuState;
 			analyzeState.pDataBase = pDatabase;
 

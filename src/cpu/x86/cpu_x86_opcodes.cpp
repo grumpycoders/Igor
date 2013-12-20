@@ -1,27 +1,48 @@
 #include "IgorDatabase.h"
 #include "cpu_x86.h"
+#include "cpu_x86_opcodes.h"
 
 #include <Printer.h>
-
 using namespace Balau;
 
-const char* registerName[3][8] =
+#define GET_MOD_REG_RM(pState) \
+u8 MOD_REG_RM = 0; \
+if (pState->pDataBase->readByte(pState->m_PC++, MOD_REG_RM) != IGOR_SUCCESS) \
+{ \
+	return IGOR_FAILURE; \
+} \
+u8 MOD = (MOD_REG_RM >> 6) & 3; \
+u8 REG = (MOD_REG_RM >> 3) & 7; \
+u8 RM = MOD_REG_RM & 7;
+
+e_operandSize getOperandSize(c_cpu_x86_state* pX86State)
 {
-	{ "AL", "CL", "DL", "BL", "AH", "CH", "DH", "BH" }, // 8bit
-	{ "AX", "CX", "DX", "BX", "SP", "BP", "SI", "DI" }, // 16bits
-	{ "EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI" }, // 32 bits
-};
+	e_operandSize operandSize = OPERAND_Unkown;
 
-typedef igor_result(*t_x86_opcode)(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte);
+	switch (pX86State->m_executionMode)
+	{
+	case c_cpu_x86_state::_16bits:
+		operandSize = OPERAND_16bit;
+		break;
+	case c_cpu_x86_state::_32bits:
+		operandSize = OPERAND_32bit;
+		break;
+	default:
+		Failure("Bad state in getOperandSize");
+		break;
+	}
 
-extern const t_x86_opcode x86_opcode_table[0x100];
+	// TODO: Here, figure out the override operand size from prefix
+
+	return operandSize;
+}
 
 igor_result x86_opcode_call(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
 {
 	pState->m_mnemonic = INST_X86_CALL;
 
 	s32 jumpTarget = 0;
-	if (pState->pDataBase->readS32(pState->m_PC , jumpTarget) != IGOR_SUCCESS)
+	if (pState->pDataBase->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
 	{
 		return IGOR_FAILURE;
 	}
@@ -52,7 +73,7 @@ igor_result x86_opcode_jmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	IgorAnalysis::igor_add_code_analysis_task(jumpTarget);
 
 	Printer::log(M_INFO, "0x%08llX: JMP 0x%08llX", pState->m_PC, jumpTarget);
-	
+
 	pState->m_analyzeResult = stop_analysis;
 
 	return IGOR_SUCCESS;
@@ -65,43 +86,16 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	u8 S = currentByte & 1;
 	u8 X = (currentByte >> 1) & 1;
 
-	u8 MOD_REG_RM = 0;
-	if (pState->pDataBase->readByte(pState->m_PC, MOD_REG_RM) != IGOR_SUCCESS)
-	{
-		return IGOR_FAILURE;
-	}
+	GET_MOD_REG_RM(pState);
 
-	u8 MOD = (MOD_REG_RM >> 6) & 3;
-	u8 REG = (MOD_REG_RM >> 3) & 7;
-	u8 RM = MOD_REG_RM & 7;
+	e_operandSize operandSize = getOperandSize(pX86State);
 
-	u8 oprandSize = S * 2;
+	const char* operand1 = ((c_cpu_x86*)pState->pCpu)->getRegisterName(operandSize, REG);
+	const char* operand2 = ((c_cpu_x86*)pState->pCpu)->getRegisterName(operandSize, RM);
 
-	const char* operand1 = registerName[oprandSize][REG];
-	const char* operant2 = registerName[oprandSize][RM];
-
-	Printer::log(M_INFO, "0x%08llX: MOV %s, %s", pState->m_PC, operand1, operant2);
+	Printer::log(M_INFO, "0x%08llX: MOV %s, %s", pState->m_PC, operand1, operand2);
 
 	return IGOR_SUCCESS;
-}
-igor_result c_cpu_x86::analyze(s_analyzeState* pState)
-{
-	c_cpu_x86_state* pX86State = (c_cpu_x86_state*)pState->pCpuState;
-
-	u8 currentByte = 0;
-	if(pState->pDataBase->readByte(pState->m_PC, currentByte) != IGOR_SUCCESS)
-	{
-		return IGOR_FAILURE;
-	}
-
-	pState->m_PC++;
-
-	if (x86_opcode_table[currentByte] == NULL)
-	{
-		return IGOR_FAILURE;
-	}
-
-	return x86_opcode_table[currentByte](pState, pX86State, currentByte);
 }
 
 const t_x86_opcode x86_opcode_table[0x100] =

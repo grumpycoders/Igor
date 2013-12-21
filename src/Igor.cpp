@@ -4,6 +4,7 @@
 #include <BStream.h>
 #include <Task.h>
 #include <TaskMan.h>
+#include <HttpServer.h>
 
 #include "PELoader.h"
 #include "IgorDatabase.h"
@@ -25,8 +26,14 @@ void MainTask::Do() {
 	c_PELoader PELoader;
 	PELoader.loadPE(reader);
 
-    Events::TaskEvent evt;
-    Task * analysis = TaskMan::registerTask(new IgorAnalysis(), &evt);
-    waitFor(&evt);
+    Events::TaskEvent evtAnalysis;
+    Task * analysis = TaskMan::registerTask(new IgorAnalysis(), &evtAnalysis);
+    waitFor(&evtAnalysis);
+
+    HttpServer * s = new HttpServer();
+    s->setPort(8080);
+    s->setLocal("localhost");
+    s->start();
+
     yield();
 }

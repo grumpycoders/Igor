@@ -145,6 +145,13 @@ struct s_x86_operand
 		m_immediate.m_immediateValue = immediateValue;
 	}
 
+	void setAsImmediate(e_immediateSize size, u32 immediateValue)
+	{
+		m_type = type_immediate;
+		m_immediate.m_immediateSize = size;
+		m_immediate.m_immediateValue = immediateValue;
+	}
+
 	void setAsAddress(u64 address)
 	{
 		m_type = type_address;

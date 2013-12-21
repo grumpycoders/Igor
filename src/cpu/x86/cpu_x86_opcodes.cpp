@@ -118,7 +118,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 
 			x86_analyse_result->m_numOperands = 2;
 			x86_analyse_result->m_operands[0].setAsRegister(OPERAND_32bit, REG_EAX);
-			x86_analyse_result->m_operands[1].setAsAddress(target);
+			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U32, target);
 
 			igor_flag_address_as_u32(target);
 
@@ -141,7 +141,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 			u8 registerIdx = currentByte & 7;
 			x86_analyse_result->m_numOperands = 2;
 			x86_analyse_result->m_operands[0].setAsRegister(OPERAND_32bit, (e_register)registerIdx);
-			x86_analyse_result->m_operands[1].setAsAddress(target);
+			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U32, target);
 
 			igor_flag_address_as_u32(target);
 

@@ -76,6 +76,16 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 		return "SUB";
 	case INST_X86_AND:
 		return "AND";
+	case INST_X86_CMP:
+		return "CMP";
+	case INST_X86_JZ:
+		return "JZ";
+	case INST_X86_TEST:
+		return "TEST";
+	case INST_X86_NOT:
+		return "NOT";
+	case INST_X86_XOR:
+		return "XOR";
 	default:
 		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
 	}
@@ -110,7 +120,14 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 			operandString.set("%Xh", pOperand->m_immediate.m_immediateValue);
 			break;
 		case s_x86_operand::type_address:
-			operandString.set("0x%08llX", pOperand->m_address.m_addressValue);
+			if (pOperand->m_address.m_dereference)
+			{
+				operandString.set("[0x%08llX]", pOperand->m_address.m_addressValue);
+			}
+			else
+			{
+				operandString.set("0x%08llX", pOperand->m_address.m_addressValue);
+			}
 			break;
 		default:
 			Failure("Bad operand type");

@@ -35,6 +35,11 @@ enum e_x86_mnemonic
 	INST_X86_PUSH,
 	INST_X86_SUB,
 	INST_X86_AND,
+	INST_X86_CMP,
+	INST_X86_JZ,
+	INST_X86_TEST,
+	INST_X86_NOT,
+	INST_X86_XOR,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -126,6 +131,7 @@ struct s_x86_operand
 		{
 			u8 m_segment;
 			u64 m_addressValue;
+			bool m_dereference;
 		} m_address;
 	};
 
@@ -138,7 +144,7 @@ struct s_x86_operand
 		m_register.m_offset = offset;
 	}
 
-	void setAsImmediate(e_immediateSize size, s8 immediateValue)
+	void setAsImmediate(e_immediateSize size, u8 immediateValue)
 	{
 		m_type = type_immediate;
 		m_immediate.m_immediateSize = size;
@@ -152,10 +158,11 @@ struct s_x86_operand
 		m_immediate.m_immediateValue = immediateValue;
 	}
 
-	void setAsAddress(u64 address)
+	void setAsAddress(u64 address, bool dereference = false)
 	{
 		m_type = type_address;
 		m_address.m_addressValue = address;
+		m_address.m_dereference = dereference;
 	}
 };
 

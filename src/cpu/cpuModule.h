@@ -2,6 +2,8 @@
 
 #include "Igor.h"
 
+class c_cpu_module;
+
 class c_cpu_state
 {
 public:
@@ -19,6 +21,7 @@ struct s_analyzeState
 {
 	// input
 	u64 m_PC;
+	c_cpu_module* pCpu;
 	c_cpu_state* pCpuState;
 	s_igorDatabase* pDataBase;
 

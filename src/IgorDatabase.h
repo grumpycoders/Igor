@@ -10,7 +10,7 @@
 
 #include "IgorAPI.h"
 #include "IgorSection.h"
-#include "cpuModule.h"
+#include "cpu/cpuModule.h"
 
 typedef int igor_cpu_handle;
 igor_result igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle);

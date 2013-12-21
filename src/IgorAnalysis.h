@@ -20,3 +20,5 @@ private:
 };
 
 extern IgorAnalysis * g_igorAnalysis;
+
+igor_result igor_flag_address_as_u32(u64 virtualAddress);

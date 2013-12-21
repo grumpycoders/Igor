@@ -105,3 +105,91 @@ igor_result s_igorDatabase::readU32(u64 address, u32& output)
 	return IGOR_SUCCESS;
 
 }
+
+igor_result s_igorDatabase::readS16(u64 address, s16& output)
+{
+	s_igorSection* pSection = findSectionFromAddress(address);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	u64 rawOffset = address - pSection->m_virtualAddress;
+
+	if (rawOffset > pSection->m_rawDataSize)
+	{
+		return IGOR_FAILURE;
+	}
+
+	output = *(s16*)(pSection->m_rawData + rawOffset);
+
+	return IGOR_SUCCESS;
+
+}
+
+igor_result s_igorDatabase::readU16(u64 address, u16& output)
+{
+	s_igorSection* pSection = findSectionFromAddress(address);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	u64 rawOffset = address - pSection->m_virtualAddress;
+
+	if (rawOffset > pSection->m_rawDataSize)
+	{
+		return IGOR_FAILURE;
+	}
+
+	output = *(u16*)(pSection->m_rawData + rawOffset);
+
+	return IGOR_SUCCESS;
+
+}
+
+igor_result s_igorDatabase::readS8(u64 address, s8& output)
+{
+	s_igorSection* pSection = findSectionFromAddress(address);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	u64 rawOffset = address - pSection->m_virtualAddress;
+
+	if (rawOffset > pSection->m_rawDataSize)
+	{
+		return IGOR_FAILURE;
+	}
+
+	output = *(s8*)(pSection->m_rawData + rawOffset);
+
+	return IGOR_SUCCESS;
+
+}
+
+igor_result s_igorDatabase::readU8(u64 address, u8& output)
+{
+	s_igorSection* pSection = findSectionFromAddress(address);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	u64 rawOffset = address - pSection->m_virtualAddress;
+
+	if (rawOffset > pSection->m_rawDataSize)
+	{
+		return IGOR_FAILURE;
+	}
+
+	output = *(u8*)(pSection->m_rawData + rawOffset);
+
+	return IGOR_SUCCESS;
+
+}

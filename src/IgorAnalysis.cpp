@@ -34,7 +34,6 @@ void IgorAnalysis::Do()
 			analyzeState.pCpuState = pCpuState;
 			analyzeState.pDataBase = pDatabase;
 
-			analyzeState.m_mnemonic = -1;
 			analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
 
 			do
@@ -49,4 +48,11 @@ void IgorAnalysis::Do()
         m_status = IDLE;
 		yieldNoWait();
 	}
+}
+
+igor_result igor_flag_address_as_u32(u64 virtualAddress)
+{
+	// TODO!
+
+	return IGOR_SUCCESS;
 }

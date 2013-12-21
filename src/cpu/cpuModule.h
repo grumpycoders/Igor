@@ -9,6 +9,14 @@ class c_cpu_state
 public:
 };
 
+// Holds the result of one analyze step (ie, one instruction).
+// Each CPU must derive from it
+// It is passed back to the CPU for query
+class c_cpu_analyse_result
+{
+public:
+};
+
 struct s_igorDatabase;
 
 enum e_analyzeResult
@@ -26,7 +34,8 @@ struct s_analyzeState
 	s_igorDatabase* pDataBase;
 
 	// output
-	u32 m_mnemonic;
+	c_cpu_analyse_result* m_cpu_analyse_result;
+
 	e_analyzeResult m_analyzeResult;
 };
 

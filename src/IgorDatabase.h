@@ -34,6 +34,12 @@ struct s_igorDatabase
 	igor_result readByte(u64 address, u8& outputByte);
 	igor_result readS32(u64 address, s32& output);
 	igor_result readU32(u64 address, u32& output);
+	igor_result readS16(u64 address, s16& output);
+	igor_result readU16(u64 address, u16& output);
+	igor_result readS8(u64 address, s8& output);
+	igor_result readU8(u64 address, u8& output);
+
+
 };
 
 s_igorDatabase* getCurrentIgorDatabase();

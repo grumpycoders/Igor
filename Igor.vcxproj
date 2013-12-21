@@ -1195,6 +1195,7 @@
     <ClCompile Include="src\Igor.cpp" />
     <ClCompile Include="src\IgorAnalysis.cpp" />
     <ClCompile Include="src\IgorDatabase.cpp" />
+    <ClCompile Include="src\IgorHttp.cpp" />
     <ClCompile Include="src\IgorSection.cpp" />
     <ClCompile Include="src\PELoader.cpp" />
   </ItemGroup>
@@ -1445,6 +1446,7 @@
     <ClInclude Include="src\IgorAnalysis.h" />
     <ClInclude Include="src\IgorAPI.h" />
     <ClInclude Include="src\IgorDatabase.h" />
+    <ClInclude Include="src\IgorHttp.h" />
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\PELoader.h" />
     <ClInclude Include="src\yVector.h" />

@@ -8,7 +8,7 @@
 
 #include "PELoader.h"
 #include "IgorDatabase.h"
-
+#include "IgorHttp.h"
 
 using namespace Balau;
 
@@ -18,7 +18,7 @@ void MainTask::Do() {
 	if (argc < 2)
 		return;
 
-	Printer::enable(M_INFO);
+	Printer::enable(M_ALL);
 
 	IO<Input> reader(new Input(argv[1]));
 	reader->open();
@@ -30,10 +30,7 @@ void MainTask::Do() {
     Task * analysis = TaskMan::registerTask(new IgorAnalysis(), &evtAnalysis);
     waitFor(&evtAnalysis);
 
-    HttpServer * s = new HttpServer();
-    s->setPort(8080);
-    s->setLocal("localhost");
-    s->start();
+    igor_setup_httpserver();
 
     yield();
 }

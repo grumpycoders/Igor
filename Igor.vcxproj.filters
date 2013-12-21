@@ -671,6 +671,9 @@
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp">
       <Filter>Source Files\cpu\x86</Filter>
     </ClCompile>
+    <ClCompile Include="src\IgorHttp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">
@@ -1419,6 +1422,9 @@
     </ClInclude>
     <ClInclude Include="src\cpu\x86\cpu_x86_opcodes.h">
       <Filter>Source Files\cpu\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorHttp.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

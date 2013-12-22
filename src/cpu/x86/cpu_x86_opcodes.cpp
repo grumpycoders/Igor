@@ -5,6 +5,15 @@
 #include <Printer.h>
 using namespace Balau;
 
+#if defined(DEBUG) && defined(_MSC_VER)
+#define X86_DECODER_FAILURE(errorString) \
+	__debugbreak(); \
+	return IGOR_FAILURE
+#else
+#define X86_DECODER_FAILURE(errorString) \
+	return IGOR_FAILURE
+#endif
+
 #define GET_MOD_REG_RM(pState) \
 	u8 MOD_REG_RM = 0; \
 if (pState->pDataBase->readByte(pState->m_PC++, MOD_REG_RM) != IGOR_SUCCESS) \
@@ -23,22 +32,22 @@ if (pState->pDataBase->readByte(pState->m_PC++, MOD_REG_RM) != IGOR_SUCCESS) \
 		break;\
 	case 1:\
 	{\
-			  mod = MOD_INDIRECT_ADD_8;\
-			  s8 offsetS8 = 0;\
-			  if (pState->pDataBase->readS8(pState->m_PC++, offsetS8) != IGOR_SUCCESS)\
-			  {\
-				  return IGOR_FAILURE;\
-			  }\
-			  \
-			  offset = offsetS8;\
-			  \
-			  break;\
+		mod = MOD_INDIRECT_ADD_8;\
+		s8 offsetS8 = 0;\
+		if (pState->pDataBase->readS8(pState->m_PC++, offsetS8) != IGOR_SUCCESS)\
+		{\
+			return IGOR_FAILURE;\
+		}\
+		\
+		offset = offsetS8;\
+		\
+		break;\
 	}\
 	case 3:\
 		mod = MOD_DIRECT;\
 		break;\
 	default:\
-		Failure("Unhandled MOD");\
+		X86_DECODER_FAILURE("Unhandled MOD"); \
 	}
 
 #define GET_RM(pState) \
@@ -214,7 +223,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 			break;
 		}
 	default:
-		Failure("Unhandled case in x86_opcode_mov");
+		X86_DECODER_FAILURE("Unhandled case in x86_opcode_mov");
 	}
 
 	return IGOR_SUCCESS;
@@ -266,7 +275,7 @@ igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		x86_analyse_result->m_operands[1].setAsRegister(operandSize, (e_register)RM);
 		break;
 	default:
-		Failure("x86_opcode_cmp");
+		X86_DECODER_FAILURE("x86_opcode_cmp");
 	}
 
 	return IGOR_SUCCESS;
@@ -410,7 +419,7 @@ igor_result x86_opcode_F7(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 			break;
 		}
 	default:
-		Failure("Unhandled x86_opcode_F7");
+		X86_DECODER_FAILURE("Unhandled x86_opcode_F7");
 	}
 
 	return IGOR_SUCCESS;
@@ -440,7 +449,7 @@ igor_result x86_opcode_FF(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 			break;
 		}
 	default:
-		Failure("Unhandled x86_opcode_F7");
+		X86_DECODER_FAILURE("Unhandled x86_opcode_F7");
 	}
 
 	return IGOR_SUCCESS;
@@ -480,7 +489,7 @@ igor_result x86_opcode_83(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 			break;
 		}
 		default:
-			Failure("");
+			X86_DECODER_FAILURE("x86_opcode_83");
 	}
 
 	return IGOR_SUCCESS;

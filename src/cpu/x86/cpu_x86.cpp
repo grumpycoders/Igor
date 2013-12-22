@@ -43,7 +43,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 		{
 		case 0x64:
 			bIsPrefix = true;
-			result.m_override |= c_x86_analyse_result::PREFIX_FS_OVERRIDE;
+			result.m_segmentOverride = c_x86_analyse_result::SEGMENT_OVERRIDE_FS;
 			break;
 		default:
 			break;
@@ -136,15 +136,31 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 			operandString.set("%Xh", pOperand->m_immediate.m_immediateValue);
 			break;
 		case s_x86_operand::type_address:
+		{
+			Balau::String addressString;
+
+			const char* segmentString = "";
+
+			switch (x86_analyse_result->m_segmentOverride)
+			{
+			case c_x86_analyse_result::SEGMENT_OVERRIDE_NONE:
+				break;
+			case c_x86_analyse_result::SEGMENT_OVERRIDE_FS:
+				segmentString = "fs:";
+			default:
+				Failure("unknown semgment override");
+			}
+
 			if (pOperand->m_address.m_dereference)
 			{
-				operandString.set("[0x%08llX]", pOperand->m_address.m_addressValue);
+				operandString.set("[%s0x%08llX]", segmentString, pOperand->m_address.m_addressValue);
 			}
 			else
 			{
-				operandString.set("0x%08llX", pOperand->m_address.m_addressValue);
+				operandString.set("%s0x%08llX", segmentString, pOperand->m_address.m_addressValue);
 			}
 			break;
+		}
 		default:
 			Failure("Bad operand type");
 		}

@@ -173,14 +173,15 @@ struct s_x86_operand
 class c_x86_analyse_result : public c_cpu_analyse_result
 {
 public:
-	enum e_prefix
+	enum e_segment_override
 	{
-		PREFIX_CS_OVERRIDE = 1 << 0,
-		PREFIX_SS_OVERRIDE = 1 << 1,
-		PREFIX_DS_OVERRIDE = 1 << 2,
-		PREFIX_ES_OVERRIDE = 1 << 3,
-		PREFIX_FS_OVERRIDE = 1 << 4,
-		PREFIX_GS_OVERRIDE = 1 << 5,
+		SEGMENT_OVERRIDE_NONE,
+		SEGMENT_OVERRIDE_CS,
+		SEGMENT_OVERRIDE_SS,
+		SEGMENT_OVERRIDE_DS,
+		SEGMENT_OVERRIDE_ES,
+		SEGMENT_OVERRIDE_FS,
+		SEGMENT_OVERRIDE_GS,
 	};
 
 	c_x86_analyse_result()
@@ -188,14 +189,14 @@ public:
 		m_startOfInstruction = -1;
 		m_mnemonic = INST_X86_UNDEF;
 		m_numOperands = 0;
-		m_override = 0;
+		m_segmentOverride = SEGMENT_OVERRIDE_NONE;
 	}
 
 	u64 m_startOfInstruction;
 	e_x86_mnemonic m_mnemonic;
 	u8 m_numOperands;
 	s_x86_operand m_operands[X86_MAX_OPERAND];
-	u8 m_override;
+	e_segment_override m_segmentOverride;
 };
 
 class c_cpu_x86 : public c_cpu_module

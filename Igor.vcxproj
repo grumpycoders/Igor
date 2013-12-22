@@ -200,6 +200,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Balau\src\Async.cc" />
+    <ClCompile Include="Balau\src\Base64.cc" />
     <ClCompile Include="Balau\src\BigInt.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -216,6 +217,7 @@
     <ClCompile Include="Balau\src\BStream.cc" />
     <ClCompile Include="Balau\src\BString.cc" />
     <ClCompile Include="Balau\src\Buffer.cc" />
+    <ClCompile Include="Balau\src\BWebSocket.cc" />
     <ClCompile Include="Balau\src\Exceptions.cc" />
     <ClCompile Include="Balau\src\Handle.cc" />
     <ClCompile Include="Balau\src\HelperTasks.cc" />
@@ -245,6 +247,7 @@
     <ClCompile Include="Balau\src\Output.cc" />
     <ClCompile Include="Balau\src\Printer.cc" />
     <ClCompile Include="Balau\src\Selectable.cc" />
+    <ClCompile Include="Balau\src\SHA1.cc" />
     <ClCompile Include="Balau\src\SimpleMustache.cc" />
     <ClCompile Include="Balau\src\Socket.cc" />
     <ClCompile Include="Balau\src\StdIO.cc">
@@ -1202,6 +1205,7 @@
   <ItemGroup>
     <ClInclude Include="Balau\includes\Async.h" />
     <ClInclude Include="Balau\includes\AtStartExit.h" />
+    <ClInclude Include="Balau\includes\Base64.h" />
     <ClInclude Include="Balau\includes\BigInt.h" />
     <ClInclude Include="Balau\includes\BLua.h" />
     <ClInclude Include="Balau\includes\BRegex.h" />
@@ -1209,6 +1213,7 @@
     <ClInclude Include="Balau\includes\BStream.h" />
     <ClInclude Include="Balau\includes\BString.h" />
     <ClInclude Include="Balau\includes\Buffer.h" />
+    <ClInclude Include="Balau\includes\BWebSocket.h" />
     <ClInclude Include="Balau\includes\c++11-surrogates.h" />
     <ClInclude Include="Balau\includes\Exceptions.h" />
     <ClInclude Include="Balau\includes\Handle.h" />
@@ -1224,6 +1229,7 @@
     <ClInclude Include="Balau\includes\Output.h" />
     <ClInclude Include="Balau\includes\Printer.h" />
     <ClInclude Include="Balau\includes\Selectable.h" />
+    <ClInclude Include="Balau\includes\SHA1.h" />
     <ClInclude Include="Balau\includes\SimpleMustache.h" />
     <ClInclude Include="Balau\includes\Socket.h" />
     <ClInclude Include="Balau\includes\StacklessTask.h" />

@@ -37,9 +37,11 @@ enum e_x86_mnemonic
 	INST_X86_AND,
 	INST_X86_CMP,
 	INST_X86_JZ,
+	INST_X86_JNZ,
 	INST_X86_TEST,
 	INST_X86_NOT,
 	INST_X86_XOR,
+	INST_X86_LEA,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -166,15 +168,34 @@ struct s_x86_operand
 	}
 };
 
-#define X86_MAX_OPERAND 8
+#define X86_MAX_OPERAND 4
 
 class c_x86_analyse_result : public c_cpu_analyse_result
 {
 public:
-	u64 m_PC;
+	enum e_prefix
+	{
+		PREFIX_CS_OVERRIDE = 1 << 0,
+		PREFIX_SS_OVERRIDE = 1 << 1,
+		PREFIX_DS_OVERRIDE = 1 << 2,
+		PREFIX_ES_OVERRIDE = 1 << 3,
+		PREFIX_FS_OVERRIDE = 1 << 4,
+		PREFIX_GS_OVERRIDE = 1 << 5,
+	};
+
+	c_x86_analyse_result()
+	{
+		m_startOfInstruction = -1;
+		m_mnemonic = INST_X86_UNDEF;
+		m_numOperands = 0;
+		m_override = 0;
+	}
+
+	u64 m_startOfInstruction;
 	e_x86_mnemonic m_mnemonic;
 	u8 m_numOperands;
 	s_x86_operand m_operands[X86_MAX_OPERAND];
+	u8 m_override;
 };
 
 class c_cpu_x86 : public c_cpu_module

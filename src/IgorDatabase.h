@@ -6,8 +6,6 @@
 
 #include "Igor.h"
 
-#include "yVector.h"
-
 #include "IgorAPI.h"
 #include "IgorSection.h"
 #include "cpu/cpuModule.h"
@@ -25,7 +23,7 @@ struct s_igorDatabase
 {
 	std::vector<c_cpu_module*> m_cpu_modules;
 	Balau::TQueue<s_analysisRequest> m_analysisRequests;
-	VECTOR<s_igorSection> m_sections;
+	std::vector<s_igorSection*> m_sections;
 
 	c_cpu_module* getCpuForAddress(u64 PC);
 	c_cpu_state* getCpuStateForAddress(u64 PC);

@@ -22,21 +22,33 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 		pX86State = &m_defaultState;
 	}
 
-	u8 currentByte = 0;
-	if (pState->pDataBase->readByte(pState->m_PC, currentByte) != IGOR_SUCCESS)
-	{
-		return IGOR_FAILURE;
-	}
-
 	c_x86_analyse_result result;
 
-	result.m_PC = pState->m_PC;
-	result.m_mnemonic = INST_X86_UNDEF;
-	result.m_numOperands = 0;
+	result.m_startOfInstruction = pState->m_PC;
 
 	pState->m_cpu_analyse_result = &result;
 
-	pState->m_PC++;
+	// handle prefixes
+	bool bIsPrefix = false;
+	u8 currentByte = 0;
+	do 
+	{
+		bIsPrefix = false;
+		if (pState->pDataBase->readByte(pState->m_PC++, currentByte) != IGOR_SUCCESS)
+		{
+			return IGOR_FAILURE;
+		}
+
+		switch (currentByte)
+		{
+		case 0x64:
+			bIsPrefix = true;
+			result.m_override |= c_x86_analyse_result::PREFIX_FS_OVERRIDE;
+			break;
+		default:
+			break;
+		}
+	} while (bIsPrefix);
 
 	if (x86_opcode_table[currentByte] == NULL)
 	{
@@ -80,12 +92,16 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 		return "CMP";
 	case INST_X86_JZ:
 		return "JZ";
+	case INST_X86_JNZ:
+		return "JNZ";
 	case INST_X86_TEST:
 		return "TEST";
 	case INST_X86_NOT:
 		return "NOT";
 	case INST_X86_XOR:
 		return "XOR";
+	case INST_X86_LEA:
+		return "LEA";
 	default:
 		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
 	}
@@ -100,7 +116,7 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 	const char* mnemonicString = getMnemonicName(x86_analyse_result->m_mnemonic);
 	
 	Balau::String instructionString;
-	instructionString.set("0x%08llX: %s", x86_analyse_result->m_PC, mnemonicString);
+	instructionString.set("0x%08llX: %s", x86_analyse_result->m_startOfInstruction, mnemonicString);
 
 	for (int i = 0; i < x86_analyse_result->m_numOperands; i++)
 	{

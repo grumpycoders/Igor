@@ -1414,9 +1414,6 @@
     <ClInclude Include="src\PELoader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\yVector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Balau\win32\regex\regex.h">
       <Filter>Third Party\regex</Filter>
     </ClInclude>

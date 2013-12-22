@@ -29,9 +29,9 @@ c_cpu_state* s_igorDatabase::getCpuStateForAddress(u64 PC)
 
 s_igorSection* s_igorDatabase::findSectionFromAddress(u64 address)
 {
-	for(int i=0; i<m_sections.getSize(); i++)
+	for(int i=0; i<m_sections.size(); i++)
 	{
-		s_igorSection* pSection = m_sections.getElementPtr(i);
+		s_igorSection* pSection = m_sections[i];
 
 		if((pSection->m_virtualAddress <= address) && (pSection->m_virtualAddress + pSection->m_size > address))
 		{

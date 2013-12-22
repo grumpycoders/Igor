@@ -1455,7 +1455,6 @@
     <ClInclude Include="src\IgorHttp.h" />
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\PELoader.h" />
-    <ClInclude Include="src\yVector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Balau\win32\iconv\aliases.gperf" />

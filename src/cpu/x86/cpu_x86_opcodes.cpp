@@ -13,7 +13,33 @@ if (pState->pDataBase->readByte(pState->m_PC++, MOD_REG_RM) != IGOR_SUCCESS) \
 } \
 	u8 MOD = (MOD_REG_RM >> 6) & 3; \
 	u8 REG = (MOD_REG_RM >> 3) & 7; \
-	u8 RM = MOD_REG_RM & 7;
+	u8 RM = MOD_REG_RM & 7; \
+	s32 offset = 0; \
+	e_mod mod = MOD_DIRECT; \
+	switch (MOD) \
+	{\
+	case 0:\
+		mod = MOD_INDIRECT;\
+		break;\
+	case 1:\
+	{\
+			  mod = MOD_INDIRECT_ADD_8;\
+			  s8 offsetS8 = 0;\
+			  if (pState->pDataBase->readS8(pState->m_PC++, offsetS8) != IGOR_SUCCESS)\
+			  {\
+				  return IGOR_FAILURE;\
+			  }\
+			  \
+			  offset = offsetS8;\
+			  \
+			  break;\
+	}\
+	case 3:\
+		mod = MOD_DIRECT;\
+		break;\
+	default:\
+		Failure("Unhandled MOD");\
+	}
 
 #define GET_RM(pState) \
 	u8 RM = 0; \
@@ -118,6 +144,14 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 
 	switch (currentByte)
 	{
+	case 0x89:
+		{
+			GET_MOD_REG_RM(pState);
+			x86_analyse_result->m_numOperands = 2;
+			x86_analyse_result->m_operands[0].setAsRegister(operandSize, (e_register)REG, mod, offset);
+			x86_analyse_result->m_operands[1].setAsRegister(operandSize, (e_register)RM);
+			break;
+		}
 	case 0x8B:
 		{
 			GET_MOD_REG_RM(pState);
@@ -186,6 +220,23 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	return IGOR_SUCCESS;
 }
 
+igor_result x86_opcode_lea(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	x86_analyse_result->m_mnemonic = INST_X86_LEA;
+
+	GET_MOD_REG_RM(pState);
+
+	e_operandSize operandSize = getOperandSize(pX86State);
+
+	x86_analyse_result->m_numOperands = 2;
+	x86_analyse_result->m_operands[0].setAsRegister(operandSize, (e_register)REG);
+	x86_analyse_result->m_operands[1].setAsRegister(operandSize, (e_register)RM, mod, offset);
+
+	return IGOR_SUCCESS;
+}
+
+
 igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
@@ -195,9 +246,28 @@ igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 
 	e_operandSize operandSize = getOperandSize(pX86State);
 
-	x86_analyse_result->m_numOperands = 2;
-	x86_analyse_result->m_operands[0].setAsRegister(operandSize, (e_register)REG);
-	x86_analyse_result->m_operands[1].setAsRegister(operandSize, (e_register)RM);
+	switch (currentByte)
+	{
+	case 0x39:
+		{
+			u32 target = 0;
+			if (pState->pDataBase->readU32(pState->m_PC, target) != IGOR_SUCCESS)
+				return IGOR_FAILURE;
+			pState->m_PC += 4;
+		
+			x86_analyse_result->m_numOperands = 2;
+			x86_analyse_result->m_operands[0].setAsAddress(target, 1);
+			x86_analyse_result->m_operands[1].setAsRegister(operandSize, (e_register)RM);
+			break;
+		}
+	case 0x3B:
+		x86_analyse_result->m_numOperands = 2;
+		x86_analyse_result->m_operands[0].setAsRegister(operandSize, (e_register)REG);
+		x86_analyse_result->m_operands[1].setAsRegister(operandSize, (e_register)RM);
+		break;
+	default:
+		Failure("x86_opcode_cmp");
+	}
 
 	return IGOR_SUCCESS;
 }
@@ -302,6 +372,27 @@ igor_result x86_opcode_jz(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	return IGOR_SUCCESS;
 }
 
+igor_result x86_opcode_jnz(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	x86_analyse_result->m_mnemonic = INST_X86_JNZ;
+
+	s8 jumpTargetS8 = 0;
+	if (pState->pDataBase->readS8(pState->m_PC++, jumpTargetS8) != IGOR_SUCCESS)
+	{
+		return IGOR_FAILURE;
+	}
+
+	u64 jumpTarget = pState->m_PC + jumpTargetS8;
+
+	IgorAnalysis::igor_add_code_analysis_task(jumpTarget);
+
+	x86_analyse_result->m_numOperands = 1;
+	x86_analyse_result->m_operands[0].setAsAddress(jumpTarget);
+
+	return IGOR_SUCCESS;
+}
+
 igor_result x86_opcode_F7(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
@@ -325,43 +416,42 @@ igor_result x86_opcode_F7(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	return IGOR_SUCCESS;
 }
 
-igor_result x86_opcode_83(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+igor_result x86_opcode_FF(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	GET_MOD_REG_RM(pState);
 
 	e_operandSize operandSize = getOperandSize(pX86State);
 
-	s32 offset = 0;
-	e_mod mod = MOD_DIRECT;
-
-	switch (MOD)
+	switch (REG)
 	{
-		case 0:
-			// indirect addressing, do nothing
-			mod = MOD_INDIRECT;
-			break;
-		case 1:
-			// indirect addressing + 8bit
+		case 2:
+		{
+			s32 jumpTarget = 0;
+			if (pState->pDataBase->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
 			{
-				mod = MOD_INDIRECT_ADD_8;
-				s8 offsetS8 = 0;
-				if (pState->pDataBase->readS8(pState->m_PC++, offsetS8) != IGOR_SUCCESS)
-				{
-					return IGOR_FAILURE;
-				}
-
-				offset = offsetS8;
-
-				break;
+				return IGOR_FAILURE;
 			}
-		case 3:
-			// direct addressing
-			mod = MOD_DIRECT;
+			pState->m_PC += 4;
+
+			x86_analyse_result->m_mnemonic = INST_X86_CALL;
+			x86_analyse_result->m_numOperands = 1;
+			x86_analyse_result->m_operands[0].setAsAddress(jumpTarget, true);
 			break;
-		default:
-			Failure("Unhandled MOD");
+		}
+	default:
+		Failure("Unhandled x86_opcode_F7");
 	}
+
+	return IGOR_SUCCESS;
+}
+
+igor_result x86_opcode_83(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	GET_MOD_REG_RM(pState);
+
+	e_operandSize operandSize = getOperandSize(pX86State);
 
 	switch (REG)
 	{
@@ -462,7 +552,7 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	/* 39 */ &x86_opcode_cmp,
 	NULL,
 	/* 3B */ &x86_opcode_cmp,
 	NULL,
@@ -529,7 +619,7 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	NULL,
 	NULL,
 	/* 0x74 */ &x86_opcode_jz,
-	NULL,
+	/* 0x75 */ &x86_opcode_jnz,
 	NULL,
 	NULL,
 	NULL,
@@ -551,11 +641,11 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	/* 0x89 */ &x86_opcode_mov,
 	NULL,
 	/* 0x8B */ &x86_opcode_mov,
 	NULL,
-	NULL,
+	/* 0x8D */ &x86_opcode_lea,
 	NULL,
 	NULL,
 
@@ -683,5 +773,5 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	/* 0xFF */ &x86_opcode_FF,
 };

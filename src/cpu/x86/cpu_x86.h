@@ -1,8 +1,16 @@
 #pragma once
 
 #include "cpu/cpuModule.h"
+#include "Exceptions.h"
 
 class c_cpu_x86;
+
+class X86AnalysisException : public Balau::GeneralException {
+public:
+	X86AnalysisException(Balau::String fn) : GeneralException(fn) { }
+protected:
+	X86AnalysisException() { }
+};
 
 class c_cpu_x86_state : public c_cpu_state
 {
@@ -33,6 +41,7 @@ enum e_x86_mnemonic
 	INST_X86_CALL,
 	INST_X86_JMP,
 	INST_X86_PUSH,
+	INST_X86_POP,
 	INST_X86_SUB,
 	INST_X86_AND,
 	INST_X86_CMP,
@@ -42,6 +51,9 @@ enum e_x86_mnemonic
 	INST_X86_NOT,
 	INST_X86_XOR,
 	INST_X86_LEA,
+	INST_X86_INC,
+	INST_X86_LEAVE,
+	INST_X86_RETN,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -104,11 +116,52 @@ enum e_mod
 	MOD_DIRECT,
 };
 
+struct s_mod_reg_rm
+{
+	u8 RAW_VALUE;
+	u8 SIB;
+	s32 offset;
+
+	u8 getREGRaw()
+	{
+		return ((RAW_VALUE >> 3) & 7);
+	}
+	e_register getREG()
+	{
+		return (e_register)((RAW_VALUE >> 3) & 7);
+	}
+
+	e_mod getMod()
+	{
+		return (e_mod)((RAW_VALUE >> 6) & 3);
+	}
+	u8 getRM()
+	{
+		return RAW_VALUE & 7;
+	}
+
+	u8 getSIBScale()
+	{
+		return (SIB >> 6) & 3;
+	}
+
+	u8 getSIBIndex()
+	{
+		return (SIB >> 3) & 7;
+	}
+
+	u8 getSIBBase()
+	{
+		return (SIB >> 0) & 7;
+	}
+};
+
 struct s_x86_operand
 {
 	enum type
 	{
 		type_register,
+		type_registerRM,
 		type_immediate,
 		type_address,
 	} m_type;
@@ -119,9 +172,13 @@ struct s_x86_operand
 		{
 			e_operandSize m_operandSize;
 			u16 m_registerIndex;
-			e_mod m_mod;
-			s32 m_offset;
 		} m_register;
+
+		struct
+		{
+			e_operandSize m_operandSize;
+			s_mod_reg_rm m_mod_reg_rm;
+		} m_registerRM;
 
 		struct
 		{
@@ -137,13 +194,18 @@ struct s_x86_operand
 		} m_address;
 	};
 
-	void setAsRegister(e_operandSize size, e_register registerIndex, e_mod mod = MOD_DIRECT, s32 offset=0)
+	void setAsRegister(e_operandSize size, e_register registerIndex)
 	{
 		m_type = type_register;
 		m_register.m_operandSize = size;
 		m_register.m_registerIndex = registerIndex;
-		m_register.m_mod = mod;
-		m_register.m_offset = offset;
+	}
+
+	void setAsRegisterRM(e_operandSize size, s_mod_reg_rm modRegRm)
+	{
+		m_type = type_registerRM;
+		m_registerRM.m_operandSize = size;
+		m_registerRM.m_mod_reg_rm = modRegRm;
 	}
 
 	void setAsImmediate(e_immediateSize size, u8 immediateValue)

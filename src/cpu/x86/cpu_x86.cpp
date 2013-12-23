@@ -55,8 +55,10 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 		return IGOR_FAILURE;
 	}
 
-	if (x86_opcode_table[currentByte](pState, pX86State, currentByte) != IGOR_SUCCESS)
-	{
+	try {
+		x86_opcode_table[currentByte](pState, pX86State, currentByte);
+	}
+	catch (X86AnalysisException & e) {
 		return IGOR_FAILURE;
 	}
 
@@ -102,6 +104,14 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 		return "XOR";
 	case INST_X86_LEA:
 		return "LEA";
+	case INST_X86_INC:
+		return "INC";
+	case INST_X86_POP:
+		return "POP";
+	case INST_X86_LEAVE:
+		return "LEAVE";
+	case INST_X86_RETN:
+		return "RETN";
 	default:
 		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
 	}
@@ -126,15 +136,63 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 		switch (pOperand->m_type)
 		{
 		case s_x86_operand::type_register:
-			if (pOperand->m_register.m_mod == MOD_DIRECT)
-				operandString.set("%s", getRegisterName(pOperand->m_register.m_operandSize, pOperand->m_register.m_registerIndex));
+			operandString.set("%s", getRegisterName(pOperand->m_register.m_operandSize, pOperand->m_register.m_registerIndex));
+			break;
+		case s_x86_operand::type_registerRM:
+		{
+			if (pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_DIRECT)
+			{
+				operandString.set("%s", getRegisterName(pOperand->m_registerRM.m_operandSize, pOperand->m_registerRM.m_mod_reg_rm.getRM()));
+			}
 			else
-				operandString.set("[%s%+d]", getRegisterName(pOperand->m_register.m_operandSize, pOperand->m_register.m_registerIndex), pOperand->m_register.m_offset);
-				
+			{
+				u8 RMIndex = pOperand->m_registerRM.m_mod_reg_rm.getRM();
+				if (RMIndex == 4)
+				{
+					// use SIB
+					u8 SIB_BASE = pOperand->m_registerRM.m_mod_reg_rm.getSIBBase();
+					const char* baseString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_BASE);
+
+					if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 4)
+					{
+						operandString.set("[%s+%d]", baseString, pOperand->m_registerRM.m_mod_reg_rm.offset);
+					}
+					else
+					{
+						u8 SIB_SCALE = pOperand->m_registerRM.m_mod_reg_rm.getSIBScale();
+						u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
+						u8 multiplier = 1 << SIB_SCALE;
+
+						const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
+
+						operandString.set("[%s+%s*%d+%d]", baseString, indexString, multiplier, pOperand->m_registerRM.m_mod_reg_rm.offset);
+					}
+				}
+				else
+				{
+					operandString.set("[%s%+d]", getRegisterName(pOperand->m_registerRM.m_operandSize, RMIndex), pOperand->m_registerRM.m_mod_reg_rm.offset);
+				}
+			}
 			break;
+		}
 		case s_x86_operand::type_immediate:
-			operandString.set("%Xh", pOperand->m_immediate.m_immediateValue);
+		{
+			const char* segmentString = "";
+
+			switch (x86_analyse_result->m_segmentOverride)
+			{
+			case c_x86_analyse_result::SEGMENT_OVERRIDE_NONE:
+				break;
+			case c_x86_analyse_result::SEGMENT_OVERRIDE_FS:
+				segmentString = "fs:";
+				break;
+			default:
+				Failure("unknown semgment override");
+			}
+
+			operandString.set("%s%Xh", segmentString, pOperand->m_immediate.m_immediateValue);
 			break;
+		}
 		case s_x86_operand::type_address:
 		{
 			Balau::String addressString;
@@ -147,13 +205,14 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 				break;
 			case c_x86_analyse_result::SEGMENT_OVERRIDE_FS:
 				segmentString = "fs:";
+				break;
 			default:
 				Failure("unknown semgment override");
 			}
 
 			if (pOperand->m_address.m_dereference)
 			{
-				operandString.set("[%s0x%08llX]", segmentString, pOperand->m_address.m_addressValue);
+				operandString.set("%s[0x%08llX]", segmentString, pOperand->m_address.m_addressValue);
 			}
 			else
 			{

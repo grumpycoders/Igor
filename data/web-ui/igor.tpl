@@ -7,12 +7,14 @@
     <link rel='stylesheet' href='{{dojo_path}}/dijit/themes/claro/claro.css'>
 
     <style type='text/css'>
-      html, body { height: 100%; width: 100%; padding: 0; border: 0; }
-      .claro {
-        font-family: Verdana, Arial, Helvetica, sans-serif;
+      html, body {
+        height: 100%; width: 100%; padding: 0; border: 0;
+        background: #fff url("/static/img/bgBody.gif") repeat-x top left;
       }
-      #main { height: 100%; width: 100%; border: 0; }
-      #header { margin: 0; }
+      .claro {
+	    font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif; 
+	    *font-size: 75%;
+      }
       /* pre-loader specific stuff to prevent unsightly flash of unstyled content */
       #loader {
         padding: 0;
@@ -33,7 +35,7 @@
         background:#33c;
         color:#fff;
       }
-      hr.spacer{ border:0; background-color: #ededed; width: 80%; height: 1px; }
+      hr.spacer { border:0; background-color: #ededed; width: 80%; height: 1px; }
     </style>
     <script src='{{dojo_path}}/dojo/dojo.js' data-dojo-config='has:{"dojo-firebug": true}, async: true'></script>
     <script>

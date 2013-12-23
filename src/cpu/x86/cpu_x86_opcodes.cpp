@@ -34,16 +34,19 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState)
 		{
 			throw X86AnalysisException("Error in GET_MOD_REG_RM");
 		}
-		/*
-		u8 SIB_SCALE = (SIB >> 6) & 3;
-		u8 SIB_INDEX = (SIB >> 3) & 7;
-		u8 SIB_BASE = SIB & 7;
-		*/
 	}
 
 	switch (MOD)
 	{
 	case 0:
+		if (RM == 5)
+		{
+			if (pState->pDataBase->readS32(pState->m_PC, resultModRegRm.offset) != IGOR_SUCCESS)
+			{
+				throw X86AnalysisException("Error in GET_MOD_REG_RM");
+			}
+			pState->m_PC += 4;
+		}
 		break;
 	case 1:
 	{
@@ -288,17 +291,10 @@ igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	switch (currentByte)
 	{
 	case 0x39:
-		{
-			u32 target = 0;
-			if (pState->pDataBase->readU32(pState->m_PC, target) != IGOR_SUCCESS)
-				return IGOR_FAILURE;
-			pState->m_PC += 4;
-		
-			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsAddress(target, 1);
-			x86_analyse_result->m_operands[1].setAsRegisterRM(operandSize, modRegRm);
-			break;
-		}
+		x86_analyse_result->m_numOperands = 2;
+		x86_analyse_result->m_operands[0].setAsRegisterRM(operandSize, modRegRm);
+		x86_analyse_result->m_operands[1].setAsRegister(operandSize, modRegRm.getREG());
+		break;
 	case 0x3B:
 		x86_analyse_result->m_numOperands = 2;
 		x86_analyse_result->m_operands[0].setAsRegister(operandSize, modRegRm.getREG());
@@ -353,9 +349,21 @@ igor_result x86_opcode_xor(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 
 	e_operandSize operandSize = getOperandSize(pX86State);
 
-	x86_analyse_result->m_numOperands = 2;
-	x86_analyse_result->m_operands[0].setAsRegister(operandSize, modRegRm.getREG());
-	x86_analyse_result->m_operands[1].setAsRegisterRM(operandSize, modRegRm);
+	switch (currentByte)
+	{
+	case 0x31:
+		x86_analyse_result->m_numOperands = 2;
+		x86_analyse_result->m_operands[0].setAsRegisterRM(operandSize, modRegRm);
+		x86_analyse_result->m_operands[1].setAsRegister(operandSize, modRegRm.getREG());
+		break;
+	case 0x33:
+		x86_analyse_result->m_numOperands = 2;
+		x86_analyse_result->m_operands[0].setAsRegister(operandSize, modRegRm.getREG());
+		x86_analyse_result->m_operands[1].setAsRegisterRM(operandSize, modRegRm);
+		break;
+	default:
+		X86_DECODER_FAILURE("Unhandled x86_opcode_xor");
+	}
 
 	return IGOR_SUCCESS;
 }
@@ -424,6 +432,8 @@ igor_result x86_opcode_push(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 			x86_analyse_result->m_operands[0].setAsImmediate(IMMEDIATE_U8, immediate);
 			break;
 		}
+	default:
+		X86_DECODER_FAILURE("Unhandled x86_opcode_push");
 	}
 
 	return IGOR_SUCCESS;
@@ -501,34 +511,29 @@ igor_result x86_opcode_FF(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 
 	e_operandSize operandSize = getOperandSize(pX86State);
 
-	switch (modRegRm.getREGRaw())
+	u8 variation = modRegRm.getREGRaw();
+
+	switch (variation)
 	{
 		case 2:
 		{
-			s32 jumpTarget = 0;
-			if (pState->pDataBase->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
-			{
-				return IGOR_FAILURE;
-			}
-			pState->m_PC += 4;
-
 			x86_analyse_result->m_mnemonic = INST_X86_CALL;
 			x86_analyse_result->m_numOperands = 1;
-			x86_analyse_result->m_operands[0].setAsAddress(jumpTarget, true);
+			x86_analyse_result->m_operands[0].setAsAddress(modRegRm.offset, true);
+			break;
+		}
+		case 4:
+		{
+			x86_analyse_result->m_mnemonic = INST_X86_JMP;
+			x86_analyse_result->m_numOperands = 1;
+			x86_analyse_result->m_operands[0].setAsRegisterRM(operandSize, modRegRm);
 			break;
 		}
 		case 6:
 		{
-			u32 address = 0;
-			if (pState->pDataBase->readU32(pState->m_PC, address) != IGOR_SUCCESS)
-			{
-				return IGOR_FAILURE;
-			}
-			pState->m_PC += 4;
-
 			x86_analyse_result->m_mnemonic = INST_X86_PUSH;
 			x86_analyse_result->m_numOperands = 1;
-			x86_analyse_result->m_operands[0].setAsAddress(address, true);
+			x86_analyse_result->m_operands[0].setAsRegisterRM(operandSize, modRegRm);
 			break;
 		}
 	default:
@@ -636,7 +641,7 @@ const t_x86_opcode x86_opcode_table[0x100] =
 
 	// 0x30
 	NULL,
-	NULL,
+	/* 0x31 */ &x86_opcode_xor,
 	NULL,
 	/* 0x33 */ &x86_opcode_xor,
 	NULL,

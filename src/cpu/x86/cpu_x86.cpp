@@ -128,6 +128,19 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 	Balau::String instructionString;
 	instructionString.set("0x%08llX: %s", x86_analyse_result->m_startOfInstruction, mnemonicString);
 
+	const char* segmentString = "";
+
+	switch (x86_analyse_result->m_segmentOverride)
+	{
+	case c_x86_analyse_result::SEGMENT_OVERRIDE_NONE:
+		break;
+	case c_x86_analyse_result::SEGMENT_OVERRIDE_FS:
+		segmentString = "fs:";
+		break;
+	default:
+		Failure("unknown semgment override");
+	}
+
 	for (int i = 0; i < x86_analyse_result->m_numOperands; i++)
 	{
 		Balau::String operandString;
@@ -169,6 +182,11 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 					}
 				}
 				else
+				if ((RMIndex == 5) && pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_INDIRECT)
+				{
+					operandString.set("%s[0x%08llX]", segmentString, pOperand->m_registerRM.m_mod_reg_rm.offset);
+				}
+				else
 				{
 					operandString.set("[%s%+d]", getRegisterName(pOperand->m_registerRM.m_operandSize, RMIndex), pOperand->m_registerRM.m_mod_reg_rm.offset);
 				}
@@ -177,38 +195,12 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 		}
 		case s_x86_operand::type_immediate:
 		{
-			const char* segmentString = "";
-
-			switch (x86_analyse_result->m_segmentOverride)
-			{
-			case c_x86_analyse_result::SEGMENT_OVERRIDE_NONE:
-				break;
-			case c_x86_analyse_result::SEGMENT_OVERRIDE_FS:
-				segmentString = "fs:";
-				break;
-			default:
-				Failure("unknown semgment override");
-			}
-
 			operandString.set("%s%Xh", segmentString, pOperand->m_immediate.m_immediateValue);
 			break;
 		}
 		case s_x86_operand::type_address:
 		{
 			Balau::String addressString;
-
-			const char* segmentString = "";
-
-			switch (x86_analyse_result->m_segmentOverride)
-			{
-			case c_x86_analyse_result::SEGMENT_OVERRIDE_NONE:
-				break;
-			case c_x86_analyse_result::SEGMENT_OVERRIDE_FS:
-				segmentString = "fs:";
-				break;
-			default:
-				Failure("unknown semgment override");
-			}
 
 			if (pOperand->m_address.m_dereference)
 			{

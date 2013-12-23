@@ -1,7 +1,7 @@
 #include <Main.h>
 #include <Printer.h>
 #include <Input.h>
-#include <BStream.h>
+#include <Buffer.h>
 #include <Task.h>
 #include <TaskMan.h>
 #include <HttpServer.h>
@@ -20,8 +20,13 @@ void MainTask::Do() {
 
 	Printer::enable(M_ALL);
 
-	IO<Input> reader(new Input(argv[1]));
-	reader->open();
+	IO<Input> file(new Input(argv[1]));
+	file->open();
+
+    size_t size = file->getSize();
+    uint8_t * buffer = (uint8_t *) malloc(size);
+    file->forceRead(buffer, size);
+    IO<Buffer> reader(new Buffer(buffer, file->getSize()));
 
 	c_PELoader PELoader;
 	PELoader.loadPE(reader);

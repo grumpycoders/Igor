@@ -37,6 +37,8 @@
     </style>
     <script src='{{dojo_path}}/dojo/dojo.js' data-dojo-config='has:{"dojo-firebug": true}, async: true'></script>
     <script>
+      var reloadUIAction;
+
       require([
         'dojo', 
         'dijit/dijit', 
@@ -67,8 +69,19 @@
         dojo.connect(socket, 'onmessage', function(event) {
           var message = event.data;
         });
-
+        
+        reloadUIAction = function() {
+          request.get('/dyn/reloadui').then(
+            function() {
+              location.reload(true);
+            },
+            function(error) {
+              new Dialog({ title: 'Error', content: concat('Failure reloading UI: ', error) }).show();
+            }
+          );
+        };
       });
+
     </script>
   </head>
 
@@ -78,7 +91,7 @@
       <div data-dojo-type='dijit/PopupMenuBarItem'>
         <span>File</span>
         <div data-dojo-type='dijit/DropDownMenu' id='fileMenu'>
-          <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick:function() { alert("open"); }'>Open</div>
+          <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick:function() { reloadUIAction(); }'>Reload UI</div>
         </div>
       </div>
     </div>

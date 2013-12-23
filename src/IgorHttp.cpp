@@ -79,6 +79,38 @@ static void loadTemplate() {
     delete oldTpl;
 }
 
+static Regex igorReloadURL("/dyn/reloadui$");
+
+class ReloadAction : public HttpServer::Action {
+public:
+    ReloadAction() : Action(igorReloadURL) { }
+private:
+    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
+};
+
+bool ReloadAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+    bool error = false;
+
+    try {
+        loadTemplate();
+    }
+    catch (GeneralException & e) {
+        error = true;
+    }
+
+    HttpServer::Response response(server, req, out);
+
+    if (error) {
+        response.get()->writeString("error");
+        response.SetResponseCode(500);
+    } else {
+        response.get()->writeString("reloaded");
+    }
+    response.SetContentType("text/plain");
+    response.Flush();
+    return true;
+}
+
 void igor_setup_httpserver() {
     loadTemplate();
 
@@ -86,6 +118,7 @@ void igor_setup_httpserver() {
     s->registerAction(new RootAction());
     s->registerAction(new MainAction());
     s->registerAction(new IgorWSAction());
+    s->registerAction(new ReloadAction());
     s->setPort(8080);
     s->start();
 }

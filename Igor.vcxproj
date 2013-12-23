@@ -1194,6 +1194,7 @@
     <ClCompile Include="Balau\win32\zlib\uncompr.c" />
     <ClCompile Include="Balau\win32\zlib\zutil.c" />
     <ClCompile Include="src\cpu\x86\cpu_x86.cpp" />
+    <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp" />
     <ClCompile Include="src\Igor.cpp" />
     <ClCompile Include="src\IgorAnalysis.cpp" />

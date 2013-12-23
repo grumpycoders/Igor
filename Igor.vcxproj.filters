@@ -683,6 +683,9 @@
     <ClCompile Include="Balau\src\BWebSocket.cc">
       <Filter>Balau</Filter>
     </ClCompile>
+    <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp">
+      <Filter>Source Files\cpu\x86</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">

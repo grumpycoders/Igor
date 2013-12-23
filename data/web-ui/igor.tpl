@@ -7,12 +7,14 @@
     <link rel='stylesheet' href='{{dojo_path}}/dijit/themes/claro/claro.css'>
 
     <style type='text/css'>
-      html, body { height: 100%; width: 100%; padding: 0; border: 0; }
-      .claro {
-        font-family: Verdana, Arial, Helvetica, sans-serif;
+      html, body {
+        height: 100%; width: 100%; padding: 0; border: 0;
+        background: #fff url("/static/img/bgBody.gif") repeat-x top left;
       }
-      #main { height: 100%; width: 100%; border: 0; }
-      #header { margin: 0; }
+      .claro {
+	    font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif; 
+	    *font-size: 75%;
+      }
       /* pre-loader specific stuff to prevent unsightly flash of unstyled content */
       #loader {
         padding: 0;
@@ -33,7 +35,7 @@
         background:#33c;
         color:#fff;
       }
-      hr.spacer{ border:0; background-color: #ededed; width: 80%; height: 1px; }
+      hr.spacer { border:0; background-color: #ededed; width: 80%; height: 1px; }
     </style>
     <script src='{{dojo_path}}/dojo/dojo.js' data-dojo-config='has:{"dojo-firebug": true}, async: true'></script>
     <script>
@@ -47,11 +49,14 @@
         'dojo/dom', 
         'dojo/on', 
         'dojo/request', 
+        'dojo/json',
         'dijit/dijit-all', 
         'dojox/socket', 
         'dojox/socket/Reconnect', 
         'dojo/domReady!'], 
-      function(dojo, dijit, parser, ready, dom, on, request) {
+      function(dojo, dijit, parser, ready, dom, on, request, json) {
+        var errorDlg;
+
         ready(function() {
           dojo.fadeOut({
             node: 'loader',
@@ -59,6 +64,11 @@
             onEnd: function(n) { n.style.display = 'none'; }
           }).play();
           parser.parse();
+          
+          errorDlg = new dijit.Dialog({
+            title: "Error",
+            style: "width: 300px"
+          });
         });
         var socket = dojox.socket({url:'/dyn/igorws'});
         socket = dojox.socket.Reconnect(socket);
@@ -70,13 +80,23 @@
           var message = event.data;
         });
         
+        var showError = function(str) {
+          errorDlg.set("content", str);
+          errorDlg.show();
+        }
+        
         reloadUIAction = function() {
           request.get('/dyn/reloadui').then(
-            function() {
-              location.reload(true);
+            function(retStr) {
+              var ret = json.parse(retStr);
+              if (ret.success) {
+                location.reload(true);
+              } else {
+                showError("Server couldn't load template: " + ret.msg);
+              }
             },
             function(error) {
-              new Dialog({ title: 'Error', content: concat('Failure reloading UI: ', error) }).show();
+              showError("Error while loading reloadui: " + error);
             }
           );
         };

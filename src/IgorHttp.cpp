@@ -4,6 +4,8 @@
 #include <SimpleMustache.h>
 #include <BWebSocket.h>
 #include <Input.h>
+#include <HelperTasks.h>
+#include <TaskMan.h>
 
 using namespace Balau;
 
@@ -48,10 +50,10 @@ bool MainAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action
     return true;
 }
 
-static Regex igorWSURL("/dyn/igorws$");
+static Regex igorWSURL("^/dyn/igorws$");
 
 class IgorWSWorker : public WebSocketWorker {
-public:
+  public:
     virtual void receiveMessage(const uint8_t * msg, size_t len, bool binary) {
         if (binary)
             Printer::log(M_INFO, "got binary message");
@@ -79,34 +81,92 @@ static void loadTemplate() {
     delete oldTpl;
 }
 
-static Regex igorReloadURL("/dyn/reloadui$");
+static Regex igorReloadURL("^/dyn/reloadui$");
 
 class ReloadAction : public HttpServer::Action {
-public:
-    ReloadAction() : Action(igorReloadURL) { }
-private:
+  public:
+      ReloadAction() : Action(igorReloadURL) { }
+  private:
     virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
 };
 
 bool ReloadAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     bool error = false;
+    String errorMsg = "Just testing...";
 
     try {
         loadTemplate();
     }
     catch (GeneralException & e) {
         error = true;
+        errorMsg = e.getMsg();
     }
 
     HttpServer::Response response(server, req, out);
 
     if (error) {
-        response.get()->writeString("error");
-        response.SetResponseCode(500);
+        response.get()->writeString(String("{\"success\": false, \"msg\": \"") + errorMsg + "\"}");
     } else {
-        response.get()->writeString("reloaded");
+        response.get()->writeString("{\"success\": true}");
     }
-    response.SetContentType("text/plain");
+    response.SetContentType("application/json");
+    response.Flush();
+    return true;
+}
+
+static Regex igorStaticURL("^/static/(.+)");
+
+class StaticAction : public HttpServer::Action {
+  public:
+      StaticAction() : Action(igorStaticURL) { }
+  private:
+    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
+};
+
+static String getContentType(const String & extension) {
+    if (extension == "gif")
+        return "image/gif";
+    else
+        return "application/octet-stream";
+}
+
+bool StaticAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+    HttpServer::Response response(server, req, out);
+    String & fname = match.uri[1];
+    String extension;
+
+    ssize_t dot = fname.strrchr('.');
+
+    if (dot > 0)
+        extension = fname.extract(dot + 1);
+
+    bool error = false;
+
+    if (fname.strstr("/../") > 0)
+        error = true;
+
+    IO<Input> file(new Input(String("data/web-ui/static/") + fname));
+
+    if (!error) {
+        try {
+            file->open();
+        }
+        catch (ENoEnt & e) {
+            error = true;
+        }
+    }
+
+    if (error) {
+        response.get()->writeString("Static file not found.");
+        response.SetResponseCode(404);
+        response.SetContentType("text/plain");
+    } else {
+        Events::TaskEvent evt;
+        Task * copy = TaskMan::registerTask(new CopyTask(file, response.get()), &evt);
+        Task::operationYield(&evt);
+        file->close();
+        response.SetContentType(getContentType(extension));
+    }
     response.Flush();
     return true;
 }
@@ -119,6 +179,7 @@ void igor_setup_httpserver() {
     s->registerAction(new MainAction());
     s->registerAction(new IgorWSAction());
     s->registerAction(new ReloadAction());
+    s->registerAction(new StaticAction());
     s->setPort(8080);
     s->start();
 }

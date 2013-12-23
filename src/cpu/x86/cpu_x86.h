@@ -76,6 +76,8 @@ enum e_x86_mnemonic
 	INST_X86_MOVZX,
 
 	INST_X86_PXOR,
+	INST_X86_MOVQ,
+	INST_X86_MOVDQA,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -262,6 +264,8 @@ struct s_x86_operand
 		m_immediate.m_immediateSize = size;
 		m_immediate.m_immediateValue = immediateValue;
 	}
+
+	void setAsAddressRel(s_analyzeState* pState, e_operandSize size = OPERAND_16_32, bool dereference = false);
 
 	void setAsAddress(u64 address, bool dereference = false)
 	{

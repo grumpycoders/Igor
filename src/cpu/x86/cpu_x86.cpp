@@ -172,6 +172,10 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 
 	case INST_X86_PXOR:
 		return "PXOR";
+	case INST_X86_MOVQ:
+		return "MOVQ";
+	case INST_X86_MOVDQA:
+		return "MOVDQA";
 	default:
 		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
 	}
@@ -352,7 +356,7 @@ void s_x86_operand::setAsRegisterRM_XMM(s_analyzeState* pState, e_operandSize si
 	else
 	{
 		// should do the address override here
-		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(OPERAND_16_32);
 	}
 
 	m_registerRM.m_mod_reg_rm = x86_analyse_result->m_mod_reg_rm;
@@ -373,4 +377,43 @@ void s_x86_operand::setAsRegisterR_XMM(s_analyzeState* pState, e_operandSize siz
 	}
 
 	m_register.m_registerIndex = x86_analyse_result->m_mod_reg_rm.getREG();
+}
+
+void s_x86_operand::setAsAddressRel(s_analyzeState* pState, e_operandSize size, bool dereference)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_address;
+
+	if (x86_analyse_result->m_sizeOverride)
+	{
+		size = x86_analyse_result->getAlternateOperandSize(size);
+	}
+	else
+	{
+		size = x86_analyse_result->getDefaultOperandSize(size);
+	}
+
+	s64 offset = 0;
+
+	switch (size)
+	{
+	case OPERAND_32bit:
+		{
+			s32 immediate = 0;
+			if (pState->pDataBase->readS32(pState->m_PC, immediate) != IGOR_SUCCESS)
+				throw X86AnalysisException("Failure in setAsImmediateRel!");
+
+			pState->m_PC += 4;
+
+			offset = immediate;
+			break;
+		}
+	default:
+		throw X86AnalysisException("Failure in setAsImmediateRel!");
+	}
+
+	u64 address = pState->m_PC + offset;
+
+	m_address.m_addressValue = address;
+	m_address.m_dereference = dereference;
 }

@@ -20,6 +20,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	{
 		// grab the default state
 		pX86State = &m_defaultState;
+		pState->pCpuState = pX86State;
 	}
 
 	c_x86_analyse_result result;
@@ -45,6 +46,10 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 			bIsPrefix = true;
 			result.m_segmentOverride = c_x86_analyse_result::SEGMENT_OVERRIDE_FS;
 			break;
+		case 0x66:
+			bIsPrefix = true;
+			result.m_sizeOverride = true;
+			break;
 		default:
 			break;
 		}
@@ -56,7 +61,10 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	}
 
 	try {
-		x86_opcode_table[currentByte](pState, pX86State, currentByte);
+		if (x86_opcode_table[currentByte](pState, pX86State, currentByte) != IGOR_SUCCESS)
+		{
+			return IGOR_FAILURE;
+		}
 	}
 	catch (X86AnalysisException & e) {
 		return IGOR_FAILURE;
@@ -69,8 +77,17 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	return IGOR_SUCCESS;
 }
 
-const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex)
+const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex, bool sizeOverride)
 {
+	if (size == e_operandSize::OPERAND_Default)
+		size = OPERAND_32bit;
+
+	if (sizeOverride)
+	{
+		EAssert(size == OPERAND_32bit);
+
+		size = OPERAND_16bit;
+	}
 	return registerName[(int)size][regIndex];
 }
 
@@ -150,7 +167,10 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 		return "JNLE";
 	case INST_X86_ADD:
 		return "ADD";
-
+	case INST_X86_SETZ:
+		return "SETZ";
+	case INST_X86_MOVZX:
+		return "MOVZX";
 	default:
 		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
 	}
@@ -188,7 +208,7 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 		switch (pOperand->m_type)
 		{
 		case s_x86_operand::type_register:
-			operandString.set("%s", getRegisterName(pOperand->m_register.m_operandSize, pOperand->m_register.m_registerIndex));
+			operandString.set("%s", getRegisterName(pOperand->m_register.m_operandSize, pOperand->m_register.m_registerIndex, x86_analyse_result->m_sizeOverride));
 			break;
 		case s_x86_operand::type_registerRM:
 		{

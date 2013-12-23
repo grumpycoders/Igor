@@ -71,6 +71,8 @@ enum e_x86_mnemonic
 	INST_X86_JLE,
 	INST_X86_JNLE,
 	INST_X86_ADD,
+	INST_X86_SETZ,
+	INST_X86_MOVZX,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -109,6 +111,7 @@ enum e_register
 
 enum e_operandSize
 {
+	OPERAND_Default = -2,
 	OPERAND_Unkown = -1,
 	OPERAND_8bit = 0,
 	OPERAND_16bit = 1,
@@ -211,14 +214,14 @@ struct s_x86_operand
 		} m_address;
 	};
 
-	void setAsRegister(e_operandSize size, e_register registerIndex)
+	void setAsRegister(e_register registerIndex, e_operandSize size = OPERAND_Default)
 	{
 		m_type = type_register;
 		m_register.m_operandSize = size;
 		m_register.m_registerIndex = registerIndex;
 	}
 
-	void setAsRegisterRM(e_operandSize size, s_mod_reg_rm modRegRm)
+	void setAsRegisterRM(s_mod_reg_rm modRegRm, e_operandSize size = OPERAND_Default)
 	{
 		m_type = type_registerRM;
 		m_registerRM.m_operandSize = size;
@@ -226,6 +229,13 @@ struct s_x86_operand
 	}
 
 	void setAsImmediate(e_immediateSize size, u8 immediateValue)
+	{
+		m_type = type_immediate;
+		m_immediate.m_immediateSize = size;
+		m_immediate.m_immediateValue = immediateValue;
+	}
+
+	void setAsImmediate(e_immediateSize size, u16 immediateValue)
 	{
 		m_type = type_immediate;
 		m_immediate.m_immediateSize = size;
@@ -269,12 +279,14 @@ public:
 		m_mnemonic = INST_X86_UNDEF;
 		m_numOperands = 0;
 		m_segmentOverride = SEGMENT_OVERRIDE_NONE;
+		m_sizeOverride = false;
 	}
 
 	e_x86_mnemonic m_mnemonic;
 	u8 m_numOperands;
 	s_x86_operand m_operands[X86_MAX_OPERAND];
 	e_segment_override m_segmentOverride;
+	bool m_sizeOverride;
 };
 
 class c_cpu_x86 : public c_cpu_module
@@ -283,7 +295,7 @@ public:
 
 	igor_result analyze(s_analyzeState* pState);
 
-	const char* getRegisterName(e_operandSize size, u8 regIndex);
+	const char* getRegisterName(e_operandSize size, u8 regIndex, bool sizeOverride = false);
 	const char* getMnemonicName(e_x86_mnemonic mnemonic);
 
 	void printInstruction(c_cpu_analyse_result* result);

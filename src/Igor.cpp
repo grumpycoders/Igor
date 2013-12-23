@@ -31,6 +31,9 @@ void MainTask::Do() {
 	c_PELoader PELoader;
 	PELoader.loadPE(reader);
 
+	reader->close();
+	free(buffer);
+
     Events::TaskEvent evtAnalysis;
     Task * analysis = TaskMan::registerTask(new IgorAnalysis(), &evtAnalysis);
     waitFor(&evtAnalysis);

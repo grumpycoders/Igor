@@ -38,10 +38,17 @@ void IgorAnalysis::Do()
 
 			do
 			{
+				if (igor_is_address_flagged_as_code(analyzeState.m_PC))
+				{
+					break;
+				}
+
 				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 				{
 					analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
 				}
+
+				igor_flag_address_as_instruction(analyzeState.m_cpu_analyse_result->m_startOfInstruction, analyzeState.m_cpu_analyse_result->m_instructionSize);
 			} while (analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
 		}
 
@@ -55,4 +62,64 @@ igor_result igor_flag_address_as_u32(u64 virtualAddress)
 	// TODO!
 
 	return IGOR_SUCCESS;
+}
+
+igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize)
+{
+	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
+	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	if (virtualAddress + instructionSize > pSection->m_virtualAddress + pSection->m_size)
+	{
+		return IGOR_FAILURE;
+	}
+
+	if (pSection->m_instructionSize == nullptr)
+	{
+		pSection->createInstructionArray();
+	}
+	
+	u8* pInstructionSize = &pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress];
+
+	if (*pInstructionSize) // already an instruction there
+	{
+		return IGOR_FAILURE;
+	}
+
+	*pInstructionSize = instructionSize;
+	memset(pInstructionSize + 1, 0xFF, instructionSize - 1);
+
+	return IGOR_SUCCESS;
+}
+
+igor_result igor_is_address_flagged_as_code(u64 virtualAddress)
+{
+	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
+	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	if (pSection->m_instructionSize == nullptr)
+	{
+		return IGOR_FAILURE;
+	}
+
+	u8* pInstructionSize = &pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress];
+
+	if (*pInstructionSize)
+	{
+		return IGOR_SUCCESS;
+	}
+	else
+	{
+		return IGOR_FAILURE;
+	}
 }

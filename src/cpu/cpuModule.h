@@ -15,6 +15,9 @@ public:
 class c_cpu_analyse_result
 {
 public:
+	u64 m_startOfInstruction;
+	u8 m_instructionSize;
+
 };
 
 struct s_igorDatabase;

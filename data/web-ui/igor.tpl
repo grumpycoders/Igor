@@ -64,7 +64,7 @@
           parser.parse();
           
           errorDlg = new dijit.Dialog({
-            title: "Test",
+            title: "Error",
             style: "width: 300px"
           });
         });

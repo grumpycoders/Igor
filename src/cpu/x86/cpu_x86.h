@@ -37,7 +37,6 @@ enum e_x86_mnemonic
 	INST_X86_UNDEF,
 
 	INST_X86_MOV,
-
 	INST_X86_CALL,
 	INST_X86_JMP,
 	INST_X86_PUSH,
@@ -54,6 +53,24 @@ enum e_x86_mnemonic
 	INST_X86_INC,
 	INST_X86_LEAVE,
 	INST_X86_RETN,
+	INST_X86_OR,
+	INST_X86_SHL,
+	INST_X86_SHR,
+	INST_X86_JO,
+	INST_X86_JNO,
+	INST_X86_JB,
+	INST_X86_JNB,
+	INST_X86_JBE,
+	INST_X86_JNBE,
+	INST_X86_JS,
+	INST_X86_JNS,
+	INST_X86_JP,
+	INST_X86_JNP,
+	INST_X86_JL,
+	INST_X86_JNL,
+	INST_X86_JLE,
+	INST_X86_JNLE,
+	INST_X86_ADD,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -254,7 +271,6 @@ public:
 		m_segmentOverride = SEGMENT_OVERRIDE_NONE;
 	}
 
-	u64 m_startOfInstruction;
 	e_x86_mnemonic m_mnemonic;
 	u8 m_numOperands;
 	s_x86_operand m_operands[X86_MAX_OPERAND];

@@ -62,6 +62,8 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 		return IGOR_FAILURE;
 	}
 
+	result.m_instructionSize = pState->m_PC - result.m_startOfInstruction;
+
 	printInstruction(&result);
 
 	return IGOR_SUCCESS;
@@ -112,6 +114,43 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 		return "LEAVE";
 	case INST_X86_RETN:
 		return "RETN";
+	case INST_X86_OR:
+		return "OR";
+	case INST_X86_SHL:
+		return "SHL";
+	case INST_X86_SHR:
+		return "SHR";
+	case INST_X86_JO:
+		return "JO";
+	case INST_X86_JNO:
+		return "JNO";
+	case INST_X86_JB:
+		return "JB";
+	case INST_X86_JNB:
+		return "JNB";
+	case INST_X86_JBE:
+		return "JBE";
+	case INST_X86_JNBE:
+		return "JNBE";
+	case INST_X86_JS:
+		return "JS";
+	case INST_X86_JNS:
+		return "JNS";
+	case INST_X86_JP:
+		return "JP";
+	case INST_X86_JNP:
+		return "JNP";
+	case INST_X86_JL:
+		return "JL";
+	case INST_X86_JNL:
+		return "JNL";
+	case INST_X86_JLE:
+		return "JLE";
+	case INST_X86_JNLE:
+		return "JNLE";
+	case INST_X86_ADD:
+		return "ADD";
+
 	default:
 		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
 	}

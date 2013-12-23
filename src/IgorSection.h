@@ -24,9 +24,22 @@ struct s_igorSection
 		m_size(0),
 		m_rawData(nullptr),
 		m_rawDataSize(0),
-		m_option(0)
+		m_option(0),
+		m_instructionSize(nullptr)
 	{
 
+	}
+
+	~s_igorSection()
+	{
+		delete[] m_rawData;
+		delete[] m_instructionSize;
+	}
+
+	void createInstructionArray()
+	{
+		m_instructionSize = new u8[m_size];
+		memset(m_instructionSize, 0, m_size);
 	}
 
 	u64 m_virtualAddress;
@@ -34,6 +47,8 @@ struct s_igorSection
 	u8* m_rawData;
 	u64 m_rawDataSize;
 	u64 m_option;
+
+	u8* m_instructionSize;// Temporary. Size of instructions. 0 means unknown if it's an instruction or not.
 
 	//ALIGNED_CLASS_ALLOCATOR(16);
 };

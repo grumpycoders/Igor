@@ -22,3 +22,5 @@ private:
 extern IgorAnalysis * g_igorAnalysis;
 
 igor_result igor_flag_address_as_u32(u64 virtualAddress);
+igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
+igor_result igor_is_address_flagged_as_code(u64 virtualAddress);

@@ -90,23 +90,24 @@ private:
 
 bool ReloadAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     bool error = false;
+    String errorMsg = "Just testing...";
 
     try {
         loadTemplate();
     }
     catch (GeneralException & e) {
         error = true;
+        errorMsg = e.getMsg();
     }
 
     HttpServer::Response response(server, req, out);
 
     if (error) {
-        response.get()->writeString("error");
-        response.SetResponseCode(500);
+        response.get()->writeString(String("{\"success\": false, \"msg\": \"") + errorMsg + "\"}");
     } else {
-        response.get()->writeString("reloaded");
+        response.get()->writeString("{\"success\": true}");
     }
-    response.SetContentType("text/plain");
+    response.SetContentType("application/json");
     response.Flush();
     return true;
 }

@@ -47,11 +47,14 @@
         'dojo/dom', 
         'dojo/on', 
         'dojo/request', 
+        'dojo/json',
         'dijit/dijit-all', 
         'dojox/socket', 
         'dojox/socket/Reconnect', 
         'dojo/domReady!'], 
-      function(dojo, dijit, parser, ready, dom, on, request) {
+      function(dojo, dijit, parser, ready, dom, on, request, json) {
+        var errorDlg;
+
         ready(function() {
           dojo.fadeOut({
             node: 'loader',
@@ -59,6 +62,11 @@
             onEnd: function(n) { n.style.display = 'none'; }
           }).play();
           parser.parse();
+          
+          errorDlg = new dijit.Dialog({
+            title: "Test",
+            style: "width: 300px"
+          });
         });
         var socket = dojox.socket({url:'/dyn/igorws'});
         socket = dojox.socket.Reconnect(socket);
@@ -70,13 +78,23 @@
           var message = event.data;
         });
         
+        var showError = function(str) {
+          errorDlg.set("content", str);
+          errorDlg.show();
+        }
+        
         reloadUIAction = function() {
           request.get('/dyn/reloadui').then(
-            function() {
-              location.reload(true);
+            function(retStr) {
+              var ret = json.parse(retStr);
+              if (ret.success) {
+                location.reload(true);
+              } else {
+                showError("Server couldn't load template: " + ret.msg);
+              }
             },
             function(error) {
-              new Dialog({ title: 'Error', content: concat('Failure reloading UI: ', error) }).show();
+              showError("Error while loading reloadui: " + error);
             }
           );
         };

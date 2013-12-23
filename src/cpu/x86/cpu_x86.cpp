@@ -84,7 +84,7 @@ const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex, bool siz
 
 	if (sizeOverride)
 	{
-		EAssert(size == OPERAND_32bit);
+		EAssert(size == OPERAND_32bit, "Wrong operand size: %i", size);
 
 		size = OPERAND_16bit;
 	}

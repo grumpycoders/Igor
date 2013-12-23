@@ -40,6 +40,7 @@ PELoader.cpp \
 \
 cpu/x86/cpu_x86.cpp \
 cpu/x86/cpu_x86_opcodes.cpp \
+cpu/x86/cpu_x86_opcodes_F.cpp \
 
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(IGOR_SOURCES))))

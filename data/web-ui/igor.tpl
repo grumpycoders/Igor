@@ -8,17 +8,17 @@
 
     <style type='text/css'>
       html, body {
-        height: 100%; width: 100%; padding: 0; border: 0;
+        height: 100%; width: 100%;
+        padding: 0; border: 0; margin: 0;
         background: #fff url("/static/img/bgBody.gif") repeat-x top left;
       }
       .claro {
-	    font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif; 
-	    *font-size: 75%;
+        font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif; 
+        *font-size: 75%;
       }
       /* pre-loader specific stuff to prevent unsightly flash of unstyled content */
       #loader {
-        padding: 0;
-        margin: 0;
+        padding: 0; border: 0; margin: 0;
         position: absolute;
         top:0; left:0;
         width: 100%; height: 100%;
@@ -35,6 +35,15 @@
         background:#33c;
         color:#fff;
       }
+      
+      #main {
+        height: 100%; width: 100%;
+//        padding: 0; border: 0; margin: 0;
+      }
+      
+//      #navMenu {
+//        padding: 0; border: 0; margin: 0;
+//      }
       hr.spacer { border:0; background-color: #ededed; width: 80%; height: 1px; }
     </style>
     <script src='{{dojo_path}}/dojo/dojo.js' data-dojo-config='has:{"dojo-firebug": true}, async: true'></script>
@@ -107,11 +116,31 @@
 
   <body class='claro'>
     <div id='loader'><div id='loaderInner' style='direction:ltr;'>Loading...</div></div>
-    <div data-dojo-type='dijit/MenuBar', id='navMenu'>
-      <div data-dojo-type='dijit/PopupMenuBarItem'>
-        <span>File</span>
-        <div data-dojo-type='dijit/DropDownMenu' id='fileMenu'>
-          <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick:function() { reloadUIAction(); }'>Reload UI</div>
+    <div id='main' data-dojo-type='dijit/layout/BorderContainer' data-dojo-props='liveSplitters:false, design:"sidebar"'>
+      <div id='navMenu' data-dojo-type='dijit/MenuBar' data-dojo-props='region:"top"'>
+        <div data-dojo-type='dijit/PopupMenuBarItem'>
+          <span>File</span>
+          <div data-dojo-type='dijit/Menu'>
+            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: reloadUIAction'>Reload UI</div>
+          </div>
+        </div>
+        <div data-dojo-type='dijit/PopupMenuBarItem'>
+          <span>Help</span>
+          <div data-dojo-type='dijit/Menu'>
+            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: function() { }'>About</div>
+          </div>
+        </div>
+      </div>
+      
+      <div data-dojo-type='dijit/layout/AccordionContainer' data-dojo-props='region:"leading", splitter:true, minSize:200' style='width:300px;'>
+        <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='title:"Symbols"'>
+        </div>
+      </div>
+      
+      <div data-dojo-type='dijit/layout/TabContainer' data-dojo-props='region:"center"', tabStrip:'true', id='topTabs'>
+        <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='title:"Disassembly", style:"padding:10px;display:none;"'>
+        </div>
+        <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='title:"Memory View", style:"padding:10px;display:none;"'>
         </div>
       </div>
     </div>

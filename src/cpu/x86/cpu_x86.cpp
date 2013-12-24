@@ -1,3 +1,5 @@
+#include <map>
+
 #include "IgorDatabase.h"
 #include "cpu_x86.h"
 #include "cpu_x86_opcodes.h"
@@ -87,100 +89,61 @@ const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex, bool siz
 	return registerName[(int)size][regIndex];
 }
 
+static const std::map<e_x86_mnemonic, const char *> s_mnemonics {
+    std::make_pair(INST_X86_MOV,        "MOV"),
+    std::make_pair(INST_X86_CALL,       "CALL"),
+    std::make_pair(INST_X86_JMP,        "JMP"),
+    std::make_pair(INST_X86_PUSH,       "PUSH"),
+    std::make_pair(INST_X86_POP,        "POP"),
+    std::make_pair(INST_X86_SUB,        "SUB"),
+    std::make_pair(INST_X86_AND,        "AND"),
+    std::make_pair(INST_X86_CMP,        "CMP"),
+    std::make_pair(INST_X86_JZ,         "JZ"),
+    std::make_pair(INST_X86_JNZ,        "JNZ"),
+    std::make_pair(INST_X86_TEST,       "TEST"),
+    std::make_pair(INST_X86_NOT,        "NOT"),
+    std::make_pair(INST_X86_XOR,        "XOR"),
+    std::make_pair(INST_X86_LEA,        "LEA"),
+    std::make_pair(INST_X86_INC,        "INC"),
+    std::make_pair(INST_X86_DEC,        "DEC"),
+    std::make_pair(INST_X86_LEAVE,      "LEAVE"),
+    std::make_pair(INST_X86_RETN,       "RETN"),
+    std::make_pair(INST_X86_OR,         "OR"),
+    std::make_pair(INST_X86_SHL,        "SHL"),
+    std::make_pair(INST_X86_SHR,        "SHR"),
+    std::make_pair(INST_X86_JO,         "JO"),
+    std::make_pair(INST_X86_JNO,        "JNO"),
+    std::make_pair(INST_X86_JB,         "JB"),
+    std::make_pair(INST_X86_JNB,        "JNB"),
+    std::make_pair(INST_X86_JBE,        "JBE"),
+    std::make_pair(INST_X86_JNBE,       "JNBE"),
+    std::make_pair(INST_X86_JS,         "JS"),
+    std::make_pair(INST_X86_JNS,        "JNS"),
+    std::make_pair(INST_X86_JP,         "JP"),
+    std::make_pair(INST_X86_JNP,        "JNP"),
+    std::make_pair(INST_X86_JL,         "JL"),
+    std::make_pair(INST_X86_JNL,        "JNL"),
+    std::make_pair(INST_X86_JLE,        "JLE"),
+    std::make_pair(INST_X86_JNLE,       "JNLE"),
+    std::make_pair(INST_X86_ADD,        "ADD"),
+    std::make_pair(INST_X86_SETZ,       "SETZ"),
+    std::make_pair(INST_X86_MOVZX,      "MOVZX"),
+
+    std::make_pair(INST_X86_PXOR,       "PXOR"),
+    std::make_pair(INST_X86_MOVQ,       "MOVQ"),
+    std::make_pair(INST_X86_MOVDQA,     "MOVDQA"),
+};
+
 const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 {
-	// TODO: better that a switch case
+    auto t = s_mnemonics.find(mnemonic);
 
-	switch (mnemonic)
-	{
-	case INST_X86_CALL:
-		return "CALL";
-	case INST_X86_JMP:
-		return "JUMP";
-	case INST_X86_MOV:
-		return "MOV";
-	case INST_X86_PUSH:
-		return "PUSH";
-	case INST_X86_SUB:
-		return "SUB";
-	case INST_X86_AND:
-		return "AND";
-	case INST_X86_CMP:
-		return "CMP";
-	case INST_X86_JZ:
-		return "JZ";
-	case INST_X86_JNZ:
-		return "JNZ";
-	case INST_X86_TEST:
-		return "TEST";
-	case INST_X86_NOT:
-		return "NOT";
-	case INST_X86_XOR:
-		return "XOR";
-	case INST_X86_LEA:
-		return "LEA";
-	case INST_X86_INC:
-		return "INC";
-	case INST_X86_DEC:
-		return "DEC";
-	case INST_X86_POP:
-		return "POP";
-	case INST_X86_LEAVE:
-		return "LEAVE";
-	case INST_X86_RETN:
-		return "RETN";
-	case INST_X86_OR:
-		return "OR";
-	case INST_X86_SHL:
-		return "SHL";
-	case INST_X86_SHR:
-		return "SHR";
-	case INST_X86_JO:
-		return "JO";
-	case INST_X86_JNO:
-		return "JNO";
-	case INST_X86_JB:
-		return "JB";
-	case INST_X86_JNB:
-		return "JNB";
-	case INST_X86_JBE:
-		return "JBE";
-	case INST_X86_JNBE:
-		return "JNBE";
-	case INST_X86_JS:
-		return "JS";
-	case INST_X86_JNS:
-		return "JNS";
-	case INST_X86_JP:
-		return "JP";
-	case INST_X86_JNP:
-		return "JNP";
-	case INST_X86_JL:
-		return "JL";
-	case INST_X86_JNL:
-		return "JNL";
-	case INST_X86_JLE:
-		return "JLE";
-	case INST_X86_JNLE:
-		return "JNLE";
-	case INST_X86_ADD:
-		return "ADD";
-	case INST_X86_SETZ:
-		return "SETZ";
-	case INST_X86_MOVZX:
-		return "MOVZX";
+    if (t == s_mnemonics.end()) {
+        Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
+        return NULL;
+    }
 
-	case INST_X86_PXOR:
-		return "PXOR";
-	case INST_X86_MOVQ:
-		return "MOVQ";
-	case INST_X86_MOVDQA:
-		return "MOVDQA";
-	default:
-		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
-	}
-
-	return NULL;
+    return t->second;
 }
 
 void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)

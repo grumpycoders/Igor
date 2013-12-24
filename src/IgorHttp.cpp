@@ -92,7 +92,7 @@ class ReloadAction : public HttpServer::Action {
 
 bool ReloadAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     bool error = false;
-    String errorMsg = "Just testing...";
+    String errorMsg;
 
     try {
         loadTemplate();
@@ -122,13 +122,6 @@ class StaticAction : public HttpServer::Action {
   private:
     virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
 };
-
-static String getContentType(const String & extension) {
-    if (extension == "gif")
-        return "image/gif";
-    else
-        return "application/octet-stream";
-}
 
 bool StaticAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     HttpServer::Response response(server, req, out);
@@ -165,7 +158,7 @@ bool StaticAction::Do(HttpServer * server, Http::Request & req, HttpServer::Acti
         Task * copy = TaskMan::registerTask(new CopyTask(file, response.get()), &evt);
         Task::operationYield(&evt);
         file->close();
-        response.SetContentType(getContentType(extension));
+        response.SetContentType(Http::getContentType(extension));
     }
     response.Flush();
     return true;

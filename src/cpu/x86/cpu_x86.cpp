@@ -89,50 +89,24 @@ const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex, bool siz
 	return registerName[(int)size][regIndex];
 }
 
-static const std::map<e_x86_mnemonic, const char *> s_mnemonics {
-    std::make_pair(INST_X86_MOV,        "MOV"),
-    std::make_pair(INST_X86_CALL,       "CALL"),
-    std::make_pair(INST_X86_JMP,        "JMP"),
-    std::make_pair(INST_X86_PUSH,       "PUSH"),
-    std::make_pair(INST_X86_POP,        "POP"),
-    std::make_pair(INST_X86_SUB,        "SUB"),
-    std::make_pair(INST_X86_AND,        "AND"),
-    std::make_pair(INST_X86_CMP,        "CMP"),
-    std::make_pair(INST_X86_JZ,         "JZ"),
-    std::make_pair(INST_X86_JNZ,        "JNZ"),
-    std::make_pair(INST_X86_TEST,       "TEST"),
-    std::make_pair(INST_X86_NOT,        "NOT"),
-    std::make_pair(INST_X86_XOR,        "XOR"),
-    std::make_pair(INST_X86_LEA,        "LEA"),
-    std::make_pair(INST_X86_INC,        "INC"),
-    std::make_pair(INST_X86_DEC,        "DEC"),
-    std::make_pair(INST_X86_LEAVE,      "LEAVE"),
-    std::make_pair(INST_X86_RETN,       "RETN"),
-    std::make_pair(INST_X86_OR,         "OR"),
-    std::make_pair(INST_X86_SHL,        "SHL"),
-    std::make_pair(INST_X86_SHR,        "SHR"),
-    std::make_pair(INST_X86_JO,         "JO"),
-    std::make_pair(INST_X86_JNO,        "JNO"),
-    std::make_pair(INST_X86_JB,         "JB"),
-    std::make_pair(INST_X86_JNB,        "JNB"),
-    std::make_pair(INST_X86_JBE,        "JBE"),
-    std::make_pair(INST_X86_JNBE,       "JNBE"),
-    std::make_pair(INST_X86_JS,         "JS"),
-    std::make_pair(INST_X86_JNS,        "JNS"),
-    std::make_pair(INST_X86_JP,         "JP"),
-    std::make_pair(INST_X86_JNP,        "JNP"),
-    std::make_pair(INST_X86_JL,         "JL"),
-    std::make_pair(INST_X86_JNL,        "JNL"),
-    std::make_pair(INST_X86_JLE,        "JLE"),
-    std::make_pair(INST_X86_JNLE,       "JNLE"),
-    std::make_pair(INST_X86_ADD,        "ADD"),
-    std::make_pair(INST_X86_SETZ,       "SETZ"),
-    std::make_pair(INST_X86_MOVZX,      "MOVZX"),
+#define MKNAME(inst) std::make_pair(INST_X86_##inst, #inst)
 
-    std::make_pair(INST_X86_PXOR,       "PXOR"),
-    std::make_pair(INST_X86_MOVQ,       "MOVQ"),
-    std::make_pair(INST_X86_MOVDQA,     "MOVDQA"),
+static const std::map<e_x86_mnemonic, const char *> s_mnemonics {
+    MKNAME(MOV),    MKNAME(CALL),   MKNAME(JMP),    MKNAME(PUSH),
+    MKNAME(POP),    MKNAME(SUB),    MKNAME(AND),    MKNAME(CMP),
+    MKNAME(JZ),     MKNAME(JNZ),    MKNAME(TEST),   MKNAME(NOT),
+    MKNAME(XOR),    MKNAME(LEA),    MKNAME(INC),    MKNAME(DEC),
+    MKNAME(LEAVE),  MKNAME(RETN),   MKNAME(OR),     MKNAME(SHL),
+    MKNAME(SHR),    MKNAME(JO),     MKNAME(JNO),    MKNAME(JB),
+    MKNAME(JNB),    MKNAME(JBE),    MKNAME(JNBE),   MKNAME(JS),
+    MKNAME(JNS),    MKNAME(JP),     MKNAME(JNP),    MKNAME(JL),
+    MKNAME(JNL),    MKNAME(JLE),    MKNAME(JNLE),   MKNAME(ADD),
+    MKNAME(SETZ),   MKNAME(MOVZX),
+
+    MKNAME(PXOR),   MKNAME(MOVQ),   MKNAME(MOVDQA),
 };
+
+#undef MKNAME
 
 const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 {

@@ -51,6 +51,7 @@ enum e_x86_mnemonic
 	INST_X86_XOR,
 	INST_X86_LEA,
 	INST_X86_INC,
+	INST_X86_DEC,
 	INST_X86_LEAVE,
 	INST_X86_RETN,
 	INST_X86_OR,
@@ -73,6 +74,10 @@ enum e_x86_mnemonic
 	INST_X86_ADD,
 	INST_X86_SETZ,
 	INST_X86_MOVZX,
+
+	INST_X86_PXOR,
+	INST_X86_MOVQ,
+	INST_X86_MOVDQA,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -116,6 +121,11 @@ enum e_operandSize
 	OPERAND_8bit = 0,
 	OPERAND_16bit = 1,
 	OPERAND_32bit = 2,
+	OPERAND_MM_64 = 3,
+	OPERAND_XMM_128 = 4,
+
+	OPERAND_16_32,
+	OPERAND_XMM_64_128,
 };
 
 enum e_immediateSize
@@ -228,6 +238,12 @@ struct s_x86_operand
 		m_registerRM.m_mod_reg_rm = modRegRm;
 	}
 
+	void setAsRegisterRM(s_analyzeState* pState, e_operandSize size = OPERAND_16_32);
+	void setAsRegisterR(s_analyzeState* pState, e_operandSize size = OPERAND_16_32);
+
+	void setAsRegisterRM_XMM(s_analyzeState* pState, e_operandSize size = OPERAND_XMM_64_128);
+	void setAsRegisterR_XMM(s_analyzeState* pState, e_operandSize size = OPERAND_XMM_64_128);
+
 	void setAsImmediate(e_immediateSize size, u8 immediateValue)
 	{
 		m_type = type_immediate;
@@ -248,6 +264,8 @@ struct s_x86_operand
 		m_immediate.m_immediateSize = size;
 		m_immediate.m_immediateValue = immediateValue;
 	}
+
+	void setAsAddressRel(s_analyzeState* pState, e_operandSize size = OPERAND_16_32, bool dereference = false);
 
 	void setAsAddress(u64 address, bool dereference = false)
 	{
@@ -280,6 +298,35 @@ public:
 		m_numOperands = 0;
 		m_segmentOverride = SEGMENT_OVERRIDE_NONE;
 		m_sizeOverride = false;
+		memset(&m_mod_reg_rm, 0xCD, sizeof(s_mod_reg_rm));
+	}
+
+	e_operandSize getAlternateOperandSize(e_operandSize inputSize)
+	{
+		if (inputSize == OPERAND_16_32)
+		{
+			return OPERAND_16bit;
+		}
+		if (inputSize == OPERAND_XMM_64_128)
+		{
+			return OPERAND_XMM_128;
+		}
+
+		return inputSize;
+	}
+
+	e_operandSize getDefaultOperandSize(e_operandSize inputSize)
+	{
+		if (inputSize == OPERAND_16_32)
+		{
+			return OPERAND_32bit;
+		}
+		if (inputSize == OPERAND_XMM_64_128)
+		{
+			return OPERAND_MM_64;
+		}
+
+		return inputSize;
 	}
 
 	e_x86_mnemonic m_mnemonic;
@@ -287,6 +334,7 @@ public:
 	s_x86_operand m_operands[X86_MAX_OPERAND];
 	e_segment_override m_segmentOverride;
 	bool m_sizeOverride;
+	s_mod_reg_rm m_mod_reg_rm;
 };
 
 class c_cpu_x86 : public c_cpu_module

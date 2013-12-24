@@ -5,11 +5,13 @@
 #include <Printer.h>
 using namespace Balau;
 
-const char* registerName[3][8] =
+const char* registerName[5][8] =
 {
 	{ "AL", "CL", "DL", "BL", "AH", "CH", "DH", "BH" }, // 8bit
 	{ "AX", "CX", "DX", "BX", "SP", "BP", "SI", "DI" }, // 16bits
 	{ "EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI" }, // 32 bits
+	{ "MM0", "MM1", "MM2", "MM3", "MM4", "MM5", "MM6", "MM7" }, // 64 bits
+	{ "XMM0", "XMM1", "XMM2", "XMM3", "XMM4", "XMM5", "XMM6", "XMM7" }, // 128 bits
 };
 
 igor_result c_cpu_x86::analyze(s_analyzeState* pState)
@@ -82,12 +84,6 @@ const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex, bool siz
 	if (size == e_operandSize::OPERAND_Default)
 		size = OPERAND_32bit;
 
-	if (sizeOverride)
-	{
-		EAssert(size == OPERAND_32bit, "Wrong operand size: %i", size);
-
-		size = OPERAND_16bit;
-	}
 	return registerName[(int)size][regIndex];
 }
 
@@ -125,6 +121,8 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 		return "LEA";
 	case INST_X86_INC:
 		return "INC";
+	case INST_X86_DEC:
+		return "DEC";
 	case INST_X86_POP:
 		return "POP";
 	case INST_X86_LEAVE:
@@ -171,6 +169,13 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
 		return "SETZ";
 	case INST_X86_MOVZX:
 		return "MOVZX";
+
+	case INST_X86_PXOR:
+		return "PXOR";
+	case INST_X86_MOVQ:
+		return "MOVQ";
+	case INST_X86_MOVDQA:
+		return "MOVDQA";
 	default:
 		Failure("Unknown x86 mnemonic in c_cpu_x86::getMnemonicName");
 	}
@@ -290,3 +295,125 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 	Printer::log(M_INFO, instructionString);
 }
 
+void s_x86_operand::setAsRegisterRM(s_analyzeState* pState, e_operandSize size)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_registerRM;
+
+	if (x86_analyse_result->m_mod_reg_rm.getMod() == MOD_DIRECT)
+	{
+		if (x86_analyse_result->m_sizeOverride)
+		{
+			m_registerRM.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
+		}
+		else
+		{
+			m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+		}
+	}
+	else
+	{
+		// should do the address override here
+		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+	}
+	
+	m_registerRM.m_mod_reg_rm = x86_analyse_result->m_mod_reg_rm;
+}
+
+void s_x86_operand::setAsRegisterR(s_analyzeState* pState, e_operandSize size)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_register;
+
+	if (x86_analyse_result->m_sizeOverride)
+	{
+		m_registerRM.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
+	}
+	else
+	{
+		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+	}
+
+	m_register.m_registerIndex = x86_analyse_result->m_mod_reg_rm.getREG();
+}
+
+void s_x86_operand::setAsRegisterRM_XMM(s_analyzeState* pState, e_operandSize size)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_registerRM;
+
+	if (x86_analyse_result->m_mod_reg_rm.getMod() == MOD_DIRECT)
+	{
+		if (x86_analyse_result->m_sizeOverride)
+		{
+			m_registerRM.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
+		}
+		else
+		{
+			m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+		}
+	}
+	else
+	{
+		// should do the address override here
+		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(OPERAND_16_32);
+	}
+
+	m_registerRM.m_mod_reg_rm = x86_analyse_result->m_mod_reg_rm;
+}
+
+void s_x86_operand::setAsRegisterR_XMM(s_analyzeState* pState, e_operandSize size)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_register;
+
+	if (x86_analyse_result->m_sizeOverride)
+	{
+		m_registerRM.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
+	}
+	else
+	{
+		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+	}
+
+	m_register.m_registerIndex = x86_analyse_result->m_mod_reg_rm.getREG();
+}
+
+void s_x86_operand::setAsAddressRel(s_analyzeState* pState, e_operandSize size, bool dereference)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_address;
+
+	if (x86_analyse_result->m_sizeOverride)
+	{
+		size = x86_analyse_result->getAlternateOperandSize(size);
+	}
+	else
+	{
+		size = x86_analyse_result->getDefaultOperandSize(size);
+	}
+
+	s64 offset = 0;
+
+	switch (size)
+	{
+	case OPERAND_32bit:
+		{
+			s32 immediate = 0;
+			if (pState->pDataBase->readS32(pState->m_PC, immediate) != IGOR_SUCCESS)
+				throw X86AnalysisException("Failure in setAsImmediateRel!");
+
+			pState->m_PC += 4;
+
+			offset = immediate;
+			break;
+		}
+	default:
+		throw X86AnalysisException("Failure in setAsImmediateRel!");
+	}
+
+	u64 address = pState->m_PC + offset;
+
+	m_address.m_addressValue = address;
+	m_address.m_dereference = dereference;
+}

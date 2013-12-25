@@ -157,7 +157,11 @@ void IgorWSWorker::setup() {
     time_t rawtime;
     struct tm timeinfo;
     time(&rawtime);
+#ifdef _MSC_VER
     localtime_s(&timeinfo, &rawtime);
+#else
+    localtime_r(&rawtime, &timeinfo);
+#endif
     m_searchMinute = timeinfo.tm_min;
 }
 

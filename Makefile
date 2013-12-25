@@ -8,7 +8,7 @@ CPPFLAGS += -g3 -gdwarf-2 -DDEBUG
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = src src/cpu/x86 Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src
+INCLUDES = src src/cpu/x86 Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include
 LIBS = z
 
 ifeq ($(SYSTEM),Darwin)

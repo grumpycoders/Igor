@@ -81,6 +81,7 @@
       }
       
       #statusBar {
+        padding: 0; margin: 0;
         background-color: #efefef;
         background-repeat: repeat-x;
         background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
@@ -88,6 +89,22 @@
         background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
         background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
         _background-image: none;
+      }
+      
+      #statusBarLayoutContainer {
+        width: 100%;
+        height: 32px; /* humf */
+      }
+      
+      #clock {
+        border-style: solid;
+        border-color: #b5bcc7;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        border-right-width: 0px;
+        border-left-width: 1px;
+        width: 35px;
+        text-align: center;
       }
       
       .hexViewContent {
@@ -131,9 +148,9 @@
       var buildDgridHexView;
       var showError;
       var socket;
+      var messageListeners = { }
 
-      String.prototype.repeat = function( num )
-      {
+      String.prototype.repeat = function(num) {
         return new Array(num + 1).join(this);
       }
 
@@ -144,6 +161,10 @@
         if (n >= s)
           return val;
         return '0'.repeat(s - n) + val;
+      }
+      
+      var registerMessageListener = function(message, listener) {
+        messageListeners[message] = listener;
       }
 
       require([
@@ -164,6 +185,7 @@
         'dojo/domReady!'],
       function(dojo, dijit, lang, parser, dom, on, request, json, DataGrid, ItemFileWriteStore, Grid) {
         var errorDlg;
+        var clock;
 
         var formatterAddress = function(addr) {
           addr = json.parse(addr);
@@ -198,6 +220,8 @@
           );
         };
         parser.parse();
+        
+        clock = dojo.byId('clock');
 
         dojo.fadeOut({
           node: 'loader',
@@ -281,9 +305,15 @@
         });
 
         dojo.connect(socket, 'onmessage', function(event) {
-          var message = event.data;
+          var message = json.parse(event.data);
+          messageListeners[message.destination](message.call, message.data);
         });
 
+        registerMessageListener('status', function(call, msg) {
+          if (call == 'clock') {
+            clock.innerHTML = msg.clock;
+          }
+        });
       });
 
     </script>
@@ -310,7 +340,7 @@
         </div>
       </div>
       
-      <div data-dojo-type='dijit/layout/AccordionContainer' data-dojo-props='region:"leading", splitter:true, minSize:200' style='width:300px;'>
+      <div data-dojo-type='dijit/layout/AccordionContainer' data-dojo-props='region:"left", splitter:true, minSize:200' style='width:300px;'>
         <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='title:"Symbols"'>
         </div>
       </div>
@@ -326,7 +356,12 @@
         </div>
       </div>
       
-      <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"bottom"' id='statusBar'>Status</div>
+      <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"bottom"' id='statusBar'>
+        <div data-dojo-type='dijit/layout/LayoutContainer' id='statusBarLayoutContainer'>
+          <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"center"' id='statusMain'>Igor</div>
+          <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"right", layoutPriority:1' id='clock'>xx:xx</div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

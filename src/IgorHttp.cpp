@@ -65,7 +65,56 @@ class IgorWSWorker : public WebSocketWorker {
     IgorWSWorker(IO<Handle> socket, const String & url) : WebSocketWorker(socket, url) {
         enforceServer();
     }
+    void Do() override;
+  private:
+    void setup();
+    Events::Timeout m_clock;
+    int m_searchMinute = -1;
+    bool m_setupDone = false;
+    bool m_foundMinute = false;
 };
+
+void IgorWSWorker::setup() {
+    m_clock.set(1);
+    waitFor(&m_clock);
+    time_t rawtime;
+    struct tm timeinfo;
+    time(&rawtime);
+    localtime_s(&timeinfo, &rawtime);
+    m_searchMinute = timeinfo.tm_min;
+}
+
+void IgorWSWorker::Do() {
+    bool gotEvent = false;
+
+    if (!m_setupDone) {
+        setup();
+        m_setupDone = true;
+    }
+
+    if (m_clock.gotSignal()) {
+        m_clock.reset();
+        m_clock.set(m_foundMinute ? 9 : 0.9);
+        waitFor(&m_clock);
+        time_t rawtime;
+        tm timeinfo;
+        time(&rawtime);
+#ifdef _MSC_VER
+        localtime_s(&timeinfo, &rawtime);
+#else
+        localtime_r(&rawtime, &timeinfo);
+#endif
+        if (m_searchMinute != timeinfo.tm_min)
+            m_foundMinute = true;
+        String timeStr;
+        timeStr.set("{ \"destination\": \"status\", \"call\": \"clock\", \"data\": { \"clock\": \"%i:%02i\" } }", timeinfo.tm_hour, timeinfo.tm_min);
+
+        WebSocketFrame * frame = new WebSocketFrame(timeStr);
+        this->sendFrame(frame);
+    }
+
+    WebSocketWorker::Do();
+}
 
 class IgorWSAction : public WebSocketServer<IgorWSWorker> {
 public:

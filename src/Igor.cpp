@@ -13,30 +13,32 @@
 using namespace Balau;
 
 void MainTask::Do() {
-	Printer::log(M_STATUS, "Igor starting up");
+    Printer::log(M_STATUS, "Igor starting up");
+    
+    Printer::enable(M_ALL);
+    
+    if (argc > 2)
+        return;
 
-	if (argc < 2)
-		return;
+    stopTaskManOnExit(false);
 
-	Printer::enable(M_ALL);
+    if (argc == 2) {
+        IO<Input> file(new Input(argv[1]));
+        file->open();
 
-	IO<Input> file(new Input(argv[1]));
-	file->open();
+        size_t size = file->getSize();
+        uint8_t * buffer = (uint8_t *)malloc(size);
+        file->forceRead(buffer, size);
+        IO<Buffer> reader(new Buffer(buffer, file->getSize()));
 
-    size_t size = file->getSize();
-    uint8_t * buffer = (uint8_t *) malloc(size);
-    file->forceRead(buffer, size);
-    IO<Buffer> reader(new Buffer(buffer, file->getSize()));
+        c_PELoader PELoader;
+        PELoader.loadPE(reader);
 
-	c_PELoader PELoader;
-	PELoader.loadPE(reader);
+        reader->close();
+        free(buffer);
 
-	reader->close();
-	free(buffer);
-
-    Events::TaskEvent evtAnalysis;
-    Task * analysis = TaskMan::registerTask(new IgorAnalysis(), &evtAnalysis);
-    waitFor(&evtAnalysis);
+        TaskMan::registerTask(new IgorAnalysis());
+    }
 
     igor_setup_httpserver();
 

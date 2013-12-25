@@ -15,7 +15,7 @@
       html, body {
         height: 100%; width: 100%;
         padding: 0; border: 0; margin: 0;
-        background: #fff url("/static/img/bgBody.gif") repeat-x top left;
+        background: #CDDDE9 url("/static/img/bgBody.gif") repeat-x top left;
       }
       .claro {
         font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif; 
@@ -78,6 +78,16 @@
 
       #hexView {
         height: 100%;
+      }
+      
+      #statusBar {
+        background-color: #efefef;
+        background-repeat: repeat-x;
+        background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+        background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+        background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+        background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+        _background-image: none;
       }
       
       .hexViewContent {
@@ -316,7 +326,7 @@
         </div>
       </div>
       
-      <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"bottom"'>Status</div>
+      <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"bottom"' id='statusBar'>Status</div>
     </div>
   </body>
 </html>

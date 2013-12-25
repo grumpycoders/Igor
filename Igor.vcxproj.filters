@@ -698,6 +698,9 @@
     <ClCompile Include="Balau\src\jsoncpp\src\json_writer.cpp">
       <Filter>Third Party\jsoncpp</Filter>
     </ClCompile>
+    <ClCompile Include="Balau\src\HttpActionStatic.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">
@@ -1482,6 +1485,9 @@
     </ClInclude>
     <ClInclude Include="Balau\src\jsoncpp\include\json\config.h">
       <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\includes\HttpActionStatic.h">
+      <Filter>Balau</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #include <json/writer.h>
 
 #include <HttpServer.h>
+#include <HttpActionStatic.h>
 #include <Task.h>
 #include <SimpleMustache.h>
 #include <BWebSocket.h>
@@ -253,56 +254,6 @@ bool ReloadAction::Do(HttpServer * server, Http::Request & req, HttpServer::Acti
     return true;
 }
 
-static Regex igorStaticURL("^/static/(.+)");
-
-class StaticAction : public HttpServer::Action {
-  public:
-      StaticAction() : Action(igorStaticURL) { }
-  private:
-    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
-};
-
-bool StaticAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
-    HttpServer::Response response(server, req, out);
-    String & fname = match.uri[1];
-    String extension;
-
-    ssize_t dot = fname.strrchr('.');
-
-    if (dot > 0)
-        extension = fname.extract(dot + 1);
-
-    bool error = false;
-
-    if (fname.strstr("/../") > 0)
-        error = true;
-
-    IO<Input> file(new Input(String("data/web-ui/static/") + fname));
-
-    if (!error) {
-        try {
-            file->open();
-        }
-        catch (ENoEnt & e) {
-            error = true;
-        }
-    }
-
-    if (error) {
-        response.get()->writeString("Static file not found.");
-        response.SetResponseCode(404);
-        response.SetContentType("text/plain");
-    } else {
-        Events::TaskEvent evt;
-        Task * copy = TaskMan::registerTask(new CopyTask(file, response.get()), &evt);
-        Task::operationYield(&evt);
-        file->close();
-        response.SetContentType(Http::getContentType(extension));
-    }
-    response.Flush();
-    return true;
-}
-
 class MainListener : public Listener {
   public:
       MainListener(Listeners * listeners) : Listener("main", listeners) { }
@@ -336,6 +287,8 @@ void MainListener::receive(IgorWSWorker * worker, const std::string & call, cons
     }
 }
 
+static Regex igorStaticURL("^/static/(.+)");
+
 void igor_setup_httpserver() {
     loadTemplate();
 
@@ -346,7 +299,7 @@ void igor_setup_httpserver() {
     s->registerAction(new MainAction());
     s->registerAction(new IgorWSAction());
     s->registerAction(new ReloadAction());
-    s->registerAction(new StaticAction());
+    s->registerAction(new HttpActionStatic("data/web-ui/static/", igorStaticURL));
     s->setPort(8080);
     s->start();
 }

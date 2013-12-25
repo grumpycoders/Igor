@@ -222,6 +222,7 @@
     <ClCompile Include="Balau\src\Handle.cc" />
     <ClCompile Include="Balau\src\HelperTasks.cc" />
     <ClCompile Include="Balau\src\Http.cc" />
+    <ClCompile Include="Balau\src\HttpActionStatic.cc" />
     <ClCompile Include="Balau\src\HttpServer.cc" />
     <ClCompile Include="Balau\src\Input.cc" />
     <ClCompile Include="Balau\src\jsoncpp\src\json_reader.cpp" />
@@ -1223,6 +1224,7 @@
     <ClInclude Include="Balau\includes\Handle.h" />
     <ClInclude Include="Balau\includes\HelperTasks.h" />
     <ClInclude Include="Balau\includes\Http.h" />
+    <ClInclude Include="Balau\includes\HttpActionStatic.h" />
     <ClInclude Include="Balau\includes\HttpServer.h" />
     <ClInclude Include="Balau\includes\Input.h" />
     <ClInclude Include="Balau\includes\Local.h" />

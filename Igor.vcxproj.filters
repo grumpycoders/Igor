@@ -36,6 +36,9 @@
     <Filter Include="Third Party\regex">
       <UniqueIdentifier>{d4b91360-07e7-4010-849a-0f665dbfd852}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party\jsoncpp">
+      <UniqueIdentifier>{671f3225-145a-47ec-ac6e-570f6ba7368f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Balau\win32\zlib\adler32.c">
@@ -685,6 +688,15 @@
     </ClCompile>
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp">
       <Filter>Source Files\cpu\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\jsoncpp\src\json_reader.cpp">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\jsoncpp\src\json_value.cpp">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\src\jsoncpp\src\json_writer.cpp">
+      <Filter>Third Party\jsoncpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1444,6 +1456,33 @@
     <ClInclude Include="Balau\includes\SHA1.h">
       <Filter>Balau</Filter>
     </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\autolink.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\features.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\forwards.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\json.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\reader.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\value.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\writer.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\src\json_batchallocator.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\src\jsoncpp\include\json\config.h">
+      <Filter>Third Party\jsoncpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Balau\win32\iconv\aliases.gperf">
@@ -1481,6 +1520,15 @@
     </None>
     <None Include="Balau\win32\iconv\translit.def">
       <Filter>Third Party\iconv</Filter>
+    </None>
+    <None Include="Balau\src\jsoncpp\src\json_internalarray.inl">
+      <Filter>Third Party\jsoncpp</Filter>
+    </None>
+    <None Include="Balau\src\jsoncpp\src\json_internalmap.inl">
+      <Filter>Third Party\jsoncpp</Filter>
+    </None>
+    <None Include="Balau\src\jsoncpp\src\json_valueiterator.inl">
+      <Filter>Third Party\jsoncpp</Filter>
     </None>
   </ItemGroup>
 </Project>

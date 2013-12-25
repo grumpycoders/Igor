@@ -18,7 +18,7 @@
         background: #CDDDE9 url("/static/img/bgBody.gif") repeat-x top left;
       }
       .claro {
-        font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif; 
+        font: 12px Myriad, Helvetica, Tahoma, Arial, clean, sans-serif; 
         *font-size: 75%;
       }
       
@@ -141,14 +141,16 @@
         ]
       };
     </script>
-    <script src='{{dojo_path}}/dojo/dojo.js' data-dojo-config='has:{"dojo-firebug": true}, async: true'></script>
+    <script src='{{dojo_path}}/dojo/dojo.js'></script>
     <script>
       var reloadUIAction;
       var buildHexView;
       var buildDgridHexView;
       var showError;
+      var showNotification;
       var socket;
       var messageListeners = { }
+      var sendMessage;
 
       String.prototype.repeat = function(num) {
         return new Array(num + 1).join(this);
@@ -179,11 +181,12 @@
         'dojox/grid/DataGrid',
         'dojo/data/ItemFileWriteStore',
         'dgrid/Grid',
+        'dojo/dom-form',
         'dijit/dijit-all',
         'dojox/socket',
         'dojox/socket/Reconnect',
         'dojo/domReady!'],
-      function(dojo, dijit, lang, parser, dom, on, request, json, DataGrid, ItemFileWriteStore, Grid) {
+      function(dojo, dijit, lang, parser, dom, on, request, json, DataGrid, ItemFileWriteStore, Grid, domForm) {
         var errorDlg;
         var clock;
 
@@ -202,6 +205,11 @@
         showError = function(str) {
           errorDlg.set("content", str);
           errorDlg.show();
+        }
+        
+        showNotification = function(str) {
+          notifyDlg.set("content", str);
+          notifyDlg.show();
         }
 
         reloadUIAction = function() {
@@ -233,6 +241,11 @@
           title: "Error",
           style: "width: 300px"
         });
+        
+        notifyDlg = new dijit.Dialog({
+          title: "Notification",
+          style: "width: 300px"
+        });
 
         buildHexView = function(nCols) {
           var data = {
@@ -241,7 +254,7 @@
           }
 
           for (var r = 0; r < 20; r++) {
-            var row = { 'address': '{ "value": ' + (r * nCols) + ' }' }
+            var row = { address: '{ value: ' + (r * nCols) + ' }' }
             for (var c = 0; c < nCols; c++) {
               var cName = 'c' + c;
               var cell = { };
@@ -251,13 +264,13 @@
             data.items.push(row);
           }
 
-          var store = new ItemFileWriteStore({ 'data': data });
+          var store = new ItemFileWriteStore({ data: data });
 
-          var layout = [[ { 'name': ' ', 'field': 'address', 'width': '80px', 'formatter': formatterAddress } ]];
+          var layout = [[ { name: ' ', field: 'address', width: '80px', formatter: formatterAddress } ]];
 
           for (var c = 0; c < nCols; c++) {
             var cName = 'c' + c;
-            var col = { 'width': '20px', 'formatter': formatterContent, 'field': cName, 'name': ' ' };
+            var col = { width: '20px', formatter: formatterContent, field: cName, name: ' ' };
             layout[0][c + 1] = col;
           }
 
@@ -314,8 +327,17 @@
             clock.innerHTML = msg.clock;
           }
         });
+        
+        registerMessageListener('main', function(call, msg) {
+          if (call == 'notify') {
+            showNotification(msg.message);
+          }
+        });
+        
+        sendMessage = function(destination, call, data) {
+          socket.send(json.stringify({ destination: destination, call: call, data: data }));
+        }
       });
-
     </script>
   </head>
 
@@ -330,6 +352,12 @@
           <span>File</span>
           <div data-dojo-type='dijit/Menu'>
             <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: reloadUIAction'>Reload UI</div>
+          </div>
+        </div>
+        <div data-dojo-type='dijit/PopupMenuBarItem'>
+          <span>Network</span>
+          <div data-dojo-type='dijit/Menu'>
+            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: function() { broadcastEmitForm.reset(); broadcastEmitDialog.show(); }'>Broadcast</div>
           </div>
         </div>
         <div data-dojo-type='dijit/PopupMenuBarItem'>
@@ -362,6 +390,25 @@
           <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"right", layoutPriority:1' id='clock'>xx:xx</div>
         </div>
       </div>
+    </div>
+    
+    <div data-dojo-type='dijit/Dialog' data-dojo-id='broadcastEmitDialog' title='Broadcast message' style='display: none'>
+      <form data-dojo-type='dijit/form/Form' data-dojo-id='broadcastEmitForm'>
+        <script type='dojo/on' data-dojo-event='submit' data-dojo-args='e'>
+          e.preventDefault();
+          if (!broadcastEmitForm.isValid()) { return; }
+          sendMessage('main', 'broadcast', broadcastEmitForm.value);
+          broadcastEmitDialog.hide();
+        </script>
+        <div class='dijitDialogPaneContentArea'>
+          <label for='message'>Message: </label>
+          <input type='text' name='message' id='message' required='true' data-dojo-type='dijit/form/ValidationTextBox' />
+        </div>
+        <div class='dijitDialogPaneActionBar'>
+          <button data-dojo-type='dijit/form/Button' type='submit'>Ok</button>
+          <button data-dojo-type='dijit/form/Button' type='button' data-dojo-props='onClick:function() { broadcastEmitDialog.hide(); }'>Cancel</button>
+        </div>
+      </form>
     </div>
   </body>
 </html>

@@ -85,7 +85,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -122,7 +122,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -143,7 +143,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -224,6 +224,9 @@
     <ClCompile Include="Balau\src\Http.cc" />
     <ClCompile Include="Balau\src\HttpServer.cc" />
     <ClCompile Include="Balau\src\Input.cc" />
+    <ClCompile Include="Balau\src\jsoncpp\src\json_reader.cpp" />
+    <ClCompile Include="Balau\src\jsoncpp\src\json_value.cpp" />
+    <ClCompile Include="Balau\src\jsoncpp\src\json_writer.cpp" />
     <ClCompile Include="Balau\src\Local.cc" />
     <ClCompile Include="Balau\src\LuaBigInt.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -1245,6 +1248,15 @@
     <ClInclude Include="Balau\libev\ev_vars.h" />
     <ClInclude Include="Balau\libev\ev_wrap.h" />
     <ClInclude Include="Balau\msvc-config.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\autolink.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\config.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\features.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\forwards.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\json.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\reader.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\value.h" />
+    <ClInclude Include="Balau\src\jsoncpp\include\json\writer.h" />
+    <ClInclude Include="Balau\src\jsoncpp\src\json_batchallocator.h" />
     <ClInclude Include="Balau\win32\iconv\aliases.h" />
     <ClInclude Include="Balau\win32\iconv\aliases2.h" />
     <ClInclude Include="Balau\win32\iconv\aliases_aix.h" />
@@ -1458,6 +1470,9 @@
     <ClInclude Include="src\PELoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Balau\src\jsoncpp\src\json_internalarray.inl" />
+    <None Include="Balau\src\jsoncpp\src\json_internalmap.inl" />
+    <None Include="Balau\src\jsoncpp\src\json_valueiterator.inl" />
     <None Include="Balau\win32\iconv\aliases.gperf" />
     <None Include="Balau\win32\iconv\encodings.def" />
     <None Include="Balau\win32\iconv\encodings_aix.def" />

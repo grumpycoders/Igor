@@ -31,6 +31,7 @@ void IgorAnalysis::Do()
 			analyzeState.pCpu = pCpu;
 			analyzeState.pCpuState = pCpuState;
             analyzeState.pDataBase = m_pDatabase;
+            analyzeState.pAnalysis = this;
 
 			analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
 

@@ -162,8 +162,8 @@ s_igorDatabase * c_PELoader::loadPE(BFile reader, IgorAnalysis * analysis)
 
 	}
 
-	analysis->igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
     analysis->setDB(db);
+    analysis->igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
 
     success = true;
 

@@ -2,10 +2,13 @@
 
 #include "Igor.h"
 
+struct s_igorDatabase;
+class IgorAnalysis;
+
 class c_PELoader
 {
 public:
-	int loadPE(BFile reader);
+    s_igorDatabase * loadPE(BFile reader, IgorAnalysis *);
 	int loadOptionalHeader386(BFile reader);
 	int loadOptionalHeader64(BFile reader);
 

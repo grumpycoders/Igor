@@ -133,7 +133,7 @@ igor_result x86_opcode_call(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	pState->m_PC += 4;
 	jumpTarget += pState->m_PC;
 
-	IgorAnalysis::igor_add_code_analysis_task(jumpTarget);
+    pState->pAnalysis->igor_add_code_analysis_task(jumpTarget);
 
 	x86_analyse_result->m_numOperands = 1;
 	x86_analyse_result->m_operands[0].setAsAddress(jumpTarget);
@@ -201,7 +201,7 @@ igor_result x86_opcode_jmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	}
 	jumpTarget += pState->m_PC;
 
-	IgorAnalysis::igor_add_code_analysis_task(jumpTarget);
+    pState->pAnalysis->igor_add_code_analysis_task(jumpTarget);
 
 	x86_analyse_result->m_numOperands = 1;
 	x86_analyse_result->m_operands[0].setAsAddress(jumpTarget);
@@ -333,7 +333,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 			x86_analyse_result->m_operands[0].setAsRegister((e_register)registerIdx, OPERAND_32bit);
 			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U32, target);
 
-			igor_flag_address_as_u32(target);
+			pState->pAnalysis->igor_flag_address_as_u32(target);
 
 			break;
 		}
@@ -689,7 +689,7 @@ igor_result x86_opcode_j_varients(s_analyzeState* pState, c_cpu_x86_state* pX86S
 
 	u64 jumpTarget = pState->m_PC + jumpTargetS8;
 
-	IgorAnalysis::igor_add_code_analysis_task(jumpTarget);
+	pState->pAnalysis->igor_add_code_analysis_task(jumpTarget);
 
 	x86_analyse_result->m_numOperands = 1;
 	x86_analyse_result->m_operands[0].setAsAddress(jumpTarget);

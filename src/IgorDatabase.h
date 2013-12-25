@@ -11,7 +11,6 @@
 #include "cpu/cpuModule.h"
 
 typedef int igor_cpu_handle;
-igor_result igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle);
 
 struct s_analysisRequest
 {
@@ -25,7 +24,9 @@ struct s_igorDatabase
 	Balau::TQueue<s_analysisRequest> m_analysisRequests;
 	std::vector<s_igorSection*> m_sections;
 
-	c_cpu_module* getCpuForAddress(u64 PC);
+    igor_result igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle);
+    
+    c_cpu_module* getCpuForAddress(u64 PC);
 	c_cpu_state* getCpuStateForAddress(u64 PC);
 
 	s_igorSection* findSectionFromAddress(u64 address);
@@ -39,5 +40,3 @@ struct s_igorDatabase
 
 
 };
-
-s_igorDatabase* getCurrentIgorDatabase();

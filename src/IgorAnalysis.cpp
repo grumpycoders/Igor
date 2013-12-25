@@ -2,29 +2,27 @@
 
 void IgorAnalysis::igor_add_code_analysis_task(u64 PC)
 {
-	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
-
     s_analysisRequest * newAnalysisRequest = new s_analysisRequest(PC);
 
-	pDatabase->m_analysisRequests.push(newAnalysisRequest);
+	m_pDatabase->m_analysisRequests.push(newAnalysisRequest);
 }
 
 void IgorAnalysis::Do()
 {
-	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
-    s_analysisRequest * pRequest;
+    if (!m_pDatabase)
+        return;
 
     for (;;)
 	{
         m_status = RUNNING;
-        s_analysisRequest* pRequest = pDatabase->m_analysisRequests.pop();
+        s_analysisRequest* pRequest = m_pDatabase->m_analysisRequests.pop();
 
 		u64 currentPC = pRequest->m_pc;
 
         // if (currentPC == (u64) -1) m_status = STOPPING; // blah; something like that
 
-		c_cpu_module* pCpu = pDatabase->getCpuForAddress(currentPC);
-		c_cpu_state* pCpuState = pDatabase->getCpuStateForAddress(currentPC);
+		c_cpu_module* pCpu = m_pDatabase->getCpuForAddress(currentPC);
+        c_cpu_state* pCpuState = m_pDatabase->getCpuStateForAddress(currentPC);
 
 		if(pCpu)
 		{
@@ -32,7 +30,7 @@ void IgorAnalysis::Do()
 			analyzeState.m_PC = currentPC;
 			analyzeState.pCpu = pCpu;
 			analyzeState.pCpuState = pCpuState;
-			analyzeState.pDataBase = pDatabase;
+            analyzeState.pDataBase = m_pDatabase;
 
 			analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
 
@@ -57,17 +55,16 @@ void IgorAnalysis::Do()
 	}
 }
 
-igor_result igor_flag_address_as_u32(u64 virtualAddress)
+igor_result IgorAnalysis::igor_flag_address_as_u32(u64 virtualAddress)
 {
 	// TODO!
 
 	return IGOR_SUCCESS;
 }
 
-igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize)
+igor_result IgorAnalysis::igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize)
 {
-	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
-	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
+	s_igorSection* pSection = m_pDatabase->findSectionFromAddress(virtualAddress);
 
 	if (pSection == NULL)
 	{
@@ -97,10 +94,9 @@ igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionS
 	return IGOR_SUCCESS;
 }
 
-igor_result igor_is_address_flagged_as_code(u64 virtualAddress)
+igor_result IgorAnalysis::igor_is_address_flagged_as_code(u64 virtualAddress)
 {
-	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
-	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
+	s_igorSection* pSection = m_pDatabase->findSectionFromAddress(virtualAddress);
 
 	if (pSection == NULL)
 	{

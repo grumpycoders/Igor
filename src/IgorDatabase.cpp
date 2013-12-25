@@ -1,18 +1,9 @@
 #include "IgorDatabase.h"
 
-s_igorDatabase g_igorDatabase;
-
-s_igorDatabase* getCurrentIgorDatabase()
+igor_result s_igorDatabase::igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle)
 {
-	return &g_igorDatabase;
-}
-
-igor_result igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle)
-{
-	s_igorDatabase* pDatabase = getCurrentIgorDatabase();
-
-	outputCpuHandle = pDatabase->m_cpu_modules.size();
-	pDatabase->m_cpu_modules.push_back(pCpuModule);
+	outputCpuHandle = m_cpu_modules.size();
+	m_cpu_modules.push_back(pCpuModule);
 
 	return IGOR_SUCCESS;
 }

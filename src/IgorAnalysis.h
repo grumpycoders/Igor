@@ -6,21 +6,21 @@
 
 class IgorAnalysis : public Balau::Task {
 public:
-    static void igor_add_code_analysis_task(u64 PC);
-    static void stop() { igor_add_code_analysis_task((u64)-1); }
+    void igor_add_code_analysis_task(u64 PC);
+    void stop() { igor_add_code_analysis_task((u64)-1); }
     void Do();
     const char * getName() const { return "IgorAnalysis"; }
     bool isRunning() { return m_status == RUNNING; }
+    igor_result igor_flag_address_as_u32(u64 virtualAddress);
+    igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
+    igor_result igor_is_address_flagged_as_code(u64 virtualAddress);
+    void setDB(s_igorDatabase * db) { AAssert(m_pDatabase == NULL); m_pDatabase = db; }
+    s_igorDatabase * getDB() { return m_pDatabase; }
 private:
     enum {
         IDLE,
         RUNNING,
         STOPPING,
     } m_status;
+    s_igorDatabase * m_pDatabase = NULL;
 };
-
-extern IgorAnalysis * g_igorAnalysis;
-
-igor_result igor_flag_address_as_u32(u64 virtualAddress);
-igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
-igor_result igor_is_address_flagged_as_code(u64 virtualAddress);

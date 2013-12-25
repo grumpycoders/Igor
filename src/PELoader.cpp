@@ -49,8 +49,11 @@
 #define IMAGE_FILE_MACHINE_M32R              0x9041  // M32R little-endian
 #define IMAGE_FILE_MACHINE_CEE               0xC0EE
 
-int c_PELoader::loadPE(BFile reader)
+s_igorDatabase * c_PELoader::loadPE(BFile reader, IgorAnalysis * analysis)
 {
+    s_igorDatabase * db = new s_igorDatabase;
+    bool success = false;
+    ScopedLambda sl([&]() { if (!success) delete db; });
 	// DOS .EXE header
 	{
 		u16    e_magic = reader->readBEU16().get(); // Magic number
@@ -102,7 +105,7 @@ int c_PELoader::loadPE(BFile reader)
 
 	igor_cpu_handle cpuHandle;
 	c_cpu_x86* pCpu = new c_cpu_x86();
-	igor_add_cpu(pCpu, cpuHandle);
+    db->igor_add_cpu(pCpu, cpuHandle);
 
 	switch(m_Machine)
 	{
@@ -134,34 +137,37 @@ int c_PELoader::loadPE(BFile reader)
 		u32     Characteristics = reader->readU32().get();
 
 		igor_section_handle sectionHandle;
-		igor_create_section(m_ImageBase + VirtualAddress, Misc, sectionHandle);
+		igor_create_section(db, m_ImageBase + VirtualAddress, Misc, sectionHandle);
 
 		// IMAGE_SCN_CNT_CODE
 		if(Characteristics & 0x00000020)
 		{
-			igor_set_section_option(sectionHandle, IGOR_SECTION_OPTION_CODE);
+			igor_set_section_option(db, sectionHandle, IGOR_SECTION_OPTION_CODE);
 		}
 
 		//IMAGE_SCN_MEM_EXECUTE
 		if(Characteristics & 0x20000000)
 		{
-			igor_set_section_option(sectionHandle, IGOR_SECTION_OPTION_EXECUTE);
+            igor_set_section_option(db, sectionHandle, IGOR_SECTION_OPTION_EXECUTE);
 		}
 
 		//IMAGE_SCN_MEM_READ
 		if(Characteristics & 0x40000000)
 		{
-			igor_set_section_option(sectionHandle, IGOR_SECTION_OPTION_READ);
+            igor_set_section_option(db, sectionHandle, IGOR_SECTION_OPTION_READ);
 		}
 
 		reader->seek(PointerToRawData);
-		igor_load_section_data(sectionHandle, reader, SizeOfRawData);
+        igor_load_section_data(db, sectionHandle, reader, SizeOfRawData);
 
 	}
 
-	IgorAnalysis::igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
+	analysis->igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
+    analysis->setDB(db);
 
-	return 0;
+    success = true;
+
+	return db;
 }
 
 int c_PELoader::loadOptionalHeader386(BFile reader)

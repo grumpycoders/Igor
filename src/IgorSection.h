@@ -2,8 +2,10 @@
 
 #include "Igor.h"
 
+struct s_igorDatabase;
+
 // Public API
-igor_result igor_create_section(u64 virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
+igor_result igor_create_section(s_igorDatabase* pDatabase, u64 virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
 igor_result igor_set_section_name(igor_section_handle sectionHandle, const Balau::String& sectionName);
 
 enum e_igor_section_option
@@ -12,9 +14,9 @@ enum e_igor_section_option
 	IGOR_SECTION_OPTION_EXECUTE = 1<<1,
 	IGOR_SECTION_OPTION_READ = 1<<2,
 };
-igor_result igor_set_section_option(igor_section_handle sectionHandle, e_igor_section_option option);
+igor_result igor_set_section_option(s_igorDatabase* pDatabase, igor_section_handle sectionHandle, e_igor_section_option option);
 
-igor_result igor_load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size);
+igor_result igor_load_section_data(s_igorDatabase* pDatabase, igor_section_handle sectionHandle, BFile reader, u64 size);
 
 // Private
 struct s_igorSection
@@ -49,6 +51,4 @@ struct s_igorSection
 	u64 m_option;
 
 	u8* m_instructionSize;// Temporary. Size of instructions. 0 means unknown if it's an instruction or not.
-
-	//ALIGNED_CLASS_ALLOCATOR(16);
 };

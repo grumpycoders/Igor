@@ -31,13 +31,15 @@ void MainTask::Do() {
         file->forceRead(buffer, size);
         IO<Buffer> reader(new Buffer(buffer, file->getSize()));
 
+        IgorAnalysis * analysis = new IgorAnalysis();
+
         c_PELoader PELoader;
-        PELoader.loadPE(reader);
+        PELoader.loadPE(reader, analysis);
 
         reader->close();
         free(buffer);
 
-        TaskMan::registerTask(new IgorAnalysis());
+        TaskMan::registerTask(analysis);
     }
 
     igor_setup_httpserver();

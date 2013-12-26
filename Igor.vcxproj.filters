@@ -39,8 +39,1115 @@
     <Filter Include="Third Party\jsoncpp">
       <UniqueIdentifier>{671f3225-145a-47ec-ac6e-570f6ba7368f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party\tommath">
+      <UniqueIdentifier>{cba235e0-34ca-4f34-a54b-2a8cd24cf105}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt">
+      <UniqueIdentifier>{a73c9c09-71c4-4b14-bcd9-969c6d4286c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\prngs">
+      <UniqueIdentifier>{5c6a654b-2ef9-45ef-aec3-82716c75ad03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers">
+      <UniqueIdentifier>{2114c47b-f185-4596-aa58-c2968d213568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers\aes">
+      <UniqueIdentifier>{42872cc9-e2af-4bf4-bb52-2d226f281e6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers\safer">
+      <UniqueIdentifier>{2af45a2b-2332-4cef-88c1-14f8c0c0d494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\ciphers\twofish">
+      <UniqueIdentifier>{4f5b1702-dc69-466f-9a64-3a4bfeaa0c2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth">
+      <UniqueIdentifier>{a79e451c-142f-4008-a4c5-e455806ba507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\ccm">
+      <UniqueIdentifier>{e2418857-0b21-4c4e-a895-47edc857b213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\eax">
+      <UniqueIdentifier>{2451f8fc-d28c-4867-8833-c7edc9c32b66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\gcm">
+      <UniqueIdentifier>{bf03882a-17cb-42dd-af7e-170ae6c079e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\encauth\ocb">
+      <UniqueIdentifier>{2aa3e441-7338-4b61-8ef3-ff91a280b0e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes">
+      <UniqueIdentifier>{1aaedbd9-a28c-40d1-8a07-a653a8691145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes\helper">
+      <UniqueIdentifier>{da17fecc-af9b-4e5f-a39a-e0a0ace55ee0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes\sha2">
+      <UniqueIdentifier>{474fc416-1a6e-4d02-a609-6e4c65082378}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\hashes\whirl">
+      <UniqueIdentifier>{57cafb6e-b57f-43bf-a17d-e6e5e96604d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\headers">
+      <UniqueIdentifier>{724eee89-6b8d-4915-b531-8556185207fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac">
+      <UniqueIdentifier>{4885a1e4-e988-437c-ae78-5b77127260d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\f9">
+      <UniqueIdentifier>{33b528af-ba32-468a-b0bd-c603be5654c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\hmac">
+      <UniqueIdentifier>{cd5961f0-826c-40a1-b28f-0b6aa9398f47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\omac">
+      <UniqueIdentifier>{00ea2168-aec5-4979-b15a-078a3f86c87c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\pelican">
+      <UniqueIdentifier>{cc23d1a1-2c9a-4a1d-8bad-675162ee1fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\pmac">
+      <UniqueIdentifier>{83cdba51-45e6-42a1-9b5f-95d725e42c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\mac\xcbc">
+      <UniqueIdentifier>{2063a3d0-c6ed-4e44-a7b8-6d18fa348ab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\math">
+      <UniqueIdentifier>{2bead5d2-34df-4424-bbee-cbd651d94352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\math\fp">
+      <UniqueIdentifier>{c8bcd6ef-d908-46f1-85a0-b317b984b730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc">
+      <UniqueIdentifier>{13dc62ae-16b9-49b9-826c-b9e6d39cf492}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc\base64">
+      <UniqueIdentifier>{252784f3-0a52-4d08-a4c6-3f5a26b1233a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc\crypt">
+      <UniqueIdentifier>{19713d17-2f6b-4d97-9ecf-2d4432f602d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\misc\pkcs">
+      <UniqueIdentifier>{8af40d42-8874-427e-a43f-f26d87caf3f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes">
+      <UniqueIdentifier>{fd11e6d4-446e-4500-874c-a40573ef3da9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\cbc">
+      <UniqueIdentifier>{c95bca5e-6394-4fa9-8d2b-f3c79ae62d4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\cfb">
+      <UniqueIdentifier>{2476e2b6-043b-451c-bbf0-278f561b100e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\ctr">
+      <UniqueIdentifier>{6ee082ca-fc75-4070-a2c8-5ef3f9292de4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\ecb">
+      <UniqueIdentifier>{c9fdbdfb-a236-4196-9cb8-05055900d185}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\f8">
+      <UniqueIdentifier>{b7529c34-5cd4-44fe-be20-1841a0ec6168}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\lrw">
+      <UniqueIdentifier>{c37f3f41-e32f-40a4-9ba7-065d30e5badb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\ofb">
+      <UniqueIdentifier>{3801752d-33c9-4cbf-9191-1781aebbe681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\modes\xts">
+      <UniqueIdentifier>{cf87a4af-92ee-4152-ab8e-bba4f7cbdff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk">
+      <UniqueIdentifier>{c778d3fb-fcc4-4f9b-8c8c-6ae97c114789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1">
+      <UniqueIdentifier>{bf30492f-c3e3-4c89-9688-802384ca9308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der">
+      <UniqueIdentifier>{09027de2-7605-4ee7-b16e-20aa8705075a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\bit">
+      <UniqueIdentifier>{9e8ffd41-7ddb-4b00-b1b7-d313aaf0aca3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\boolean">
+      <UniqueIdentifier>{9e625695-02e6-44e3-aa0d-021a38611804}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\choice">
+      <UniqueIdentifier>{6e6366b0-be3a-456c-83c9-ffccb8f60169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\ia5">
+      <UniqueIdentifier>{07bea439-7ffe-4dce-b3f8-48cf1ad3a0db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\integer">
+      <UniqueIdentifier>{e78f604d-fd01-4ea9-b420-bd1e1e1ecd61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\object_identifier">
+      <UniqueIdentifier>{2a398f87-e675-4e28-8ec7-af92866708a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\octet">
+      <UniqueIdentifier>{566f706c-9c4d-467a-812d-c5df0bf06844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\printable_string">
+      <UniqueIdentifier>{9541d136-d60f-490f-a82a-ca5cb1e96f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\sequence">
+      <UniqueIdentifier>{db3c6a27-4b72-4dfc-9a80-d51f54649039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\set">
+      <UniqueIdentifier>{7c1c3b8c-0269-4af6-bb52-25933ebcfaf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\short_integer">
+      <UniqueIdentifier>{3d276fdb-ee27-44c9-ad7a-7a5b0eeb76d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\utctime">
+      <UniqueIdentifier>{8fe53eec-c03f-4160-a6d8-b17eee2ce47f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\asn1\der\utf8">
+      <UniqueIdentifier>{15551ca6-5520-4d12-890d-b8604faab2f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\dsa">
+      <UniqueIdentifier>{575ff91f-ebc9-4f4a-9dd2-db3701924bff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\ecc">
+      <UniqueIdentifier>{fa6f1b34-598c-425c-86bd-500c27f187a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\katja">
+      <UniqueIdentifier>{ad71cb4c-3e99-4ff1-a2ae-f9745c8393f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\pkcs1">
+      <UniqueIdentifier>{09784063-d53a-480e-ac7b-0745591227c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\rsa">
+      <UniqueIdentifier>{7e2d63e5-ae8a-416b-8bf7-bed329cd8418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\tomcrypt\pk\dh">
+      <UniqueIdentifier>{13015bf4-56e3-4e27-ab51-0f6857bbd452}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\anubis.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\blowfish.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\camellia.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\cast5.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\des.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\kasumi.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\khazad.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\kseed.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\multi2.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\noekeon.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\rc2.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\rc5.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\rc6.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\skipjack.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\xtea.c">
+      <Filter>Third Party\tomcrypt\ciphers</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\aes\aes_tab.c">
+      <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\aes\aes.c">
+      <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\safer\safer.c">
+      <Filter>Third Party\tomcrypt\ciphers\safer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\safer\safer_tab.c">
+      <Filter>Third Party\tomcrypt\ciphers\safer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\safer\saferp.c">
+      <Filter>Third Party\tomcrypt\ciphers\safer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\twofish\twofish.c">
+      <Filter>Third Party\tomcrypt\ciphers\twofish</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\twofish\twofish_tab.c">
+      <Filter>Third Party\tomcrypt\ciphers\twofish</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ccm\ccm_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\ccm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ccm\ccm_memory_ex.c">
+      <Filter>Third Party\tomcrypt\encauth\ccm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ccm\ccm_test.c">
+      <Filter>Third Party\tomcrypt\encauth\ccm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_addheader.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_decrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_decrypt_verify_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_done.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_encrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_encrypt_authenticate_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_init.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\eax\eax_test.c">
+      <Filter>Third Party\tomcrypt\encauth\eax</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_add_aad.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_add_iv.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_done.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_gf_mult.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_init.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_mult_h.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_process.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_reset.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\gcm\gcm_test.c">
+      <Filter>Third Party\tomcrypt\encauth\gcm</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_decrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_decrypt_verify_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_done_decrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_done_encrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_encrypt.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_encrypt_authenticate_memory.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_init.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_ntz.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_shift_xor.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\ocb_test.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\encauth\ocb\s_ocb_done.c">
+      <Filter>Third Party\tomcrypt\encauth\ocb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\chc\chc.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\md2.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\md4.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\md5.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\rmd128.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\rmd160.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\rmd256.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\rmd320.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\sha1.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\tiger.c">
+      <Filter>Third Party\tomcrypt\hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\helper\hash_file.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\helper\hash_filehandle.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\helper\hash_memory.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\helper\hash_memory_multi.c">
+      <Filter>Third Party\tomcrypt\hashes\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\sha2\sha224.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\sha2\sha256.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\sha2\sha384.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\sha2\sha512.c">
+      <Filter>Third Party\tomcrypt\hashes\sha2</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\whirl\whirl.c">
+      <Filter>Third Party\tomcrypt\hashes\whirl</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\hashes\whirl\whirltab.c">
+      <Filter>Third Party\tomcrypt\hashes\whirl</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\f9\f9_done.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\f9\f9_file.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\f9\f9_init.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\f9\f9_memory.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\f9\f9_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\f9\f9_process.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\f9\f9_test.c">
+      <Filter>Third Party\tomcrypt\mac\f9</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\hmac\hmac_done.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\hmac\hmac_file.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\hmac\hmac_init.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\hmac\hmac_memory.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\hmac\hmac_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\hmac\hmac_process.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\hmac\hmac_test.c">
+      <Filter>Third Party\tomcrypt\mac\hmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\omac\omac_done.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\omac\omac_file.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\omac\omac_init.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\omac\omac_memory.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\omac\omac_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\omac\omac_process.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\omac\omac_test.c">
+      <Filter>Third Party\tomcrypt\mac\omac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pelican\pelican.c">
+      <Filter>Third Party\tomcrypt\mac\pelican</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pelican\pelican_memory.c">
+      <Filter>Third Party\tomcrypt\mac\pelican</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pelican\pelican_test.c">
+      <Filter>Third Party\tomcrypt\mac\pelican</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_done.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_file.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_init.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_memory.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_ntz.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_process.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_shift_xor.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\pmac\pmac_test.c">
+      <Filter>Third Party\tomcrypt\mac\pmac</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\xcbc\xcbc_done.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\xcbc\xcbc_file.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\xcbc\xcbc_init.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\xcbc\xcbc_memory.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\xcbc\xcbc_memory_multi.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\xcbc\xcbc_process.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\mac\xcbc\xcbc_test.c">
+      <Filter>Third Party\tomcrypt\mac\xcbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\math\gmp_desc.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\math\ltm_desc.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\math\multi.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\math\rand_prime.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\math\tfm_desc.c">
+      <Filter>Third Party\tomcrypt\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\math\fp\ltc_ecc_fp_mulmod.c">
+      <Filter>Third Party\tomcrypt\math\fp</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\burn_stack.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\error_to_string.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\zeromem.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\base64\base64_decode.c">
+      <Filter>Third Party\tomcrypt\misc\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\base64\base64_encode.c">
+      <Filter>Third Party\tomcrypt\misc\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_argchk.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_cipher_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_cipher_is_valid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_cipher.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_cipher_any.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_cipher_id.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_hash.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_hash_any.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_hash_id.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_hash_oid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_find_prng.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_fsa.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_hash_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_hash_is_valid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_ltc_mp_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_prng_descriptor.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_prng_is_valid.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_register_cipher.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_register_hash.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_register_prng.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_unregister_cipher.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_unregister_hash.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\crypt\crypt_unregister_prng.c">
+      <Filter>Third Party\tomcrypt\misc\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\pkcs5\pkcs_5_1.c">
+      <Filter>Third Party\tomcrypt\misc\pkcs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\pkcs5\pkcs_5_2.c">
+      <Filter>Third Party\tomcrypt\misc\pkcs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cbc\cbc_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cbc\cbc_done.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cbc\cbc_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cbc\cbc_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cbc\cbc_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cbc\cbc_start.c">
+      <Filter>Third Party\tomcrypt\modes\cbc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cfb\cfb_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cfb\cfb_done.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cfb\cfb_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cfb\cfb_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cfb\cfb_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\cfb\cfb_start.c">
+      <Filter>Third Party\tomcrypt\modes\cfb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ctr\ctr_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ctr\ctr_done.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ctr\ctr_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ctr\ctr_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ctr\ctr_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ctr\ctr_start.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ctr\ctr_test.c">
+      <Filter>Third Party\tomcrypt\modes\ctr</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ecb\ecb_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ecb\ecb_done.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ecb\ecb_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ecb\ecb_start.c">
+      <Filter>Third Party\tomcrypt\modes\ecb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\f8\f8_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\f8\f8_done.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\f8\f8_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\f8\f8_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\f8\f8_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\f8\f8_start.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\f8\f8_test_mode.c">
+      <Filter>Third Party\tomcrypt\modes\f8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_done.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_process.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_start.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\lrw\lrw_test.c">
+      <Filter>Third Party\tomcrypt\modes\lrw</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ofb\ofb_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ofb\ofb_done.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ofb\ofb_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ofb\ofb_getiv.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ofb\ofb_setiv.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\ofb\ofb_start.c">
+      <Filter>Third Party\tomcrypt\modes\ofb</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\xts\xts_decrypt.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\xts\xts_done.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\xts\xts_encrypt.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\xts\xts_init.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\xts\xts_mult_x.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\modes\xts\xts_test.c">
+      <Filter>Third Party\tomcrypt\modes\xts</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\bit\der_decode_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\bit\der_encode_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\bit\der_length_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\boolean\der_decode_boolean.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\boolean</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\boolean\der_encode_boolean.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\boolean</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\boolean\der_length_boolean.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\boolean</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\choice\der_decode_choice.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\choice</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\ia5\der_decode_ia5_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\ia5</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\ia5\der_encode_ia5_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\ia5</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\ia5\der_length_ia5_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\ia5</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\integer\der_decode_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\integer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\integer\der_encode_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\integer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\integer\der_length_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\integer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\object_identifier\der_decode_object_identifier.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\object_identifier</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\object_identifier\der_encode_object_identifier.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\object_identifier</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\object_identifier\der_length_object_identifier.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\object_identifier</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\octet\der_decode_octet_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\octet</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\octet\der_encode_octet_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\octet</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\octet\der_length_octet_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\octet</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\printable_string\der_decode_printable_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\printable_string</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\printable_string\der_encode_printable_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\printable_string</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\printable_string\der_length_printable_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\printable_string</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_ex.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_flexi.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_multi.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_ex.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_multi.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_length_sequence.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_sequence_free.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\set\der_encode_set.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\set</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\set\der_encode_setof.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\set</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\short_integer\der_decode_short_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\short_integer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\short_integer\der_encode_short_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\short_integer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\short_integer\der_length_short_integer.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\short_integer</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\utctime\der_decode_utctime.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utctime</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\utctime\der_encode_utctime.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utctime</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\utctime\der_length_utctime.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utctime</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\utf8\der_decode_utf8_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\utf8\der_encode_utf8_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\utf8\der_length_utf8_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\utf8</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_export.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_free.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_import.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_shared_secret.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_sign_hash.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_verify_hash.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dsa\dsa_verify_key.c">
+      <Filter>Third Party\tomcrypt\pk\dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_ansi_x963_export.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_ansi_x963_import.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_export.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_free.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_get_size.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_import.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_shared_secret.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_sign_hash.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_sizes.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_test.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ecc_verify_hash.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_is_valid_idx.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_map.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_mul2add.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_mulmod.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_mulmod_timing.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_points.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_projective_add_point.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\ecc\ltc_ecc_projective_dbl_point.c">
+      <Filter>Third Party\tomcrypt\pk\ecc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\katja\katja_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\katja\katja_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\katja\katja_export.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\katja\katja_exptmod.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\katja\katja_free.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\katja\katja_import.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\katja\katja_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\katja</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_i2osp.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_mgf1.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_decode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_encode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_os2ip.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_decode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_encode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_decode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_encode.c">
+      <Filter>Third Party\tomcrypt\pk\pkcs1</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_decrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_encrypt_key.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_export.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_exptmod.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_free.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_import.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_make_key.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_sign_hash.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\rsa\rsa_verify_hash.c">
+      <Filter>Third Party\tomcrypt\pk\rsa</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\dh\dh.c">
+      <Filter>Third Party\tomcrypt\pk\dh</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\fortuna.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\rc4.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\rng_get_bytes.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\rng_make_prng.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\sober128.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\sober128tab.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\sprng.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\prngs\yarrow.c">
+      <Filter>Third Party\tomcrypt\prngs</Filter>
+    </ClCompile>
     <ClCompile Include="Balau\win32\zlib\adler32.c">
       <Filter>Third Party\zlib</Filter>
     </ClCompile>
@@ -680,7 +1787,7 @@
     <ClCompile Include="Balau\src\Base64.cc">
       <Filter>Balau</Filter>
     </ClCompile>
-    <ClCompile Include="Balau\src\SHA1.cc">
+    <ClCompile Include="Balau\src\BSHA1.cc">
       <Filter>Balau</Filter>
     </ClCompile>
     <ClCompile Include="Balau\src\BWebSocket.cc">
@@ -700,6 +1807,384 @@
     </ClCompile>
     <ClCompile Include="Balau\src\HttpActionStatic.cc">
       <Filter>Balau</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_error.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_fast_mp_invmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_fast_mp_montgomery_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_fast_s_mp_mul_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_fast_s_mp_mul_high_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_fast_s_mp_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_2expt.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_abs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_add.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_add_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_addmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_and.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_clamp.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_clear.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_clear_multi.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_cmp.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_cmp_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_cmp_mag.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_cnt_lsb.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_copy.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_count_bits.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_div.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_div_2.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_div_2d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_div_3.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_div_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_dr_is_modulus.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_dr_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_dr_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_exch.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_expt_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_exptmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_exptmod_fast.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_exteuclid.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_fread.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_fwrite.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_gcd.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_get_int.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_grow.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_init.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_init_copy.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_init_multi.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_init_set.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_init_set_int.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_init_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_invmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_invmod_slow.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_is_square.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_jacobi.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_karatsuba_mul.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_karatsuba_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_lcm.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_lshd.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mod_2d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mod_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_montgomery_calc_normalization.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_montgomery_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_montgomery_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mul.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mul_2.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mul_2d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mul_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_mulmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_n_root.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_neg.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_or.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_prime_fermat.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_prime_is_divisible.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_prime_is_prime.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_prime_miller_rabin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_prime_next_prime.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_prime_rabin_miller_trials.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_prime_random_ex.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_radix_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_radix_smap.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_rand.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_read_radix.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_read_signed_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_read_unsigned_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce_2k.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce_2k_l.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce_2k_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce_2k_setup_l.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce_is_2k.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce_is_2k_l.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_reduce_setup.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_rshd.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_set.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_set_int.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_shrink.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_signed_bin_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_sqrmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_sqrt.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_sub.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_sub_d.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_submod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_to_signed_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_to_signed_bin_n.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_to_unsigned_bin.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_to_unsigned_bin_n.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_toom_mul.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_toom_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_toradix.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_toradix_n.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_unsigned_bin_size.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_xor.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_mp_zero.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_prime_tab.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_reverse.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_s_mp_add.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_s_mp_exptmod.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_s_mp_mul_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_s_mp_mul_high_digs.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_s_mp_sqr.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bn_s_mp_sub.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtommath\bncore.c">
+      <Filter>Third Party\tommath</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\ciphers\aes\aes.c">
+      <Filter>Third Party\tomcrypt\cipher\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\bit\der_decode_raw_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\bit\der_encode_raw_bit_string.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\bit</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_decode_subject_public_key_info.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\pk\asn1\der\sequence\der_encode_subject_public_key_info.c">
+      <Filter>Third Party\tomcrypt\pk\asn1\der\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\libtomcrypt\src\misc\pk_get_oid.c">
+      <Filter>Third Party\tomcrypt\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\tomcrypt_aes_enc.c">
+      <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1456,7 +2941,7 @@
     <ClInclude Include="Balau\includes\BWebSocket.h">
       <Filter>Balau</Filter>
     </ClInclude>
-    <ClInclude Include="Balau\includes\SHA1.h">
+    <ClInclude Include="Balau\includes\BSHA1.h">
       <Filter>Balau</Filter>
     </ClInclude>
     <ClInclude Include="Balau\src\jsoncpp\include\json\autolink.h">
@@ -1488,6 +2973,54 @@
     </ClInclude>
     <ClInclude Include="Balau\includes\HttpActionStatic.h">
       <Filter>Balau</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtommath\tommath.h">
+      <Filter>Third Party\tommath</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtommath\tommath_class.h">
+      <Filter>Third Party\tommath</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtommath\tommath_superclass.h">
+      <Filter>Third Party\tommath</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_argchk.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_cfg.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_cipher.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_custom.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_hash.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_mac.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_macros.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_math.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_misc.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_pk.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_pkcs.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_prng.h">
+      <Filter>Third Party\tomcrypt\headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

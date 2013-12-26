@@ -134,8 +134,7 @@ IgorWSWorker::~IgorWSWorker() {
 void IgorWSWorker::receiveMessage(const uint8_t * msg, size_t len, bool binary) {
     if (binary) {
         Printer::log(M_DEBUG, "got binary message");
-    }
-    else {
+    } else {
         Printer::log(M_DEBUG, "got text message '%s'", msg);
         const char * jsonmsg = (const char *)msg;
         Json::Value root;
@@ -145,8 +144,7 @@ void IgorWSWorker::receiveMessage(const uint8_t * msg, size_t len, bool binary) 
             const std::string destination = root["destination"].asString();
             const std::string call = root["call"].asString();
             dispatch(destination, call, root["data"]);
-        }
-        else {
+        } else {
             Printer::log(M_WARNING, "Error parsing json message '%s'", msg);
         }
     }

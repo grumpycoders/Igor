@@ -709,7 +709,6 @@
     <ClCompile Include="Balau\src\Output.cc" />
     <ClCompile Include="Balau\src\Printer.cc" />
     <ClCompile Include="Balau\src\Selectable.cc" />
-    <ClCompile Include="Balau\src\BSHA1.cc" />
     <ClCompile Include="Balau\src\SimpleMustache.cc" />
     <ClCompile Include="Balau\src\Socket.cc" />
     <ClCompile Include="Balau\src\StdIO.cc">

@@ -1787,9 +1787,6 @@
     <ClCompile Include="Balau\src\Base64.cc">
       <Filter>Balau</Filter>
     </ClCompile>
-    <ClCompile Include="Balau\src\BSHA1.cc">
-      <Filter>Balau</Filter>
-    </ClCompile>
     <ClCompile Include="Balau\src\BWebSocket.cc">
       <Filter>Balau</Filter>
     </ClCompile>

@@ -1,6 +1,7 @@
 #include "IgorAnalysis.h"
 
 #include <Printer.h>
+#include "BString.h"
 using namespace Balau;
 
 void IgorAnalysis::igor_add_code_analysis_task(u64 PC)
@@ -70,6 +71,56 @@ void IgorAnalysis::Do()
 
         m_status = IDLE;
 		yieldNoWait();
+
+		// HACK: print the disassembly once crawl is finished
+		if (m_pDatabase->m_analysisRequests.isEmpty())
+		{
+			static bool bPrintDone = false; // do that stuff once
+			if (!bPrintDone)
+			{
+				bPrintDone = true;
+
+				// dump the section that contains symbol "entryPoint"
+				u64 entryPointPC = m_pDatabase->findSymbol("entryPoint");
+
+				if (entryPointPC != -1)
+				{
+					s_igorSection* pSection = m_pDatabase->findSectionFromAddress(entryPointPC);
+
+					s_analyzeState analyzeState;
+					analyzeState.m_PC = pSection->m_virtualAddress;
+					analyzeState.pCpu = pCpu;
+					analyzeState.pCpuState = pCpuState;
+					analyzeState.pDataBase = m_pDatabase;
+					analyzeState.pAnalysis = this;
+					analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();					
+
+					while (analyzeState.m_PC < pSection->m_virtualAddress + pSection->m_size)
+					{
+						if (igor_is_address_flagged_as_code(analyzeState.m_PC))
+						{
+							if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
+							{
+								break;
+							}
+
+							Balau::String disassembledString;
+							pCpu->printInstruction(&analyzeState, disassembledString);
+
+							Printer::log(M_INFO, disassembledString);
+
+							analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
+						}
+						else
+						{
+							analyzeState.m_PC++;
+						}
+					}
+
+					delete analyzeState.m_cpu_analyse_result;
+				}
+			}
+		}
 	}
 }
 

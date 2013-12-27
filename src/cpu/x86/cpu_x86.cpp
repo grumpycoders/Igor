@@ -85,8 +85,6 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 
 	result.m_instructionSize = pState->m_PC - result.m_startOfInstruction;
 
-	printInstruction(&result);
-
 	return IGOR_SUCCESS;
 }
 
@@ -131,13 +129,12 @@ const char* c_cpu_x86::getMnemonicName(e_x86_mnemonic mnemonic)
     return t->second;
 }
 
-void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
+igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& instructionString)
 {
-	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)result;
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 
 	const char* mnemonicString = getMnemonicName(x86_analyse_result->m_mnemonic);
 	
-	Balau::String instructionString;
 	instructionString.set("0x%08llX: ", x86_analyse_result->m_startOfInstruction);
 
 	if (x86_analyse_result->m_lockPrefix)
@@ -264,7 +261,7 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 		instructionString += operandString;
 	}
 
-	Printer::log(M_INFO, instructionString);
+	return IGOR_SUCCESS;
 }
 
 void s_x86_operand::setAsRegisterRM(s_analyzeState* pState, e_operandSize size)

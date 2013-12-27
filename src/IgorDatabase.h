@@ -112,6 +112,8 @@ struct s_igorDatabase
 	igor_result readS8(u64 address, s8& output);
 	igor_result readU8(u64 address, u8& output);
 
+	u64 findSymbol(const char* symbolName);
+
 	s32 readS32(u64 address)
 	{
 		s32 output;

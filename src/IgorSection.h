@@ -34,13 +34,13 @@ struct s_igorSection
 
 	~s_igorSection()
 	{
-		delete[] m_rawData;
-		delete[] m_instructionSize;
+		if (m_instructionSize)
+			free(m_instructionSize);
 	}
 
 	void createInstructionArray()
 	{
-		m_instructionSize = new u8[m_size];
+		m_instructionSize = (u8*)malloc(m_size);
 		memset(m_instructionSize, 0, m_size);
 	}
 

@@ -9,7 +9,7 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState)
 {
 	s_mod_reg_rm resultModRegRm;
 
-	if (pState->pDataBase->readByte(pState->m_PC++, resultModRegRm.RAW_VALUE) != IGOR_SUCCESS)
+	if (pState->pDataBase->readU8(pState->m_PC++, resultModRegRm.RAW_VALUE) != IGOR_SUCCESS)
 	{
 		throw X86AnalysisException("Failed to read GET_MOD_REG_RM!");
 	}
@@ -887,7 +887,7 @@ igor_result x86_opcode_F(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 
 {
 	u8 currentByteF = 0;
 
-	if (pState->pDataBase->readByte(pState->m_PC++, currentByteF) != IGOR_SUCCESS)
+	if (pState->pDataBase->readU8(pState->m_PC++, currentByteF) != IGOR_SUCCESS)
 	{
 		return IGOR_FAILURE;
 	}

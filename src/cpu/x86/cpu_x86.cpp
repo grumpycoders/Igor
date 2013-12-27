@@ -27,8 +27,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 		pState->pCpuState = pX86State;
 	}
 
-	c_x86_analyse_result result;
-
+	c_x86_analyse_result& result = *(c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	result.m_startOfInstruction = pState->m_PC;
 
 	pState->m_cpu_analyse_result = &result;
@@ -39,7 +38,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	do 
 	{
 		bIsPrefix = false;
-		if (pState->pDataBase->readByte(pState->m_PC++, currentByte) != IGOR_SUCCESS)
+		if (pState->pDataBase->readU8(pState->m_PC++, currentByte) != IGOR_SUCCESS)
 		{
 			return IGOR_FAILURE;
 		}

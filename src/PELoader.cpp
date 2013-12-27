@@ -49,11 +49,25 @@
 #define IMAGE_FILE_MACHINE_M32R              0x9041  // M32R little-endian
 #define IMAGE_FILE_MACHINE_CEE               0xC0EE
 
-s_igorDatabase * c_PELoader::loadPE(BFile reader, IgorAnalysis * analysis)
+#define IMAGE_DIRECTORY_ENTRY_EXPORT          0   // Export Directory
+#define IMAGE_DIRECTORY_ENTRY_IMPORT          1   // Import Directory
+#define IMAGE_DIRECTORY_ENTRY_RESOURCE        2   // Resource Directory
+#define IMAGE_DIRECTORY_ENTRY_EXCEPTION       3   // Exception Directory
+#define IMAGE_DIRECTORY_ENTRY_SECURITY        4   // Security Directory
+#define IMAGE_DIRECTORY_ENTRY_BASERELOC       5   // Base Relocation Table
+#define IMAGE_DIRECTORY_ENTRY_DEBUG           6   // Debug Directory
+#define IMAGE_DIRECTORY_ENTRY_ARCHITECTURE    7   // Architecture Specific Data
+#define IMAGE_DIRECTORY_ENTRY_GLOBALPTR       8   // RVA of GP
+#define IMAGE_DIRECTORY_ENTRY_TLS             9   // TLS Directory
+#define IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG    10   // Load Configuration Directory
+#define IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT   11   // Bound Import Directory in headers
+#define IMAGE_DIRECTORY_ENTRY_IAT            12   // Import Address Table
+#define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   13   // Delay Load Import Descriptors
+#define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14   // COM Runtime descriptor
+
+igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorAnalysis * analysis)
 {
-    s_igorDatabase * db = new s_igorDatabase;
     bool success = false;
-    ScopedLambda sl([&]() { if (!success) delete db; });
 	// DOS .EXE header
 	{
 		u16    e_magic = reader->readBEU16().get(); // Magic number
@@ -137,37 +151,38 @@ s_igorDatabase * c_PELoader::loadPE(BFile reader, IgorAnalysis * analysis)
 		u32     Characteristics = reader->readU32().get();
 
 		igor_section_handle sectionHandle;
-		igor_create_section(db, m_ImageBase + VirtualAddress, Misc, sectionHandle);
+		db->create_section(m_ImageBase + VirtualAddress, Misc, sectionHandle);
 
 		// IMAGE_SCN_CNT_CODE
 		if(Characteristics & 0x00000020)
 		{
-			igor_set_section_option(db, sectionHandle, IGOR_SECTION_OPTION_CODE);
+			db->set_section_option(sectionHandle, IGOR_SECTION_OPTION_CODE);
 		}
 
 		//IMAGE_SCN_MEM_EXECUTE
 		if(Characteristics & 0x20000000)
 		{
-            igor_set_section_option(db, sectionHandle, IGOR_SECTION_OPTION_EXECUTE);
+			db->set_section_option(sectionHandle, IGOR_SECTION_OPTION_EXECUTE);
 		}
 
 		//IMAGE_SCN_MEM_READ
 		if(Characteristics & 0x40000000)
 		{
-            igor_set_section_option(db, sectionHandle, IGOR_SECTION_OPTION_READ);
+			db->set_section_option(sectionHandle, IGOR_SECTION_OPTION_READ);
 		}
 
 		reader->seek(PointerToRawData);
-        igor_load_section_data(db, sectionHandle, reader, SizeOfRawData);
-
+		db->load_section_data(sectionHandle, reader, SizeOfRawData);
 	}
+
+	loadImports(db, reader);
+
+	db->declare_name(m_ImageBase + m_EntryPoint, "entryPoint");
 
     analysis->setDB(db);
     analysis->igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
 
-    success = true;
-
-	return db;
+	return IGOR_SUCCESS;
 }
 
 int c_PELoader::loadOptionalHeader386(BFile reader)
@@ -209,19 +224,10 @@ int c_PELoader::loadOptionalHeader386(BFile reader)
 	// this should always be 16, read http://opcode0x90.wordpress.com/2007/04/22/windows-loader-does-it-differently/
 	TAssert(NumberOfRvaAndSizes == 0x10);
 
-	//IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
-
-	struct IMAGE_DATA_DIRECTORY
-	{
-		u32     VirtualAddress;
-		u32     Size;
-	} imageDirectory[16];
-
-	//IMAGE_DATA_DIRECTORY
 	for(int i=0; i<16; i++)
 	{
-		imageDirectory[i].VirtualAddress = reader->readU32().get();
-		imageDirectory[i].Size = reader->readU32().get();
+		m_imageDirectory[i].VirtualAddress = reader->readU32().get();
+		m_imageDirectory[i].Size = reader->readU32().get();
 	}
 
 	return 0;
@@ -265,37 +271,57 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
 	// this should always be 16, read http://opcode0x90.wordpress.com/2007/04/22/windows-loader-does-it-differently/
 	TAssert(NumberOfRvaAndSizes == 0x10);
 
-	/*
-	#define IMAGE_DIRECTORY_ENTRY_EXPORT          0   // Export Directory
-	#define IMAGE_DIRECTORY_ENTRY_IMPORT          1   // Import Directory
-	#define IMAGE_DIRECTORY_ENTRY_RESOURCE        2   // Resource Directory
-	#define IMAGE_DIRECTORY_ENTRY_EXCEPTION       3   // Exception Directory
-	#define IMAGE_DIRECTORY_ENTRY_SECURITY        4   // Security Directory
-	#define IMAGE_DIRECTORY_ENTRY_BASERELOC       5   // Base Relocation Table
-	#define IMAGE_DIRECTORY_ENTRY_DEBUG           6   // Debug Directory
-	//      IMAGE_DIRECTORY_ENTRY_COPYRIGHT       7   // (X86 usage)
-	#define IMAGE_DIRECTORY_ENTRY_ARCHITECTURE    7   // Architecture Specific Data
-	#define IMAGE_DIRECTORY_ENTRY_GLOBALPTR       8   // RVA of GP
-	#define IMAGE_DIRECTORY_ENTRY_TLS             9   // TLS Directory
-	#define IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG    10   // Load Configuration Directory
-	#define IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT   11   // Bound Import Directory in headers
-	#define IMAGE_DIRECTORY_ENTRY_IAT            12   // Import Address Table
-	#define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   13   // Delay Load Import Descriptors
-	#define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14   // COM Runtime descriptor
-	*/
-
-	struct IMAGE_DATA_DIRECTORY
-	{
-		u32     VirtualAddress;
-		u32     Size;
-	} imageDirectory[16];
-
 	//IMAGE_DATA_DIRECTORY
 	for(int i=0; i<16; i++)
 	{
-		imageDirectory[i].VirtualAddress = reader->readU32().get();
-		imageDirectory[i].Size = reader->readU32().get();
+		m_imageDirectory[i].VirtualAddress = reader->readU32().get();
+		m_imageDirectory[i].Size = reader->readU32().get();
 	}
 
 	return 0;
+}
+
+void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
+{
+	IMAGE_DATA_DIRECTORY* pImportDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+
+	u64 importTableVA = pImportDirectory->VirtualAddress + m_ImageBase;
+
+	while (importTableVA < pImportDirectory->VirtualAddress + m_ImageBase + pImportDirectory->Size)
+	{
+		u32 originalFirstThunkRVA = db->readU32(importTableVA); importTableVA += 4;
+
+		if (originalFirstThunkRVA == 0)
+			break;
+
+		u32 timestamp = db->readU32(importTableVA); importTableVA += 4;
+		u32 forwardChain = db->readU32(importTableVA); importTableVA += 4;
+		u32 nameRVA = db->readU32(importTableVA); importTableVA += 4;
+		u32 firstThunkRVA = db->readU32(importTableVA); importTableVA += 4;
+
+		Balau::String name;
+		db->readString(nameRVA + m_ImageBase, name);
+
+		u32 importFunctionIndex = 0;
+		u64 thunkVA = originalFirstThunkRVA + m_ImageBase;
+		while (u32 functionNameRVA = db->readU32(thunkVA))
+		{
+			thunkVA += 4;
+
+			if (functionNameRVA & 0x80000000)
+			{
+			}
+			else
+			{
+				u16 functionId = db->readU16(functionNameRVA + m_ImageBase);
+				Balau::String functionName;
+				db->readString(functionNameRVA + m_ImageBase + 2, functionName);
+
+				db->declare_variable(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex, s_igorDatabase::TYPE_U32); // should we have a db type like "function pointer"?
+				db->declare_name(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex, functionName);
+			}
+
+			importFunctionIndex++;
+		}
+	}
 }

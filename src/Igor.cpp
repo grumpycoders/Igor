@@ -33,8 +33,10 @@ void MainTask::Do() {
 
         IgorAnalysis * analysis = new IgorAnalysis();
 
+		s_igorDatabase * db = new s_igorDatabase;
+
         c_PELoader PELoader;
-        PELoader.loadPE(reader, analysis);
+		PELoader.loadPE(db, reader, analysis);
 
         reader->close();
         free(buffer);

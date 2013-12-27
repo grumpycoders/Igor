@@ -1,5 +1,8 @@
 #include "IgorAnalysis.h"
 
+#include <Printer.h>
+using namespace Balau;
+
 void IgorAnalysis::igor_add_code_analysis_task(u64 PC)
 {
     s_analysisRequest * newAnalysisRequest = new s_analysisRequest(PC);
@@ -32,6 +35,7 @@ void IgorAnalysis::Do()
 			analyzeState.pCpuState = pCpuState;
             analyzeState.pDataBase = m_pDatabase;
             analyzeState.pAnalysis = this;
+			analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
 			analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
 
@@ -48,7 +52,20 @@ void IgorAnalysis::Do()
 				}
 
 				igor_flag_address_as_instruction(analyzeState.m_cpu_analyse_result->m_startOfInstruction, analyzeState.m_cpu_analyse_result->m_instructionSize);
+
+				s_igorDatabase::s_symbolDefinition* pSymbol = m_pDatabase->get_Symbol(analyzeState.m_cpu_analyse_result->m_startOfInstruction);
+				if (pSymbol)
+				{
+					if (pSymbol->m_name.strlen())
+					{
+						Printer::log(M_INFO, pSymbol->m_name);
+					}
+				}
+				
 			} while (analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
+
+			delete analyzeState.m_cpu_analyse_result;
+			analyzeState.m_cpu_analyse_result = NULL;
 		}
 
         m_status = IDLE;

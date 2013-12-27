@@ -342,6 +342,7 @@ class c_cpu_x86 : public c_cpu_module
 public:
 
 	igor_result analyze(s_analyzeState* pState);
+	c_cpu_analyse_result* allocateCpuSpecificAnalyseResult(){ return new c_x86_analyse_result; }
 
 	const char* getRegisterName(e_operandSize size, u8 regIndex, bool sizeOverride = false);
 	const char* getMnemonicName(e_x86_mnemonic mnemonic);

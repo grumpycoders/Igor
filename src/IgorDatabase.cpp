@@ -33,27 +33,6 @@ s_igorSection* s_igorDatabase::findSectionFromAddress(u64 address)
 	return NULL;
 }
 
-igor_result s_igorDatabase::readByte(u64 address, u8& outputByte)
-{
-	s_igorSection* pSection = findSectionFromAddress(address);
-
-	if(pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
-
-	u64 rawOffset = address - pSection->m_virtualAddress;
-
-	if(rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
-
-	outputByte = pSection->m_rawData[rawOffset];
-
-	return IGOR_SUCCESS;
-}
-
 igor_result s_igorDatabase::readS32(u64 address, s32& output)
 {
 	s_igorSection* pSection = findSectionFromAddress(address);
@@ -183,4 +162,87 @@ igor_result s_igorDatabase::readU8(u64 address, u8& output)
 
 	return IGOR_SUCCESS;
 
+}
+
+igor_result s_igorDatabase::create_section(u64 virtualAddress, u64 size, igor_section_handle& sectionHandle)
+{
+	sectionHandle = m_sections.size();
+	s_igorSection* pNewSection = new s_igorSection;
+	m_sections.push_back(pNewSection);
+
+	pNewSection->m_virtualAddress = virtualAddress;
+	pNewSection->m_size = size;
+
+	return IGOR_SUCCESS;
+}
+
+igor_result s_igorDatabase::set_section_option(igor_section_handle sectionHandle, e_igor_section_option option)
+{
+	s_igorSection* pSection = m_sections[sectionHandle];
+
+	pSection->m_option |= option;
+
+	return IGOR_SUCCESS;
+}
+
+igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size)
+{
+	s_igorSection* pSection = m_sections[sectionHandle];
+
+	pSection->m_rawData = new u8[size];
+	reader->read(pSection->m_rawData, size);
+	pSection->m_rawDataSize = size;
+
+	return IGOR_SUCCESS;
+}
+
+int s_igorDatabase::readString(u64 address, Balau::String& outputString)
+{
+	int length = 0;
+	s8 currentChar;
+	do 
+	{
+		currentChar = readS8(address++);
+
+		if (currentChar)
+		{
+			length++;
+		}
+		outputString.append("%c", currentChar);
+
+	} while (currentChar);
+
+	return length;
+}
+
+igor_result s_igorDatabase::declare_symbolType(u64 virtualAddress, e_symbolType type)
+{
+	return IGOR_SUCCESS;
+}
+
+igor_result s_igorDatabase::declare_variable(u64 virtualAddress, e_baseTypes type)
+{
+	s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
+
+	symbol.m_type = SYMBOL_VARIABLE;
+	symbol.m_variable.initAs(type);
+
+	return IGOR_SUCCESS;
+}
+
+igor_result s_igorDatabase::declare_name(u64 virtualAddress, Balau::String name)
+{
+	s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
+
+	symbol.m_name = name;
+
+	return IGOR_SUCCESS;
+}
+
+s_igorDatabase::s_symbolDefinition* s_igorDatabase::get_Symbol(u64 virtualAddress)
+{
+	auto t = m_symbolMap.find(virtualAddress);
+	if (t == m_symbolMap.end())
+		return NULL;
+	return &t->second;
 }

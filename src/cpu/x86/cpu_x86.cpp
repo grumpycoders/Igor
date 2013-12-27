@@ -28,6 +28,8 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	}
 
 	c_x86_analyse_result& result = *(c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	result.reset();
+
 	result.m_startOfInstruction = pState->m_PC;
 
 	pState->m_cpu_analyse_result = &result;
@@ -52,6 +54,14 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 		case 0x66:
 			bIsPrefix = true;
 			result.m_sizeOverride = true;
+			break;
+		case 0xF0:
+			bIsPrefix = true;
+			result.m_lockPrefix = true;
+			break;
+		case 0xF3:
+			bIsPrefix = true;
+			result.m_repPrefix = true;
 			break;
 		default:
 			break;
@@ -100,9 +110,11 @@ static const std::map<e_x86_mnemonic, const char *> s_mnemonics {
     MKNAME(JNB),    MKNAME(JBE),    MKNAME(JNBE),   MKNAME(JS),
     MKNAME(JNS),    MKNAME(JP),     MKNAME(JNP),    MKNAME(JL),
     MKNAME(JNL),    MKNAME(JLE),    MKNAME(JNLE),   MKNAME(ADD),
-    MKNAME(SETZ),   MKNAME(MOVZX),
+	MKNAME(SETZ),	MKNAME(MOVZX),	MKNAME(CMPXCHG),MKNAME(INT),
+	MKNAME(XCHG),	MKNAME(STOSD),	MKNAME(MOVSB),	MKNAME(MOVSD),
+	MKNAME(DIV),
 
-    MKNAME(PXOR),   MKNAME(MOVQ),   MKNAME(MOVDQA),
+    MKNAME(PXOR),   MKNAME(MOVQ),   MKNAME(MOVDQA)
 };
 
 #undef MKNAME
@@ -126,7 +138,19 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 	const char* mnemonicString = getMnemonicName(x86_analyse_result->m_mnemonic);
 	
 	Balau::String instructionString;
-	instructionString.set("0x%08llX: %s", x86_analyse_result->m_startOfInstruction, mnemonicString);
+	instructionString.set("0x%08llX: ", x86_analyse_result->m_startOfInstruction);
+
+	if (x86_analyse_result->m_lockPrefix)
+	{
+		instructionString.append("LOCK ");
+	}
+
+	if (x86_analyse_result->m_repPrefix)
+	{
+		instructionString.append("REP ");
+	}
+
+	instructionString.append("%s", mnemonicString);
 
 	const char* segmentString = "";
 
@@ -140,7 +164,6 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 	default:
 		Failure("unknown semgment override");
 	}
-
 	for (int i = 0; i < x86_analyse_result->m_numOperands; i++)
 	{
 		Balau::String operandString;
@@ -166,11 +189,7 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 					u8 SIB_BASE = pOperand->m_registerRM.m_mod_reg_rm.getSIBBase();
 					const char* baseString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_BASE);
 
-					if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 4)
-					{
-						operandString.set("[%s+%d]", baseString, pOperand->m_registerRM.m_mod_reg_rm.offset);
-					}
-					else
+					if (pOperand->m_registerRM.m_mod_reg_rm.getMod() == 0)
 					{
 						u8 SIB_SCALE = pOperand->m_registerRM.m_mod_reg_rm.getSIBScale();
 						u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
@@ -178,7 +197,24 @@ void c_cpu_x86::printInstruction(c_cpu_analyse_result* result)
 
 						const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
 
-						operandString.set("[%s+%s*%d+%d]", baseString, indexString, multiplier, pOperand->m_registerRM.m_mod_reg_rm.offset);
+						operandString.set("0x%08llX[%s*%d]", pOperand->m_registerRM.m_mod_reg_rm.offset, indexString, multiplier);
+					}
+					else
+					{
+						if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 4)
+						{
+							operandString.set("[%s+%d]", baseString, pOperand->m_registerRM.m_mod_reg_rm.offset);
+						}
+						else
+						{
+							u8 SIB_SCALE = pOperand->m_registerRM.m_mod_reg_rm.getSIBScale();
+							u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
+							u8 multiplier = 1 << SIB_SCALE;
+
+							const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
+
+							operandString.set("[%s+%s*%d+%d]", baseString, indexString, multiplier, pOperand->m_registerRM.m_mod_reg_rm.offset);
+						}
 					}
 				}
 				else
@@ -250,10 +286,27 @@ void s_x86_operand::setAsRegisterRM(s_analyzeState* pState, e_operandSize size)
 	else
 	{
 		// should do the address override here
-		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+		m_registerRM.m_operandSize = x86_analyse_result->getDefaultAddressSize();
 	}
 	
 	m_registerRM.m_mod_reg_rm = x86_analyse_result->m_mod_reg_rm;
+}
+
+void s_x86_operand::setAsRegister(s_analyzeState* pState, e_register registerIndex, e_operandSize size)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_register;
+
+	if (x86_analyse_result->m_sizeOverride)
+	{
+		m_register.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
+	}
+	else
+	{
+		m_register.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
+	}
+
+	m_register.m_registerIndex = registerIndex;
 }
 
 void s_x86_operand::setAsRegisterR(s_analyzeState* pState, e_operandSize size)
@@ -352,4 +405,68 @@ void s_x86_operand::setAsAddressRel(s_analyzeState* pState, e_operandSize size, 
 
 	m_address.m_addressValue = address;
 	m_address.m_dereference = dereference;
+}
+
+void s_x86_operand::setAsImmediate(s_analyzeState* pState, e_operandSize size)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	m_type = type_immediate;
+
+	if (x86_analyse_result->m_sizeOverride)
+	{
+		size = x86_analyse_result->getAlternateOperandSize(size);
+	}
+	else
+	{
+		size = x86_analyse_result->getDefaultOperandSize(size);
+	}
+
+	u64 immediateValue = 0;
+
+	e_immediateSize immediateSize = IMMEDIATE_U32;
+
+	switch (size)
+	{
+	case OPERAND_32bit:
+		{
+			u32 immediate = 0;
+			if (pState->pDataBase->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
+				throw X86AnalysisException("Failure in setAsImmediate!");
+
+			pState->m_PC += 4;
+
+			immediateValue = immediate;
+			immediateSize = IMMEDIATE_U32;
+			break;
+		}
+	case OPERAND_16bit:
+		{
+			u16 immediate = 0;
+			if (pState->pDataBase->readU16(pState->m_PC, immediate) != IGOR_SUCCESS)
+				throw X86AnalysisException("Failure in setAsImmediate!");
+
+			pState->m_PC += 2;
+
+			immediateValue = immediate;
+			immediateSize = IMMEDIATE_U16;
+			break;
+		}
+	case OPERAND_8bit:
+		{
+			u8 immediate = 0;
+			if (pState->pDataBase->readU8(pState->m_PC, immediate) != IGOR_SUCCESS)
+				throw X86AnalysisException("Failure in setAsImmediate!");
+
+			pState->m_PC += 1;
+
+			immediateValue = immediate;
+			immediateSize = IMMEDIATE_U8;
+			break;
+		}
+	default:
+		throw X86AnalysisException("Failure in setAsImmediate!");
+	}
+
+	m_immediate.m_immediateSize = immediateSize;
+	m_immediate.m_immediateValue = immediateValue;
 }

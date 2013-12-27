@@ -74,6 +74,13 @@ enum e_x86_mnemonic
 	INST_X86_ADD,
 	INST_X86_SETZ,
 	INST_X86_MOVZX,
+	INST_X86_CMPXCHG,
+	INST_X86_INT,
+	INST_X86_XCHG,
+	INST_X86_STOSD,
+	INST_X86_MOVSD,
+	INST_X86_MOVSB,
+	INST_X86_DIV,
 
 	INST_X86_PXOR,
 	INST_X86_MOVQ,
@@ -150,7 +157,7 @@ struct s_mod_reg_rm
 {
 	u8 RAW_VALUE;
 	u8 SIB;
-	s32 offset;
+	s64 offset;
 
 	u8 getREGRaw()
 	{
@@ -224,12 +231,7 @@ struct s_x86_operand
 		} m_address;
 	};
 
-	void setAsRegister(e_register registerIndex, e_operandSize size = OPERAND_Default)
-	{
-		m_type = type_register;
-		m_register.m_operandSize = size;
-		m_register.m_registerIndex = registerIndex;
-	}
+	void setAsRegister(s_analyzeState* pState, e_register registerIndex, e_operandSize size = OPERAND_Default);
 
 	void setAsRegisterRM(s_mod_reg_rm modRegRm, e_operandSize size = OPERAND_Default)
 	{
@@ -266,6 +268,7 @@ struct s_x86_operand
 	}
 
 	void setAsAddressRel(s_analyzeState* pState, e_operandSize size = OPERAND_16_32, bool dereference = false);
+	void setAsImmediate(s_analyzeState* pState, e_operandSize size = OPERAND_16_32);
 
 	void setAsAddress(u64 address, bool dereference = false)
 	{
@@ -293,12 +296,19 @@ public:
 
 	c_x86_analyse_result()
 	{
+		reset();
+	}
+
+	void reset()
+	{
 		m_startOfInstruction = -1;
 		m_mnemonic = INST_X86_UNDEF;
 		m_numOperands = 0;
 		m_segmentOverride = SEGMENT_OVERRIDE_NONE;
 		m_sizeOverride = false;
 		memset(&m_mod_reg_rm, 0xCD, sizeof(s_mod_reg_rm));
+		m_lockPrefix = false;
+		m_repPrefix = false;
 	}
 
 	e_operandSize getAlternateOperandSize(e_operandSize inputSize)
@@ -329,12 +339,19 @@ public:
 		return inputSize;
 	}
 
+	e_operandSize getDefaultAddressSize()
+	{
+		return OPERAND_32bit;
+	}
+
 	e_x86_mnemonic m_mnemonic;
 	u8 m_numOperands;
 	s_x86_operand m_operands[X86_MAX_OPERAND];
 	e_segment_override m_segmentOverride;
 	bool m_sizeOverride;
 	s_mod_reg_rm m_mod_reg_rm;
+	bool m_lockPrefix;
+	bool m_repPrefix;
 };
 
 class c_cpu_x86 : public c_cpu_module

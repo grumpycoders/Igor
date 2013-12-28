@@ -18,9 +18,15 @@
     <ClCompile Include="wxIgorApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wxAsmWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wxIgorApp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wxAsmWidget.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

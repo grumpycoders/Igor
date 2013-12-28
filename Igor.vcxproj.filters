@@ -2183,6 +2183,9 @@
     <ClCompile Include="Balau\win32\tomcrypt_aes_enc.c">
       <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
     </ClCompile>
+    <ClCompile Include="Balau\src\BSHA1.cc">
+      <Filter>Balau</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">

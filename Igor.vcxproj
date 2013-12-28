@@ -672,6 +672,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Balau\src\BRegex.cc" />
+    <ClCompile Include="Balau\src\BSHA1.cc" />
     <ClCompile Include="Balau\src\BStream.cc" />
     <ClCompile Include="Balau\src\BString.cc" />
     <ClCompile Include="Balau\src\Buffer.cc" />

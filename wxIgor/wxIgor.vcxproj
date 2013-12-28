@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="wxAsmWidget.cpp" />
     <ClCompile Include="wxIgorApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="wxAsmWidget.h" />
     <ClInclude Include="wxIgorApp.h" />
   </ItemGroup>
   <ItemGroup>
@@ -112,12 +114,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_NONSTDC_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Balau\includes;$(SolutionDir)\Balau\includes\msc;$(SolutionDir)\Balau\libev;$(SolutionDir)\Balau\win32\pthreads-win32;$(SolutionDir)\Balau\win32\iconv;$(SolutionDir)\Balau\win32\zlib;$(SolutionDir)\Balau\win32\regex;$(SolutionDir)\Balau\src\jsoncpp\include;$(SolutionDir)\Balau\libtommath;$(SolutionDir)\Balau\libtomcrypt\src\headers;$(SolutionDir)\wxWidgets\include;$(SolutionDir)\wxWidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)\Balau\includes;$(SolutionDir)\Balau\includes\msc;$(SolutionDir)\Balau\libev;$(SolutionDir)\Balau\win32\pthreads-win32;$(SolutionDir)\Balau\win32\iconv;$(SolutionDir)\Balau\win32\zlib;$(SolutionDir)\Balau\win32\regex;$(SolutionDir)\Balau\src\jsoncpp\include;$(SolutionDir)\Balau\libtommath;$(SolutionDir)\Balau\libtomcrypt\src\headers;$(SolutionDir)\wxWidget\include;$(SolutionDir)\wxWidget\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\wxWidgets\lib\vc_x64_lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\wxWidget\lib\vc_x64_lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>Dbghelp.lib;Ws2_32.lib;Comctl32.lib;Rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

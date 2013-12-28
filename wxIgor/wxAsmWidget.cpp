@@ -34,7 +34,7 @@ c_wxAsmWidget::c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWind
 	m_pDatabase = pDatabase;
 
 	m_timer = new wxTimer(this, EVT_RefreshDatabase);
-	m_timer->Start(300);
+	m_timer->Start(1000);
 }
 
 void c_wxAsmWidget::OnTimer(wxTimerEvent &event)

@@ -91,7 +91,7 @@ void c_wxAsmWidget::updateDatabaseView()
 
 		while (numDrawnLines < numLinesInWindow)
 		{
-			if (igor_is_address_flagged_as_code(m_pDatabase, analyzeState.m_PC))
+            if (m_pDatabase->is_address_flagged_as_code(analyzeState.m_PC))
 			{
 				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 				{
@@ -137,12 +137,12 @@ void c_wxAsmWidget::seekPC(int amount)
 {
 	if (amount > 0)
 	{
-		m_currentPosition = igor_get_next_valid_address_after(m_pDatabase, m_currentPosition + amount);
+        m_currentPosition = m_pDatabase->get_next_valid_address_after(m_currentPosition + amount);
 		updateDatabaseView();
 	}
 	if (amount < 0)
 	{
-		m_currentPosition = igor_get_next_valid_address_before(m_pDatabase, m_currentPosition + amount);
+        m_currentPosition = m_pDatabase->get_next_valid_address_before(m_currentPosition + amount);
 		updateDatabaseView();
 	}
 
@@ -214,7 +214,7 @@ void c_wxAsmWidget_old::OnTimer(wxTimerEvent &event)
 
 		while (analyzeState.m_PC < pSection->m_virtualAddress + pSection->m_size)
 		{
-			if (igor_is_address_flagged_as_code(m_pDatabase, analyzeState.m_PC))
+            if (m_pDatabase->is_address_flagged_as_code(analyzeState.m_PC))
 			{
 				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 				{

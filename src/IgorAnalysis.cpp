@@ -42,7 +42,7 @@ void IgorAnalysis::Do()
 
 			do
 			{
-				if (igor_is_address_flagged_as_code(m_pDatabase, analyzeState.m_PC))
+                if (m_pDatabase->is_address_flagged_as_code(analyzeState.m_PC))
 				{
 					break;
 				}
@@ -72,77 +72,4 @@ void IgorAnalysis::Do()
         m_status = IDLE;
 		yieldNoWait();
 	}
-}
-
-#if 0
-#endif
-
-igor_result igor_is_address_flagged_as_code(s_igorDatabase* pDatabase, u64 virtualAddress)
-{
-	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
-
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
-
-	if (pSection->m_instructionSize == nullptr)
-	{
-		return IGOR_FAILURE;
-	}
-
-	u8* pInstructionSize = &pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress];
-
-	if (*pInstructionSize)
-	{
-		return IGOR_SUCCESS;
-	}
-	else
-	{
-		return IGOR_FAILURE;
-	}
-}
-
-u64 igor_get_next_valid_address_before(s_igorDatabase* pDatabase, u64 virtualAddress)
-{
-	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
-
-	if (pSection == NULL)
-	{
-		return virtualAddress;
-	}
-
-	if (pSection->m_instructionSize == nullptr)
-	{
-		return virtualAddress;
-	}
-
-	while (pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress] == 0xFF)
-	{
-		virtualAddress--;
-	}
-
-	return virtualAddress;
-}
-
-u64 igor_get_next_valid_address_after(s_igorDatabase* pDatabase, u64 virtualAddress)
-{
-	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
-
-	if (pSection == NULL)
-	{
-		return virtualAddress;
-	}
-
-	if (pSection->m_instructionSize == nullptr)
-	{
-		return virtualAddress;
-	}
-
-	while (pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress] == 0xFF)
-	{
-		virtualAddress++;
-	}
-
-	return virtualAddress;
 }

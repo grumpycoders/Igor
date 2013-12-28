@@ -175,6 +175,11 @@ struct s_igorDatabase
     igor_result flag_address_as_u32(u64 virtualAddress);
     igor_result flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
 
+
+    igor_result is_address_flagged_as_code(u64 virtualAddress);
+    u64 get_next_valid_address_before(u64 virtualAddress);
+    u64 get_next_valid_address_after(u64 virtualAddress);
+
 	s_symbolDefinition* get_Symbol(u64 virtualAddress);
 
 	static s_igorDatabase* getDefaultDatabase()

@@ -302,3 +302,73 @@ igor_result s_igorDatabase::flag_address_as_instruction(u64 virtualAddress, u8 i
 
     return IGOR_SUCCESS;
 }
+
+igor_result s_igorDatabase::is_address_flagged_as_code(u64 virtualAddress)
+{
+    s_igorSection* pSection = findSectionFromAddress(virtualAddress);
+
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
+
+    if (pSection->m_instructionSize == nullptr)
+    {
+        return IGOR_FAILURE;
+    }
+
+    u8* pInstructionSize = &pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress];
+
+    if (*pInstructionSize)
+    {
+        return IGOR_SUCCESS;
+    }
+    else
+    {
+        return IGOR_FAILURE;
+    }
+}
+
+u64 s_igorDatabase::get_next_valid_address_before(u64 virtualAddress)
+{
+    s_igorSection* pSection = findSectionFromAddress(virtualAddress);
+
+    if (pSection == NULL)
+    {
+        return virtualAddress;
+    }
+
+    if (pSection->m_instructionSize == nullptr)
+    {
+        return virtualAddress;
+    }
+
+    while (pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress] == 0xFF)
+    {
+        virtualAddress--;
+    }
+
+    return virtualAddress;
+}
+
+u64 s_igorDatabase::get_next_valid_address_after(u64 virtualAddress)
+{
+    s_igorSection* pSection = findSectionFromAddress(virtualAddress);
+
+    if (pSection == NULL)
+    {
+        return virtualAddress;
+    }
+
+    if (pSection->m_instructionSize == nullptr)
+    {
+        return virtualAddress;
+    }
+
+    while (pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress] == 0xFF)
+    {
+        virtualAddress++;
+    }
+
+    return virtualAddress;
+}

@@ -65,7 +65,7 @@
 #define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   13   // Delay Load Import Descriptors
 #define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14   // COM Runtime descriptor
 
-igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorAnalysis * analysis)
+igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorAnalysisManager * analysis)
 {
     bool success = false;
 	// DOS .EXE header
@@ -180,7 +180,7 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorAnalysis *
 	db->declare_name(m_ImageBase + m_EntryPoint, "entryPoint");
 
     analysis->setDB(db);
-    analysis->igor_add_code_analysis_task(m_ImageBase + m_EntryPoint);
+    analysis->add_code_analysis_task(m_ImageBase + m_EntryPoint);
 
 	return IGOR_SUCCESS;
 }

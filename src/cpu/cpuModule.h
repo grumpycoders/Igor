@@ -28,7 +28,7 @@ enum e_analyzeResult
 	continue_analysis,
 };
 
-class IgorAnalysis;
+class IgorAnalysisManager;
 
 struct s_analyzeState
 {
@@ -37,7 +37,7 @@ struct s_analyzeState
 	c_cpu_module* pCpu;
 	c_cpu_state* pCpuState;
 	s_igorDatabase* pDataBase;
-    IgorAnalysis* pAnalysis;
+    IgorAnalysisManager* pAnalysis;
 
 	// output
 	c_cpu_analyse_result* m_cpu_analyse_result;

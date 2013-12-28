@@ -4,12 +4,12 @@
 #include "IgorAPI.h"
 
 struct s_igorDatabase;
-class IgorAnalysis;
+class IgorAnalysisManager;
 
 class c_PELoader
 {
 public:
-	igor_result loadPE(s_igorDatabase * db, BFile reader, IgorAnalysis *);
+	igor_result loadPE(s_igorDatabase * db, BFile reader, IgorAnalysisManager *);
 	int loadOptionalHeader386(BFile reader);
 	int loadOptionalHeader64(BFile reader);
 

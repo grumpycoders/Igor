@@ -65,7 +65,7 @@ void MainTask::Do() {
         file->forceRead(buffer, size);
         IO<Buffer> reader(new Buffer(buffer, file->getSize()));
 
-        IgorAnalysis * analysis = new IgorAnalysis();
+        IgorAnalysisManager * analysis = new IgorAnalysisManager();
 
 		s_igorDatabase * db = new s_igorDatabase;
 

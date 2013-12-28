@@ -62,22 +62,24 @@ void IgorAnalysisManager::Do()
             yield();
             continue;
         }
-        s_analysisRequest* pRequest = m_pDatabase->m_analysisRequests.pop();
-        u64 currentPC = pRequest->m_pc;
+        while (!m_pDatabase->m_analysisRequests.isEmpty()) {
+            s_analysisRequest* pRequest = m_pDatabase->m_analysisRequests.pop();
+            u64 currentPC = pRequest->m_pc;
 
-        if (m_status == STOPPING || currentPC == -1)
-        {
-            m_status = STOPPING;
-            continue;
+            if (m_status == STOPPING || currentPC == -1)
+            {
+                m_status = STOPPING;
+                continue;
+            }
+
+            m_status = RUNNING;
+
+            Events::TaskEvent * evt = new Events::TaskEvent;
+            m_evts.push_back(std::pair<Events::TaskEvent *, u64>(evt, currentPC));
+            TaskMan::registerTask(new IgorAnalysis(m_pDatabase, currentPC, this), evt);
+            waitFor(evt);
         }
-
-        m_status = RUNNING;
-
-        Events::TaskEvent * evt = new Events::TaskEvent;
-        m_evts.push_back(std::pair<Events::TaskEvent *, u64>(evt, currentPC));
-        TaskMan::registerTask(new IgorAnalysis(m_pDatabase, currentPC, this), evt);
-        waitFor(evt);
-        yield();
+        yieldNoWait();
     }
 }
 

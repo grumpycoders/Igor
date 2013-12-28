@@ -3,6 +3,8 @@
 #include "IgorDatabase.h"
 #include "IgorAnalysis.h"
 
+#include <wx/scrolBar.h>
+
 class wxAsmWidgetGridCellProvider : public wxGridCellAttrProvider
 {
 public:
@@ -34,6 +36,10 @@ c_wxAsmWidget::c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWind
 
 void c_wxAsmWidget::OnIdle(wxIdleEvent &event)
 {
+	Freeze();
+
+	wxPoint viewStart = GetViewStart();
+
 	int Rows = GetNumberRows();
 	if (Rows)
 	{
@@ -85,6 +91,10 @@ void c_wxAsmWidget::OnIdle(wxIdleEvent &event)
 
 		delete analyzeState.m_cpu_analyse_result;
 	}
+
+	Scroll(viewStart);
+
+	Thaw();
 }
 
 void c_wxAsmWidget::OnMouseEvent(wxMouseEvent& event)

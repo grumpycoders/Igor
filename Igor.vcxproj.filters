@@ -2198,6 +2198,9 @@
     <ClCompile Include="wxIgor\wxAsmWidget.cpp">
       <Filter>wxIgor</Filter>
     </ClCompile>
+    <ClCompile Include="wxIgor\wxIgorFrame.cpp">
+      <Filter>wxIgor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">
@@ -4214,6 +4217,9 @@
       <Filter>wxIgor</Filter>
     </ClInclude>
     <ClInclude Include="wxIgor\wxAsmWidget.h">
+      <Filter>wxIgor</Filter>
+    </ClInclude>
+    <ClInclude Include="wxIgor\wxIgorFrame.h">
       <Filter>wxIgor</Filter>
     </ClInclude>
   </ItemGroup>

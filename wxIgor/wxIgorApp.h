@@ -3,6 +3,7 @@
 #include <wx/wx.h>
 #include <wx/evtloop.h>
 #include <wx/apptrait.h>
+#include <wx/config.h>
 
 class wxIgorEventLoop : public wxEventLoopManual {
 public:
@@ -54,6 +55,8 @@ private:
     wxAppTraits * m_proxyTraits;
 };
 
+class c_wxIgorFrame;
+
 class c_wxIgorApp : public wxApp
 {
 public:
@@ -70,5 +73,6 @@ private:
 
     virtual wxAppTraits * CreateTraits() override { return new wxIgorAppTraits(wxApp::CreateTraits()); }
 
-	wxFrame* m_mainFrame;
+	wxConfig* m_config;
+	c_wxIgorFrame* m_mainFrame;
 };

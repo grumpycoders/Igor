@@ -32,9 +32,12 @@ c_wxAsmWidget::c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWind
 	//GetTable()->SetAttrProvider(new wxAsmWidgetGridCellProvider());
 
 	m_pDatabase = pDatabase;
+
+	m_timer = new wxTimer(this, EVT_RefreshDatabase);
+	m_timer->Start(300);
 }
 
-void c_wxAsmWidget::OnIdle(wxIdleEvent &event)
+void c_wxAsmWidget::OnTimer(wxTimerEvent &event)
 {
 	Freeze();
 
@@ -110,5 +113,5 @@ void c_wxAsmWidget::OnScroll(wxScrollWinEvent &event)
 BEGIN_EVENT_TABLE(c_wxAsmWidget, wxGrid)
 EVT_MOUSE_EVENTS(c_wxAsmWidget::OnMouseEvent)
 EVT_SCROLLWIN(c_wxAsmWidget::OnScroll)
-EVT_IDLE(c_wxAsmWidget::OnIdle)
+EVT_TIMER(c_wxAsmWidget::EVT_RefreshDatabase, c_wxAsmWidget::OnTimer)
 END_EVENT_TABLE()

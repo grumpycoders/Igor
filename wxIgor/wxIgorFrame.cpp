@@ -58,8 +58,22 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
 
 	Balau::TaskMan::registerTask(analysis);
 
-	new c_wxAsmWidget(db, this, -1, "ASM view");
+	wxPanel *panel = new wxPanel(this, -1);
 
+	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+
+	c_wxAsmWidget* pAsmWidget = new c_wxAsmWidget(db, panel, -1, "ASM view");
+	c_wxAsmWidgetScrollbar* pAsmWidgetScrollbar = new c_wxAsmWidgetScrollbar(pAsmWidget, panel, -1);
+
+	pAsmWidget->SetSize(GetSize());
+
+	hbox->Add(pAsmWidget, 1, wxALIGN_RIGHT | wxEXPAND);
+	hbox->Add(pAsmWidgetScrollbar, 0, wxALIGN_RIGHT | wxEXPAND);
+
+	vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
+
+	panel->SetSizerAndFit(hbox, true);
 	SendSizeEvent();
 }
 

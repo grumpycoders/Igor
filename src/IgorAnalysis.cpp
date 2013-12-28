@@ -138,3 +138,47 @@ igor_result igor_is_address_flagged_as_code(s_igorDatabase* pDatabase, u64 virtu
 		return IGOR_FAILURE;
 	}
 }
+
+u64 igor_get_next_valid_address_before(s_igorDatabase* pDatabase, u64 virtualAddress)
+{
+	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
+
+	if (pSection == NULL)
+	{
+		return virtualAddress;
+	}
+
+	if (pSection->m_instructionSize == nullptr)
+	{
+		return virtualAddress;
+	}
+
+	while (pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress] == 0xFF)
+	{
+		virtualAddress--;
+	}
+
+	return virtualAddress;
+}
+
+u64 igor_get_next_valid_address_after(s_igorDatabase* pDatabase, u64 virtualAddress)
+{
+	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
+
+	if (pSection == NULL)
+	{
+		return virtualAddress;
+	}
+
+	if (pSection->m_instructionSize == nullptr)
+	{
+		return virtualAddress;
+	}
+
+	while (pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress] == 0xFF)
+	{
+		virtualAddress++;
+	}
+
+	return virtualAddress;
+}

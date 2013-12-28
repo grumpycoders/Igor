@@ -5,6 +5,137 @@
 
 #include <wx/scrolBar.h>
 
+c_wxAsmWidgetScrollbar::c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id) : wxScrollBar(parent, id, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL)
+{
+	m_AsmWidget = pAsmWidget;
+}
+
+void c_wxAsmWidgetScrollbar::OnScroll(wxScrollEvent& event)
+{
+	//int position = event.GetPosition();
+
+	if (event.GetEventType() == wxEVT_SCROLL_LINEUP)
+	{
+		m_AsmWidget->seekPC(-1);
+	}
+
+	if (event.GetEventType() == wxEVT_SCROLL_LINEDOWN)
+	{
+		m_AsmWidget->seekPC(+1);
+	}
+}
+
+BEGIN_EVENT_TABLE(c_wxAsmWidgetScrollbar, wxScrollBar)
+EVT_SCROLL(c_wxAsmWidgetScrollbar::OnScroll)
+END_EVENT_TABLE()
+
+c_wxAsmWidget::c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID id,
+	const wxString& value,
+	const wxPoint& pos,
+	const wxSize& size,
+	long style,
+	const wxString& name) : wxTextCtrl(parent, id, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY)
+{
+	m_pDatabase = pDatabase;
+
+	m_timer = new wxTimer(this, EVT_RefreshDatabase);
+	m_timer->Start(300);
+
+	m_currentPosition = m_pDatabase->findSymbol("entryPoint");
+
+	SetScrollbar(wxVERTICAL, 0, 0, 0); // hide the default scrollbar
+	SetFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
+
+	//m_scrollbar = new c_wxAsmWidgetScrollbar(this, this, id);
+}
+
+void c_wxAsmWidget::updateDatabaseView()
+{
+	Freeze();
+
+	Clear();
+
+	int numLinesInWindow = (GetClientSize().GetY() / GetCharHeight()) - 1;
+	int numDrawnLines = 0;
+
+	u64 currentPC = m_currentPosition;
+
+	{
+		s_igorSection* pSection = m_pDatabase->findSectionFromAddress(currentPC);
+		c_cpu_module* pCpu = m_pDatabase->getCpuForAddress(currentPC);
+
+		s_analyzeState analyzeState;
+		analyzeState.m_PC = currentPC;
+		analyzeState.pCpu = pCpu;
+		analyzeState.pCpuState = m_pDatabase->getCpuStateForAddress(currentPC);
+		analyzeState.pDataBase = m_pDatabase;
+		analyzeState.pAnalysis = NULL;
+		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+
+		while (numDrawnLines < numLinesInWindow)
+		{
+			if (igor_is_address_flagged_as_code(m_pDatabase, analyzeState.m_PC))
+			{
+				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
+				{
+					break;
+				}
+
+				Balau::String disassembledString;
+				pCpu->printInstruction(&analyzeState, disassembledString);
+
+				wxString displayDisassembledString;
+				displayDisassembledString = disassembledString.to_charp(0);
+
+				AppendText(displayDisassembledString);
+				AppendText("\n");
+				numDrawnLines++;
+
+				analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
+			}
+			else
+			{
+				wxString displayDisassembledString = wxString::Format("0x%01X\n", m_pDatabase->readU8(analyzeState.m_PC));
+
+				AppendText(displayDisassembledString);
+				numDrawnLines++;
+
+				analyzeState.m_PC++;
+			}
+		}
+
+		delete analyzeState.m_cpu_analyse_result;
+	}
+
+	Thaw();
+}
+
+void c_wxAsmWidget::OnTimer(wxTimerEvent &event)
+{
+	updateDatabaseView();
+	Refresh();
+}
+
+void c_wxAsmWidget::seekPC(int amount)
+{
+	if (amount > 0)
+	{
+		m_currentPosition = igor_get_next_valid_address_after(m_pDatabase, m_currentPosition + amount);
+		updateDatabaseView();
+	}
+	if (amount < 0)
+	{
+		m_currentPosition = igor_get_next_valid_address_before(m_pDatabase, m_currentPosition + amount);
+		updateDatabaseView();
+	}
+
+	//case amount == 0 is intentially left doint nothing
+}
+
+BEGIN_EVENT_TABLE(c_wxAsmWidget, wxTextCtrl)
+EVT_TIMER(c_wxAsmWidget::EVT_RefreshDatabase, c_wxAsmWidget::OnTimer)
+END_EVENT_TABLE()
+
 class wxAsmWidgetGridCellProvider : public wxGridCellAttrProvider
 {
 public:
@@ -14,7 +145,7 @@ public:
 	}
 };
 
-c_wxAsmWidget::c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID id,
+c_wxAsmWidget_old::c_wxAsmWidget_old(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID id,
 	const wxString& value,
 	const wxPoint& pos,
 	const wxSize& size,
@@ -37,7 +168,7 @@ c_wxAsmWidget::c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWind
 	m_timer->Start(1000);
 }
 
-void c_wxAsmWidget::OnTimer(wxTimerEvent &event)
+void c_wxAsmWidget_old::OnTimer(wxTimerEvent &event)
 {
 	Freeze();
 
@@ -100,18 +231,18 @@ void c_wxAsmWidget::OnTimer(wxTimerEvent &event)
 	Thaw();
 }
 
-void c_wxAsmWidget::OnMouseEvent(wxMouseEvent& event)
+void c_wxAsmWidget_old::OnMouseEvent(wxMouseEvent& event)
 {
 
 }
 
-void c_wxAsmWidget::OnScroll(wxScrollWinEvent &event)
+void c_wxAsmWidget_old::OnScroll(wxScrollWinEvent &event)
 {
 	event.StopPropagation();
 }
 
-BEGIN_EVENT_TABLE(c_wxAsmWidget, wxGrid)
-EVT_MOUSE_EVENTS(c_wxAsmWidget::OnMouseEvent)
-EVT_SCROLLWIN(c_wxAsmWidget::OnScroll)
-EVT_TIMER(c_wxAsmWidget::EVT_RefreshDatabase, c_wxAsmWidget::OnTimer)
+BEGIN_EVENT_TABLE(c_wxAsmWidget_old, wxGrid)
+EVT_MOUSE_EVENTS(c_wxAsmWidget_old::OnMouseEvent)
+EVT_SCROLLWIN(c_wxAsmWidget_old::OnScroll)
+EVT_TIMER(c_wxAsmWidget_old::EVT_RefreshDatabase, c_wxAsmWidget_old::OnTimer)
 END_EVENT_TABLE()

@@ -25,3 +25,5 @@ private:
 };
 
 igor_result igor_is_address_flagged_as_code(s_igorDatabase* pDatabase, u64 virtualAddress);
+u64 igor_get_next_valid_address_before(s_igorDatabase* pDatabase, u64 virtualAddress);
+u64 igor_get_next_valid_address_after(s_igorDatabase* pDatabase, u64 virtualAddress);

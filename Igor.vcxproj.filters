@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -26,12 +22,6 @@
     </Filter>
     <Filter Include="Third Party\libev">
       <UniqueIdentifier>{decde396-18d8-46fd-94ac-2c349b60823e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\cpu">
-      <UniqueIdentifier>{5ff300d1-7566-473f-99ec-e39d70c5e380}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\cpu\x86">
-      <UniqueIdentifier>{a5800d68-f4f9-4529-9786-03d938764855}</UniqueIdentifier>
     </Filter>
     <Filter Include="Third Party\regex">
       <UniqueIdentifier>{d4b91360-07e7-4010-849a-0f665dbfd852}</UniqueIdentifier>
@@ -221,6 +211,25 @@
     </Filter>
     <Filter Include="Third Party\tomcrypt\pk\dh">
       <UniqueIdentifier>{13015bf4-56e3-4e27-ab51-0f6857bbd452}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wxIgor">
+      <UniqueIdentifier>{592a8b91-cabc-44f3-81e6-ef2e2a2d7982}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Igor">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Igor\cpu">
+      <UniqueIdentifier>{5ff300d1-7566-473f-99ec-e39d70c5e380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Igor\cpu\x86">
+      <UniqueIdentifier>{a5800d68-f4f9-4529-9786-03d938764855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\wxWidgets">
+      <UniqueIdentifier>{f53c4071-ee6a-488a-a9e6-afc28881cb3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\wxWidgets\includes">
+      <UniqueIdentifier>{93ea1d17-31b9-4527-9241-4aec5a255901}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1758,31 +1767,31 @@
       <Filter>Third Party\libev</Filter>
     </ClCompile>
     <ClCompile Include="src\Igor.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClCompile>
     <ClCompile Include="src\IgorAnalysis.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClCompile>
     <ClCompile Include="src\IgorDatabase.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClCompile>
     <ClCompile Include="src\IgorSection.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClCompile>
     <ClCompile Include="src\PELoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClCompile>
     <ClCompile Include="Balau\win32\regex\msvc-regex.c">
       <Filter>Third Party\regex</Filter>
     </ClCompile>
     <ClCompile Include="src\cpu\x86\cpu_x86.cpp">
-      <Filter>Source Files\cpu\x86</Filter>
+      <Filter>Igor\cpu\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp">
-      <Filter>Source Files\cpu\x86</Filter>
+      <Filter>Igor\cpu\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\IgorHttp.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClCompile>
     <ClCompile Include="Balau\src\Base64.cc">
       <Filter>Balau</Filter>
@@ -1791,7 +1800,7 @@
       <Filter>Balau</Filter>
     </ClCompile>
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp">
-      <Filter>Source Files\cpu\x86</Filter>
+      <Filter>Igor\cpu\x86</Filter>
     </ClCompile>
     <ClCompile Include="Balau\src\jsoncpp\src\json_reader.cpp">
       <Filter>Third Party\jsoncpp</Filter>
@@ -2182,6 +2191,9 @@
     </ClCompile>
     <ClCompile Include="Balau\win32\tomcrypt_aes_enc.c">
       <Filter>Third Party\tomcrypt\ciphers\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="wxIgor\wxIgorApp.cpp">
+      <Filter>wxIgor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2897,22 +2909,22 @@
       <Filter>Third Party\libev</Filter>
     </ClInclude>
     <ClInclude Include="src\Igor.h">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorAnalysis.h">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorAPI.h">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorDatabase.h">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorSection.h">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\PELoader.h">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="Balau\win32\regex\regex.h">
       <Filter>Third Party\regex</Filter>
@@ -2921,16 +2933,16 @@
       <Filter>Balau</Filter>
     </ClInclude>
     <ClInclude Include="src\cpu\x86\cpu_x86.h">
-      <Filter>Source Files\cpu\x86</Filter>
+      <Filter>Igor\cpu\x86</Filter>
     </ClInclude>
     <ClInclude Include="src\cpu\cpuModule.h">
-      <Filter>Source Files\cpu</Filter>
+      <Filter>Igor\cpu</Filter>
     </ClInclude>
     <ClInclude Include="src\cpu\x86\cpu_x86_opcodes.h">
-      <Filter>Source Files\cpu\x86</Filter>
+      <Filter>Igor\cpu\x86</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorHttp.h">
-      <Filter>Source Files</Filter>
+      <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="Balau\includes\Base64.h">
       <Filter>Balau</Filter>
@@ -3018,6 +3030,1185 @@
     </ClInclude>
     <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt_prng.h">
       <Filter>Third Party\tomcrypt\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="wxIgor\wxIgorApp.h">
+      <Filter>wxIgor</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\aboutdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\accel.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\access.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\affinematrix2d.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\affinematrix2dbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\afterstd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\anidecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\animate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\animdecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\any.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\anybutton.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\anystr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\app.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\apptrait.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\archive.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\arrstr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\artprov.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\atomic.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\bannerwindow.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\base64.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\beforestd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\bitmap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\bmpbuttn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\bmpcbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\bookctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\brush.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\buffer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\build.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\busyinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\button.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\calctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\caret.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\chartype.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\checkbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\checkeddelete.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\checklst.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\chkconf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\choicdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\choice.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\choicebk.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\clipbrd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\clntdata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\clrpicker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cmdargs.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cmdline.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cmdproc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cmndata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\collpane.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\colordlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\colour.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\colourdata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\combo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\combobox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\commandlinkbutton.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\compiler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\compositewin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\confbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\config.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\containr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\control.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\convauto.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cpp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cppunit.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\crt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cshelp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ctrlsub.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\cursor.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\custombgwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dataobj.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dataview.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\datectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dateevt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\datetime.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\datetimectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\datstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcbuffer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcclient.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcgraph.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcmemory.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcmirror.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcprint.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcps.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcscreen.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dcsvg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dde.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\debug.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\debugrpt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\defs.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dialog.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dialup.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dir.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dirctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dirdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\display.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\display_impl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dlimpexp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dlist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dnd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\docmdi.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\docview.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dragimag.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dvrenderers.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dynarray.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dynlib.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\dynload.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\editlbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\effects.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\encconv.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\encinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\event.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\eventfilter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\evtloop.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\evtloopsrc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\except.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fdrepdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\features.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ffile.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\file.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fileconf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\filectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\filedlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\filefn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\filehistory.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\filename.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\filepicker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\filesys.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\flags.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fmappriv.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\font.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fontdata.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fontdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fontenc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fontenum.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fontmap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fontpicker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fontutil.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\frame.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fs_arc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fs_filter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fs_inet.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fs_mem.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fs_zip.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\fswatcher.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\gauge.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\gbsizer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\gdicmn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\gdiobj.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\geometry.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\gifdecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\glcanvas.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\graphics.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\grid.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\hash.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\hashmap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\hashset.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\headercol.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\headerctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\help.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\helpbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\helphtml.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\helpwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\htmllbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\hyperlink.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\icon.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\iconbndl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\iconloc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagbmp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\image.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imaggif.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagiff.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagjpeg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imaglist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagpcx.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagpng.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagpnm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagtga.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagtiff.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\imagxpm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\infobar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\init.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\intl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\iosfwrap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ioswrap.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ipc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ipcbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\itemid.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\joystick.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\kbdstate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\language.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\layout.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\laywin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\link.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\list.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\listbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\listbook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\listbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\listctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\log.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\longlong.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\math.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\matrix.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\mdi.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\mediactrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\memconf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\memory.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\memtext.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\menu.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\menuitem.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\metafile.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\mimetype.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\minifram.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\modalhook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\module.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\mousemanager.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\mousestate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\msgdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\msgout.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\msgqueue.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\mstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\nativewin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\nonownedwnd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\notebook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\notifmsg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\numdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\numformatter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\object.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\odcombo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\overlay.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ownerdrw.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\palette.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\panel.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\paper.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\pen.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\persist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\pickerbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\platform.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\platinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\popupwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\position.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\power.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\preferences.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\print.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\printdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\prntbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\process.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\progdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\propdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ptr_scpd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ptr_shrd.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\quantize.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\radiobox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\radiobut.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\range.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\rawbmp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\rearrangectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\recguard.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\regex.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\region.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\renderer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\richmsgdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\richtooltip.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\rtti.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sashwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sckaddr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sckipc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sckstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\scopedarray.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\scopedptr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\scopeguard.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\scrolbar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\scrolwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\selstore.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\settings.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\setup_inc.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\setup_redirect.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sharedptr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\simplebook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sizer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\slider.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\snglinst.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\socket.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sound.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\spinbutt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\spinctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\splash.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\splitter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\srchctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stack.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stackwalk.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\statbmp.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\statbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\statline.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stattext.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\statusbr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stdpaths.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stdstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stockitem.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stopwatch.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\strconv.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\string.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stringimpl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\stringops.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\strvararg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\sysopt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tarstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\taskbar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tbarbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\testing.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\textbuf.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\textcompleter.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\textctrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\textdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\textentry.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\textfile.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\textwrapper.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tglbtn.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\thread.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\time.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\timectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\timer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tipdlg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tipwin.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tls.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tokenzr.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\toolbar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\toolbook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tooltip.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\toplevel.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\tracker.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\translation.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\treebase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\treebook.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\treectrl.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\treelist.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\txtstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\typeinfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\types.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\uiaction.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\unichar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\uri.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\url.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\ustring.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\utils.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\valgen.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\validate.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\valnum.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\valtext.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\variant.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\variantbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\vector.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\version.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\versioninfo.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\vidmode.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\vlbox.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\vms_x_fix.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\volume.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\vscroll.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\weakref.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\webview.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\webviewarchivehandler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\webviewfshandler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wfstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\window.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\windowid.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\withimages.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wizard.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wrapsizer.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wupdlock.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wx.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wxchar.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wxcrt.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wxcrtbase.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wxcrtvararg.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wxhtml.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\wxprec.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xlocale.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xpmdecod.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xpmhand.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xti.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xti2.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xtictor.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xtihandler.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xtiprop.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xtistrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xtitypes.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\xtixml.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\zipstrm.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxwidget\include\wx\zstream.h">
+      <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wxIgor\wxIgorShared.h">
+      <Filter>wxIgor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,6 @@
+#include <atomic>
+
 #include "wxIgorApp.h"
-
-#include <Printer.h>
-
-using namespace Balau;
 
 #ifdef _DEBUG
 //#pragma comment(lib, "wxexpatd.lib")
@@ -20,31 +18,10 @@ using namespace Balau;
 #pragma comment(lib, "wxtiff.lib")
 #endif
 
-extern "C" {
-
-	int main(int argc, char ** argv);
-}
-
-class BalauThread : public wxThread
-{
-public:
-	ExitCode Entry()
-	{
-		main(0, NULL);
-		
-		return NULL;
-	}
-};
+wxIMPLEMENT_APP_NO_MAIN(c_wxIgorApp);
 
 bool c_wxIgorApp::OnInit()
 {
-	BalauThread* pBalauThread = new BalauThread;
-	pBalauThread->Run();
-	
-	Sleep(3000);
-
-	Printer::log(M_STATUS, "Igor starting up");
-
 	m_mainFrame = new wxFrame((wxFrame *)NULL, -1, "Igor");
 	SetTopWindow(m_mainFrame);
 	m_mainFrame->Show(true);
@@ -54,4 +31,80 @@ bool c_wxIgorApp::OnInit()
 	return TRUE;
 }
 
-IMPLEMENT_APP(c_wxIgorApp)
+bool c_wxIgorApp::balauStart(int & argc, char ** argv) {
+    bool success = wxEntryStart(argc, argv);
+
+    if (!success)
+        return false;
+
+//    wxEntryCleanup(); // that's to be called on exit, unlike what the doc says...
+
+    return wxGetApp().balauStart();
+}
+
+static std::atomic<bool> s_exitting;
+
+bool c_wxIgorApp::balauStart() {
+    CallOnInit();
+
+    m_exitOnFrameDelete = Yes;
+
+    return true;
+}
+
+std::pair<bool, int> c_wxIgorApp::balauLoop() {
+    return std::pair<bool, int>(s_exitting.load(), wxGetApp().MainLoop());
+}
+
+int wxIgorEventLoop::DoRun() {
+    OnNextIteration();
+    ProcessIdle();
+
+    for (;;) {
+        bool hasMoreEvents = false;
+        if (wxTheApp && wxTheApp->HasPendingEvents()) {
+            wxTheApp->ProcessPendingEvents();
+            hasMoreEvents = true;
+        }
+
+        if (Pending()) {
+            Dispatch();
+            hasMoreEvents = true;
+        }
+
+        if (!hasMoreEvents)
+            break;
+    }
+
+    return m_shouldExit ? m_exitcode : 0;
+}
+
+void wxIgorEventLoop::ScheduleExit(int rc) {
+    m_exitcode = rc;
+    m_shouldExit = true;
+    s_exitting.exchange(true);
+    OnExit();
+    WakeUp();
+}
+
+// why you no protected ?
+bool wxIgorEventLoop::ProcessEvents() {
+    if (wxTheApp) {
+        wxTheApp->ProcessPendingEvents();
+
+        if (m_shouldExit)
+            return false;
+    }
+
+    return Dispatch();
+}
+
+#include "wxIgorShared.h"
+
+bool wxIgorStartup(int & argc, char ** argv) {
+    return c_wxIgorApp::balauStart(argc, argv);
+}
+
+std::pair<bool, int> wxIgorLoop() {
+    return c_wxIgorApp::balauLoop();
+}

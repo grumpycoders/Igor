@@ -22,6 +22,8 @@ private:
 
 	void OnScroll(wxScrollEvent& event);
 
+	int m_previousThumPosition;
+
 	DECLARE_EVENT_TABLE()
 };
 

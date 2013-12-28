@@ -8,6 +8,9 @@
 c_wxAsmWidgetScrollbar::c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id) : wxScrollBar(parent, id, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL)
 {
 	m_AsmWidget = pAsmWidget;
+
+	SetScrollbar(250, 16, 500, 15);
+	m_previousThumPosition = 250;
 }
 
 void c_wxAsmWidgetScrollbar::OnScroll(wxScrollEvent& event)
@@ -22,6 +25,20 @@ void c_wxAsmWidgetScrollbar::OnScroll(wxScrollEvent& event)
 	if (event.GetEventType() == wxEVT_SCROLL_LINEDOWN)
 	{
 		m_AsmWidget->seekPC(+1);
+	}
+
+	if (event.GetEventType() == wxEVT_SCROLL_THUMBTRACK)
+	{
+		int diff = event.GetPosition() - m_previousThumPosition;
+
+		m_AsmWidget->seekPC(diff);
+		m_previousThumPosition = event.GetPosition();
+	}
+
+	if (event.GetEventType() == wxEVT_SCROLL_THUMBRELEASE)
+	{
+		SetScrollbar(250, 16, 500, 15);
+		m_previousThumPosition = 250;
 	}
 }
 

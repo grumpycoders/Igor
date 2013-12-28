@@ -4,6 +4,7 @@
 #include <wx/evtloop.h>
 #include <wx/apptrait.h>
 #include <wx/config.h>
+#include <wx/filehistory.h>
 
 class wxIgorEventLoop : public wxEventLoopManual {
 public:
@@ -73,6 +74,8 @@ private:
 
     virtual wxAppTraits * CreateTraits() override { return new wxIgorAppTraits(wxApp::CreateTraits()); }
 
+public:
 	wxConfig* m_config;
+	wxFileHistory* m_fileHistory;
 	c_wxIgorFrame* m_mainFrame;
 };

@@ -26,6 +26,9 @@ bool c_wxIgorApp::OnInit()
 {
 	m_config = new wxConfig("wxIgor");
 
+	m_fileHistory = new wxFileHistory();
+	m_fileHistory->Load(*m_config);
+
 	m_mainFrame = new c_wxIgorFrame("Igor", wxPoint(50, 50), wxSize(800, 600));
 	SetTopWindow(m_mainFrame);
 	m_mainFrame->Show(true);

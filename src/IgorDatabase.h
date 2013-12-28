@@ -172,6 +172,9 @@ struct s_igorDatabase
 	igor_result declare_symbolType(u64 virtualAddress, e_symbolType type);
 	igor_result declare_variable(u64 virtualAddress, e_baseTypes type);
 
+    igor_result flag_address_as_u32(u64 virtualAddress);
+    igor_result flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
+
 	s_symbolDefinition* get_Symbol(u64 virtualAddress);
 
 	static s_igorDatabase* getDefaultDatabase()

@@ -406,7 +406,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 			x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)registerIdx, OPERAND_32bit);
 			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U32, target);
 
-			pState->pAnalysis->igor_flag_address_as_u32(target);
+            pState->pDataBase->flag_address_as_u32(target);
 
 			break;
 		}

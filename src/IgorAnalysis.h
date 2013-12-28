@@ -11,8 +11,8 @@ public:
     void Do();
     const char * getName() const { return "IgorAnalysis"; }
     bool isRunning() { return m_status == RUNNING; }
-    igor_result igor_flag_address_as_u32(u64 virtualAddress);
-    igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
+//    igor_result igor_flag_address_as_u32(u64 virtualAddress);
+//    igor_result igor_flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
     void setDB(s_igorDatabase * db) { AAssert(m_pDatabase == NULL, "Can only set database once"); m_pDatabase = db; }
     s_igorDatabase * getDB() { return m_pDatabase; }
 private:

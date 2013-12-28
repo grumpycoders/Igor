@@ -263,3 +263,42 @@ u64 s_igorDatabase::findSymbol(const char* symbolName)
 
 	return -1;
 }
+
+igor_result s_igorDatabase::flag_address_as_u32(u64 virtualAddress)
+{
+    // TODO!
+
+    return IGOR_SUCCESS;
+}
+
+igor_result s_igorDatabase::flag_address_as_instruction(u64 virtualAddress, u8 instructionSize)
+{
+    s_igorSection* pSection = findSectionFromAddress(virtualAddress);
+
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
+
+    if (virtualAddress + instructionSize > pSection->m_virtualAddress + pSection->m_size)
+    {
+        return IGOR_FAILURE;
+    }
+
+    if (pSection->m_instructionSize == nullptr)
+    {
+        pSection->createInstructionArray();
+    }
+
+    u8* pInstructionSize = &pSection->m_instructionSize[virtualAddress - pSection->m_virtualAddress];
+
+    if (*pInstructionSize) // already an instruction there
+    {
+        return IGOR_FAILURE;
+    }
+
+    *pInstructionSize = instructionSize;
+    memset(pInstructionSize + 1, 0xFF, instructionSize - 1);
+
+    return IGOR_SUCCESS;
+}

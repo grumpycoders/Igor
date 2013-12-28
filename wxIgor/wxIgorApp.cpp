@@ -1,7 +1,7 @@
 #include <atomic>
 
 #include "wxIgorApp.h"
-#include "wxAsmWidget.h"
+#include "wxIgorFrame.h"
 #include "IgorDatabase.h"
 
 #ifdef _DEBUG
@@ -24,11 +24,14 @@ wxIMPLEMENT_APP_NO_MAIN(c_wxIgorApp);
 
 bool c_wxIgorApp::OnInit()
 {
-	m_mainFrame = new wxFrame((wxFrame *)NULL, -1, "Igor");
+	m_config = new wxConfig("wxIgor");
+
+	m_fileHistory = new wxFileHistory();
+	m_fileHistory->Load(*m_config);
+
+	m_mainFrame = new c_wxIgorFrame("Igor", wxPoint(50, 50), wxSize(800, 600));
 	SetTopWindow(m_mainFrame);
 	m_mainFrame->Show(true);
-
-//    wxAsmWidget* disassembledView = new wxAsmWidget(s_igorDatabase::getDefaultDatabase(), m_mainFrame, -1, "Disassembly");
 
 	return TRUE;
 }
@@ -94,6 +97,9 @@ int wxIgorEventLoop::run() {
         if (!hasMoreEvents)
             break;
     }
+
+    if (m_shouldExit)
+        s_exitting.exchange(true);
 
     return m_shouldExit ? m_exitcode : 0;
 }

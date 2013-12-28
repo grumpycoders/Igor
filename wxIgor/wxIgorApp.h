@@ -3,6 +3,8 @@
 #include <wx/wx.h>
 #include <wx/evtloop.h>
 #include <wx/apptrait.h>
+#include <wx/config.h>
+#include <wx/filehistory.h>
 
 class wxIgorEventLoop : public wxEventLoopManual {
 public:
@@ -25,6 +27,8 @@ private:
     wxEventLoopBase * m_proxyLoop;
 };
 
+class c_wxIgorFrame;
+
 class c_wxIgorApp : public wxApp
 {
 public:
@@ -39,5 +43,8 @@ private:
     // trampoline from the static
     bool balauStart();
 
-	wxFrame* m_mainFrame;
+public:
+	wxConfig* m_config;
+	wxFileHistory* m_fileHistory;
+	c_wxIgorFrame* m_mainFrame;
 };

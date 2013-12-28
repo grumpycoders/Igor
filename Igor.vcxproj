@@ -1671,6 +1671,7 @@
     <ClCompile Include="src\PELoader.cpp" />
     <ClCompile Include="wxIgor\wxAsmWidget.cpp" />
     <ClCompile Include="wxIgor\wxIgorApp.cpp" />
+    <ClCompile Include="wxIgor\wxIgorFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt.h" />
@@ -1953,6 +1954,7 @@
     <ClInclude Include="src\PELoader.h" />
     <ClInclude Include="wxIgor\wxAsmWidget.h" />
     <ClInclude Include="wxIgor\wxIgorApp.h" />
+    <ClInclude Include="wxIgor\wxIgorFrame.h" />
     <ClInclude Include="wxIgor\wxIgorShared.h" />
     <ClInclude Include="wxwidget\include\wx\aboutdlg.h" />
     <ClInclude Include="wxwidget\include\wx\accel.h" />

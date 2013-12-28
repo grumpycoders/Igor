@@ -12,7 +12,7 @@ public:
 	}
 };
 
-wxAsmWidget::wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID id,
+c_wxAsmWidget::c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID id,
 	const wxString& value,
 	const wxPoint& pos,
 	const wxSize& size,
@@ -27,27 +27,37 @@ wxAsmWidget::wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID
 
 	EnableEditing(false);
 
-	GetTable()->SetAttrProvider(new wxAsmWidgetGridCellProvider());
+	//GetTable()->SetAttrProvider(new wxAsmWidgetGridCellProvider());
 
-	// dump the section that contains symbol "entryPoint"
-	u64 entryPointPC = pDatabase->findSymbol("entryPoint");
+	m_pDatabase = pDatabase;
+}
+
+void c_wxAsmWidget::OnIdle(wxIdleEvent &event)
+{
+	int Rows = GetNumberRows();
+	if (Rows)
+	{
+		DeleteRows(0, Rows, true);
+	}
+
+	u64 entryPointPC = m_pDatabase->findSymbol("entryPoint");
 
 	if (entryPointPC != -1)
 	{
-		s_igorSection* pSection = pDatabase->findSectionFromAddress(entryPointPC);
-		c_cpu_module* pCpu = pDatabase->getCpuForAddress(entryPointPC);
+		s_igorSection* pSection = m_pDatabase->findSectionFromAddress(entryPointPC);
+		c_cpu_module* pCpu = m_pDatabase->getCpuForAddress(entryPointPC);
 
 		s_analyzeState analyzeState;
 		analyzeState.m_PC = pSection->m_virtualAddress;
 		analyzeState.pCpu = pCpu;
-		analyzeState.pCpuState = pDatabase->getCpuStateForAddress(entryPointPC);
-		analyzeState.pDataBase = pDatabase;
+		analyzeState.pCpuState = m_pDatabase->getCpuStateForAddress(entryPointPC);
+		analyzeState.pDataBase = m_pDatabase;
 		analyzeState.pAnalysis = NULL;
 		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
 		while (analyzeState.m_PC < pSection->m_virtualAddress + pSection->m_size)
 		{
-			if (igor_is_address_flagged_as_code(pDatabase, analyzeState.m_PC))
+			if (igor_is_address_flagged_as_code(m_pDatabase, analyzeState.m_PC))
 			{
 				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 				{
@@ -77,17 +87,18 @@ wxAsmWidget::wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID
 	}
 }
 
-void wxAsmWidget::OnMouseEvent(wxMouseEvent& event)
+void c_wxAsmWidget::OnMouseEvent(wxMouseEvent& event)
 {
 
 }
 
-void wxAsmWidget::OnScroll(wxScrollWinEvent &event)
+void c_wxAsmWidget::OnScroll(wxScrollWinEvent &event)
 {
 	event.StopPropagation();
 }
 
-BEGIN_EVENT_TABLE(wxAsmWidget, wxGrid)
-EVT_MOUSE_EVENTS(wxAsmWidget::OnMouseEvent)
-EVT_SCROLLWIN(wxAsmWidget::OnScroll)
+BEGIN_EVENT_TABLE(c_wxAsmWidget, wxGrid)
+EVT_MOUSE_EVENTS(c_wxAsmWidget::OnMouseEvent)
+EVT_SCROLLWIN(c_wxAsmWidget::OnScroll)
+EVT_IDLE(c_wxAsmWidget::OnIdle)
 END_EVENT_TABLE()

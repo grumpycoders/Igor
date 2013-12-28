@@ -4,10 +4,10 @@
 
 struct s_igorDatabase;
 
-class wxAsmWidget : public wxGrid
+class c_wxAsmWidget : public wxGrid
 {
 public:
-	wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID id,
+	c_wxAsmWidget(s_igorDatabase* pDatabase, wxWindow *parent, wxWindowID id,
 		const wxString& value = wxEmptyString,
 		const wxPoint& pos = wxDefaultPosition,
 		const wxSize& size = wxDefaultSize,
@@ -17,5 +17,9 @@ private:
 
 	void OnMouseEvent(wxMouseEvent& event);
 	void OnScroll(wxScrollWinEvent &event);
+	void OnIdle(wxIdleEvent &event);
+
+	s_igorDatabase* m_pDatabase;
+
 	DECLARE_EVENT_TABLE()
 };

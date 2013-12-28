@@ -16,7 +16,7 @@ using namespace Balau;
 #ifdef USE_WXWIDGETS
 #include "../wxIgor/wxIgorShared.h"
 
-class wxIdler : public StacklessTask {
+class wxIdler : public Task {
     void Do() throw (GeneralException) {
         for (;;) {
             auto r = wxIgorLoop();
@@ -55,6 +55,7 @@ void MainTask::Do() {
 
     stopTaskManOnExit(false);
 
+#ifndef USE_WXWIDGETS
     if (argc == 2) {
         IO<Input> file(new Input(argv[1]));
         file->open();
@@ -76,6 +77,7 @@ void MainTask::Do() {
 
         TaskMan::registerTask(analysis);
     }
+#endif
 
     igor_setup_httpserver();
 

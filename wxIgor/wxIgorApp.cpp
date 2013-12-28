@@ -39,26 +39,43 @@ bool c_wxIgorApp::balauStart(int & argc, char ** argv) {
     if (!success)
         return false;
 
-//    wxEntryCleanup(); // that's to be called on exit, unlike what the doc says...
-
     return wxGetApp().balauStart();
 }
 
 static std::atomic<bool> s_exitting;
+static std::atomic<bool> s_onExitCalled;
 
 bool c_wxIgorApp::balauStart() {
     CallOnInit();
 
     m_exitOnFrameDelete = Yes;
 
-    return true;
+    auto r = balauLoop();
+
+    return !r.first;
 }
 
 std::pair<bool, int> c_wxIgorApp::balauLoop() {
-    return std::pair<bool, int>(s_exitting.load(), wxGetApp().MainLoop());
+    wxIgorEventLoop * loop = dynamic_cast<wxIgorEventLoop *>(m_mainLoop);
+    if (!loop) {
+        m_mainLoop = loop = new wxIgorEventLoop(CreateMainLoop());
+        wxEventLoopBase::SetActive(loop);
+    }
+    int r = loop->run();
+    return std::pair<bool, int>(s_exitting.load(), r);
 }
 
-int wxIgorEventLoop::DoRun() {
+void c_wxIgorApp::balauExit() {
+    if (!s_onExitCalled.load())
+        OnExit();
+    wxIgorEventLoop * loop = dynamic_cast<wxIgorEventLoop *>(m_mainLoop);
+    if (loop)
+        loop->run();
+    wxEventLoopBase::SetActive(NULL);
+    wxEntryCleanup();
+}
+
+int wxIgorEventLoop::run() {
     OnNextIteration();
     ProcessIdle();
 
@@ -84,21 +101,9 @@ int wxIgorEventLoop::DoRun() {
 void wxIgorEventLoop::ScheduleExit(int rc) {
     m_exitcode = rc;
     m_shouldExit = true;
-    s_exitting.exchange(true);
+    s_onExitCalled.exchange(true);
     OnExit();
     WakeUp();
-}
-
-// why you no protected ?
-bool wxIgorEventLoop::ProcessEvents() {
-    if (wxTheApp) {
-        wxTheApp->ProcessPendingEvents();
-
-        if (m_shouldExit)
-            return false;
-    }
-
-    return Dispatch();
 }
 
 #include "wxIgorShared.h"
@@ -108,5 +113,9 @@ bool wxIgorStartup(int & argc, char ** argv) {
 }
 
 std::pair<bool, int> wxIgorLoop() {
-    return c_wxIgorApp::balauLoop();
+    return wxGetApp().balauLoop();
+}
+
+void wxIgorExit() {
+    wxGetApp().balauExit();
 }

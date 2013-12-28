@@ -31,6 +31,12 @@ class wxIdler : public StacklessTask {
     const char * getName() const { return "wxIdler"; }
     Events::Timeout m_evt;
 };
+
+class wxExit : public AtExit {
+public:
+    wxExit() : AtExit(12) { }
+    void doExit() { wxIgorExit(); }
+};
 #endif
 
 void MainTask::Do() {

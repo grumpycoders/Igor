@@ -30,6 +30,7 @@ void IgorAnalysisManager::Do()
     waitFor(m_pDatabase->m_analysisRequests.getEvent());
 
     Printer::log(M_INFO, "AnalysisManager starting...");
+    m_instructions = 0;
 
     for (;;)
     {
@@ -55,7 +56,7 @@ void IgorAnalysisManager::Do()
         }
 
         if (m_status == IDLE)
-            Printer::log(M_INFO, "AnalysisManager going idle...");
+            Printer::log(M_INFO, "AnalysisManager going idle; analyzed %lli instructions...", m_instructions.load());
 
         m_pDatabase->m_analysisRequests.getEvent()->resetMaybe();
         if (m_pDatabase->m_analysisRequests.isEmpty()) {
@@ -85,23 +86,24 @@ void IgorAnalysisManager::Do()
 
 void IgorAnalysis::Do()
 {
-    u64 currentPC = m_PC;
-	c_cpu_module* pCpu = m_pDatabase->getCpuForAddress(currentPC);
-    c_cpu_state* pCpuState = m_pDatabase->getCpuStateForAddress(currentPC);
+    u8 counter = 0;
 
-    if (!pCpu)
+    StacklessBegin();
+
+    m_pCpu = m_pDatabase->getCpuForAddress(m_PC);
+    m_pCpuState = m_pDatabase->getCpuStateForAddress(m_PC);
+
+    if (!m_pCpu)
         return;
 	s_analyzeState analyzeState;
-	analyzeState.m_PC = currentPC;
-	analyzeState.pCpu = pCpu;
-	analyzeState.pCpuState = pCpuState;
+    analyzeState.m_PC = m_PC;
+    analyzeState.pCpu = m_pCpu;
+    analyzeState.pCpuState = m_pCpuState;
     analyzeState.pDataBase = m_pDatabase;
     analyzeState.pAnalysis = m_parent;
-	analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+    analyzeState.m_cpu_analyse_result = m_pCpu->allocateCpuSpecificAnalyseResult();
 
 	analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
-
-    u8 counter = 0;
 
 	do
 	{
@@ -110,27 +112,34 @@ void IgorAnalysis::Do()
 			break;
 		}
 
-		if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
+        if (m_pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 		{
 			analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
 		}
 
         m_pDatabase->flag_address_as_instruction(analyzeState.m_cpu_analyse_result->m_startOfInstruction, analyzeState.m_cpu_analyse_result->m_instructionSize);
+        m_parent->add_instruction();
 
-		s_igorDatabase::s_symbolDefinition* pSymbol = m_pDatabase->get_Symbol(analyzeState.m_cpu_analyse_result->m_startOfInstruction);
-		if (pSymbol)
-		{
-			if (pSymbol->m_name.strlen())
-			{
-				Printer::log(M_INFO, pSymbol->m_name);
-			}
-		}
+        {
+            s_igorDatabase::s_symbolDefinition* pSymbol = m_pDatabase->get_Symbol(analyzeState.m_cpu_analyse_result->m_startOfInstruction);
+            if (pSymbol)
+            {
+                if (pSymbol->m_name.strlen())
+                {
+                    Printer::log(M_INFO, pSymbol->m_name);
+                }
+            }
+        }
 				
         if (++counter == 0)
-            yieldNoWait();
+        {
+            StacklessYield();
+        }
 
     } while (analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
 
 	delete analyzeState.m_cpu_analyse_result;
 	analyzeState.m_cpu_analyse_result = NULL;
+
+    StacklessEnd();
 }

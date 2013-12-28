@@ -1,5 +1,7 @@
 #include "IgorDatabase.h"
 
+s_igorDatabase* s_igorDatabase::m_defaultDatabase = NULL;
+
 igor_result s_igorDatabase::igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle)
 {
 	outputCpuHandle = m_cpu_modules.size();

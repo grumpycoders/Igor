@@ -21,6 +21,11 @@ struct s_analysisRequest
 
 struct s_igorDatabase
 {
+	s_igorDatabase()
+	{
+		setDefaultDatabase(this);
+	}
+
 	// Not sure about that stuff yet. Kind of making it up as I go
 	enum e_baseTypes
 	{
@@ -168,4 +173,15 @@ struct s_igorDatabase
 	igor_result declare_variable(u64 virtualAddress, e_baseTypes type);
 
 	s_symbolDefinition* get_Symbol(u64 virtualAddress);
+
+	static s_igorDatabase* getDefaultDatabase()
+	{
+		return m_defaultDatabase;
+	}
+	static void setDefaultDatabase(s_igorDatabase* pDatabase)
+	{
+		m_defaultDatabase = pDatabase;
+	}
+
+	static s_igorDatabase* m_defaultDatabase;
 };

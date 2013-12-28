@@ -1669,6 +1669,7 @@
     <ClCompile Include="src\IgorHttp.cpp" />
     <ClCompile Include="src\IgorSection.cpp" />
     <ClCompile Include="src\PELoader.cpp" />
+    <ClCompile Include="wxIgor\wxAsmWidget.cpp" />
     <ClCompile Include="wxIgor\wxIgorApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -1950,6 +1951,7 @@
     <ClInclude Include="src\IgorHttp.h" />
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\PELoader.h" />
+    <ClInclude Include="wxIgor\wxAsmWidget.h" />
     <ClInclude Include="wxIgor\wxIgorApp.h" />
     <ClInclude Include="wxIgor\wxIgorShared.h" />
     <ClInclude Include="wxwidget\include\wx\aboutdlg.h" />

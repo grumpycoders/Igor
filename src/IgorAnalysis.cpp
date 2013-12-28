@@ -42,7 +42,7 @@ void IgorAnalysis::Do()
 
 			do
 			{
-				if (igor_is_address_flagged_as_code(analyzeState.m_PC))
+				if (igor_is_address_flagged_as_code(m_pDatabase, analyzeState.m_PC))
 				{
 					break;
 				}
@@ -97,7 +97,7 @@ void IgorAnalysis::Do()
 
 					while (analyzeState.m_PC < pSection->m_virtualAddress + pSection->m_size)
 					{
-						if (igor_is_address_flagged_as_code(analyzeState.m_PC))
+						if (igor_is_address_flagged_as_code(m_pDatabase, analyzeState.m_PC))
 						{
 							if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 							{
@@ -163,9 +163,9 @@ igor_result IgorAnalysis::igor_flag_address_as_instruction(u64 virtualAddress, u
 	return IGOR_SUCCESS;
 }
 
-igor_result IgorAnalysis::igor_is_address_flagged_as_code(u64 virtualAddress)
+igor_result igor_is_address_flagged_as_code(s_igorDatabase* pDatabase, u64 virtualAddress)
 {
-	s_igorSection* pSection = m_pDatabase->findSectionFromAddress(virtualAddress);
+	s_igorSection* pSection = pDatabase->findSectionFromAddress(virtualAddress);
 
 	if (pSection == NULL)
 	{

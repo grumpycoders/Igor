@@ -1,6 +1,8 @@
 #include <atomic>
 
 #include "wxIgorApp.h"
+#include "wxAsmWidget.h"
+#include "IgorDatabase.h"
 
 #ifdef _DEBUG
 //#pragma comment(lib, "wxexpatd.lib")
@@ -26,7 +28,7 @@ bool c_wxIgorApp::OnInit()
 	SetTopWindow(m_mainFrame);
 	m_mainFrame->Show(true);
 
-	wxTextCtrl* disassembledView = new wxTextCtrl(m_mainFrame, -1, "Disassembly");
+//    wxAsmWidget* disassembledView = new wxAsmWidget(s_igorDatabase::getDefaultDatabase(), m_mainFrame, -1, "Disassembly");
 
 	return TRUE;
 }

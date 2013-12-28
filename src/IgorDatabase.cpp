@@ -253,11 +253,11 @@ u64 s_igorDatabase::findSymbol(const char* symbolName)
 {
 	// this is going to be very slow...
 
-	for (auto i = m_symbolMap.begin(); i != m_symbolMap.end(); i++)
+	for (auto & i : m_symbolMap)
 	{
-		if (i->second.m_name.compare(symbolName) == 0)
+		if (i.second.m_name.compare(symbolName) == 0)
 		{
-			return i->first;
+			return i.first;
 		}
 	}
 

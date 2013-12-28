@@ -146,7 +146,7 @@ void c_wxAsmWidget::seekPC(int amount)
 		updateDatabaseView();
 	}
 
-	//case amount == 0 is intentially left doint nothing
+	//case amount == 0 is intentionally left doing nothing
 }
 
 BEGIN_EVENT_TABLE(c_wxAsmWidget, wxTextCtrl)

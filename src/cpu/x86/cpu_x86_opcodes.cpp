@@ -9,7 +9,7 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState)
 {
 	s_mod_reg_rm resultModRegRm;
 
-	if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, resultModRegRm.RAW_VALUE) != IGOR_SUCCESS)
+	if (pState->pAnalysis->readU8(pState->m_PC++, resultModRegRm.RAW_VALUE) != IGOR_SUCCESS)
 	{
 		throw X86AnalysisException("Failed to read GET_MOD_REG_RM!");
 	}
@@ -21,7 +21,7 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState)
 
 	if ((MOD != 3) && (RM == 4))
 	{
-        if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, resultModRegRm.SIB) != IGOR_SUCCESS)
+        if (pState->pAnalysis->readU8(pState->m_PC++, resultModRegRm.SIB) != IGOR_SUCCESS)
 		{
 			throw X86AnalysisException("Error in GET_MOD_REG_RM");
 		}
@@ -33,7 +33,7 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState)
 		if ((RM == 5) || (RM == 4))
 		{
 			s32 offset;
-            if (pState->pAnalysis->getDB()->readS32(pState->m_PC, offset) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readS32(pState->m_PC, offset) != IGOR_SUCCESS)
 			{
 				throw X86AnalysisException("Error in GET_MOD_REG_RM");
 			}
@@ -44,7 +44,7 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState)
 	case 1:
 	{
 		s8 offsetS8 = 0;
-        if (pState->pAnalysis->getDB()->readS8(pState->m_PC++, offsetS8) != IGOR_SUCCESS)
+        if (pState->pAnalysis->readS8(pState->m_PC++, offsetS8) != IGOR_SUCCESS)
 		{
 			throw X86AnalysisException("Error in GET_MOD_REG_RM");
 		}
@@ -55,7 +55,7 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState)
 	case 2:
 	{
 		s32 offsetS32 = 0;
-        if (pState->pAnalysis->getDB()->readS32(pState->m_PC, offsetS32) != IGOR_SUCCESS)
+        if (pState->pAnalysis->readS32(pState->m_PC, offsetS32) != IGOR_SUCCESS)
 		{
 			throw X86AnalysisException("Error in GET_MOD_REG_RM");
 		}
@@ -127,7 +127,7 @@ igor_result x86_opcode_call(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	x86_analyse_result->m_mnemonic = INST_X86_CALL;
 
 	s32 jumpTarget = 0;
-    if (pState->pAnalysis->getDB()->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
+    if (pState->pAnalysis->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
 	{
 		return IGOR_FAILURE;
 	}
@@ -181,7 +181,7 @@ igor_result x86_opcode_retn(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	if (currentByte == 0xC2)
 	{
 		u16 immediate = 0;
-        if (pState->pAnalysis->getDB()->readU16(pState->m_PC, immediate) != IGOR_SUCCESS)
+        if (pState->pAnalysis->readU16(pState->m_PC, immediate) != IGOR_SUCCESS)
 			return IGOR_FAILURE;
 		pState->m_PC += 4;
 
@@ -205,7 +205,7 @@ igor_result x86_opcode_jmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	{
 	case 0xE9:
 		{
-                 if (pState->pAnalysis->getDB()->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
+                 if (pState->pAnalysis->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
 			{
 				return IGOR_FAILURE;
 			}
@@ -215,7 +215,7 @@ igor_result x86_opcode_jmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0xEB:
 		{
 			s8 jumpTargetS8;
-            if (pState->pAnalysis->getDB()->readS8(pState->m_PC++, jumpTargetS8) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readS8(pState->m_PC++, jumpTargetS8) != IGOR_SUCCESS)
 			{
 				return IGOR_FAILURE;
 			}
@@ -249,7 +249,7 @@ igor_result x86_opcode_C1(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	case 4:
 		{
 			u8 immediate;
-            if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
 			{
 				return IGOR_FAILURE;
 			}
@@ -262,7 +262,7 @@ igor_result x86_opcode_C1(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 		case 5:
 		{
 			u8 immediate;
-            if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
 			{
 				return IGOR_FAILURE;
 			}
@@ -362,7 +362,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0xA1:
 		{
 		 	u32 target = 0;
-            if (pState->pAnalysis->getDB()->readU32(pState->m_PC, target) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU32(pState->m_PC, target) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
 
@@ -375,7 +375,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0xA3:
 		{
 			u32 target = 0;
-            if (pState->pAnalysis->getDB()->readU32(pState->m_PC, target) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU32(pState->m_PC, target) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
 
@@ -395,7 +395,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0xBF:
 		{
 		 	u32 target = 0;
-            if (pState->pAnalysis->getDB()->readU32(pState->m_PC, target) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU32(pState->m_PC, target) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
 
@@ -404,7 +404,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 			x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)registerIdx, OPERAND_32bit);
 			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U32, target);
 
-            pState->pAnalysis->getDB()->flag_address_as_u32(target);
+            pState->pAnalysis->flag_address_as_u32(target);
 
 			break;
 		}
@@ -413,7 +413,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 			s_mod_reg_rm modRegRm = GET_MOD_REG_RM(pState);
 
 			u32 target = 0;
-            if (pState->pAnalysis->getDB()->readU32(pState->m_PC, target) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU32(pState->m_PC, target) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
 
@@ -472,7 +472,7 @@ igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0x3C:
 		{
 			u8 immediate = 0;
-            if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 
 			x86_analyse_result->m_numOperands = 2;
@@ -559,7 +559,7 @@ igor_result x86_opcode_sub(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0x2D:
 		{
 			u32 immediate = 0;
-            if (pState->pAnalysis->getDB()->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
 
@@ -591,7 +591,7 @@ igor_result x86_opcode_or(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	case 0x0D:
 		{
 			u32 immediate = 0;
-            if (pState->pAnalysis->getDB()->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
 			x86_analyse_result->m_numOperands = 2;
@@ -707,7 +707,7 @@ igor_result x86_opcode_push(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	case 0x68:
 		{
 			u32 immediate = 0;
-            if (pState->pAnalysis->getDB()->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
 
@@ -718,7 +718,7 @@ igor_result x86_opcode_push(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	case 0x6A:
 		{
 			u8 immediate = 0;
-            if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 
 			x86_analyse_result->m_numOperands = 1;
@@ -789,7 +789,7 @@ igor_result x86_opcode_j_varients(s_analyzeState* pState, c_cpu_x86_state* pX86S
 	}
 
 	s8 jumpTargetS8 = 0;
-    if (pState->pAnalysis->getDB()->readS8(pState->m_PC++, jumpTargetS8) != IGOR_SUCCESS)
+    if (pState->pAnalysis->readS8(pState->m_PC++, jumpTargetS8) != IGOR_SUCCESS)
 	{
 		return IGOR_FAILURE;
 	}
@@ -818,7 +818,7 @@ igor_result x86_opcode_F6(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 		case 0:
 		{
 			u8 immediate = 0;
-            if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
+            if (pState->pAnalysis->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 
 			x86_analyse_result->m_mnemonic = INST_X86_TEST;
@@ -920,7 +920,7 @@ igor_result x86_opcode_80(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 
 	u8 immediate = 0;
-    if (pState->pAnalysis->getDB()->readU8(pState->m_PC, immediate) != IGOR_SUCCESS)
+    if (pState->pAnalysis->readU8(pState->m_PC, immediate) != IGOR_SUCCESS)
 		return IGOR_FAILURE;
 	pState->m_PC += 1;
 
@@ -960,7 +960,7 @@ igor_result x86_opcode_81(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 
 	u32 immediate = 0;
-    if (pState->pAnalysis->getDB()->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
+    if (pState->pAnalysis->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
 		return IGOR_FAILURE;
 	pState->m_PC += 4;
 
@@ -1000,7 +1000,7 @@ igor_result x86_opcode_83(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	s_mod_reg_rm modRegRm = GET_MOD_REG_RM(pState);
 
 	u8 immediate = 0;
-    if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
+    if (pState->pAnalysis->readU8(pState->m_PC++, immediate) != IGOR_SUCCESS)
 		return IGOR_FAILURE;
 
 	u8 variation = modRegRm.getREGRaw();
@@ -1037,7 +1037,7 @@ igor_result x86_opcode_F(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 
 {
 	u8 currentByteF = 0;
 
-    if (pState->pAnalysis->getDB()->readU8(pState->m_PC++, currentByteF) != IGOR_SUCCESS)
+    if (pState->pAnalysis->readU8(pState->m_PC++, currentByteF) != IGOR_SUCCESS)
 	{
 		return IGOR_FAILURE;
 	}

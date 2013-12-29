@@ -65,7 +65,7 @@
 #define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   13   // Delay Load Import Descriptors
 #define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14   // COM Runtime descriptor
 
-igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorAnalysisManager * analysis)
+igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSession * analysis)
 {
     bool success = false;
 	// DOS .EXE header

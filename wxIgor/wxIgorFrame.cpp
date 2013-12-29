@@ -46,7 +46,7 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
 	file->forceRead(buffer, size);
 	Balau::IO<Balau::Buffer> reader(new Balau::Buffer(buffer, file->getSize()));
 
-	IgorAnalysisManager * analysis = new IgorAnalysisManager();
+	IgorLocalSession * analysis = new IgorLocalSession();
 
 	s_igorDatabase * db = new s_igorDatabase;
 

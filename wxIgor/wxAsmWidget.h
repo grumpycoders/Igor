@@ -7,7 +7,7 @@
 
 #include "Igor.h"
 
-class IgorAnalysisManager;
+class IgorSession;
 
 class c_wxAsmWidget;
 
@@ -35,7 +35,7 @@ public:
 		EVT_RefreshDatabase = wxID_HIGHEST,
 	};
 
-    c_wxAsmWidget(IgorAnalysisManager* pAnalysis, wxWindow *parent, wxWindowID id,
+    c_wxAsmWidget(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
 		const wxString& value = wxEmptyString,
 		const wxPoint& pos = wxDefaultPosition,
 		const wxSize& size = wxDefaultSize,
@@ -52,7 +52,7 @@ private:
 	//void OnIdle(wxIdleEvent &event);
 	void OnTimer(wxTimerEvent &event);
 
-    IgorAnalysisManager* m_pAnalysis;
+    IgorSession* m_pAnalysis;
 
 	wxTimer* m_timer;
 
@@ -69,7 +69,7 @@ public:
 		EVT_RefreshDatabase = wxID_HIGHEST,
 	};
 
-    c_wxAsmWidget_old(IgorAnalysisManager* pAnalysis, wxWindow *parent, wxWindowID id,
+    c_wxAsmWidget_old(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
 		const wxString& value = wxEmptyString,
 		const wxPoint& pos = wxDefaultPosition,
 		const wxSize& size = wxDefaultSize,
@@ -82,7 +82,7 @@ private:
 	//void OnIdle(wxIdleEvent &event);
 	void OnTimer(wxTimerEvent &event);
 
-    IgorAnalysisManager* m_pAnalysis;
+    IgorSession* m_pAnalysis;
 
 	wxTimer* m_timer;
 

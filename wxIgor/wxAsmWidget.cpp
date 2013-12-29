@@ -46,7 +46,7 @@ BEGIN_EVENT_TABLE(c_wxAsmWidgetScrollbar, wxScrollBar)
 EVT_SCROLL(c_wxAsmWidgetScrollbar::OnScroll)
 END_EVENT_TABLE()
 
-c_wxAsmWidget::c_wxAsmWidget(IgorAnalysisManager* pAnalysis, wxWindow *parent, wxWindowID id,
+c_wxAsmWidget::c_wxAsmWidget(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
 	const wxString& value,
 	const wxPoint& pos,
 	const wxSize& size,
@@ -58,7 +58,7 @@ c_wxAsmWidget::c_wxAsmWidget(IgorAnalysisManager* pAnalysis, wxWindow *parent, w
 	m_timer = new wxTimer(this, EVT_RefreshDatabase);
 	m_timer->Start(300);
 
-    m_currentPosition = m_pAnalysis->getDB()->findSymbol("entryPoint");
+    m_currentPosition = m_pAnalysis->findSymbol("entryPoint");
 
 	SetScrollbar(wxVERTICAL, 0, 0, 0); // hide the default scrollbar
 	SetFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
@@ -78,19 +78,19 @@ void c_wxAsmWidget::updateDatabaseView()
 	u64 currentPC = m_currentPosition;
 
 	{
-        s_igorSection* pSection = m_pAnalysis->getDB()->findSectionFromAddress(currentPC);
-        c_cpu_module* pCpu = m_pAnalysis->getDB()->getCpuForAddress(currentPC);
+        s_igorSection* pSection = m_pAnalysis->findSectionFromAddress(currentPC);
+        c_cpu_module* pCpu = m_pAnalysis->getCpuForAddress(currentPC);
 
 		s_analyzeState analyzeState;
 		analyzeState.m_PC = currentPC;
 		analyzeState.pCpu = pCpu;
-        analyzeState.pCpuState = m_pAnalysis->getDB()->getCpuStateForAddress(currentPC);
+        analyzeState.pCpuState = m_pAnalysis->getCpuStateForAddress(currentPC);
         analyzeState.pAnalysis = m_pAnalysis;
 		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
 		while (numDrawnLines < numLinesInWindow)
 		{
-            if (m_pAnalysis->getDB()->is_address_flagged_as_code(analyzeState.m_PC))
+            if (m_pAnalysis->is_address_flagged_as_code(analyzeState.m_PC))
 			{
 				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 				{
@@ -111,7 +111,7 @@ void c_wxAsmWidget::updateDatabaseView()
 			}
 			else
 			{
-                wxString displayDisassembledString = wxString::Format("0x%01X\n", m_pAnalysis->getDB()->readU8(analyzeState.m_PC));
+                wxString displayDisassembledString = wxString::Format("0x%01X\n", m_pAnalysis->readU8(analyzeState.m_PC));
 
 				AppendText(displayDisassembledString);
 				numDrawnLines++;
@@ -136,12 +136,12 @@ void c_wxAsmWidget::seekPC(int amount)
 {
 	if (amount > 0)
 	{
-        m_currentPosition = m_pAnalysis->getDB()->get_next_valid_address_after(m_currentPosition + amount);
+        m_currentPosition = m_pAnalysis->get_next_valid_address_after(m_currentPosition + amount);
 		updateDatabaseView();
 	}
 	if (amount < 0)
 	{
-        m_currentPosition = m_pAnalysis->getDB()->get_next_valid_address_before(m_currentPosition + amount);
+        m_currentPosition = m_pAnalysis->get_next_valid_address_before(m_currentPosition + amount);
 		updateDatabaseView();
 	}
 
@@ -161,7 +161,7 @@ public:
 	}
 };
 
-c_wxAsmWidget_old::c_wxAsmWidget_old(IgorAnalysisManager* pAnalysis, wxWindow *parent, wxWindowID id,
+c_wxAsmWidget_old::c_wxAsmWidget_old(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
 	const wxString& value,
 	const wxPoint& pos,
 	const wxSize& size,
@@ -196,23 +196,23 @@ void c_wxAsmWidget_old::OnTimer(wxTimerEvent &event)
 		DeleteRows(0, Rows, true);
 	}
 
-    u64 entryPointPC = m_pAnalysis->getDB()->findSymbol("entryPoint");
+    u64 entryPointPC = m_pAnalysis->findSymbol("entryPoint");
 
 	if (entryPointPC != -1)
 	{
-        s_igorSection* pSection = m_pAnalysis->getDB()->findSectionFromAddress(entryPointPC);
-        c_cpu_module* pCpu = m_pAnalysis->getDB()->getCpuForAddress(entryPointPC);
+        s_igorSection* pSection = m_pAnalysis->findSectionFromAddress(entryPointPC);
+        c_cpu_module* pCpu = m_pAnalysis->getCpuForAddress(entryPointPC);
 
 		s_analyzeState analyzeState;
 		analyzeState.m_PC = pSection->m_virtualAddress;
 		analyzeState.pCpu = pCpu;
-        analyzeState.pCpuState = m_pAnalysis->getDB()->getCpuStateForAddress(entryPointPC);
+        analyzeState.pCpuState = m_pAnalysis->getCpuStateForAddress(entryPointPC);
         analyzeState.pAnalysis = m_pAnalysis;
 		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
 		while (analyzeState.m_PC < pSection->m_virtualAddress + pSection->m_size)
 		{
-            if (m_pAnalysis->getDB()->is_address_flagged_as_code(analyzeState.m_PC))
+            if (m_pAnalysis->is_address_flagged_as_code(analyzeState.m_PC))
 			{
 				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
 				{

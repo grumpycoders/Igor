@@ -28,7 +28,7 @@ enum e_analyzeResult
 	continue_analysis,
 };
 
-class IgorAnalysisManager;
+class IgorSession;
 
 struct s_analyzeState
 {
@@ -36,7 +36,7 @@ struct s_analyzeState
 	u64 m_PC;
 	c_cpu_module* pCpu;
 	c_cpu_state* pCpuState;
-    IgorAnalysisManager* pAnalysis;
+    IgorSession* pAnalysis;
 
 	// output
 	c_cpu_analyse_result* m_cpu_analyse_result;

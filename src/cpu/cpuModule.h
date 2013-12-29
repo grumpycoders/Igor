@@ -36,7 +36,6 @@ struct s_analyzeState
 	u64 m_PC;
 	c_cpu_module* pCpu;
 	c_cpu_state* pCpuState;
-	s_igorDatabase* pDataBase;
     IgorAnalysisManager* pAnalysis;
 
 	// output

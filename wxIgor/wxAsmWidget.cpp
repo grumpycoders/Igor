@@ -85,7 +85,6 @@ void c_wxAsmWidget::updateDatabaseView()
 		analyzeState.m_PC = currentPC;
 		analyzeState.pCpu = pCpu;
         analyzeState.pCpuState = m_pAnalysis->getDB()->getCpuStateForAddress(currentPC);
-        analyzeState.pDataBase = m_pAnalysis->getDB();
         analyzeState.pAnalysis = m_pAnalysis;
 		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
@@ -208,7 +207,6 @@ void c_wxAsmWidget_old::OnTimer(wxTimerEvent &event)
 		analyzeState.m_PC = pSection->m_virtualAddress;
 		analyzeState.pCpu = pCpu;
         analyzeState.pCpuState = m_pAnalysis->getDB()->getCpuStateForAddress(entryPointPC);
-        analyzeState.pDataBase = m_pAnalysis->getDB();
         analyzeState.pAnalysis = m_pAnalysis;
 		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 

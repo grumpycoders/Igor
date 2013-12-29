@@ -100,7 +100,6 @@ void IgorAnalysis::Do()
     analyzeState.m_PC = m_PC;
     analyzeState.pCpu = m_pCpu;
     analyzeState.pCpuState = m_pCpuState;
-    analyzeState.pDataBase = m_pDatabase;
     analyzeState.pAnalysis = m_parent;
     analyzeState.m_cpu_analyse_result = m_pCpu->allocateCpuSpecificAnalyseResult();
 

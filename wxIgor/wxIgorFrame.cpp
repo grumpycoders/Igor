@@ -63,7 +63,7 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
-	c_wxAsmWidget* pAsmWidget = new c_wxAsmWidget(db, panel, -1, "ASM view");
+    c_wxAsmWidget* pAsmWidget = new c_wxAsmWidget(analysis, panel, -1, "ASM view");
 	c_wxAsmWidgetScrollbar* pAsmWidgetScrollbar = new c_wxAsmWidgetScrollbar(pAsmWidget, panel, -1);
 
 	pAsmWidget->SetSize(GetSize());

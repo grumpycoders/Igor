@@ -13,6 +13,7 @@ typedef int32_t s32;
 typedef int16_t s16;
 typedef int8_t s8;
 
+typedef u64 igorAddress;
 
 typedef Balau::IO<Balau::Handle> BFile;
 

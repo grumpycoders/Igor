@@ -81,10 +81,13 @@ enum e_x86_mnemonic
 	INST_X86_MOVSD,
 	INST_X86_MOVSB,
 	INST_X86_DIV,
+	INST_X86_IMUL,
 
 	INST_X86_PXOR,
 	INST_X86_MOVQ,
 	INST_X86_MOVDQA,
+	INST_X86_MOVUPS,
+	INST_X86_MOVSS,
 };
 
 // !!!! this has to match the register list registerName in cpu_x86.cpp
@@ -131,6 +134,8 @@ enum e_operandSize
 	OPERAND_MM_64 = 3,
 	OPERAND_XMM_128 = 4,
 
+	OPERAND_XMM_m32,
+	OPERAND_XMM_m64,
 	OPERAND_16_32,
 	OPERAND_XMM_64_128,
 };
@@ -308,7 +313,8 @@ public:
 		m_sizeOverride = false;
 		memset(&m_mod_reg_rm, 0xCD, sizeof(s_mod_reg_rm));
 		m_lockPrefix = false;
-		m_repPrefix = false;
+		m_repPrefixF2 = false;
+		m_repPrefixF3 = false;
 	}
 
 	e_operandSize getAlternateOperandSize(e_operandSize inputSize)
@@ -351,7 +357,8 @@ public:
 	bool m_sizeOverride;
 	s_mod_reg_rm m_mod_reg_rm;
 	bool m_lockPrefix;
-	bool m_repPrefix;
+	bool m_repPrefixF2;
+	bool m_repPrefixF3;
 };
 
 class c_cpu_x86 : public c_cpu_module

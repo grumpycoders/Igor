@@ -43,7 +43,7 @@ public:
 		const wxString& name = "");
 
 	void seekPC(int amount);
-private:
+//private:
 
 	void updateDatabaseView();
 
@@ -57,34 +57,6 @@ private:
 	wxTimer* m_timer;
 
 	u64 m_currentPosition;
-
-	DECLARE_EVENT_TABLE()
-};
-
-class c_wxAsmWidget_old : public wxGrid
-{
-public:
-	enum
-	{
-		EVT_RefreshDatabase = wxID_HIGHEST,
-	};
-
-    c_wxAsmWidget_old(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
-		const wxString& value = wxEmptyString,
-		const wxPoint& pos = wxDefaultPosition,
-		const wxSize& size = wxDefaultSize,
-		long style = wxWANTS_CHARS,
-		const wxString& name = "");
-private:
-
-	void OnMouseEvent(wxMouseEvent& event);
-	void OnScroll(wxScrollWinEvent &event);
-	//void OnIdle(wxIdleEvent &event);
-	void OnTimer(wxTimerEvent &event);
-
-    IgorSession* m_pAnalysis;
-
-	wxTimer* m_timer;
 
 	DECLARE_EVENT_TABLE()
 };

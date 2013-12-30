@@ -104,6 +104,36 @@ igor_result x86_opcode_mmx_sse2_RM_R(s_analyzeState* pState, c_cpu_x86_state* pX
 	return IGOR_SUCCESS;
 }
 
+igor_result x86_opcode_F_10(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+
+	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
+	x86_analyse_result->m_numOperands = 2;
+	x86_analyse_result->m_operands[0].setAsRegisterRM_XMM(pState);
+
+	EAssert(x86_analyse_result->m_sizeOverride == false, "m_sizeOverride not implemented in x86_opcode_F_10");
+
+	if (x86_analyse_result->m_repPrefixF2)
+	{
+		x86_analyse_result->m_mnemonic = INST_X86_MOVSD;
+		x86_analyse_result->m_operands[1].setAsRegisterRM_XMM(pState, OPERAND_XMM_m64);
+	}
+	else
+	if (x86_analyse_result->m_repPrefixF3)
+	{
+		x86_analyse_result->m_mnemonic = INST_X86_MOVUPS;
+		x86_analyse_result->m_operands[1].setAsRegisterRM_XMM(pState, OPERAND_XMM_m32);
+	}
+	else
+	{
+		x86_analyse_result->m_mnemonic = INST_X86_MOVSS;
+	}
+	x86_analyse_result->m_repPrefixF3 = false;
+
+	return IGOR_SUCCESS;
+}
+
 igor_result x86_opcode_F_jmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
@@ -204,7 +234,7 @@ const t_x86_opcode x86_opcode_table_0xf[0x100] =
 	NULL,
 
 	// 0x10
-	NULL,
+	/* 0x10 */ &x86_opcode_F_10,
 	NULL,
 	NULL,
 	NULL,

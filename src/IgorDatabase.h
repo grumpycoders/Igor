@@ -104,7 +104,6 @@ struct s_igorDatabase
     c_cpu_module* getCpuForAddress(u64 PC);
 	c_cpu_state* getCpuStateForAddress(u64 PC);
 
-	s_igorSection* findSectionFromAddress(u64 address);
 	igor_result readS32(u64 address, s32& output);
 	igor_result readU32(u64 address, u32& output);
 	igor_result readS16(u64 address, s16& output);
@@ -175,5 +174,14 @@ struct s_igorDatabase
     u64 get_next_valid_address_before(u64 virtualAddress);
     u64 get_next_valid_address_after(u64 virtualAddress);
 
+	igorAddress getEntryPoint();
+	igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
+	igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
+	u64 getSectionSize(igor_section_handle sectionHandle);
+
+	igorAddress m_entryPoint;
+
+private:
+	s_igorSection* findSectionFromAddress(u64 address);
 	s_symbolDefinition* get_Symbol(u64 virtualAddress);
 };

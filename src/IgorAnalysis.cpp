@@ -98,7 +98,6 @@ igor_result IgorLocalSession::readU8(u64 address, u8& output) { return m_pDataba
 u64 IgorLocalSession::findSymbol(const char* symbolName) { return m_pDatabase->findSymbol(symbolName); }
 
 int IgorLocalSession::readString(u64 address, Balau::String& outputString) { return m_pDatabase->readString(address, outputString); }
-s_igorSection* IgorLocalSession::findSectionFromAddress(u64 address) { return m_pDatabase->findSectionFromAddress(address); }
 c_cpu_module* IgorLocalSession::getCpuForAddress(u64 PC) { return m_pDatabase->getCpuForAddress(PC); }
 c_cpu_state* IgorLocalSession::getCpuStateForAddress(u64 PC) { return m_pDatabase->getCpuStateForAddress(PC);  }
 igor_result IgorLocalSession::is_address_flagged_as_code(u64 virtualAddress) { return m_pDatabase->is_address_flagged_as_code(virtualAddress); }
@@ -106,6 +105,12 @@ u64 IgorLocalSession::get_next_valid_address_before(u64 virtualAddress) { return
 u64 IgorLocalSession::get_next_valid_address_after(u64 virtualAddress) { return m_pDatabase->get_next_valid_address_after(virtualAddress); }
 igor_result IgorLocalSession::flag_address_as_u32(u64 virtualAddress) { return m_pDatabase->flag_address_as_u32(virtualAddress); }
 igor_result IgorLocalSession::flag_address_as_instruction(u64 virtualAddress, u8 instructionSize) { return m_pDatabase->flag_address_as_instruction(virtualAddress, instructionSize); }
+
+igorAddress IgorLocalSession::getEntryPoint() { return m_pDatabase->getEntryPoint(); }
+igor_section_handle IgorLocalSession::getSectionFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSectionFromAddress(virtualAddress); }
+igorAddress IgorLocalSession::getSectionStartVirtualAddress(igor_section_handle sectionHandle) { return m_pDatabase->getSectionStartVirtualAddress(sectionHandle); }
+u64 IgorLocalSession::getSectionSize(igor_section_handle sectionHandle) { return m_pDatabase->getSectionSize(sectionHandle); }
+
 
 void IgorAnalysis::Do()
 {
@@ -138,20 +143,11 @@ void IgorAnalysis::Do()
 		{
 			analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
 		}
-
-        m_pDatabase->flag_address_as_instruction(analyzeState.m_cpu_analyse_result->m_startOfInstruction, analyzeState.m_cpu_analyse_result->m_instructionSize);
-        m_parent->add_instruction();
-
-        {
-            s_igorDatabase::s_symbolDefinition* pSymbol = m_pDatabase->get_Symbol(analyzeState.m_cpu_analyse_result->m_startOfInstruction);
-            if (pSymbol)
-            {
-                if (pSymbol->m_name.strlen())
-                {
-                    Printer::log(M_INFO, pSymbol->m_name);
-                }
-            }
-        }
+		else
+		{
+			m_pDatabase->flag_address_as_instruction(analyzeState.m_cpu_analyse_result->m_startOfInstruction, analyzeState.m_cpu_analyse_result->m_instructionSize);
+			m_parent->add_instruction();
+		}
 				
         if (++counter == 0)
         {

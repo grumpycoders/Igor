@@ -78,7 +78,6 @@ void c_wxAsmWidget::updateDatabaseView()
 	u64 currentPC = m_currentPosition;
 
 	{
-        s_igorSection* pSection = m_pAnalysis->findSectionFromAddress(currentPC);
         c_cpu_module* pCpu = m_pAnalysis->getCpuForAddress(currentPC);
 
 		s_analyzeState analyzeState;
@@ -90,13 +89,8 @@ void c_wxAsmWidget::updateDatabaseView()
 
 		while (numDrawnLines < numLinesInWindow)
 		{
-            if (m_pAnalysis->is_address_flagged_as_code(analyzeState.m_PC))
+			if (m_pAnalysis->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
 			{
-				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
-				{
-					break;
-				}
-
 				Balau::String disassembledString;
 				pCpu->printInstruction(&analyzeState, disassembledString);
 
@@ -150,114 +144,4 @@ void c_wxAsmWidget::seekPC(int amount)
 
 BEGIN_EVENT_TABLE(c_wxAsmWidget, wxTextCtrl)
 EVT_TIMER(c_wxAsmWidget::EVT_RefreshDatabase, c_wxAsmWidget::OnTimer)
-END_EVENT_TABLE()
-
-class wxAsmWidgetGridCellProvider : public wxGridCellAttrProvider
-{
-public:
-	wxGridCellAttr *GetAttr(int row, int col,wxGridCellAttr::wxAttrKind  kind) const
-	{
-		return NULL;
-	}
-};
-
-c_wxAsmWidget_old::c_wxAsmWidget_old(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
-	const wxString& value,
-	const wxPoint& pos,
-	const wxSize& size,
-	long style,
-	const wxString& name) : wxGrid(parent, id)
-{
-	CreateGrid(0, 3);
-
-	HideRowLabels();
-	HideColLabels();
-	EnableGridLines(false);
-
-	EnableEditing(false);
-
-	//GetTable()->SetAttrProvider(new wxAsmWidgetGridCellProvider());
-
-    m_pAnalysis = pAnalysis;
-
-	m_timer = new wxTimer(this, EVT_RefreshDatabase);
-	m_timer->Start(1000);
-}
-
-void c_wxAsmWidget_old::OnTimer(wxTimerEvent &event)
-{
-	Freeze();
-
-	wxPoint viewStart = GetViewStart();
-
-	int Rows = GetNumberRows();
-	if (Rows)
-	{
-		DeleteRows(0, Rows, true);
-	}
-
-    u64 entryPointPC = m_pAnalysis->findSymbol("entryPoint");
-
-	if (entryPointPC != -1)
-	{
-        s_igorSection* pSection = m_pAnalysis->findSectionFromAddress(entryPointPC);
-        c_cpu_module* pCpu = m_pAnalysis->getCpuForAddress(entryPointPC);
-
-		s_analyzeState analyzeState;
-		analyzeState.m_PC = pSection->m_virtualAddress;
-		analyzeState.pCpu = pCpu;
-        analyzeState.pCpuState = m_pAnalysis->getCpuStateForAddress(entryPointPC);
-        analyzeState.pAnalysis = m_pAnalysis;
-		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
-
-		while (analyzeState.m_PC < pSection->m_virtualAddress + pSection->m_size)
-		{
-            if (m_pAnalysis->is_address_flagged_as_code(analyzeState.m_PC))
-			{
-				if (pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
-				{
-					break;
-				}
-
-				Balau::String disassembledString;
-				pCpu->printInstruction(&analyzeState, disassembledString);
-
-				AppendRows();
-				int newRow = GetNumberRows() - 1;
-
-				wxString displayDisassembledString;
-				displayDisassembledString = disassembledString.to_charp(0);
-
-				GetTable()->SetValue(newRow, 0, displayDisassembledString);
-
-				analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
-			}
-			else
-			{
-				analyzeState.m_PC++;
-			}
-		}
-
-		delete analyzeState.m_cpu_analyse_result;
-	}
-
-	Scroll(viewStart);
-
-	Thaw();
-}
-
-void c_wxAsmWidget_old::OnMouseEvent(wxMouseEvent& event)
-{
-
-}
-
-void c_wxAsmWidget_old::OnScroll(wxScrollWinEvent &event)
-{
-	event.StopPropagation();
-}
-
-BEGIN_EVENT_TABLE(c_wxAsmWidget_old, wxGrid)
-EVT_MOUSE_EVENTS(c_wxAsmWidget_old::OnMouseEvent)
-EVT_SCROLLWIN(c_wxAsmWidget_old::OnScroll)
-EVT_TIMER(c_wxAsmWidget_old::EVT_RefreshDatabase, c_wxAsmWidget_old::OnTimer)
 END_EVENT_TABLE()

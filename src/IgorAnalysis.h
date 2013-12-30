@@ -13,51 +13,51 @@ class c_cpu_state;
 class IgorSession
 {
 public:
-	virtual igor_result readS32(u64 address, s32& output) = 0;
-	virtual igor_result readU32(u64 address, u32& output) = 0;
-	virtual igor_result readS16(u64 address, s16& output) = 0;
-	virtual igor_result readU16(u64 address, u16& output) = 0;
-	virtual igor_result readS8(u64 address, s8& output) = 0;
-	virtual igor_result readU8(u64 address, u8& output) = 0;
+	virtual igor_result readS32(igorAddress address, s32& output) = 0;
+	virtual igor_result readU32(igorAddress address, u32& output) = 0;
+	virtual igor_result readS16(igorAddress address, s16& output) = 0;
+	virtual igor_result readU16(igorAddress address, u16& output) = 0;
+	virtual igor_result readS8(igorAddress address, s8& output) = 0;
+	virtual igor_result readU8(igorAddress address, u8& output) = 0;
 
-	virtual u64 findSymbol(const char* symbolName) = 0;
+	virtual igorAddress findSymbol(const char* symbolName) = 0;
 
-	s32 readS32(u64 address)
+	s32 readS32(igorAddress address)
 	{
 		s32 output;
 		readS32(address, output);
 		return output;
 	}
 
-	u32 readU32(u64 address)
+	u32 readU32(igorAddress address)
 	{
 		u32 output;
 		readU32(address, output);
 		return output;
 	}
 
-	s16 readS16(u64 address)
+	s16 readS16(igorAddress address)
 	{
 		s16 output;
 		readS16(address, output);
 		return output;
 	}
 
-	u16 readU16(u64 address)
+	u16 readU16(igorAddress address)
 	{
 		u16 output;
 		readU16(address, output);
 		return output;
 	}
 
-	s8 readS8(u64 address)
+	s8 readS8(igorAddress address)
 	{
 		s8 output;
 		readS8(address, output);
 		return output;
 	}
 
-	u8 readU8(u64 address)
+	u8 readU8(igorAddress address)
 	{
 		u8 output;
 		readU8(address, output);
@@ -65,17 +65,21 @@ public:
 	}
 
 	virtual int readString(u64 address, Balau::String& outputString) = 0;
-	virtual s_igorSection* findSectionFromAddress(u64 address) = 0;
-	virtual c_cpu_module* getCpuForAddress(u64 PC) = 0;
-	virtual c_cpu_state* getCpuStateForAddress(u64 PC) = 0;
-	virtual igor_result is_address_flagged_as_code(u64 virtualAddress) = 0;
-	virtual u64 get_next_valid_address_before(u64 virtualAddress) = 0;
-	virtual u64 get_next_valid_address_after(u64 virtualAddress) = 0;
+	virtual c_cpu_module* getCpuForAddress(igorAddress PC) = 0;
+	virtual c_cpu_state* getCpuStateForAddress(igorAddress PC) = 0;
+	virtual igor_result is_address_flagged_as_code(igorAddress virtualAddress) = 0;
+	virtual igorAddress get_next_valid_address_before(igorAddress virtualAddress) = 0;
+	virtual igorAddress get_next_valid_address_after(igorAddress virtualAddress) = 0;
 
 	virtual void add_code_analysis_task(u64 PC) = 0;
 
 	virtual igor_result flag_address_as_u32(u64 virtualAddress) = 0;
 	virtual igor_result flag_address_as_instruction(u64 virtualAddress, u8 instructionSize) = 0;
+
+	virtual igorAddress getEntryPoint() = 0;
+	virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) = 0;
+	virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) = 0;
+	virtual u64 getSectionSize(igor_section_handle sectionHandle) = 0;
 };
 
 class IgorLocalSession : public Balau::Task, public IgorSession {
@@ -90,23 +94,26 @@ public:
     const char * getStatusString();
     void add_instruction() { m_instructions++; }
 
-	igor_result readS32(u64 address, s32& output);
-	igor_result readU32(u64 address, u32& output);
-	igor_result readS16(u64 address, s16& output);
-	igor_result readU16(u64 address, u16& output);
-	igor_result readS8(u64 address, s8& output);
-	igor_result readU8(u64 address, u8& output);
-	u64 findSymbol(const char* symbolName);
+	igor_result readS32(igorAddress address, s32& output);
+	igor_result readU32(igorAddress address, u32& output);
+	igor_result readS16(igorAddress address, s16& output);
+	igor_result readU16(igorAddress address, u16& output);
+	igor_result readS8(igorAddress address, s8& output);
+	igor_result readU8(igorAddress address, u8& output);
+	igorAddress findSymbol(const char* symbolName);
 	int readString(u64 address, Balau::String& outputString);
-	s_igorSection* findSectionFromAddress(u64 address);
-	c_cpu_module* getCpuForAddress(u64 PC);
-	c_cpu_state* getCpuStateForAddress(u64 PC);
-	igor_result is_address_flagged_as_code(u64 virtualAddress);
-	u64 get_next_valid_address_before(u64 virtualAddress);
-	u64 get_next_valid_address_after(u64 virtualAddress);
-	igor_result flag_address_as_u32(u64 virtualAddress);
-	igor_result flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
+	c_cpu_module* getCpuForAddress(igorAddress PC);
+	c_cpu_state* getCpuStateForAddress(igorAddress PC);
+	igor_result is_address_flagged_as_code(igorAddress virtualAddress);
+	igorAddress get_next_valid_address_before(igorAddress virtualAddress);
+	igorAddress get_next_valid_address_after(igorAddress virtualAddress);
+	igor_result flag_address_as_u32(igorAddress virtualAddress);
+	igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize);
 
+	igorAddress getEntryPoint();
+	igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
+	igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
+	u64 getSectionSize(igor_section_handle sectionHandle);
 private:
     enum {
         IDLE,

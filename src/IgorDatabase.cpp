@@ -370,3 +370,37 @@ u64 s_igorDatabase::get_next_valid_address_after(u64 virtualAddress)
 
     return virtualAddress;
 }
+
+igorAddress s_igorDatabase::getEntryPoint()
+{
+	return m_entryPoint;
+}
+
+igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAddress)
+{
+	for (int i = 0; i<m_sections.size(); i++)
+	{
+		s_igorSection* pSection = m_sections[i];
+
+		if ((pSection->m_virtualAddress <= virtualAddress) && (pSection->m_virtualAddress + pSection->m_size > virtualAddress))
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+igorAddress s_igorDatabase::getSectionStartVirtualAddress(igor_section_handle sectionHandle)
+{
+	s_igorSection* pSection = m_sections[sectionHandle];
+
+	return pSection->m_virtualAddress;
+}
+
+u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
+{
+	s_igorSection* pSection = m_sections[sectionHandle];
+
+	return pSection->m_size;
+}

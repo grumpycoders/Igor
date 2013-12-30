@@ -408,6 +408,14 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 
 			break;
 		}
+	case 0xC6:
+		{
+			x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
+			x86_analyse_result->m_numOperands = 2;
+			x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8bit);
+			x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8bit);
+			break;
+		}
 	case 0xC7:
 		{
 			s_mod_reg_rm modRegRm = GET_MOD_REG_RM(pState);
@@ -620,6 +628,11 @@ igor_result x86_opcode_xor(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		x86_analyse_result->m_operands[0].setAsRegisterRM(pState);
 		x86_analyse_result->m_operands[1].setAsRegisterR(pState);
 		break;
+	case 0x32:
+		x86_analyse_result->m_numOperands = 2;
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8bit);
+		break;
 	case 0x33:
 		x86_analyse_result->m_numOperands = 2;
 		x86_analyse_result->m_operands[0].setAsRegisterR(pState);
@@ -627,6 +640,28 @@ igor_result x86_opcode_xor(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		break;
 	default:
 		X86_DECODER_FAILURE("Unhandled x86_opcode_xor");
+	}
+
+	return IGOR_SUCCESS;
+}
+
+igor_result x86_opcode_imul(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	x86_analyse_result->m_mnemonic = INST_X86_IMUL;
+
+	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
+
+	switch (currentByte)
+	{
+	case 0x69:
+		x86_analyse_result->m_numOperands = 3;
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState);
+		x86_analyse_result->m_operands[2].setAsImmediate(pState, OPERAND_16_32);
+		break;
+	default:
+		X86_DECODER_FAILURE("Unhandled x86_opcode_imul");
 	}
 
 	return IGOR_SUCCESS;
@@ -645,7 +680,7 @@ igor_result x86_opcode_and(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		x86_analyse_result->m_operands[1].setAsImmediate(pState);
 		break;
 	default:
-		X86_DECODER_FAILURE("Unhandled x86_opcode_xor");
+		X86_DECODER_FAILURE("Unhandled x86_opcode_and");
 	}
 
 	return IGOR_SUCCESS;
@@ -1109,18 +1144,18 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	// 0x30
 	NULL,
 	/* 0x31 */ &x86_opcode_xor,
-	NULL,
+	/* 0x32 */ &x86_opcode_xor,
 	/* 0x33 */ &x86_opcode_xor,
 	NULL,
 	NULL,
 	NULL,
 	NULL,
 	NULL,
-	/* 39 */ &x86_opcode_cmp,
-	/* 3A */ &x86_opcode_cmp,
-	/* 3B */ &x86_opcode_cmp,
-	/* 3C */ &x86_opcode_cmp,
-	/* 3D */ &x86_opcode_cmp,
+	/* 0x39 */ &x86_opcode_cmp,
+	/* 0x3A */ &x86_opcode_cmp,
+	/* 0x3B */ &x86_opcode_cmp,
+	/* 0x3C */ &x86_opcode_cmp,
+	/* 0x3D */ &x86_opcode_cmp,
 	NULL,
 	NULL,
 
@@ -1168,7 +1203,7 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	NULL,
 	NULL,
 	/* 0x68 */ &x86_opcode_push,
-	NULL,
+	/* 0x69 */ &x86_opcode_imul,
 	/* 0x6A */ &x86_opcode_push,
 	NULL,
 	NULL,
@@ -1272,7 +1307,7 @@ const t_x86_opcode x86_opcode_table[0x100] =
 	/* C3 */ &x86_opcode_retn,
 	NULL,
 	NULL,
-	NULL,
+	/* C6 */ &x86_opcode_mov,
 	/* C7 */ &x86_opcode_mov,
 	NULL,
 	/* C9 */ &x86_opcode_leave,

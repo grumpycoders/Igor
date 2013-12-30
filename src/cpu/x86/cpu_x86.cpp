@@ -31,6 +31,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	result.reset();
 
 	result.m_startOfInstruction = pState->m_PC;
+	result.m_instructionSize = 0;
 
 	pState->m_cpu_analyse_result = &result;
 
@@ -59,9 +60,13 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 			bIsPrefix = true;
 			result.m_lockPrefix = true;
 			break;
+		case 0xF2:
+			bIsPrefix = true;
+			result.m_repPrefixF2 = true;
+			break;
 		case 0xF3:
 			bIsPrefix = true;
-			result.m_repPrefix = true;
+			result.m_repPrefixF3 = true;
 			break;
 		default:
 			break;
@@ -70,16 +75,19 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 
 	if (x86_opcode_table[currentByte] == NULL)
 	{
+		pState->m_PC = result.m_startOfInstruction;
 		return IGOR_FAILURE;
 	}
 
 	try {
 		if (x86_opcode_table[currentByte](pState, pX86State, currentByte) != IGOR_SUCCESS)
 		{
+			pState->m_PC = result.m_startOfInstruction;
 			return IGOR_FAILURE;
 		}
 	}
 	catch (X86AnalysisException & e) {
+		pState->m_PC = result.m_startOfInstruction;
 		return IGOR_FAILURE;
 	}
 
@@ -110,9 +118,10 @@ static const std::map<e_x86_mnemonic, const char *> s_mnemonics {
     MKNAME(JNL),    MKNAME(JLE),    MKNAME(JNLE),   MKNAME(ADD),
 	MKNAME(SETZ),	MKNAME(MOVZX),	MKNAME(CMPXCHG),MKNAME(INT),
 	MKNAME(XCHG),	MKNAME(STOSD),	MKNAME(MOVSB),	MKNAME(MOVSD),
-	MKNAME(DIV),
+	MKNAME(DIV),	MKNAME(IMUL),
 
-    MKNAME(PXOR),   MKNAME(MOVQ),   MKNAME(MOVDQA)
+	MKNAME(PXOR),	MKNAME(MOVQ),	MKNAME(MOVDQA),	MKNAME(MOVUPS),
+	MKNAME(MOVSS)
 };
 
 #undef MKNAME
@@ -142,7 +151,7 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 		instructionString.append("LOCK ");
 	}
 
-	if (x86_analyse_result->m_repPrefix)
+	if (x86_analyse_result->m_repPrefixF3)
 	{
 		instructionString.append("REP ");
 	}

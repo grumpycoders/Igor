@@ -179,6 +179,8 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 
 	db->declare_name(m_ImageBase + m_EntryPoint, "entryPoint");
 
+	db->m_entryPoint = m_ImageBase + m_EntryPoint;
+
     analysis->setDB(db);
     analysis->add_code_analysis_task(m_ImageBase + m_EntryPoint);
 

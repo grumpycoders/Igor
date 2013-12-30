@@ -41,6 +41,54 @@ igor_result x86_opcode_movzx(s_analyzeState* pState, c_cpu_x86_state* pX86State,
 	return IGOR_SUCCESS;
 }
 
+igor_result x86_opcode_movsx(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	x86_analyse_result->m_mnemonic = INST_X86_MOVSX;
+
+	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
+
+	switch (currentByte)
+	{
+	case 0xBE:
+		x86_analyse_result->m_numOperands = 2;
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8bit);
+		break;
+	case 0xBF:
+		x86_analyse_result->m_numOperands = 2;
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_16bit);
+		break;
+	default:
+		X86_DECODER_FAILURE("x86_opcode_movsx");
+	}
+
+	return IGOR_SUCCESS;
+}
+
+igor_result x86_opcode_F_imul(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	x86_analyse_result->m_mnemonic = INST_X86_IMUL;
+
+	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
+
+	x86_analyse_result->m_numOperands = 2;
+	x86_analyse_result->m_operands[0].setAsRegisterR(pState);
+	x86_analyse_result->m_operands[1].setAsRegisterRM(pState);
+
+	return IGOR_SUCCESS;
+}
+
+igor_result x86_opcode_cpuid(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+	x86_analyse_result->m_mnemonic = INST_X86_CPUID;
+
+	return IGOR_SUCCESS;
+}
+
 igor_result x86_opcode_cmpxchg(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
@@ -394,6 +442,7 @@ const t_x86_opcode x86_opcode_table_0xf[0x100] =
 	// 0xA0
 	NULL,
 	NULL,
+	/* 0xA2 */ &x86_opcode_cpuid,
 	NULL,
 	NULL,
 	NULL,
@@ -406,8 +455,7 @@ const t_x86_opcode x86_opcode_table_0xf[0x100] =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
-	NULL,
+	/* 0xAF */ &x86_opcode_F_imul,
 
 	// 0xB0
 	NULL,
@@ -424,7 +472,7 @@ const t_x86_opcode x86_opcode_table_0xf[0x100] =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	/* 0xBE */ &x86_opcode_movsx,
 	NULL,
 
 	// 0xC0

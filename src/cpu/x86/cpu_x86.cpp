@@ -31,7 +31,6 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	result.reset();
 
 	result.m_startOfInstruction = pState->m_PC;
-	result.m_instructionSize = 0;
 
 	pState->m_cpu_analyse_result = &result;
 
@@ -75,6 +74,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 
 	if (x86_opcode_table[currentByte] == NULL)
 	{
+		Printer::log(M_INFO, "Unknown instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction);
 		pState->m_PC = result.m_startOfInstruction;
 		return IGOR_FAILURE;
 	}
@@ -82,11 +82,13 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	try {
 		if (x86_opcode_table[currentByte](pState, pX86State, currentByte) != IGOR_SUCCESS)
 		{
+			Printer::log(M_INFO, "Failed decoding instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction);
 			pState->m_PC = result.m_startOfInstruction;
 			return IGOR_FAILURE;
 		}
 	}
 	catch (X86AnalysisException & e) {
+		Printer::log(M_INFO, "Exception while decoding instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction);
 		pState->m_PC = result.m_startOfInstruction;
 		return IGOR_FAILURE;
 	}
@@ -118,10 +120,11 @@ static const std::map<e_x86_mnemonic, const char *> s_mnemonics {
     MKNAME(JNL),    MKNAME(JLE),    MKNAME(JNLE),   MKNAME(ADD),
 	MKNAME(SETZ),	MKNAME(MOVZX),	MKNAME(CMPXCHG),MKNAME(INT),
 	MKNAME(XCHG),	MKNAME(STOSD),	MKNAME(MOVSB),	MKNAME(MOVSD),
-	MKNAME(DIV),	MKNAME(IMUL),
+	MKNAME(DIV), MKNAME(IMUL), MKNAME(FINIT), MKNAME(PUSHF),
+	MKNAME(POPF), MKNAME(NOP), MKNAME(CPUID), MKNAME(MOVSX),
 
 	MKNAME(PXOR),	MKNAME(MOVQ),	MKNAME(MOVDQA),	MKNAME(MOVUPS),
-	MKNAME(MOVSS)
+	MKNAME(MOVSS), 
 };
 
 #undef MKNAME
@@ -195,8 +198,9 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 					u8 SIB_BASE = pOperand->m_registerRM.m_mod_reg_rm.getSIBBase();
 					const char* baseString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_BASE);
 
-					if (pOperand->m_registerRM.m_mod_reg_rm.getMod() == 0)
+					if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 5)
 					{
+						EAssert(pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() != 4, "bad scaled index");
 						u8 SIB_SCALE = pOperand->m_registerRM.m_mod_reg_rm.getSIBScale();
 						u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
 						u8 multiplier = 1 << SIB_SCALE;

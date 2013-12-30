@@ -74,6 +74,7 @@ enum e_x86_mnemonic
 	INST_X86_ADD,
 	INST_X86_SETZ,
 	INST_X86_MOVZX,
+	INST_X86_MOVSX,
 	INST_X86_CMPXCHG,
 	INST_X86_INT,
 	INST_X86_XCHG,
@@ -82,6 +83,11 @@ enum e_x86_mnemonic
 	INST_X86_MOVSB,
 	INST_X86_DIV,
 	INST_X86_IMUL,
+	INST_X86_FINIT,
+	INST_X86_PUSHF,
+	INST_X86_POPF,
+	INST_X86_NOP,
+	INST_X86_CPUID,
 
 	INST_X86_PXOR,
 	INST_X86_MOVQ,
@@ -306,6 +312,7 @@ public:
 
 	void reset()
 	{
+		m_instructionSize = 0;
 		m_startOfInstruction = -1;
 		m_mnemonic = INST_X86_UNDEF;
 		m_numOperands = 0;

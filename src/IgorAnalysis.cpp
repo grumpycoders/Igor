@@ -82,7 +82,7 @@ void IgorLocalSession::Do()
             m_evts.push_back(std::pair<Events::TaskEvent *, u64>(evt, currentPC));
             TaskMan::registerTask(new IgorAnalysis(m_pDatabase, currentPC, this), evt);
             waitFor(evt);
-            Printer::log(M_INFO, "AnalysisManager spawned a task for %016llx", currentPC);
+            //Printer::log(M_INFO, "AnalysisManager spawned a task for %016llx", currentPC);
         }
         yieldNoWait();
     }

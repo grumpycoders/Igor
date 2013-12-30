@@ -13,6 +13,13 @@ class c_cpu_state;
 class IgorSession
 {
 public:
+    IgorSession();
+    ~IgorSession();
+
+    const Balau::String & getUUID() { return m_uuid; }
+
+    static void enumerate(std::function<bool(IgorSession *)>);
+
 	virtual igor_result readS32(igorAddress address, s32& output) = 0;
 	virtual igor_result readU32(igorAddress address, u32& output) = 0;
 	virtual igor_result readS16(igorAddress address, s16& output) = 0;
@@ -80,6 +87,12 @@ public:
 	virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) = 0;
 	virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) = 0;
 	virtual u64 getSectionSize(igor_section_handle sectionHandle) = 0;
+
+public:
+    Balau::String m_uuid;
+    static Balau::RWLock m_listLock;
+    static IgorSession * m_head;
+    IgorSession * m_next, * m_prev;
 };
 
 class IgorLocalSession : public Balau::Task, public IgorSession {

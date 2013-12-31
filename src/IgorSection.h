@@ -52,3 +52,10 @@ struct s_igorSection
 
 	u8* m_instructionSize;// Temporary. Size of instructions. 0 means unknown if it's an instruction or not.
 };
+
+class SectionCompare {
+public:
+    bool operator()(const s_igorSection * x, const s_igorSection * y) const {
+        return x->m_virtualAddress < y->m_virtualAddress;
+    }
+};

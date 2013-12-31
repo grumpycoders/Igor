@@ -14,6 +14,7 @@ class IgorSession
 {
 public:
     IgorSession();
+    IgorSession(const Balau::String & uuid);
     ~IgorSession();
 
     const Balau::String & getUUID() { return m_uuid; }
@@ -78,7 +79,7 @@ public:
 	virtual igorAddress get_next_valid_address_before(igorAddress virtualAddress) = 0;
 	virtual igorAddress get_next_valid_address_after(igorAddress virtualAddress) = 0;
 
-	virtual void add_code_analysis_task(u64 PC) = 0;
+    virtual void add_code_analysis_task(igorAddress PC) = 0;
 
 	virtual igor_result flag_address_as_u32(u64 virtualAddress) = 0;
 	virtual igor_result flag_address_as_instruction(u64 virtualAddress, u8 instructionSize) = 0;
@@ -87,6 +88,9 @@ public:
 	virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) = 0;
 	virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) = 0;
 	virtual u64 getSectionSize(igor_section_handle sectionHandle) = 0;
+
+    virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() = 0;
+    virtual igorAddress linearToVirtual(igorAddress) = 0;
 
 public:
     Balau::String m_uuid;
@@ -127,6 +131,10 @@ public:
 	igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
 	igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
 	u64 getSectionSize(igor_section_handle sectionHandle);
+
+    virtual std::tuple<igorAddress, igorAddress, size_t> getRanges();
+    virtual igorAddress linearToVirtual(igorAddress);
+
 private:
     enum {
         IDLE,
@@ -143,12 +151,12 @@ class c_cpu_state;
 
 class IgorAnalysis : public Balau::StacklessTask {
 public:
-    IgorAnalysis(s_igorDatabase * db, u64 PC, IgorLocalSession * parent) : m_pDatabase(db), m_PC(PC), m_parent(parent) { m_name.set("IgorAnalysis for %016llx", PC); }
+    IgorAnalysis(s_igorDatabase * db, u64 PC, IgorLocalSession * parent) : m_pDatabase(db), m_PC(PC), m_session(parent) { m_name.set("IgorAnalysis for %016llx", PC); }
     void Do();
     const char * getName() const { return m_name.to_charp(); }
 private:
     s_igorDatabase * m_pDatabase = NULL;
-    IgorLocalSession * m_parent;
+    IgorLocalSession * m_session;
     u64 m_PC = 0;
     Balau::String m_name;
     c_cpu_module * m_pCpu;

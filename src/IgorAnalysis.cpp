@@ -26,7 +26,7 @@ static String generateUUID() {
 
 #ifdef UNICODE
     String r((const char *) uuidstr, wcslen((const wchar_t *) uuidstr) * 2);
-    r.do_iconv("UNICODE", "UTF-8");
+    r.do_iconv("UNICODELITTLE", "UTF-8");
 #else
     String r = *uuidstr;
 #endif
@@ -40,13 +40,15 @@ static String generateUUID() {
 RWLock IgorSession::m_listLock;
 IgorSession * IgorSession::m_head = NULL;
 
-IgorSession::IgorSession() : m_uuid(generateUUID()) {
+IgorSession::IgorSession(const String & uuid) : m_uuid(uuid) {
     ScopeLockW sl(m_listLock);
 
     m_next = m_head;
     m_prev = NULL;
     m_head = this;
 }
+
+IgorSession::IgorSession() : IgorSession(generateUUID()) { }
 
 IgorSession::~IgorSession() {
     ScopeLockW sl(m_listLock);
@@ -78,7 +80,7 @@ const char * IgorLocalSession::getStatusString() {
     return "ERROR";
 }
 
-void IgorLocalSession::add_code_analysis_task(u64 PC)
+void IgorLocalSession::add_code_analysis_task(igorAddress PC)
 {
 	if (!m_pDatabase->is_address_flagged_as_code(PC))
 	{
@@ -173,7 +175,8 @@ igorAddress IgorLocalSession::getEntryPoint() { return m_pDatabase->getEntryPoin
 igor_section_handle IgorLocalSession::getSectionFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSectionFromAddress(virtualAddress); }
 igorAddress IgorLocalSession::getSectionStartVirtualAddress(igor_section_handle sectionHandle) { return m_pDatabase->getSectionStartVirtualAddress(sectionHandle); }
 u64 IgorLocalSession::getSectionSize(igor_section_handle sectionHandle) { return m_pDatabase->getSectionSize(sectionHandle); }
-
+std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }
+igorAddress IgorLocalSession::linearToVirtual(igorAddress linear) { return m_pDatabase->linearToVirtual(linear); }
 
 void IgorAnalysis::Do()
 {
@@ -190,7 +193,7 @@ void IgorAnalysis::Do()
     analyzeState.m_PC = m_PC;
     analyzeState.pCpu = m_pCpu;
     analyzeState.pCpuState = m_pCpuState;
-    analyzeState.pAnalysis = m_parent;
+    analyzeState.pSession = m_session;
     analyzeState.m_cpu_analyse_result = m_pCpu->allocateCpuSpecificAnalyseResult();
 
 	analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
@@ -209,7 +212,7 @@ void IgorAnalysis::Do()
 		else
 		{
 			m_pDatabase->flag_address_as_instruction(analyzeState.m_cpu_analyse_result->m_startOfInstruction, analyzeState.m_cpu_analyse_result->m_instructionSize);
-			m_parent->add_instruction();
+			m_session->add_instruction();
 		}
 				
         if (++counter == 0)

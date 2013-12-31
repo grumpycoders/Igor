@@ -51,24 +51,33 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
 	file->forceRead(buffer, size);
 	Balau::IO<Balau::Buffer> reader(new Balau::Buffer(buffer, file->getSize()));
 
-	m_analysis = new IgorLocalSession();
+	m_session = new IgorLocalSession();
 
 	s_igorDatabase * db = new s_igorDatabase;
 
+    // TODO: make a reader selector UI
 	c_PELoader PELoader;
-	PELoader.loadPE(db, reader, m_analysis);
-
+    // Note: having the session here is actually useful not just for the entry point,
+    // but for all the possible hints the file might have for us.
+	igor_result r = PELoader.loadPE(db, reader, m_session);
 	reader->close();
 	free(buffer);
 
-	Balau::TaskMan::registerTask(m_analysis);
+    // Add the task even in case of failure, so it can properly clean itself out.
+	Balau::TaskMan::registerTask(m_session);
+
+    if (r != IGOR_SUCCESS)
+    {
+        delete db;
+        return;
+    }
 
 	wxPanel *panel = new wxPanel(this, -1);
 
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
-	m_pAsmWidget = new c_wxAsmWidget(m_analysis, panel, -1, "ASM view");
+	m_pAsmWidget = new c_wxAsmWidget(m_session, panel, -1, "ASM view");
 	c_wxAsmWidgetScrollbar* pAsmWidgetScrollbar = new c_wxAsmWidgetScrollbar(m_pAsmWidget, panel, -1);
 
 	m_pAsmWidget->SetSize(GetSize());
@@ -137,24 +146,24 @@ void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 		FILE* fHandle = fopen(exportPath, "w+");
 		if (fHandle)
 		{
-			igorAddress entryPointAddress = m_analysis->getEntryPoint();
+			igorAddress entryPointAddress = m_session->getEntryPoint();
 
-			c_cpu_module* pCpu = m_analysis->getCpuForAddress(entryPointAddress);
-			igor_section_handle sectionHandle = m_analysis->getSectionFromAddress(entryPointAddress);
+			c_cpu_module* pCpu = m_session->getCpuForAddress(entryPointAddress);
+			igor_section_handle sectionHandle = m_session->getSectionFromAddress(entryPointAddress);
 
-			igorAddress sectionStart = m_analysis->getSectionStartVirtualAddress(sectionHandle);
-			u64 sectionSize = m_analysis->getSectionSize(sectionHandle);
+			igorAddress sectionStart = m_session->getSectionStartVirtualAddress(sectionHandle);
+			u64 sectionSize = m_session->getSectionSize(sectionHandle);
 
 			s_analyzeState analyzeState;
 			analyzeState.m_PC = sectionStart;
 			analyzeState.pCpu = pCpu;
-			analyzeState.pCpuState = m_analysis->getCpuStateForAddress(sectionStart);
-			analyzeState.pAnalysis = m_analysis;
+			analyzeState.pCpuState = m_session->getCpuStateForAddress(sectionStart);
+			analyzeState.pSession = m_session;
 			analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
 			while (analyzeState.m_PC < sectionStart + sectionSize)
 			{
-				if (m_analysis->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
+				if (m_session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
 				{
 					Balau::String disassembledString;
 					pCpu->printInstruction(&analyzeState, disassembledString);
@@ -166,7 +175,7 @@ void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 				else
 				{
 					u8 byte;
-					m_analysis->readU8(analyzeState.m_PC, byte);
+					m_session->readU8(analyzeState.m_PC, byte);
 
 					fprintf(fHandle, "0x%01X\n", byte);
 
@@ -182,9 +191,9 @@ void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 
 void c_wxIgorFrame::OnIdle(wxIdleEvent& event)
 {
-	if (m_analysis)
+	if (m_session)
 	{
-		SetStatusText(m_analysis->getStatusString());
+		SetStatusText(m_session->getStatusString());
 	}
 }
 

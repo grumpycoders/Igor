@@ -40,7 +40,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	do 
 	{
 		bIsPrefix = false;
-        if (pState->pAnalysis->readU8(pState->m_PC++, currentByte) != IGOR_SUCCESS)
+        if (pState->pSession->readU8(pState->m_PC++, currentByte) != IGOR_SUCCESS)
 		{
 			return IGOR_FAILURE;
 		}
@@ -147,7 +147,7 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 
 	const char* mnemonicString = getMnemonicName(x86_analyse_result->m_mnemonic);
 	
-	instructionString.set("0x%08llX: ", x86_analyse_result->m_startOfInstruction);
+	//instructionString.set("0x%08llX: ", x86_analyse_result->m_startOfInstruction);
 
 	if (x86_analyse_result->m_lockPrefix)
 	{
@@ -399,7 +399,7 @@ void s_x86_operand::setAsAddressRel(s_analyzeState* pState, e_operandSize size, 
 	case OPERAND_32bit:
 		{
 			s32 immediate = 0;
-            if (pState->pAnalysis->readS32(pState->m_PC, immediate) != IGOR_SUCCESS)
+            if (pState->pSession->readS32(pState->m_PC, immediate) != IGOR_SUCCESS)
 				throw X86AnalysisException("Failure in setAsImmediateRel!");
 
 			pState->m_PC += 4;
@@ -440,7 +440,7 @@ void s_x86_operand::setAsImmediate(s_analyzeState* pState, e_operandSize size)
 	case OPERAND_32bit:
 		{
 			u32 immediate = 0;
-            if (pState->pAnalysis->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
+            if (pState->pSession->readU32(pState->m_PC, immediate) != IGOR_SUCCESS)
 				throw X86AnalysisException("Failure in setAsImmediate!");
 
 			pState->m_PC += 4;
@@ -452,7 +452,7 @@ void s_x86_operand::setAsImmediate(s_analyzeState* pState, e_operandSize size)
 	case OPERAND_16bit:
 		{
 			u16 immediate = 0;
-            if (pState->pAnalysis->readU16(pState->m_PC, immediate) != IGOR_SUCCESS)
+            if (pState->pSession->readU16(pState->m_PC, immediate) != IGOR_SUCCESS)
 				throw X86AnalysisException("Failure in setAsImmediate!");
 
 			pState->m_PC += 2;
@@ -464,7 +464,7 @@ void s_x86_operand::setAsImmediate(s_analyzeState* pState, e_operandSize size)
 	case OPERAND_8bit:
 		{
 			u8 immediate = 0;
-            if (pState->pAnalysis->readU8(pState->m_PC, immediate) != IGOR_SUCCESS)
+            if (pState->pSession->readU8(pState->m_PC, immediate) != IGOR_SUCCESS)
 				throw X86AnalysisException("Failure in setAsImmediate!");
 
 			pState->m_PC += 1;

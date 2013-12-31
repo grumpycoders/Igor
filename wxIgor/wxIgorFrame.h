@@ -26,7 +26,7 @@ public:
 
 	c_wxAsmWidget* m_pAsmWidget;
 
-	IgorLocalSession * m_analysis;
+	IgorLocalSession * m_session;
 
 	DECLARE_EVENT_TABLE()
 };

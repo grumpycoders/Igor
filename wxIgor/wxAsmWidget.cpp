@@ -5,6 +5,8 @@
 
 #include <wx/scrolBar.h>
 
+using namespace Balau;
+
 c_wxAsmWidgetScrollbar::c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id) : wxScrollBar(parent, id, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL)
 {
 	m_AsmWidget = pAsmWidget;
@@ -46,19 +48,19 @@ BEGIN_EVENT_TABLE(c_wxAsmWidgetScrollbar, wxScrollBar)
 EVT_SCROLL(c_wxAsmWidgetScrollbar::OnScroll)
 END_EVENT_TABLE()
 
-c_wxAsmWidget::c_wxAsmWidget(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
+c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID id,
 	const wxString& value,
 	const wxPoint& pos,
 	const wxSize& size,
 	long style,
 	const wxString& name) : wxTextCtrl(parent, id, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY)
 {
-    m_pAnalysis = pAnalysis;
+    m_pSession = pSession;
 
 	m_timer = new wxTimer(this, EVT_RefreshDatabase);
 	m_timer->Start(300);
 
-    m_currentPosition = m_pAnalysis->findSymbol("entryPoint");
+    m_currentPosition = m_pSession->findSymbol("entryPoint");
 
 	SetScrollbar(wxVERTICAL, 0, 0, 0); // hide the default scrollbar
 	SetFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
@@ -78,24 +80,29 @@ void c_wxAsmWidget::updateDatabaseView()
 	u64 currentPC = m_currentPosition;
 
 	{
-        c_cpu_module* pCpu = m_pAnalysis->getCpuForAddress(currentPC);
+        c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
 
 		s_analyzeState analyzeState;
 		analyzeState.m_PC = currentPC;
 		analyzeState.pCpu = pCpu;
-        analyzeState.pCpuState = m_pAnalysis->getCpuStateForAddress(currentPC);
-        analyzeState.pAnalysis = m_pAnalysis;
+        analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
+        analyzeState.pSession = m_pSession;
 		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
 		while (numDrawnLines < numLinesInWindow)
 		{
-			if (m_pAnalysis->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
+            String fullDisassembledString;
+            fullDisassembledString.set("%016llX: ", analyzeState.m_PC);
+
+            if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
 			{
-				Balau::String disassembledString;
+				String disassembledString;
 				pCpu->printInstruction(&analyzeState, disassembledString);
 
+                fullDisassembledString += disassembledString;
+
 				wxString displayDisassembledString;
-				displayDisassembledString = disassembledString.to_charp(0);
+                displayDisassembledString = fullDisassembledString.to_charp();
 
 				AppendText(displayDisassembledString);
 				AppendText("\n");
@@ -105,7 +112,7 @@ void c_wxAsmWidget::updateDatabaseView()
 			}
 			else
 			{
-                wxString displayDisassembledString = wxString::Format("0x%01X\n", m_pAnalysis->readU8(analyzeState.m_PC));
+                wxString displayDisassembledString = wxString::Format("%016llX: 0x%02X\n", analyzeState.m_PC, m_pSession->readU8(analyzeState.m_PC));
 
 				AppendText(displayDisassembledString);
 				numDrawnLines++;
@@ -130,12 +137,12 @@ void c_wxAsmWidget::seekPC(int amount)
 {
 	if (amount > 0)
 	{
-        m_currentPosition = m_pAnalysis->get_next_valid_address_after(m_currentPosition + amount);
+        m_currentPosition = m_pSession->get_next_valid_address_after(m_currentPosition + amount);
 		updateDatabaseView();
 	}
 	if (amount < 0)
 	{
-        m_currentPosition = m_pAnalysis->get_next_valid_address_before(m_currentPosition + amount);
+        m_currentPosition = m_pSession->get_next_valid_address_before(m_currentPosition + amount);
 		updateDatabaseView();
 	}
 

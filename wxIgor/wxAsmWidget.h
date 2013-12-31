@@ -52,7 +52,7 @@ public:
 	//void OnIdle(wxIdleEvent &event);
 	void OnTimer(wxTimerEvent &event);
 
-    IgorSession* m_pAnalysis;
+    IgorSession* m_pSession;
 
 	wxTimer* m_timer;
 

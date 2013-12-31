@@ -1,3 +1,4 @@
+#include <set>
 #include "IgorDatabase.h"
 
 igor_result s_igorDatabase::igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle)
@@ -20,9 +21,9 @@ c_cpu_state* s_igorDatabase::getCpuStateForAddress(u64 PC)
 
 s_igorSection* s_igorDatabase::findSectionFromAddress(u64 address)
 {
-	for(int i=0; i<m_sections.size(); i++)
+	for(auto & i : m_sections)
 	{
-		s_igorSection* pSection = m_sections[i];
+		s_igorSection* pSection = i;
 
 		if((pSection->m_virtualAddress <= address) && (pSection->m_virtualAddress + pSection->m_size > address))
 		{
@@ -403,4 +404,43 @@ u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
 	s_igorSection* pSection = m_sections[sectionHandle];
 
 	return pSection->m_size;
+}
+
+std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()
+{
+    igorAddress start = IGOR_MAX_ADDRESS, end = IGOR_MIN_ADDRESS;
+    size_t total = 0;
+
+    for (auto & i : m_sections)
+    {
+        s_igorSection* pSection = i;
+        igorAddress sectionStart = pSection->m_virtualAddress;
+        igorAddress sectionEnd = pSection->m_virtualAddress + pSection->m_size;
+
+        total += pSection->m_size;
+
+        if (sectionStart < start)
+            start = sectionStart;
+
+        if (sectionEnd > end)
+            end = sectionEnd;
+    }
+
+    return std::tie(start, end, total);
+}
+
+igorAddress s_igorDatabase::linearToVirtual(igorAddress linear) {
+    std::set<s_igorSection *, SectionCompare> sections;
+    for (auto & i : m_sections)
+        sections.insert(i);
+
+    igorAddress linearStart = 0, linearEnd;
+    for (auto & i : sections) {
+        linearEnd = linearStart + i->m_size;
+        if (linear < linearEnd)
+            return i->m_virtualAddress + linear - linearStart;
+        linearStart = linearEnd;
+    }
+
+    return IGOR_MAX_ADDRESS;
 }

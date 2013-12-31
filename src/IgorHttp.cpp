@@ -12,6 +12,8 @@
 #include <HelperTasks.h>
 #include <TaskMan.h>
 
+#include "IgorAnalysis.h"
+
 using namespace Balau;
 
 static std::atomic<SimpleMustache *> s_template;
@@ -285,6 +287,196 @@ void MainListener::receive(IgorWSWorker * worker, const std::string & call, cons
     }
 }
 
+static Regex igorRestDisasmURL("^/dyn/rest/disasm/([a-fA-F0-9-]+)(/(.*))?$");
+
+class RestDisasmAction : public HttpServer::Action {
+  public:
+      RestDisasmAction() : Action(igorRestDisasmURL) { }
+  private:
+    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
+};
+
+bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+    HttpServer::Response response(server, req, out);
+    Json::StyledWriter writer;
+    String sessionUUID = match.uri[1];
+
+    String idURL = match.uri.size() == 4 ? match.uri[3] : "";
+    String rangeHeader;
+
+    if (idURL == "") {
+        rangeHeader = req.headers["Range"];
+        if (rangeHeader == "") {
+            response.SetResponseCode(406);
+            response.SetContentType("text/plain");
+            response->writeString("You can't request for the whole disassembly... please specify a range.");
+            response.Flush();
+            return true;
+        }
+    }
+
+    IgorSession * session = NULL;
+
+    IgorSession::enumerate([&](IgorSession * crawl) -> bool {
+        if (sessionUUID == crawl->getUUID()) {
+            session = crawl;
+            return false;
+        }
+        return true;
+    });
+
+    if (!session) {
+        response.SetResponseCode(404);
+        response.SetContentType("text/plain");
+        response->writeString("Session not found.");
+        response.Flush();
+        return true;
+    }
+
+    igorAddress first, last, linear, linearFirst, linearLast;
+    size_t totalSize;
+    std::tie(first, last, totalSize) = session->getRanges();
+    Json::Value reply;
+
+    if (idURL != "") {
+        linearFirst = linearLast = idURL.to_int();
+    } else {
+        static Regex rangeMatch("Range: items=([0-9]+)-([0-9]+)");
+        Regex::Captures matches = rangeMatch.match(rangeHeader.to_charp());
+        if (matches.size() != 3) {
+            response.SetResponseCode(400);
+            response.SetContentType("text/plain");
+            response->writeString("Invalid range header.");
+            response.Flush();
+            return true;
+        }
+        linearFirst = matches[1].to_int();
+        linearLast = matches[2].to_int();
+        if (linearFirst > linearLast) {
+            response.SetResponseCode(400);
+            response.SetContentType("text/plain");
+            response->writeString("Invalid range header.");
+            response.Flush();
+            return true;
+        }
+        if (linearLast >= totalSize)
+            linearLast = totalSize - 1;
+    }
+
+    if (linearFirst >= totalSize) {
+        response.SetResponseCode(400);
+        response.SetContentType("text/plain");
+        response->writeString("Range exceeded");
+        response.Flush();
+        return true;
+    }
+
+    igorAddress currentPC = session->linearToVirtual(linear = linearFirst);
+
+    {
+        c_cpu_module* pCpu = session->getCpuForAddress(currentPC);
+
+        s_analyzeState analyzeState;
+        analyzeState.m_PC = currentPC;
+        analyzeState.pCpu = pCpu;
+        analyzeState.pCpuState = session->getCpuStateForAddress(currentPC);
+        analyzeState.pSession = session;
+        analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+
+        while (linear <= linearLast) {
+            currentPC = analyzeState.m_PC;
+            if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS)) {
+                String disassembledString;
+                String val, address;
+                pCpu->printInstruction(&analyzeState, disassembledString);
+                analyzeState.m_PC = currentPC;
+                const size_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize;
+                Json::Value v;
+                v["type"] = "inst";
+                v["disasm"] = disassembledString.to_charp();
+                address.set("%016llx", analyzeState.m_PC);
+                val.set("%02X", session->readU8(analyzeState.m_PC));
+                v["byte"] = val.to_charp();
+                v["address"] = address.to_charp();
+                address.set("%lli", linear);
+                v["id"] = address.to_charp();
+                address.set("%lli", nBytes);
+                v["instsize"] = address.to_charp();
+                reply[linear++ - linearFirst] = v;
+
+                for (int i = 1; i < nBytes; i++) {
+                    v["type"] = "instcont";
+                    val.set("%02X", session->readU8(analyzeState.m_PC + i));
+                    v["byte"] = val.to_charp();
+                    address.set("%016llx", analyzeState.m_PC + i);
+                    v["address"] = address.to_charp();
+                    address.set("%lli", linear);
+                    v["id"] = address.to_charp();
+                    reply[linear++ - linearFirst] = v;
+                }
+                analyzeState.m_PC += nBytes;
+                EAssert(analyzeState.m_PC == analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize, "inconsistant state...");
+            } else {
+                Json::Value v;
+                analyzeState.m_PC = currentPC;
+                v["type"] = "rawdata";
+                String val, address;
+                val.set("%02X", session->readU8(analyzeState.m_PC));
+                v["byte"] = val.to_charp();
+                v["value"] = val.to_charp();
+                address.set("%016llx", analyzeState.m_PC);
+                v["address"] = address.to_charp();
+                address.set("%lli", linear);
+                v["id"] = address.to_charp();
+                reply[linear++ - linearFirst] = v;
+
+                analyzeState.m_PC++;
+                linear++;
+            }
+        }
+
+        delete analyzeState.m_cpu_analyse_result;
+    }
+
+    String jsonMsg = writer.write(reply);
+    response->writeString(jsonMsg);
+    response.SetContentType("application/json");
+    String rangeHeaderResponse;
+    rangeHeaderResponse.set("Content-Range: items %lli-%lli/%lli", linearFirst, linearLast, totalSize);
+    if (rangeHeader != "")
+        response.AddHeader(rangeHeaderResponse);
+    response.Flush();
+    return true;
+}
+
+static Regex listSessionsURL("^/dyn/listSessions$");
+
+class ListSessionsAction : public HttpServer::Action {
+  public:
+      ListSessionsAction() : Action(listSessionsURL) { }
+  private:
+    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
+};
+
+bool ListSessionsAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+    Json::Value reply;
+    Json::UInt idx = 0;
+    HttpServer::Response response(server, req, out);
+    Json::StyledWriter writer;
+
+    IgorSession::enumerate([&](IgorSession * session) -> bool {
+        reply[idx++] = session->getUUID().to_charp();
+        return true;
+    });
+
+    String jsonMsg = writer.write(reply);
+    response->writeString(jsonMsg);
+    response.SetContentType("application/json");
+    response.Flush();
+
+    return true;
+}
+
 static Regex igorStaticURL("^/static/(.+)");
 
 void igor_setup_httpserver() {
@@ -297,6 +489,8 @@ void igor_setup_httpserver() {
     s->registerAction(new MainAction());
     s->registerAction(new IgorWSAction());
     s->registerAction(new ReloadAction());
+    s->registerAction(new RestDisasmAction());
+    s->registerAction(new ListSessionsAction());
     s->registerAction(new HttpActionStatic("data/web-ui/static/", igorStaticURL));
     s->setPort(8080);
     s->start();

@@ -181,6 +181,9 @@ struct s_igorDatabase
 
 	igorAddress m_entryPoint;
 
+    std::tuple<igorAddress, igorAddress, size_t> getRanges();
+    igorAddress linearToVirtual(igorAddress);
+
 private:
 	s_igorSection* findSectionFromAddress(u64 address);
 	s_symbolDefinition* get_Symbol(u64 virtualAddress);

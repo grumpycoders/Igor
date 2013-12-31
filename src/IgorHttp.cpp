@@ -334,14 +334,14 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
     }
 
     igorAddress first, last, linear, linearFirst, linearLast;
-    size_t totalSize;
+    uint64_t totalSize;
     std::tie(first, last, totalSize) = session->getRanges();
     Json::Value reply;
 
     if (idURL != "") {
         linearFirst = linearLast = idURL.to_int();
     } else {
-        static Regex rangeMatch("Range: items=([0-9]+)-([0-9]+)");
+        static Regex rangeMatch("items=([0-9]+)-([0-9]+)");
         Regex::Captures matches = rangeMatch.match(rangeHeader.to_charp());
         if (matches.size() != 3) {
             response.SetResponseCode(400);
@@ -390,7 +390,7 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                 String val, address;
                 pCpu->printInstruction(&analyzeState, disassembledString);
                 analyzeState.m_PC = currentPC;
-                const size_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize;
+                const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize;
                 Json::Value v;
                 v["type"] = "inst";
                 v["disasm"] = disassembledString.to_charp();
@@ -405,6 +405,9 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                 reply[linear++ - linearFirst] = v;
 
                 for (int i = 1; i < nBytes; i++) {
+                    if (linear > linearLast)
+                        break;
+
                     v["type"] = "instcont";
                     val.set("%02X", session->readU8(analyzeState.m_PC + i));
                     v["byte"] = val.to_charp();
@@ -431,7 +434,6 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                 reply[linear++ - linearFirst] = v;
 
                 analyzeState.m_PC++;
-                linear++;
             }
         }
 
@@ -465,8 +467,13 @@ bool ListSessionsAction::Do(HttpServer * server, Http::Request & req, HttpServer
     Json::StyledWriter writer;
 
     IgorSession::enumerate([&](IgorSession * session) -> bool {
-        reply[idx++] = session->getUUID().to_charp();
+        String name = session->getName();
+        if (name == "")
+            name = session->getUUID();
+        reply[idx]["name"] = name.to_charp();
+        reply[idx]["uuid"] = session->getUUID().to_charp();
         return true;
+        idx++;
     });
 
     String jsonMsg = writer.write(reply);

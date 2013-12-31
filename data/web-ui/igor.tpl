@@ -107,6 +107,19 @@
         text-align: center;
       }
       
+      #sessionName {
+        border-style: solid;
+        border-color: #b5bcc7;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        border-right-width: 1px;
+        border-left-width: 0px;
+        width: 150px;
+        white-space: nowrap;
+        overflow-y: hidden;
+        overflow-x: hidden;
+      }
+      
       .hexViewContent {
         font-family: monospace;
         text-align: center;
@@ -144,6 +157,7 @@
     <script src='{{dojo_path}}/dojo/dojo.js'></script>
     <script>
       var reloadUIAction;
+      var reloadSessions;
       var buildHexView;
       var buildDgridHexView;
       var showError;
@@ -151,6 +165,7 @@
       var socket;
       var messageListeners = { }
       var sendMessage;
+      var currentSession = '';
 
       String.prototype.repeat = function(num) {
         return new Array(num + 1).join(this);
@@ -173,24 +188,32 @@
         'dojo',
         'dijit/dijit',
         'dojo/_base/lang',
+        'dojo/_base/array',
         'dojo/parser',
         'dojo/dom',
         'dojo/on',
+        'dijit/registry',
         'dojo/request',
         'dojo/json',
         'dojox/grid/DataGrid',
         'dojo/data/ItemFileWriteStore',
         'dgrid/Grid',
         'dojo/dom-form',
+        'dojo/store/Memory',
 		'dojo/store/JsonRest',
 		'dojo/store/Observable',
         'dijit/dijit-all',
         'dojox/socket',
         'dojox/socket/Reconnect',
         'dojo/domReady!'],
-      function(dojo, dijit, lang, parser, dom, on, request, json, DataGrid, ItemFileWriteStore, Grid, domForm, jsonRest, observable) {
+      function(dojo, dijit, lang, array, parser, dom, on, registry, request, json, DataGrid, ItemFileWriteStore, Grid, domForm, memory, jsonRest, observable) {
         var errorDlg;
         var clock;
+        var sessionName;
+        var sessionsMenu;
+        var disassemblyStore = new memory({ data: [
+          { id: 0, comment: 'Open a session first' }
+        ]});
 
         var formatterAddress = function(addr) {
           addr = json.parse(addr);
@@ -202,6 +225,12 @@
           content = json.parse(content);
           var value = hexPadding(content.value, 1);
           return '<div class="hexViewContent">' + value + '</div>';
+        }
+        
+        var setSession = function(name, uuid) {
+          currentSession = uuid;
+          sessionName.innerHTML = name;
+          disassemblyStore = new jsonRest({ target: '/dyn/rest/disasm/' + uuid });
         }
 
         showError = function(str) {
@@ -229,9 +258,28 @@
             }
           );
         };
+
+        reloadSessions = function() {
+          sessionsMenu.destroyDescendants();
+          request.get('/dyn/listSessions').then(
+            function(retStr) {
+              array.forEach(json.parse(retStr), function(item) {
+                sessionsMenu.addChild(new dijit.MenuItem({
+                  label: item.name,
+                  onClick: function() { setSession(item.name, item.uuid); }
+                }));
+              });
+            },
+            function(error) {
+              showError("Error while loading reloading sessions: " + error);
+            }
+          );
+        };
         parser.parse();
         
         clock = dojo.byId('clock');
+        sessionName = dojo.byId('sessionName');
+        sessionsMenu = registry.byId('sessionsMenu');
 
         dojo.fadeOut({
           node: 'loader',
@@ -339,6 +387,8 @@
         sendMessage = function(destination, call, data) {
           socket.send(json.stringify({ destination: destination, call: call, data: data }));
         }
+        
+        reloadSessions();
       });
     </script>
   </head>
@@ -353,6 +403,12 @@
         <div data-dojo-type='dijit/PopupMenuBarItem'>
           <span>File</span>
           <div data-dojo-type='dijit/Menu'>
+            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: reloadSessions'>Reload sessions</div>
+            <div data-dojo-type='dijit/PopupMenuItem'>
+              <span>Sessions</span>
+              <div data-dojo-type='dijit/DropDownMenu' id='sessionsMenu'></div>
+            </div>
+            <div data-dojo-type='dijit/MenuSeparator'></div>
             <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: reloadUIAction'>Reload UI</div>
           </div>
         </div>
@@ -388,6 +444,7 @@
       
       <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"bottom"' id='statusBar'>
         <div data-dojo-type='dijit/layout/LayoutContainer' id='statusBarLayoutContainer'>
+          <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"left"', id='sessionName'></div>
           <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"center"' id='statusMain'>Igor</div>
           <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"right", layoutPriority:1' id='clock'>xx:xx</div>
         </div>

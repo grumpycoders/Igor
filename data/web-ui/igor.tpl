@@ -261,6 +261,11 @@
 
         reloadSessions = function() {
           sessionsMenu.destroyDescendants();
+          sessionsMenu.addChild(new dijit.MenuItem({
+            label: 'Reload sessions',
+            onClick: reloadSessions
+          }));
+          sessionsMenu.addChild(new dijit.MenuSeparator());
           request.get('/dyn/listSessions').then(
             function(retStr) {
               array.forEach(json.parse(retStr), function(item) {
@@ -403,7 +408,6 @@
         <div data-dojo-type='dijit/PopupMenuBarItem'>
           <span>File</span>
           <div data-dojo-type='dijit/Menu'>
-            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: reloadSessions'>Reload sessions</div>
             <div data-dojo-type='dijit/PopupMenuItem'>
               <span>Sessions</span>
               <div data-dojo-type='dijit/DropDownMenu' id='sessionsMenu'></div>

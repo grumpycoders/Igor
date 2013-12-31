@@ -1668,6 +1668,7 @@
     <ClCompile Include="src\IgorDatabase.cpp" />
     <ClCompile Include="src\IgorHttp.cpp" />
     <ClCompile Include="src\IgorSection.cpp" />
+    <ClCompile Include="src\IgorWS.cpp" />
     <ClCompile Include="src\PELoader.cpp" />
     <ClCompile Include="wxIgor\wxAsmWidget.cpp" />
     <ClCompile Include="wxIgor\wxIgorApp.cpp" />

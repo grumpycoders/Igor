@@ -166,6 +166,7 @@
       var messageListeners = { }
       var sendMessage;
       var currentSession = '';
+      var entryPoint = '';
 
       String.prototype.repeat = function(num) {
         return new Array(num + 1).join(this);
@@ -227,10 +228,11 @@
           return '<div class="hexViewContent">' + value + '</div>';
         }
         
-        var setSession = function(name, uuid) {
-          currentSession = uuid;
-          sessionName.innerHTML = name;
-          disassemblyStore = new jsonRest({ target: '/dyn/rest/disasm/' + uuid });
+        var setSession = function(session) {
+          currentSession = session.uuid;
+          sessionName.innerHTML = session.name;
+          disassemblyStore = new jsonRest({ target: '/dyn/rest/disasm/' + session.uuid });
+          entryPont = session.entryPoint;
         }
 
         showError = function(str) {
@@ -271,7 +273,7 @@
               array.forEach(json.parse(retStr), function(item) {
                 sessionsMenu.addChild(new dijit.MenuItem({
                   label: item.name,
-                  onClick: function() { setSession(item.name, item.uuid); }
+                  onClick: function() { setSession(item); }
                 }));
               });
             },

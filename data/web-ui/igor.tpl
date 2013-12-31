@@ -182,11 +182,13 @@
         'dojo/data/ItemFileWriteStore',
         'dgrid/Grid',
         'dojo/dom-form',
+		'dojo/store/JsonRest',
+		'dojo/store/Observable',
         'dijit/dijit-all',
         'dojox/socket',
         'dojox/socket/Reconnect',
         'dojo/domReady!'],
-      function(dojo, dijit, lang, parser, dom, on, request, json, DataGrid, ItemFileWriteStore, Grid, domForm) {
+      function(dojo, dijit, lang, parser, dom, on, request, json, DataGrid, ItemFileWriteStore, Grid, domForm, jsonRest, observable) {
         var errorDlg;
         var clock;
 

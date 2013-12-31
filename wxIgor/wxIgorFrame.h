@@ -1,7 +1,20 @@
 #include <wx/wx.h>
+#include <wx/notebook.h>
 
 class c_wxAsmWidget;
 class IgorLocalSession;
+class IgorSession;
+
+class c_wxIgorSessionPanel : public wxPanel
+{
+public:
+	c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent);
+
+	IgorSession * m_session;
+	c_wxAsmWidget* m_pAsmWidget;
+
+	DECLARE_EVENT_TABLE()
+};
 
 class c_wxIgorFrame : public wxFrame
 {
@@ -24,8 +37,7 @@ public:
 	void OnGoToAddress(wxCommandEvent& event);
 	void OnExportDisassembly(wxCommandEvent& event);
 
-	c_wxAsmWidget* m_pAsmWidget;
-
+	c_wxIgorSessionPanel* m_sessionPanel;
 	IgorLocalSession * m_session;
 
 	DECLARE_EVENT_TABLE()

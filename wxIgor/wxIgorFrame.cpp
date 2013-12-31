@@ -11,6 +11,42 @@
 
 //using namespace Balau;
 
+c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent) : wxPanel(parent)
+{
+	m_session = pSession;
+
+	wxNotebook* pNoteBook = new wxNotebook(this, -1);
+	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+
+	hbox->Add(pNoteBook, 1, wxALIGN_RIGHT | wxEXPAND);
+	vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
+	SetSizerAndFit(hbox, true);
+
+	{
+		wxPanel* pAsmPagePanel = new wxPanel(pNoteBook);
+		wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+		wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+
+		m_pAsmWidget = new c_wxAsmWidget(m_session, pAsmPagePanel, -1, "ASM view");
+		c_wxAsmWidgetScrollbar* pAsmWidgetScrollbar = new c_wxAsmWidgetScrollbar(m_pAsmWidget, pAsmPagePanel, -1);
+
+		m_pAsmWidget->SetSize(GetSize());
+
+		hbox->Add(m_pAsmWidget, 1, wxALIGN_RIGHT | wxEXPAND);
+		hbox->Add(pAsmWidgetScrollbar, 0, wxALIGN_RIGHT | wxEXPAND);
+
+		vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
+
+		pAsmPagePanel->SetSizerAndFit(hbox, true);
+
+		pNoteBook->AddPage(pAsmPagePanel, "ASM");
+	}
+}
+
+BEGIN_EVENT_TABLE(c_wxIgorSessionPanel, wxPanel)
+END_EVENT_TABLE()
+
 c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size) : wxFrame((wxFrame *)NULL, -1, title, pos, size)
 {
 	c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
@@ -72,22 +108,8 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         return;
     }
 
-	wxPanel *panel = new wxPanel(this, -1);
+	m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
 
-	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
-
-	m_pAsmWidget = new c_wxAsmWidget(m_session, panel, -1, "ASM view");
-	c_wxAsmWidgetScrollbar* pAsmWidgetScrollbar = new c_wxAsmWidgetScrollbar(m_pAsmWidget, panel, -1);
-
-	m_pAsmWidget->SetSize(GetSize());
-
-	hbox->Add(m_pAsmWidget, 1, wxALIGN_RIGHT | wxEXPAND);
-	hbox->Add(pAsmWidgetScrollbar, 0, wxALIGN_RIGHT | wxEXPAND);
-
-	vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
-
-	panel->SetSizerAndFit(hbox, true);
 	SendSizeEvent();
 }
 
@@ -127,9 +149,9 @@ void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
 		Balau::String enteredString(wxEnteredString.c_str());
 		u64 address = enteredString.to_int(16);
 
-		if (m_pAsmWidget && address)
+		if (m_sessionPanel->m_pAsmWidget && address)
 		{
-			m_pAsmWidget->m_currentPosition = address;
+			m_sessionPanel->m_pAsmWidget->m_currentPosition = address;
 		}
 	}
 

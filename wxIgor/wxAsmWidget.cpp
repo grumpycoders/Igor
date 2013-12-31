@@ -53,7 +53,7 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 	const wxPoint& pos,
 	const wxSize& size,
 	long style,
-	const wxString& name) : wxTextCtrl(parent, id, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY)
+	const wxString& name) : wxTextCtrl(parent, id, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH)
 {
     m_pSession = pSession;
 
@@ -66,6 +66,11 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 	SetFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
 
 	//m_scrollbar = new c_wxAsmWidgetScrollbar(this, this, id);
+}
+
+c_wxAsmWidget::~c_wxAsmWidget()
+{
+	delete m_timer;
 }
 
 void c_wxAsmWidget::updateDatabaseView()
@@ -104,6 +109,7 @@ void c_wxAsmWidget::updateDatabaseView()
 				wxString displayDisassembledString;
                 displayDisassembledString = fullDisassembledString.to_charp();
 
+				SetDefaultStyle(wxTextAttr(*wxBLUE));
 				AppendText(displayDisassembledString);
 				AppendText("\n");
 				numDrawnLines++;
@@ -114,6 +120,7 @@ void c_wxAsmWidget::updateDatabaseView()
 			{
                 wxString displayDisassembledString = wxString::Format("%016llX: 0x%02X\n", analyzeState.m_PC, m_pSession->readU8(analyzeState.m_PC));
 
+				SetDefaultStyle(wxTextAttr(*wxRED));
 				AppendText(displayDisassembledString);
 				numDrawnLines++;
 

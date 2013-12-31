@@ -6,14 +6,14 @@
 
 #ifdef _DEBUG
 //#pragma comment(lib, "wxexpatd.lib")
-#pragma comment(lib, "wxmsw29ud.lib")
+#pragma comment(lib, "wxmsw30ud.lib")
 #pragma comment(lib, "wxzlibd.lib")
 #pragma comment(lib, "wxjpegd.lib")
 #pragma comment(lib, "wxpngd.lib")
 #pragma comment(lib, "wxtiffd.lib")
 #else
 //#pragma comment(lib, "wxexpat.lib")
-#pragma comment(lib, "wxmsw29u.lib")
+#pragma comment(lib, "wxmsw30u.lib")
 #pragma comment(lib, "wxzlib.lib")
 #pragma comment(lib, "wxjpeg.lib")
 #pragma comment(lib, "wxpng.lib")

@@ -41,6 +41,7 @@ public:
 		const wxSize& size = wxDefaultSize,
 		long style = wxWANTS_CHARS,
 		const wxString& name = "");
+	~c_wxAsmWidget();
 
 	void seekPC(int amount);
 //private:

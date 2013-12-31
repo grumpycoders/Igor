@@ -372,18 +372,61 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
     }
 
     igorAddress currentPC = session->linearToVirtual(linear = linearFirst);
+    igorAddress startPC = session->get_next_valid_address_before(currentPC);
 
     {
-        c_cpu_module* pCpu = session->getCpuForAddress(currentPC);
+        c_cpu_module* pCpu = session->getCpuForAddress(startPC);
 
         s_analyzeState analyzeState;
-        analyzeState.m_PC = currentPC;
+        analyzeState.m_PC = startPC;
         analyzeState.pCpu = pCpu;
-        analyzeState.pCpuState = session->getCpuStateForAddress(currentPC);
+        analyzeState.pCpuState = session->getCpuStateForAddress(startPC);
         analyzeState.pSession = session;
         analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
         while (linear <= linearLast) {
+            if (currentPC != startPC) {
+                String disassembledString;
+                String val, address;
+                igor_result r = pCpu->analyze(&analyzeState);
+                EAssert(r == IGOR_SUCCESS, "Doesn't make sense to rewind when it's not an instruction (yet)");
+                pCpu->printInstruction(&analyzeState, disassembledString);
+                const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize - currentPC + startPC;
+                Json::Value v;
+                v["type"] = "instcont";
+                v["disasm"] = disassembledString.to_charp();
+                address.set("%016llx", startPC);
+                v["start"] = address.to_charp();
+                analyzeState.m_PC = currentPC;
+                address.set("%016llx", analyzeState.m_PC);
+                val.set("%02X", session->readU8(analyzeState.m_PC));
+                v["byte"] = val.to_charp();
+                v["address"] = address.to_charp();
+                address.set("%lli", linear);
+                v["id"] = address.to_charp();
+                address.set("%lli", nBytes);
+                v["instsize"] = address.to_charp();
+                reply[linear++ - linearFirst] = v;
+
+                for (int i = 1; i < nBytes; i++) {
+                    if (linear > linearLast)
+                        break;
+
+                    v["type"] = "instcont";
+                    val.set("%02X", session->readU8(analyzeState.m_PC + i));
+                    v["byte"] = val.to_charp();
+                    address.set("%016llx", analyzeState.m_PC + i);
+                    v["address"] = address.to_charp();
+                    address.set("%lli", linear);
+                    v["id"] = address.to_charp();
+                    reply[linear++ - linearFirst] = v;
+                }
+                analyzeState.m_PC += nBytes;
+                EAssert(analyzeState.m_PC == analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize, "inconsistant state...");
+
+                startPC = currentPC;
+                continue;
+            }
             currentPC = analyzeState.m_PC;
             if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS)) {
                 String disassembledString;
@@ -398,6 +441,7 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();
                 v["address"] = address.to_charp();
+                v["start"] = address.to_charp();
                 address.set("%lli", linear);
                 v["id"] = address.to_charp();
                 address.set("%lli", nBytes);
@@ -435,6 +479,7 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
 
                 analyzeState.m_PC++;
             }
+            startPC = currentPC;
         }
 
         delete analyzeState.m_cpu_analyse_result;

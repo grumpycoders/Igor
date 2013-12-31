@@ -17,6 +17,10 @@ public:
     IgorSession(const Balau::String & uuid);
     ~IgorSession();
 
+    void setName(const Balau::String & name) { m_name = name; }
+    void setName(const char * name) { m_name = name; }
+    const Balau::String & getName() { return m_name; }
+
     const Balau::String & getUUID() { return m_uuid; }
 
     static void enumerate(std::function<bool(IgorSession *)>);
@@ -92,8 +96,8 @@ public:
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() = 0;
     virtual igorAddress linearToVirtual(igorAddress) = 0;
 
-public:
-    Balau::String m_uuid;
+private:
+    Balau::String m_uuid, m_name;
     static Balau::RWLock m_listLock;
     static IgorSession * m_head;
     IgorSession * m_next, * m_prev;

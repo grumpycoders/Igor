@@ -35,7 +35,7 @@ bool igor_export_to_text(const char * exportPath, IgorSession * session) {
 			String disassembledString;
 			pCpu->printInstruction(&analyzeState, disassembledString);
 
-			fprintf(fHandle, "%s\n", disassembledString.to_charp(0));
+			fprintf(fHandle, "%016llx  %s\n", analyzeState.m_cpu_analyse_result->m_startOfInstruction, disassembledString.to_charp(0));
 
 			analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
 		}
@@ -44,7 +44,7 @@ bool igor_export_to_text(const char * exportPath, IgorSession * session) {
 			u8 byte;
 			session->readU8(analyzeState.m_PC, byte);
 
-			fprintf(fHandle, "0x%02X\n", byte);
+			fprintf(fHandle, "%016llx  0x%02X\n", analyzeState.m_PC, byte);
 
 			analyzeState.m_PC++;
 		}

@@ -212,6 +212,8 @@
         var clock;
         var sessionName;
         var sessionsMenu;
+        var consoleArea;
+        var consolePane;
         var disassemblyStore = new memory({ data: [
           { id: 0, comment: 'Open a session first' }
         ]});
@@ -287,6 +289,8 @@
         clock = dojo.byId('clock');
         sessionName = dojo.byId('sessionName');
         sessionsMenu = registry.byId('sessionsMenu');
+        consoleArea = dojo.byId('console');
+        consolePane = dojo.byId('consolePane');
 
         dojo.fadeOut({
           node: 'loader',
@@ -391,6 +395,13 @@
           }
         });
         
+        registerMessageListener('console', function(call, msg) {
+          if (call == 'add') {
+            consoleArea.innerHTML = consoleArea.innerHTML + msg.str + '\n';
+            consolePane.scrollTop = consolePane.scrollHeight;
+          }
+        });
+        
         sendMessage = function(destination, call, data) {
           socket.send(json.stringify({ destination: destination, call: call, data: data }));
         }
@@ -445,6 +456,9 @@
         </div>
         <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='title:"Memory View (dgrid)", style:"padding:10px;display:none;"'>
           <div id='dgridHexView'></div>
+        </div>
+        <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='title:"Console", style:"padding:10px;display:none;"' id='consolePane'>
+          <pre id='console'></pre>
         </div>
       </div>
       

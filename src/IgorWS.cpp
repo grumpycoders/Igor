@@ -20,16 +20,27 @@ class IgorWSWorker;
 
 class Listeners;
 
+class WSPrinter : public Printer {
+  public:
+      WSPrinter() : m_printer(getPrinter()) { setGlobal(); }
+      ~WSPrinter() { m_printer->setGlobal(); }
+  private:
+    virtual void _print(const char * fmt, va_list ap);
+    Printer * m_printer;
+};
+
+static DefaultTmpl<WSPrinter> wsPrinter(100);
+
 class Listener {
-public:
-    Listener(const char * destination, Listeners *);
+  public:
+      Listener(const char * destination, Listeners *);
     virtual void receive(IgorWSWorker * worker, const std::string & call, const Json::Value & data) = 0;
 };
 
 class Listeners {
-public:
+  public:
     void receive(IgorWSWorker * worker, const std::string & destination, const std::string & call, const Json::Value & data);
-private:
+  private:
     void registerListener(Listener *, const char * destination);
     RWLock m_lock;
     std::map<String, Listener *> m_map;
@@ -64,21 +75,25 @@ static Balau::RWLock s_websocketsLock;
 static Regex igorWSURL("^/dyn/igorws$");
 
 class IgorWSWorker : public WebSocketWorker {
-public:
-    IgorWSWorker(IO<Handle> socket, const String & url);
-    virtual ~IgorWSWorker();
+  public:
+      IgorWSWorker(IO<Handle> socket, const String & url);
+      virtual ~IgorWSWorker();
     virtual void receiveMessage(const uint8_t * msg, size_t len, bool binary);
     void Do() override;
     void dispatch(const std::string & destination, const std::string & call, const Json::Value & data);
 
     void send(const char * msg);
-private:
+
+    void print(const char * fmt, va_list ap);
+
+  private:
     void setup();
     Events::Timeout m_clock;
     int m_searchMinute = -1;
     std::list<IgorWSWorker *>::iterator m_listPos;
     bool m_setupDone = false;
     bool m_foundMinute = false;
+    String m_printing;
 };
 
 IgorWSWorker::IgorWSWorker(IO<Handle> socket, const String & url) : WebSocketWorker(socket, url) {
@@ -168,14 +183,41 @@ void IgorWSWorker::send(const char * msg) {
     sendFrame(frame);
 }
 
+void IgorWSWorker::print(const char * fmt, va_list ap) {
+    m_printing.append(fmt, ap);
+    ssize_t lfpos;
+    
+    while ((lfpos = m_printing.strchr('\n')) >= 0) {
+        String toPrint = m_printing.extract(0, lfpos);
+        Json::Value msg;
+        msg["destination"] = "console";
+        msg["call"] = "add";
+        msg["data"]["str"] = toPrint.to_charp();
+        
+        Json::StyledWriter writer;
+        String jsonMsg = writer.write(msg);
+
+        send(jsonMsg.to_charp());
+
+        m_printing = m_printing.extract(lfpos + 1);
+    }
+}
+
+void WSPrinter::_print(const char * fmt, va_list ap) {
+    ScopeLockW sl(s_websocketsLock);
+    for (auto & i : s_websockets)
+        i->print(fmt, ap);
+    m_printer->_print(fmt, ap);
+}
+
 class IgorWSAction : public WebSocketServer<IgorWSWorker> {
-public:
-    IgorWSAction() : WebSocketServer(igorWSURL) { }
+  public:
+      IgorWSAction() : WebSocketServer(igorWSURL) { }
 };
 
 class MainListener : public Listener {
-public:
-    MainListener(Listeners * listeners) : Listener("main", listeners) { }
+  public:
+      MainListener(Listeners * listeners) : Listener("main", listeners) { }
     virtual void receive(IgorWSWorker * worker, const std::string & call, const Json::Value & data) override;
 };
 

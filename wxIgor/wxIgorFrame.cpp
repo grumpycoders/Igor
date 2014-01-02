@@ -7,6 +7,7 @@
 #include <TaskMan.h>
 
 #include "IgorAnalysis.h"
+#include "IgorUtils.h"
 #include "PELoader.h"
 
 //using namespace Balau;
@@ -165,49 +166,7 @@ void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 	{
 		wxString exportPath = fileDialog.GetPath();
 
-		FILE* fHandle = fopen(exportPath, "w+");
-		if (fHandle)
-		{
-			igorAddress entryPointAddress = m_session->getEntryPoint();
-
-			c_cpu_module* pCpu = m_session->getCpuForAddress(entryPointAddress);
-			igor_section_handle sectionHandle = m_session->getSectionFromAddress(entryPointAddress);
-
-			igorAddress sectionStart = m_session->getSectionStartVirtualAddress(sectionHandle);
-			u64 sectionSize = m_session->getSectionSize(sectionHandle);
-
-			s_analyzeState analyzeState;
-			analyzeState.m_PC = sectionStart;
-			analyzeState.pCpu = pCpu;
-			analyzeState.pCpuState = m_session->getCpuStateForAddress(sectionStart);
-			analyzeState.pSession = m_session;
-			analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
-
-			while (analyzeState.m_PC < sectionStart + sectionSize)
-			{
-				if (m_session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
-				{
-					Balau::String disassembledString;
-					pCpu->printInstruction(&analyzeState, disassembledString);
-
-					fprintf(fHandle, "%s\n", disassembledString.to_charp(0));
-
-					analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
-				}
-				else
-				{
-					u8 byte;
-					m_session->readU8(analyzeState.m_PC, byte);
-
-					fprintf(fHandle, "0x%01X\n", byte);
-
-					analyzeState.m_PC++;
-				}
-			}
-
-			delete analyzeState.m_cpu_analyse_result;
-			fclose(fHandle);
-		}
+		igor_export_to_text(exportPath, m_session);
 	}
 }
 

@@ -97,6 +97,19 @@ enum e_x86_mnemonic
 	INST_X86_CPUID,
     INST_X86_CLD,
     INST_X86_FILD,
+    INST_X86_FSTP,
+    INST_X86_FLD,
+    INST_X86_FSUB,
+    INST_X86_FLDZ,
+    INST_X86_FUCOMPP,
+    INST_X86_FNSTSW,
+    INST_X86_FXCH,
+    INST_X86_FADDP,
+    INST_X86_FDIVP,
+    INST_X86_FDIV,
+    INST_X86_FSTCW,
+    INST_X86_FLDCW,
+    INST_X86_FISTP,
 
 	INST_X86_PXOR,
 	INST_X86_MOVQ,
@@ -219,6 +232,7 @@ struct s_x86_operand
 	{
 		type_register,
 		type_registerRM,
+        type_registerST,
 		type_immediate,
 		type_address,
 	} m_type;
@@ -236,6 +250,11 @@ struct s_x86_operand
 			e_operandSize m_operandSize;
 			s_mod_reg_rm m_mod_reg_rm;
 		} m_registerRM;
+
+        struct
+        {
+            u8 m_registerIndex;
+        } m_registerST;
 
 		struct
 		{
@@ -265,6 +284,9 @@ struct s_x86_operand
 
 	void setAsRegisterRM_XMM(s_analyzeState* pState, e_operandSize size = OPERAND_XMM_64_128);
 	void setAsRegisterR_XMM(s_analyzeState* pState, e_operandSize size = OPERAND_XMM_64_128);
+
+    void setAsRegisterSTi(s_analyzeState* pState);
+    void setAsRegisterST(s_analyzeState* pState);
 
 	void setAsImmediate(e_immediateSize size, u8 immediateValue)
 	{

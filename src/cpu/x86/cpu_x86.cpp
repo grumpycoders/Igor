@@ -131,6 +131,19 @@ static const std::map<e_x86_mnemonic, const char *> s_mnemonics {
     MKNAME(SAL),
     MKNAME(SAR),
     MKNAME(FILD),
+    MKNAME(FSTP),
+    MKNAME(FLD),
+    MKNAME(FSUB),
+    MKNAME(FLDZ),
+    MKNAME(FUCOMPP),
+    MKNAME(FNSTSW),
+    MKNAME(FXCH),
+    MKNAME(FADDP),
+    MKNAME(FDIVP),
+    MKNAME(FDIV),
+    MKNAME(FSTCW),
+    MKNAME(FLDCW),
+    MKNAME(FISTP),
 
 	MKNAME(PXOR),	MKNAME(MOVQ),	MKNAME(MOVDQA),	MKNAME(MOVUPS),
 	MKNAME(MOVSS), 
@@ -248,6 +261,9 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 			}
 			break;
 		}
+        case s_x86_operand::type_registerST:
+            operandString.set("st(%d)", pOperand->m_registerST.m_registerIndex);
+            break;
 		case s_x86_operand::type_immediate:
 		{
 			operandString.set("%s%Xh", segmentString, pOperand->m_immediate.m_immediateValue);
@@ -309,6 +325,22 @@ void s_x86_operand::setAsRegisterRM(s_analyzeState* pState, e_operandSize size)
 	}
 	
 	m_registerRM.m_mod_reg_rm = x86_analyse_result->m_mod_reg_rm;
+}
+
+void s_x86_operand::setAsRegisterSTi(s_analyzeState* pState)
+{
+    c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+    m_type = type_registerST;
+
+    m_registerST.m_registerIndex = x86_analyse_result->m_mod_reg_rm.getRM();
+}
+
+void s_x86_operand::setAsRegisterST(s_analyzeState* pState)
+{
+    c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+    m_type = type_registerST;
+
+    m_registerST.m_registerIndex = 0;
 }
 
 void s_x86_operand::setAsRegister(s_analyzeState* pState, e_register registerIndex, e_operandSize size)

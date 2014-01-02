@@ -87,7 +87,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidget\include;wxwidget\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -96,7 +96,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>wxwidget\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>wxwidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,7 +106,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidget\include;wxwidget\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -114,7 +114,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>wxwidget\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>wxwidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,7 +126,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidget\include;wxwidget\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -136,7 +136,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>wxwidget\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>wxwidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidget\include;wxwidget\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -158,7 +158,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>wxwidget\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>wxwidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -1671,9 +1671,30 @@
     <ClCompile Include="src\IgorUtils.cpp" />
     <ClCompile Include="src\IgorWS.cpp" />
     <ClCompile Include="src\PELoader.cpp" />
-    <ClCompile Include="wxIgor\wxAsmWidget.cpp" />
-    <ClCompile Include="wxIgor\wxIgorApp.cpp" />
-    <ClCompile Include="wxIgor\wxIgorFrame.cpp" />
+    <ClCompile Include="wxIgor\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="wxIgor\wxAsmWidget.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="wxIgor\wxIgorApp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="wxIgor\wxIgorFrame.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\libtomcrypt\src\headers\tomcrypt.h" />
@@ -1955,6 +1976,7 @@
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\IgorUtils.h" />
     <ClInclude Include="src\PELoader.h" />
+    <ClInclude Include="wxIgor\stdafx.h" />
     <ClInclude Include="wxIgor\wxAsmWidget.h" />
     <ClInclude Include="wxIgor\wxIgorApp.h" />
     <ClInclude Include="wxIgor\wxIgorFrame.h" />

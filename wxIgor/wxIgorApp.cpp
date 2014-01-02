@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <atomic>
 
 #include "wxIgorApp.h"

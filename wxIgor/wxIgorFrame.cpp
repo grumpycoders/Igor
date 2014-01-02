@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "wxIgorFrame.h"
 #include "wxAsmWidget.h"
 #include "wxIgorApp.h"

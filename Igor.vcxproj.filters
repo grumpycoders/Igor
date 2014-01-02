@@ -2207,6 +2207,9 @@
     <ClCompile Include="src\IgorUtils.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
+    <ClCompile Include="wxIgor\stdafx.cpp">
+      <Filter>wxIgor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">
@@ -4230,6 +4233,9 @@
     </ClInclude>
     <ClInclude Include="src\IgorUtils.h">
       <Filter>Igor</Filter>
+    </ClInclude>
+    <ClInclude Include="wxIgor\stdafx.h">
+      <Filter>wxIgor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

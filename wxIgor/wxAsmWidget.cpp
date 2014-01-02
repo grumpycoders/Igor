@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "wxAsmWidget.h"
 
 #include "IgorDatabase.h"

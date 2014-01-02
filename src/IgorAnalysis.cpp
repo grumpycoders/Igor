@@ -92,12 +92,12 @@ const char * IgorLocalSession::getStatusString() {
 
 void IgorLocalSession::add_code_analysis_task(igorAddress PC)
 {
-	if (!m_pDatabase->is_address_flagged_as_code(PC))
-	{
-		s_analysisRequest * newAnalysisRequest = new s_analysisRequest(PC);
+    if (!m_pDatabase->is_address_flagged_as_code(PC))
+    {
+        s_analysisRequest * newAnalysisRequest = new s_analysisRequest(PC);
 
-		m_pDatabase->m_analysisRequests.push(newAnalysisRequest);
-	}
+        m_pDatabase->m_analysisRequests.push(newAnalysisRequest);
+    }
 }
 
 void IgorLocalSession::Do()
@@ -199,7 +199,7 @@ void IgorAnalysis::Do()
 
     if (!m_pCpu)
         return;
-	
+    
     m_analyzeState.m_PC = m_PC;
     m_analyzeState.pCpu = m_pCpu;
     m_analyzeState.pCpuState = m_pCpuState;
@@ -208,23 +208,23 @@ void IgorAnalysis::Do()
 
     m_analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
 
-	do
-	{
+    do
+    {
         if (m_pDatabase->is_address_flagged_as_code(m_analyzeState.m_PC))
-		{
-			break;
-		}
+        {
+            break;
+        }
 
         if (m_pCpu->analyze(&m_analyzeState) != IGOR_SUCCESS)
-		{
+        {
             m_analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
-		}
-		else
-		{
+        }
+        else
+        {
             m_pDatabase->flag_address_as_instruction(m_analyzeState.m_cpu_analyse_result->m_startOfInstruction, m_analyzeState.m_cpu_analyse_result->m_instructionSize);
-			m_session->add_instruction();
-		}
-				
+            m_session->add_instruction();
+        }
+                
         if (++counter == 0)
         {
             StacklessYield();

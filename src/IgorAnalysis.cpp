@@ -189,29 +189,29 @@ void IgorAnalysis::Do()
 
     if (!m_pCpu)
         return;
-	s_analyzeState analyzeState;
-    analyzeState.m_PC = m_PC;
-    analyzeState.pCpu = m_pCpu;
-    analyzeState.pCpuState = m_pCpuState;
-    analyzeState.pSession = m_session;
-    analyzeState.m_cpu_analyse_result = m_pCpu->allocateCpuSpecificAnalyseResult();
+	
+    m_analyzeState.m_PC = m_PC;
+    m_analyzeState.pCpu = m_pCpu;
+    m_analyzeState.pCpuState = m_pCpuState;
+    m_analyzeState.pSession = m_session;
+    m_analyzeState.m_cpu_analyse_result = m_pCpu->allocateCpuSpecificAnalyseResult();
 
-	analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
+    m_analyzeState.m_analyzeResult = e_analyzeResult::continue_analysis;
 
 	do
 	{
-        if (m_pDatabase->is_address_flagged_as_code(analyzeState.m_PC))
+        if (m_pDatabase->is_address_flagged_as_code(m_analyzeState.m_PC))
 		{
 			break;
 		}
 
-        if (m_pCpu->analyze(&analyzeState) != IGOR_SUCCESS)
+        if (m_pCpu->analyze(&m_analyzeState) != IGOR_SUCCESS)
 		{
-			analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
+            m_analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
 		}
 		else
 		{
-			m_pDatabase->flag_address_as_instruction(analyzeState.m_cpu_analyse_result->m_startOfInstruction, analyzeState.m_cpu_analyse_result->m_instructionSize);
+            m_pDatabase->flag_address_as_instruction(m_analyzeState.m_cpu_analyse_result->m_startOfInstruction, m_analyzeState.m_cpu_analyse_result->m_instructionSize);
 			m_session->add_instruction();
 		}
 				
@@ -220,10 +220,10 @@ void IgorAnalysis::Do()
             StacklessYield();
         }
 
-    } while (analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
+    } while (m_analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
 
-	delete analyzeState.m_cpu_analyse_result;
-	analyzeState.m_cpu_analyse_result = NULL;
+    delete m_analyzeState.m_cpu_analyse_result;
+    m_analyzeState.m_cpu_analyse_result = NULL;
 
     StacklessEnd();
 }

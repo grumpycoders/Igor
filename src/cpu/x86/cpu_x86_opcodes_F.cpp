@@ -2,10 +2,21 @@
 #include "cpu_x86.h"
 #include "cpu_x86_opcodes.h"
 
-igor_result x86_opcode_setz(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
+igor_result x86_opcode_F_set(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 currentByte)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
-	x86_analyse_result->m_mnemonic = INST_X86_SETZ;
+	
+    switch (currentByte)
+    {
+    case 0x94:
+        x86_analyse_result->m_mnemonic = INST_X86_SETZ;
+        break;
+    case 0x95:
+        x86_analyse_result->m_mnemonic = INST_X86_SETNZ;
+        break;
+    default:
+        X86_DECODER_FAILURE("x86_opcode_F_set");
+    }
 
 	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 
@@ -422,22 +433,22 @@ const t_x86_opcode x86_opcode_table_0xf[0x100] =
 	/* 0x8F */ &x86_opcode_F_jmp,
 
 	// 0x90
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	/* 0x94 */ &x86_opcode_setz,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
+    /* 0x90 */ &x86_opcode_F_set,
+    /* 0x91 */ &x86_opcode_F_set,
+    /* 0x92 */ &x86_opcode_F_set,
+    /* 0x93 */ &x86_opcode_F_set,
+	/* 0x94 */ &x86_opcode_F_set,
+    /* 0x95 */ &x86_opcode_F_set,
+    /* 0x96 */ &x86_opcode_F_set,
+    /* 0x97 */ &x86_opcode_F_set,
+    /* 0x98 */ &x86_opcode_F_set,
+    /* 0x99 */ &x86_opcode_F_set,
+    /* 0x9A */ &x86_opcode_F_set,
+    /* 0x9B */ &x86_opcode_F_set,
+    /* 0x9C */ &x86_opcode_F_set,
+    /* 0x9D */ &x86_opcode_F_set,
+    /* 0x9E */ &x86_opcode_F_set,
+    /* 0x9F */ &x86_opcode_F_set,
 
 	// 0xA0
 	NULL,

@@ -6,6 +6,7 @@
 #include <StacklessTask.h>
 #include "Igor.h"
 #include "IgorDatabase.h"
+#include "cpu/cpuModule.h"
 
 class c_cpu_module;
 class c_cpu_state;
@@ -159,6 +160,7 @@ public:
     void Do();
     const char * getName() const { return m_name.to_charp(); }
 private:
+    s_analyzeState m_analyzeState;
     s_igorDatabase * m_pDatabase = NULL;
     IgorLocalSession * m_session;
     u64 m_PC = 0;

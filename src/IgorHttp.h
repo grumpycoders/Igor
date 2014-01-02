@@ -2,6 +2,6 @@
 
 void igor_setup_httpserver();
 
-class Balau::HttpServer;
+namespace Balau { class HttpServer; }
 
 void igor_setup_websocket(Balau::HttpServer *);

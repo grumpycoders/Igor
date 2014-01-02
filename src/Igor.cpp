@@ -65,17 +65,17 @@ void MainTask::Do() {
         file->forceRead(buffer, size);
         IO<Buffer> reader(new Buffer(buffer, file->getSize()));
 
-        IgorSession * analysis = new IgorSession();
+        IgorLocalSession * session = new IgorLocalSession();
 
-		s_igorDatabase * db = new s_igorDatabase;
+        s_igorDatabase * db = new s_igorDatabase;
 
         c_PELoader PELoader;
-		PELoader.loadPE(db, reader, analysis);
+        PELoader.loadPE(db, reader, session);
 
         reader->close();
         free(buffer);
 
-        TaskMan::registerTask(analysis);
+        TaskMan::registerTask(session);
     }
 #endif
 

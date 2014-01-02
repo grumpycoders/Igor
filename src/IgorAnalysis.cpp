@@ -2,6 +2,8 @@
 
 #ifdef _WIN32
 #include <Rpc.h>
+#else
+#include <uuid/uuid.h>
 #endif
 #include <Printer.h>
 #include <BString.h>
@@ -32,9 +34,17 @@ static String generateUUID() {
 #endif
 
     RpcStringFree(&uuidstr);
+#else
+    uuid_t uuid;
+    char uuidstr[37];
 
-    return r;
+    uuid_generate(uuid);
+    uuid_unparse(uuid, uuidstr);
+
+    String r = uuidstr;
 #endif
+
+    return r.lower();
 }
 
 RWLock IgorSession::m_listLock;

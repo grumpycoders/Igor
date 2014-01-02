@@ -42,7 +42,7 @@ public:
 void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
     
-    Printer::enable(M_ALL);
+    Printer::enable(M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT);
 
 #ifdef USE_WXWIDGETS
     bool wxStarted = wxIgorStartup(argc, argv);

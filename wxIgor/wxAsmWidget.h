@@ -46,14 +46,13 @@ public:
 	void seekPC(int amount);
 //private:
 
-	void updateDatabaseView();
-
 	void OnMouseEvent(wxMouseEvent& event);
 	void OnScroll(wxScrollWinEvent &event);
 	//void OnIdle(wxIdleEvent &event);
 	void OnTimer(wxTimerEvent &event);
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
+    void OnMouseMotion(wxMouseEvent& event);
 
 	void OnDraw(wxDC& dc);
 
@@ -62,6 +61,8 @@ public:
 	wxTimer* m_timer;
 
 	igorAddress m_currentPosition;
+
+    wxPoint m_mousePosition;
 
 	DECLARE_EVENT_TABLE()
 };

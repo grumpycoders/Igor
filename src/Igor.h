@@ -40,9 +40,9 @@ struct igorAddress {
     u64 offset;
 };
 
-extern igorAddress IGOR_MIN_ADDRESS;
-extern igorAddress IGOR_MAX_ADDRESS;
-extern igorAddress IGOR_INVALID_ADDRESS;
+extern const igorAddress IGOR_MIN_ADDRESS;
+extern const igorAddress IGOR_MAX_ADDRESS;
+extern const igorAddress IGOR_INVALID_ADDRESS;
 
 typedef Balau::IO<Balau::Handle> BFile;
 

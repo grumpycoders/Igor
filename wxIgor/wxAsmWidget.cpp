@@ -110,7 +110,7 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 	int drawY = 0;
 
-	u64 currentPC = m_currentPosition;
+	igorAddress currentPC = m_currentPosition;
 
 	{
 		c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
@@ -125,7 +125,7 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 		while (numDrawnLines < numLinesInWindow)
 		{
 			String fullDisassembledString;
-			fullDisassembledString.set("%016llX: ", analyzeState.m_PC);
+			fullDisassembledString.set("%016llX: ", analyzeState.m_PC.offset);
 
 			if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
 			{
@@ -148,7 +148,7 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 			}
 			else
 			{
-				wxString displayDisassembledString = wxString::Format("%016llX: 0x%02X\n", analyzeState.m_PC, m_pSession->readU8(analyzeState.m_PC));
+				wxString displayDisassembledString = wxString::Format("%016llX: 0x%02X\n", analyzeState.m_PC.offset, m_pSession->readU8(analyzeState.m_PC));
 
 				//SetDefaultStyle(wxTextAttr(*wxRED));
 				//AppendText(displayDisassembledString);

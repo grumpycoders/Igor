@@ -82,13 +82,13 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	try {
 		if (x86_opcode_table[currentByte](pState, pX86State, currentByte) != IGOR_SUCCESS)
 		{
-			Printer::log(M_INFO, "Failed decoding instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction);
+			Printer::log(M_INFO, "Failed decoding instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction.offset);
 			pState->m_PC = result.m_startOfInstruction;
 			return IGOR_FAILURE;
 		}
 	}
 	catch (X86AnalysisException & e) {
-		Printer::log(M_INFO, "Exception while decoding instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction);
+        Printer::log(M_INFO, "Exception while decoding instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction.offset);
 		pState->m_PC = result.m_startOfInstruction;
 		return IGOR_FAILURE;
 	}
@@ -229,7 +229,7 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 
 						const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
 
-						operandString.set("0x%08llX[%s*%d]", pOperand->m_registerRM.m_mod_reg_rm.offset, indexString, multiplier);
+                        operandString.set("0x%08llX[%s*%d]", pOperand->m_registerRM.m_mod_reg_rm.offset, indexString, multiplier);
 					}
 					else
 					{
@@ -275,11 +275,11 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 
 			if (pOperand->m_address.m_dereference)
 			{
-				operandString.set("%s[0x%08llX]", segmentString, pOperand->m_address.m_addressValue);
+                operandString.set("%s[0x%08llX]", segmentString, pOperand->m_address.m_addressValue);
 			}
 			else
 			{
-				operandString.set("%s0x%08llX", segmentString, pOperand->m_address.m_addressValue);
+                operandString.set("%s0x%08llX", segmentString, pOperand->m_address.m_addressValue);
 			}
 			break;
 		}
@@ -452,9 +452,7 @@ void s_x86_operand::setAsAddressRel(s_analyzeState* pState, e_operandSize size, 
 		throw X86AnalysisException("Failure in setAsImmediateRel!");
 	}
 
-	u64 address = pState->m_PC + offset;
-
-	m_address.m_addressValue = address;
+    m_address.m_addressValue = pState->m_PC.offset + offset;
 	m_address.m_dereference = dereference;
 }
 

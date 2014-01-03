@@ -15,8 +15,8 @@ typedef int igor_cpu_handle;
 
 struct s_analysisRequest
 {
-    s_analysisRequest(u64 PC) : m_pc(PC) { }
-	u64 m_pc;
+    s_analysisRequest(igorAddress PC) : m_pc(PC) { }
+    igorAddress m_pc;
 };
 
 struct s_igorDatabase
@@ -76,7 +76,7 @@ struct s_igorDatabase
 		}
 	};
 
-	std::map<u64, s_symbolDefinition> m_symbolMap;
+	std::map<igorAddress, s_symbolDefinition> m_symbolMap;
 
 	// a map of the name of all symbols. Should the name of a symbol be included in the global m_symbolTypeMap?
 	// Technically, only symbol could have name...
@@ -101,78 +101,78 @@ struct s_igorDatabase
 
     igor_result igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle);
     
-    c_cpu_module* getCpuForAddress(u64 PC);
-	c_cpu_state* getCpuStateForAddress(u64 PC);
+    c_cpu_module* getCpuForAddress(igorAddress PC);
+    c_cpu_state* getCpuStateForAddress(igorAddress PC);
 
-	igor_result readS32(u64 address, s32& output);
-	igor_result readU32(u64 address, u32& output);
-	igor_result readS16(u64 address, s16& output);
-	igor_result readU16(u64 address, u16& output);
-	igor_result readS8(u64 address, s8& output);
-	igor_result readU8(u64 address, u8& output);
+    igor_result readS32(igorAddress address, s32& output);
+    igor_result readU32(igorAddress address, u32& output);
+    igor_result readS16(igorAddress address, s16& output);
+    igor_result readU16(igorAddress address, u16& output);
+    igor_result readS8(igorAddress address, s8& output);
+    igor_result readU8(igorAddress address, u8& output);
 
-	u64 findSymbol(const char* symbolName);
+    igorAddress findSymbol(const char* symbolName);
 
-	s32 readS32(u64 address)
+    s32 readS32(igorAddress address)
 	{
 		s32 output;
 		readS32(address, output);
 		return output;
 	}
 
-	u32 readU32(u64 address)
+    u32 readU32(igorAddress address)
 	{
 		u32 output;
 		readU32(address, output);
 		return output;
 	}
 
-	s16 readS16(u64 address)
+    s16 readS16(igorAddress address)
 	{
 		s16 output;
 		readS16(address, output);
 		return output;
 	}
 
-	u16 readU16(u64 address)
+    u16 readU16(igorAddress address)
 	{
 		u16 output;
 		readU16(address, output);
 		return output;
 	}
 
-	s8 readS8(u64 address)
+    s8 readS8(igorAddress address)
 	{
 		s8 output;
 		readS8(address, output);
 		return output;
 	}
 
-	u8 readU8(u64 address)
+    u8 readU8(igorAddress address)
 	{
 		u8 output;
 		readU8(address, output);
 		return output;
 	}
 
-	int readString(u64 address, Balau::String& outputString);
+    int readString(igorAddress address, Balau::String& outputString);
 
-	igor_result create_section(u64 virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
+    igor_result create_section(u64 virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
 	igor_result set_section_name(const Balau::String& sectionName);
 	igor_result set_section_option(igor_section_handle sectionHandle, e_igor_section_option option);
 	igor_result load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size);
 
-	igor_result declare_name(u64 virtualAddress, Balau::String name);
-	igor_result declare_symbolType(u64 virtualAddress, e_symbolType type);
-	igor_result declare_variable(u64 virtualAddress, e_baseTypes type);
+    igor_result declare_name(igorAddress virtualAddress, Balau::String name);
+    igor_result declare_symbolType(igorAddress virtualAddress, e_symbolType type);
+    igor_result declare_variable(igorAddress virtualAddress, e_baseTypes type);
 
-    igor_result flag_address_as_u32(u64 virtualAddress);
-    igor_result flag_address_as_instruction(u64 virtualAddress, u8 instructionSize);
+    igor_result flag_address_as_u32(igorAddress virtualAddress);
+    igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize);
 
 
-    igor_result is_address_flagged_as_code(u64 virtualAddress);
-    u64 get_next_valid_address_before(u64 virtualAddress);
-    u64 get_next_valid_address_after(u64 virtualAddress);
+    igor_result is_address_flagged_as_code(igorAddress virtualAddress);
+    igorAddress get_next_valid_address_before(igorAddress virtualAddress);
+    igorAddress get_next_valid_address_after(igorAddress virtualAddress);
 
 	igorAddress getEntryPoint();
 	igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
@@ -182,9 +182,9 @@ struct s_igorDatabase
 	igorAddress m_entryPoint;
 
     std::tuple<igorAddress, igorAddress, size_t> getRanges();
-    igorAddress linearToVirtual(igorAddress);
+    igorAddress linearToVirtual(u64);
 
 private:
-	s_igorSection* findSectionFromAddress(u64 address);
-	s_symbolDefinition* get_Symbol(u64 virtualAddress);
+    s_igorSection* findSectionFromAddress(igorAddress address);
+    s_symbolDefinition* get_Symbol(igorAddress virtualAddress);
 };

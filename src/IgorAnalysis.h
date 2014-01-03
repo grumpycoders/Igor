@@ -77,7 +77,7 @@ public:
         return output;
     }
 
-    virtual int readString(u64 address, Balau::String& outputString) = 0;
+    virtual int readString(igorAddress address, Balau::String& outputString) = 0;
     virtual c_cpu_module* getCpuForAddress(igorAddress PC) = 0;
     virtual c_cpu_state* getCpuStateForAddress(igorAddress PC) = 0;
     virtual igor_result is_address_flagged_as_code(igorAddress virtualAddress) = 0;
@@ -86,8 +86,8 @@ public:
 
     virtual void add_code_analysis_task(igorAddress PC) = 0;
 
-    virtual igor_result flag_address_as_u32(u64 virtualAddress) = 0;
-    virtual igor_result flag_address_as_instruction(u64 virtualAddress, u8 instructionSize) = 0;
+    virtual igor_result flag_address_as_u32(igorAddress virtualAddress) = 0;
+    virtual igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize) = 0;
 
     virtual igorAddress getEntryPoint() = 0;
     virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) = 0;
@@ -95,7 +95,7 @@ public:
     virtual u64 getSectionSize(igor_section_handle sectionHandle) = 0;
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() = 0;
-    virtual igorAddress linearToVirtual(igorAddress) = 0;
+    virtual igorAddress linearToVirtual(u64) = 0;
 
 private:
     Balau::String m_uuid, m_name;
@@ -106,9 +106,9 @@ private:
 
 class IgorLocalSession : public Balau::Task, public IgorSession {
 public:
-    void add_code_analysis_task(u64 PC);
+    void add_code_analysis_task(igorAddress PC);
     void Do();
-    void stop() { add_code_analysis_task((u64) -1); }
+    void stop() { add_code_analysis_task(IGOR_INVALID_ADDRESS); }
     const char * getName() const { return "IgorAnalysisManagerLocal"; }
     bool isRunning() { return m_status == RUNNING; }
     void setDB(s_igorDatabase * db) { AAssert(m_pDatabase == NULL, "Can only set database once"); m_pDatabase = db; }
@@ -123,7 +123,7 @@ public:
     igor_result readS8(igorAddress address, s8& output);
     igor_result readU8(igorAddress address, u8& output);
     igorAddress findSymbol(const char* symbolName);
-    int readString(u64 address, Balau::String& outputString);
+    int readString(igorAddress address, Balau::String& outputString);
     c_cpu_module* getCpuForAddress(igorAddress PC);
     c_cpu_state* getCpuStateForAddress(igorAddress PC);
     igor_result is_address_flagged_as_code(igorAddress virtualAddress);
@@ -138,7 +138,7 @@ public:
     u64 getSectionSize(igor_section_handle sectionHandle);
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges();
-    virtual igorAddress linearToVirtual(igorAddress);
+    virtual igorAddress linearToVirtual(u64);
 
 private:
     enum {
@@ -147,7 +147,7 @@ private:
         STOPPING,
     } m_status = IDLE;
     s_igorDatabase * m_pDatabase = NULL;
-    std::list<std::pair<Balau::Events::TaskEvent *, u64>> m_evts;
+    std::list<std::pair<Balau::Events::TaskEvent *, igorAddress>> m_evts;
     std::atomic<uint64_t> m_instructions;
 };
 
@@ -156,14 +156,14 @@ class c_cpu_state;
 
 class IgorAnalysis : public Balau::StacklessTask {
 public:
-    IgorAnalysis(s_igorDatabase * db, u64 PC, IgorLocalSession * parent) : m_pDatabase(db), m_PC(PC), m_session(parent) { m_name.set("IgorAnalysis for %016llx", PC); }
+    IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent) : m_pDatabase(db), m_PC(PC), m_session(parent) { m_name.set("IgorAnalysis for %016llx", PC.offset); }
     void Do();
     const char * getName() const { return m_name.to_charp(); }
 private:
     s_analyzeState m_analyzeState;
     s_igorDatabase * m_pDatabase = NULL;
     IgorLocalSession * m_session;
-    u64 m_PC = 0;
+    igorAddress m_PC;
     Balau::String m_name;
     c_cpu_module * m_pCpu;
     c_cpu_state * m_pCpuState;

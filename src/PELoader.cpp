@@ -151,7 +151,7 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 		u32     Characteristics = reader->readU32().get();
 
 		igor_section_handle sectionHandle;
-		db->create_section(m_ImageBase + VirtualAddress, Misc, sectionHandle);
+        db->create_section(m_ImageBase + VirtualAddress, Misc, sectionHandle);
 
 		// IMAGE_SCN_CNT_CODE
 		if(Characteristics & 0x00000020)
@@ -176,13 +176,17 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 	}
 
 	loadImports(db, reader);
+    igorAddress addressBase(m_ImageBase);
+    addressBase += m_EntryPoint;
 
-	db->declare_name(m_ImageBase + m_EntryPoint, "entryPoint");
+    db->declare_name(addressBase, "entryPoint");
 
-	db->m_entryPoint = m_ImageBase + m_EntryPoint;
-
+    db->m_entryPoint = addressBase;
+    
+    igorAddress base(m_ImageBase);
+    base += m_EntryPoint;
     analysis->setDB(db);
-    analysis->add_code_analysis_task(m_ImageBase + m_EntryPoint);
+    analysis->add_code_analysis_task(base);
 
 	return IGOR_SUCCESS;
 }
@@ -291,22 +295,22 @@ void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
 
 	while (importTableVA < pImportDirectory->VirtualAddress + m_ImageBase + pImportDirectory->Size)
 	{
-		u32 originalFirstThunkRVA = db->readU32(importTableVA); importTableVA += 4;
+		u32 originalFirstThunkRVA = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
 
 		if (originalFirstThunkRVA == 0)
 			break;
 
-		u32 timestamp = db->readU32(importTableVA); importTableVA += 4;
-		u32 forwardChain = db->readU32(importTableVA); importTableVA += 4;
-		u32 nameRVA = db->readU32(importTableVA); importTableVA += 4;
-		u32 firstThunkRVA = db->readU32(importTableVA); importTableVA += 4;
+        u32 timestamp = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
+        u32 forwardChain = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
+        u32 nameRVA = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
+        u32 firstThunkRVA = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
 
 		Balau::String name;
-		db->readString(nameRVA + m_ImageBase, name);
+        db->readString(igorAddress(nameRVA + m_ImageBase), name);
 
 		u32 importFunctionIndex = 0;
 		u64 thunkVA = originalFirstThunkRVA + m_ImageBase;
-		while (u32 functionNameRVA = db->readU32(thunkVA))
+        while (u32 functionNameRVA = db->readU32(igorAddress(thunkVA)))
 		{
 			thunkVA += 4;
 
@@ -315,12 +319,12 @@ void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
 			}
 			else
 			{
-				u16 functionId = db->readU16(functionNameRVA + m_ImageBase);
+                u16 functionId = db->readU16(igorAddress(functionNameRVA + m_ImageBase));
 				Balau::String functionName;
-				db->readString(functionNameRVA + m_ImageBase + 2, functionName);
+                db->readString(igorAddress(functionNameRVA + m_ImageBase + 2), functionName);
 
-				db->declare_variable(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex, s_igorDatabase::TYPE_U32); // should we have a db type like "function pointer"?
-				db->declare_name(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex, functionName);
+                db->declare_variable(igorAddress(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex), s_igorDatabase::TYPE_U32); // should we have a db type like "function pointer"?
+                db->declare_name(igorAddress(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex), functionName);
 			}
 
 			importFunctionIndex++;

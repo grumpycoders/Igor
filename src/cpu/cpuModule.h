@@ -15,7 +15,7 @@ public:
 class c_cpu_analyse_result
 {
 public:
-	u64 m_startOfInstruction;
+	igorAddress m_startOfInstruction;
 	u8 m_instructionSize;
 
 };
@@ -33,7 +33,7 @@ class IgorSession;
 struct s_analyzeState
 {
 	// input
-	u64 m_PC;
+	igorAddress m_PC;
 	c_cpu_module* pCpu;
 	c_cpu_state* pCpuState;
     IgorSession* pSession;

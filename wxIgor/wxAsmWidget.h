@@ -61,7 +61,7 @@ public:
 
 	wxTimer* m_timer;
 
-	u64 m_currentPosition;
+	igorAddress m_currentPosition;
 
 	DECLARE_EVENT_TABLE()
 };

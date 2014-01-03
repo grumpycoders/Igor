@@ -145,7 +145,8 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
         return true;
     }
 
-    igorAddress first, last, linear, linearFirst, linearLast;
+    igorAddress first, last;
+    u64 linear, linearFirst, linearLast;
     uint64_t totalSize;
     std::tie(first, last, totalSize) = session->getRanges();
     Json::Value reply;
@@ -203,14 +204,14 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                 igor_result r = pCpu->analyze(&analyzeState);
                 EAssert(r == IGOR_SUCCESS, "Doesn't make sense to rewind when it's not an instruction (yet)");
                 pCpu->printInstruction(&analyzeState, disassembledString);
-                const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize - currentPC + startPC;
+                const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize + (startPC - currentPC);
                 Json::Value v;
                 v["type"] = "instcont";
                 v["disasm"] = disassembledString.to_charp();
-                address.set("%016llx", startPC);
+                address.set("%016llx", startPC.offset);
                 v["start"] = address.to_charp();
                 analyzeState.m_PC = currentPC;
-                address.set("%016llx", analyzeState.m_PC);
+                address.set("%016llx", analyzeState.m_PC.offset);
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();
                 v["address"] = address.to_charp();
@@ -227,7 +228,7 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                     v["type"] = "instcont";
                     val.set("%02X", session->readU8(analyzeState.m_PC + i));
                     v["byte"] = val.to_charp();
-                    address.set("%016llx", analyzeState.m_PC + i);
+                    address.set("%016llx", (analyzeState.m_PC + i).offset);
                     v["address"] = address.to_charp();
                     address.set("%lli", linear);
                     v["id"] = address.to_charp();
@@ -249,7 +250,7 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                 Json::Value v;
                 v["type"] = "inst";
                 v["disasm"] = disassembledString.to_charp();
-                address.set("%016llx", analyzeState.m_PC);
+                address.set("%016llx", analyzeState.m_PC.offset);
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();
                 v["address"] = address.to_charp();
@@ -267,7 +268,7 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                     v["type"] = "instcont";
                     val.set("%02X", session->readU8(analyzeState.m_PC + i));
                     v["byte"] = val.to_charp();
-                    address.set("%016llx", analyzeState.m_PC + i);
+                    address.set("%016llx", (analyzeState.m_PC + i).offset);
                     v["address"] = address.to_charp();
                     address.set("%lli", linear);
                     v["id"] = address.to_charp();
@@ -283,7 +284,7 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();
                 v["value"] = val.to_charp();
-                address.set("%016llx", analyzeState.m_PC);
+                address.set("%016llx", analyzeState.m_PC.offset);
                 v["address"] = address.to_charp();
                 address.set("%lli", linear);
                 v["id"] = address.to_charp();
@@ -331,7 +332,7 @@ bool ListSessionsAction::Do(HttpServer * server, Http::Request & req, HttpServer
         reply[idx]["uuid"] = session->getUUID().to_charp();
         igorAddress entryPoint = session->getEntryPoint();
         String address;
-        address.set("%016llx", entryPoint);
+        address.set("%016llx", entryPoint.offset);
         if (entryPoint != IGOR_INVALID_ADDRESS)
             reply[idx]["entryPoint"] = address.to_charp();
         return true;

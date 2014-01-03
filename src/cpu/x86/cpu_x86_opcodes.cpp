@@ -133,12 +133,13 @@ igor_result x86_opcode_call(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	}
 
 	pState->m_PC += 4;
-	jumpTarget += pState->m_PC;
+    igorAddress jumpTargetAddress = pState->m_PC;
+    jumpTargetAddress += jumpTarget;
 
-	pState->pSession->add_code_analysis_task(jumpTarget);
+    pState->pSession->add_code_analysis_task(jumpTargetAddress);
 
 	x86_analyse_result->m_numOperands = 1;
-	x86_analyse_result->m_operands[0].setAsAddress(jumpTarget);
+    x86_analyse_result->m_operands[0].setAsAddress(jumpTargetAddress.offset);
 
 	return IGOR_SUCCESS;
 }
@@ -462,12 +463,13 @@ igor_result x86_opcode_jmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	default:
 		X86_DECODER_FAILURE("Unhandled x86_opcode_jmp");
 	}
-	jumpTarget += pState->m_PC;
+	igorAddress jumpTargetAddress = pState->m_PC;
+    jumpTargetAddress += jumpTarget;
 
-	pState->pSession->add_code_analysis_task(jumpTarget);
+    pState->pSession->add_code_analysis_task(jumpTargetAddress);
 
 	x86_analyse_result->m_numOperands = 1;
-	x86_analyse_result->m_operands[0].setAsAddress(jumpTarget);
+    x86_analyse_result->m_operands[0].setAsAddress(jumpTargetAddress.offset);
 
 	pState->m_analyzeResult = stop_analysis;
 
@@ -600,10 +602,12 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
             if (pState->pSession->readU32(pState->m_PC, target) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
+            igorAddress targetAddress;
+            targetAddress.offset = target;
 
 			x86_analyse_result->m_numOperands = 2;
 			x86_analyse_result->m_operands[0].setAsRegister(pState, REG_EAX, OPERAND_16_32);
-			x86_analyse_result->m_operands[1].setAsAddress(target);
+            x86_analyse_result->m_operands[1].setAsAddress(targetAddress.offset);
 
 			break;
 		}
@@ -613,9 +617,11 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
             if (pState->pSession->readU32(pState->m_PC, target) != IGOR_SUCCESS)
 				return IGOR_FAILURE;
 			pState->m_PC += 4;
+            igorAddress targetAddress;
+            targetAddress.offset = target;
 
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsAddress(target, true); 
+            x86_analyse_result->m_operands[0].setAsAddress(targetAddress.offset, true);
 			x86_analyse_result->m_operands[1].setAsRegister(pState, REG_EAX, OPERAND_16_32);
 
 			break;
@@ -1139,12 +1145,13 @@ igor_result x86_opcode_j_varients(s_analyzeState* pState, c_cpu_x86_state* pX86S
 		return IGOR_FAILURE;
 	}
 
-	u64 jumpTarget = pState->m_PC + jumpTargetS8;
+    igorAddress jumpTarget = pState->m_PC;
+    jumpTarget += jumpTargetS8;
 
 	pState->pSession->add_code_analysis_task(jumpTarget);
 
 	x86_analyse_result->m_numOperands = 1;
-	x86_analyse_result->m_operands[0].setAsAddress(jumpTarget);
+    x86_analyse_result->m_operands[0].setAsAddress(jumpTarget.offset);
 
 	return IGOR_SUCCESS;
 }
@@ -1401,13 +1408,13 @@ igor_result x86_opcode_F(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8 
 
     if (pState->pSession->readU8(pState->m_PC++, currentByteF) != IGOR_SUCCESS)
 	{
-		Printer::log(M_INFO, "Unknown extended instruction byte %02x at %08llX", currentByte, pState->m_cpu_analyse_result->m_startOfInstruction);
+        Printer::log(M_INFO, "Unknown extended instruction byte %02x at %08llX", currentByte, pState->m_cpu_analyse_result->m_startOfInstruction.offset);
 		return IGOR_FAILURE;
 	}
 
 	if (x86_opcode_table_0xf[currentByteF] == NULL)
 	{
-		Printer::log(M_INFO, "Failed extended instruction byte %02x at %08llX", currentByte, pState->m_cpu_analyse_result->m_startOfInstruction);
+        Printer::log(M_INFO, "Failed extended instruction byte %02x at %08llX", currentByte, pState->m_cpu_analyse_result->m_startOfInstruction.offset);
 		return IGOR_FAILURE;
 	}
 

@@ -11,6 +11,10 @@
 #include "IgorDatabase.h"
 #include "IgorHttp.h"
 
+igorAddress IGOR_MIN_ADDRESS(0);
+igorAddress IGOR_MAX_ADDRESS((u64) -1);
+igorAddress IGOR_INVALID_ADDRESS((u64) -1);
+
 using namespace Balau;
 
 #ifdef USE_WXWIDGETS

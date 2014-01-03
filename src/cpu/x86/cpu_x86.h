@@ -237,38 +237,44 @@ struct s_x86_operand
 		type_address,
 	} m_type;
 
-	union
+    struct register_t
+    {
+        e_operandSize m_operandSize;
+        u16 m_registerIndex;
+    };
+
+    struct registerRM_t
+    {
+        e_operandSize m_operandSize;
+        s_mod_reg_rm m_mod_reg_rm;
+    };
+
+    struct registerST_t
+    {
+        u8 m_registerIndex;
+    };
+
+    struct immediate_t
+    {
+        e_immediateSize m_immediateSize;
+        u64 m_immediateValue; // will need to extent that at some point for 128bit
+    };
+
+    struct address_t
+    {
+        u8 m_segment;
+        u64 m_addressValue;
+        bool m_dereference;
+    };
+    
+    union
 	{
-		struct
-		{
-			e_operandSize m_operandSize;
-			u16 m_registerIndex;
-		} m_register;
-
-		struct
-		{
-			e_operandSize m_operandSize;
-			s_mod_reg_rm m_mod_reg_rm;
-		} m_registerRM;
-
-        struct
-        {
-            u8 m_registerIndex;
-        } m_registerST;
-
-		struct
-		{
-			e_immediateSize m_immediateSize;
-			u64 m_immediateValue; // will need to extent that at some point for 128bit
-		} m_immediate;
-		
-		struct  
-		{
-			u8 m_segment;
-			u64 m_addressValue;
-			bool m_dereference;
-		} m_address;
-	};
+        register_t m_register;
+        registerRM_t m_registerRM;
+        registerST_t m_registerST;
+        immediate_t m_immediate;
+        address_t m_address;
+    };
 
 	void setAsRegister(s_analyzeState* pState, e_register registerIndex, e_operandSize size = OPERAND_Default);
 
@@ -344,7 +350,7 @@ public:
 	void reset()
 	{
 		m_instructionSize = 0;
-		m_startOfInstruction = -1;
+		m_startOfInstruction.offset = -1;
 		m_mnemonic = INST_X86_UNDEF;
 		m_numOperands = 0;
 		m_segmentOverride = SEGMENT_OVERRIDE_NONE;

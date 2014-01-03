@@ -143,9 +143,9 @@ void IgorLocalSession::Do()
         }
         while (!m_pDatabase->m_analysisRequests.isEmpty()) {
             s_analysisRequest* pRequest = m_pDatabase->m_analysisRequests.pop();
-            u64 currentPC = pRequest->m_pc;
+            igorAddress currentPC = pRequest->m_pc;
 
-            if (m_status == STOPPING || currentPC == -1)
+            if (m_status == STOPPING || currentPC == IGOR_INVALID_ADDRESS)
             {
                 m_status = STOPPING;
                 continue;
@@ -154,7 +154,7 @@ void IgorLocalSession::Do()
             m_status = RUNNING;
 
             Events::TaskEvent * evt = new Events::TaskEvent;
-            m_evts.push_back(std::pair<Events::TaskEvent *, u64>(evt, currentPC));
+            m_evts.push_back(std::pair<Events::TaskEvent *, igorAddress>(evt, currentPC));
             TaskMan::registerTask(new IgorAnalysis(m_pDatabase, currentPC, this), evt);
             waitFor(evt);
             //Printer::log(M_INFO, "AnalysisManager spawned a task for %016llx", currentPC);
@@ -163,30 +163,30 @@ void IgorLocalSession::Do()
     }
 }
 
-igor_result IgorLocalSession::readS32(u64 address, s32& output) { return m_pDatabase->readS32(address, output); }
-igor_result IgorLocalSession::readU32(u64 address, u32& output) { return m_pDatabase->readU32(address, output); }
-igor_result IgorLocalSession::readS16(u64 address, s16& output) { return m_pDatabase->readS16(address, output); }
-igor_result IgorLocalSession::readU16(u64 address, u16& output) { return m_pDatabase->readU16(address, output); }
-igor_result IgorLocalSession::readS8(u64 address, s8& output) { return m_pDatabase->readS8(address, output); }
-igor_result IgorLocalSession::readU8(u64 address, u8& output) { return m_pDatabase->readU8(address, output); }
+igor_result IgorLocalSession::readS32(igorAddress address, s32& output) { return m_pDatabase->readS32(address, output); }
+igor_result IgorLocalSession::readU32(igorAddress address, u32& output) { return m_pDatabase->readU32(address, output); }
+igor_result IgorLocalSession::readS16(igorAddress address, s16& output) { return m_pDatabase->readS16(address, output); }
+igor_result IgorLocalSession::readU16(igorAddress address, u16& output) { return m_pDatabase->readU16(address, output); }
+igor_result IgorLocalSession::readS8(igorAddress address, s8& output) { return m_pDatabase->readS8(address, output); }
+igor_result IgorLocalSession::readU8(igorAddress address, u8& output) { return m_pDatabase->readU8(address, output); }
 
-u64 IgorLocalSession::findSymbol(const char* symbolName) { return m_pDatabase->findSymbol(symbolName); }
+igorAddress IgorLocalSession::findSymbol(const char* symbolName) { return m_pDatabase->findSymbol(symbolName); }
 
-int IgorLocalSession::readString(u64 address, Balau::String& outputString) { return m_pDatabase->readString(address, outputString); }
-c_cpu_module* IgorLocalSession::getCpuForAddress(u64 PC) { return m_pDatabase->getCpuForAddress(PC); }
-c_cpu_state* IgorLocalSession::getCpuStateForAddress(u64 PC) { return m_pDatabase->getCpuStateForAddress(PC);  }
-igor_result IgorLocalSession::is_address_flagged_as_code(u64 virtualAddress) { return m_pDatabase->is_address_flagged_as_code(virtualAddress); }
-u64 IgorLocalSession::get_next_valid_address_before(u64 virtualAddress) { return m_pDatabase->get_next_valid_address_before(virtualAddress); }
-u64 IgorLocalSession::get_next_valid_address_after(u64 virtualAddress) { return m_pDatabase->get_next_valid_address_after(virtualAddress); }
-igor_result IgorLocalSession::flag_address_as_u32(u64 virtualAddress) { return m_pDatabase->flag_address_as_u32(virtualAddress); }
-igor_result IgorLocalSession::flag_address_as_instruction(u64 virtualAddress, u8 instructionSize) { return m_pDatabase->flag_address_as_instruction(virtualAddress, instructionSize); }
+int IgorLocalSession::readString(igorAddress address, Balau::String& outputString) { return m_pDatabase->readString(address, outputString); }
+c_cpu_module* IgorLocalSession::getCpuForAddress(igorAddress PC) { return m_pDatabase->getCpuForAddress(PC); }
+c_cpu_state* IgorLocalSession::getCpuStateForAddress(igorAddress PC) { return m_pDatabase->getCpuStateForAddress(PC);  }
+igor_result IgorLocalSession::is_address_flagged_as_code(igorAddress virtualAddress) { return m_pDatabase->is_address_flagged_as_code(virtualAddress); }
+igorAddress IgorLocalSession::get_next_valid_address_before(igorAddress virtualAddress) { return m_pDatabase->get_next_valid_address_before(virtualAddress); }
+igorAddress IgorLocalSession::get_next_valid_address_after(igorAddress virtualAddress) { return m_pDatabase->get_next_valid_address_after(virtualAddress); }
+igor_result IgorLocalSession::flag_address_as_u32(igorAddress virtualAddress) { return m_pDatabase->flag_address_as_u32(virtualAddress); }
+igor_result IgorLocalSession::flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize) { return m_pDatabase->flag_address_as_instruction(virtualAddress, instructionSize); }
 
 igorAddress IgorLocalSession::getEntryPoint() { return m_pDatabase->getEntryPoint(); }
 igor_section_handle IgorLocalSession::getSectionFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSectionFromAddress(virtualAddress); }
 igorAddress IgorLocalSession::getSectionStartVirtualAddress(igor_section_handle sectionHandle) { return m_pDatabase->getSectionStartVirtualAddress(sectionHandle); }
 u64 IgorLocalSession::getSectionSize(igor_section_handle sectionHandle) { return m_pDatabase->getSectionSize(sectionHandle); }
 std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }
-igorAddress IgorLocalSession::linearToVirtual(igorAddress linear) { return m_pDatabase->linearToVirtual(linear); }
+igorAddress IgorLocalSession::linearToVirtual(u64 linear) { return m_pDatabase->linearToVirtual(linear); }
 
 void IgorAnalysis::Do()
 {

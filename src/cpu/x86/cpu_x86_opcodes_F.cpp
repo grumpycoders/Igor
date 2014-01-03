@@ -254,7 +254,9 @@ igor_result x86_opcode_F_jmp(s_analyzeState* pState, c_cpu_x86_state* pX86State,
 		X86_DECODER_FAILURE("x86_opcode_mmx_sse2_RM_R");
 	}
 
-    pState->pSession->add_code_analysis_task(x86_analyse_result->m_operands[0].m_address.m_addressValue);
+    igorAddress taskAddress(x86_analyse_result->m_operands[0].m_address.m_addressValue);
+
+    pState->pSession->add_code_analysis_task(taskAddress);
 
 	return IGOR_SUCCESS;
 }

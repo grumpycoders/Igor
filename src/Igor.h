@@ -13,13 +13,36 @@ typedef int32_t s32;
 typedef int16_t s16;
 typedef int8_t s8;
 
-typedef u64 igorAddress;
+struct igorAddress {
+    igorAddress & operator++() { ++offset; return *this; }
+    igorAddress & operator--() { --offset; return *this; }
+    igorAddress operator++(int) { igorAddress t(*this); operator++(); return t; }
+    igorAddress operator--(int) { igorAddress t(*this); operator--(); return t; }
 
-enum : u64 {
-    IGOR_MIN_ADDRESS = 0,
-    IGOR_MAX_ADDRESS = (u64) -1,
-    IGOR_INVALID_ADDRESS = (u64) -1,
+    igorAddress & operator+=(u64 d) { offset += d; return *this; }
+    igorAddress & operator-=(u64 d) { offset -= d; return *this; }
+
+    igorAddress operator+(u64 d) const { igorAddress t(*this); t += d; return t; }
+    igorAddress operator-(u64 d) const { igorAddress t(*this); t -= d; return t; }
+
+    u64 operator-(const igorAddress & d) const { return this->offset - d.offset; }
+
+    bool operator<(const igorAddress & b) const { return this->offset < b.offset; }
+    bool operator<=(const igorAddress & b) const { return this->offset <= b.offset; }
+    bool operator>(const igorAddress & b) const { return this->offset > b.offset; }
+    bool operator>=(const igorAddress & b) const { return this->offset >= b.offset; }
+    bool operator==(const igorAddress & b) const { return this->offset == b.offset; }
+    bool operator!=(const igorAddress & b) const { return this->offset != b.offset; }
+
+    igorAddress() { } // keep it this way, otherwise it's not trivial
+    explicit igorAddress(u64 offset) : offset(offset) { }
+
+    u64 offset;
 };
+
+extern igorAddress IGOR_MIN_ADDRESS;
+extern igorAddress IGOR_MAX_ADDRESS;
+extern igorAddress IGOR_INVALID_ADDRESS;
 
 typedef Balau::IO<Balau::Handle> BFile;
 

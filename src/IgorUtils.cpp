@@ -41,7 +41,7 @@ bool igor_export_to_text(std::function<bool(const char * fmt, va_list ap)> outpu
             String disassembledString;
             pCpu->printInstruction(&analyzeState, disassembledString);
 
-            success = vararg_lambda(output, "%016llx  %s\n", analyzeState.m_cpu_analyse_result->m_startOfInstruction, disassembledString.to_charp(0));
+            success = vararg_lambda(output, "%016llx  %s\n", analyzeState.m_cpu_analyse_result->m_startOfInstruction.offset, disassembledString.to_charp(0));
             if (!success)
                 break;
 
@@ -52,7 +52,7 @@ bool igor_export_to_text(std::function<bool(const char * fmt, va_list ap)> outpu
             u8 byte;
             session->readU8(analyzeState.m_PC, byte);
 
-            success = vararg_lambda(output, "%016llx  0x%02X\n", analyzeState.m_PC, byte);
+            success = vararg_lambda(output, "%016llx  0x%02X\n", analyzeState.m_PC.offset, byte);
             if (!success)
                 break;
 

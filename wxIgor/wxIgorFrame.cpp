@@ -167,7 +167,7 @@ void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 	{
 		wxString exportPath = fileDialog.GetPath();
 
-		igor_export_to_text(exportPath, m_session);
+		igor_export_to_file(exportPath, m_session);
 	}
 }
 

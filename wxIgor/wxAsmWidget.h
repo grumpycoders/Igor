@@ -27,7 +27,7 @@ private:
 	DECLARE_EVENT_TABLE()
 };
 
-class c_wxAsmWidget : public wxTextCtrl
+class c_wxAsmWidget : public wxScrolledWindow
 {
 public:
 	enum
@@ -52,6 +52,10 @@ public:
 	void OnScroll(wxScrollWinEvent &event);
 	//void OnIdle(wxIdleEvent &event);
 	void OnTimer(wxTimerEvent &event);
+	void OnPaint(wxPaintEvent& event);
+	void OnSize(wxSizeEvent& event);
+
+	void OnDraw(wxDC& dc);
 
     IgorSession* m_pSession;
 

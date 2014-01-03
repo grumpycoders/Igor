@@ -1,0 +1,15 @@
+wxWidgets/lib/vc_x64_lib
+wxWidgets/lib/vc_lib
+wxWidgets/build/msw/vc_mswud_x64
+wxWidgets/build/msw/ipch
+wxWidgets/build/msw/vc_mswu
+wxWidgets/build/msw/vc_mswu_x64
+wxWidgets/build/msw/vc_mswud
+
+/x64
+/Debug
+/ipch
+
+/*.sdf
+
+/*.suo

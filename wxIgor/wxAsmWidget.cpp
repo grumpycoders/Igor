@@ -71,6 +71,11 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 	//m_scrollbar = new c_wxAsmWidgetScrollbar(this, this, id);
 
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
+
+    m_currentFont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
+    m_currentFont.MakeBold();
+
+    m_fontSize = m_currentFont.GetPixelSize();
 }
 
 c_wxAsmWidget::~c_wxAsmWidget()
@@ -85,30 +90,38 @@ void c_wxAsmWidget::OnSize(wxSizeEvent& event)
 	event.Skip();
 }
 
+igorAddress c_wxAsmWidget::GetAddressOfCursor()
+{
+    u64 cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
+
+    igorAddress addressOfCursor = m_visibleAddresses[cursorLine];
+
+    return addressOfCursor;
+}
+
 void c_wxAsmWidget::OnDraw(wxDC& dc)
 {
-	wxFont currentFont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
-    currentFont.MakeBold();
+    m_visibleAddresses.clear();
 
 	wxColour BGColor = GetBackgroundColour();
 	wxBrush MyBrush(BGColor, wxSOLID);
 	dc.SetBackground(MyBrush);
 	dc.Clear();
 
-	dc.SetFont(currentFont);
+    dc.SetFont(m_currentFont);
 	wxSize size = GetSize();
 	int width = size.GetWidth();
 
-	int numLinesInWindow = (GetSize().GetY() / currentFont.GetPixelSize().GetHeight()) + 1;
+    int numLinesInWindow = (GetSize().GetY() / m_fontSize.GetHeight()) + 1;
 	int numDrawnLines = 0;
     
 	int drawY = 0;
 
 	igorAddress currentPC = m_currentPosition;
 
-    int cursorLine = m_mousePosition.y / currentFont.GetPixelSize().GetHeight();
+    int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
     {
-        dc.DrawRectangle(0, cursorLine * currentFont.GetPixelSize().GetHeight(), size.GetWidth(), currentFont.GetPixelSize().GetHeight()+1);
+        dc.DrawRectangle(0, cursorLine * m_fontSize.GetHeight(), size.GetWidth(), m_fontSize.GetHeight() + 1);
     }
 
 	{
@@ -125,6 +138,8 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 		{
 			String fullDisassembledString;
 			fullDisassembledString.set("%016llX: ", analyzeState.m_PC.offset);
+
+            m_visibleAddresses.push_back(analyzeState.m_PC);
 
 			if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
 			{
@@ -158,7 +173,7 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 				analyzeState.m_PC++;
 			}
 
-			drawY += currentFont.GetPixelSize().GetHeight();
+            drawY += m_fontSize.GetHeight();
 		}
 
 		delete analyzeState.m_cpu_analyse_result;
@@ -185,6 +200,16 @@ void c_wxAsmWidget::OnMouseMotion(wxMouseEvent& event)
     Refresh();
 }
 
+void c_wxAsmWidget::OnKeyDown(wxKeyEvent& event)
+{
+    switch (event.GetKeyCode())
+    {
+    case 'C':
+        m_pSession->add_code_analysis_task(GetAddressOfCursor());
+        break;
+    }
+}
+
 void c_wxAsmWidget::seekPC(int amount)
 {
 	if (amount > 0)
@@ -206,4 +231,5 @@ EVT_TIMER(c_wxAsmWidget::EVT_RefreshDatabase, c_wxAsmWidget::OnTimer)
 EVT_PAINT(c_wxAsmWidget::OnPaint)
 EVT_SIZE(c_wxAsmWidget::OnSize)
 EVT_MOTION(c_wxAsmWidget::OnMouseMotion)
+EVT_KEY_DOWN(c_wxAsmWidget::OnKeyDown)
 END_EVENT_TABLE()

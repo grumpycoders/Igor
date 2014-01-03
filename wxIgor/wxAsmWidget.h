@@ -53,8 +53,10 @@ public:
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
     void OnMouseMotion(wxMouseEvent& event);
-
+    void OnKeyDown(wxKeyEvent& event);
 	void OnDraw(wxDC& dc);
+
+    igorAddress GetAddressOfCursor();
 
     IgorSession* m_pSession;
 
@@ -63,6 +65,11 @@ public:
 	igorAddress m_currentPosition;
 
     wxPoint m_mousePosition;
+
+    wxFont m_currentFont;
+    wxSize m_fontSize;
+
+    std::vector<igorAddress> m_visibleAddresses;
 
 	DECLARE_EVENT_TABLE()
 };

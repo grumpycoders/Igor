@@ -5,7 +5,7 @@
 struct s_igorDatabase;
 
 // Public API
-igor_result igor_create_section(s_igorDatabase* pDatabase, u64 virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
+igor_result igor_create_section(s_igorDatabase* pDatabase, igorAddress virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
 igor_result igor_set_section_name(igor_section_handle sectionHandle, const Balau::String& sectionName);
 
 enum e_igor_section_option
@@ -44,7 +44,7 @@ struct s_igorSection
 		memset(m_instructionSize, 0, m_size);
 	}
 
-	u64 m_virtualAddress;
+	igorAddress m_virtualAddress;
 	u64 m_size;
 	u8* m_rawData;
 	u64 m_rawDataSize;

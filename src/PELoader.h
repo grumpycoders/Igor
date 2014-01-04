@@ -13,6 +13,7 @@ public:
 	int loadOptionalHeader386(BFile reader);
 	int loadOptionalHeader64(BFile reader);
 
+	void loadDebug(s_igorDatabase * db, BFile reader);
 	void loadImports(s_igorDatabase * db, BFile reader);
 
 	// IMAGE_FILE_HEADER
@@ -25,8 +26,8 @@ public:
 	u16 m_Characteristics;
 
 	// IMAGE_OPTIONAL_HEADER64
-	u64 m_ImageBase;
-	u64 m_EntryPoint;
+	igorAddress m_ImageBase;
+	u64 m_EntryPointVA;
 
 	struct IMAGE_DATA_DIRECTORY
 	{

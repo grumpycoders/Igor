@@ -25,7 +25,7 @@ s_igorSection* s_igorDatabase::findSectionFromAddress(igorAddress address)
 	{
 		s_igorSection* pSection = i;
 
-		if((pSection->m_virtualAddress <= address.offset) && (pSection->m_virtualAddress + pSection->m_size > address.offset))
+		if((pSection->m_virtualAddress <= address) && (pSection->m_virtualAddress + pSection->m_size > address))
 		{
 			return pSection;
 		}
@@ -43,7 +43,7 @@ igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
 		return IGOR_FAILURE;
 	}
 
-	u64 rawOffset = address.offset - pSection->m_virtualAddress;
+	u64 rawOffset = address - pSection->m_virtualAddress;
 
 	if (rawOffset > pSection->m_rawDataSize)
 	{
@@ -64,7 +64,7 @@ igor_result s_igorDatabase::readU32(igorAddress address, u32& output)
 		return IGOR_FAILURE;
 	}
 
-	u64 rawOffset = address.offset - pSection->m_virtualAddress;
+	u64 rawOffset = address - pSection->m_virtualAddress;
 
 	if (rawOffset > pSection->m_rawDataSize)
 	{
@@ -86,7 +86,7 @@ igor_result s_igorDatabase::readS16(igorAddress address, s16& output)
 		return IGOR_FAILURE;
 	}
 
-	u64 rawOffset = address.offset - pSection->m_virtualAddress;
+	u64 rawOffset = address - pSection->m_virtualAddress;
 
 	if (rawOffset > pSection->m_rawDataSize)
 	{
@@ -108,7 +108,7 @@ igor_result s_igorDatabase::readU16(igorAddress address, u16& output)
 		return IGOR_FAILURE;
 	}
 
-	u64 rawOffset = address.offset - pSection->m_virtualAddress;
+	u64 rawOffset = address - pSection->m_virtualAddress;
 
 	if (rawOffset > pSection->m_rawDataSize)
 	{
@@ -130,7 +130,7 @@ igor_result s_igorDatabase::readS8(igorAddress address, s8& output)
 		return IGOR_FAILURE;
 	}
 
-	u64 rawOffset = address.offset - pSection->m_virtualAddress;
+	u64 rawOffset = address - pSection->m_virtualAddress;
 
 	if (rawOffset > pSection->m_rawDataSize)
 	{
@@ -152,7 +152,7 @@ igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 		return IGOR_FAILURE;
 	}
 
-	u64 rawOffset = address.offset - pSection->m_virtualAddress;
+	u64 rawOffset = address - pSection->m_virtualAddress;
 
 	if (rawOffset > pSection->m_rawDataSize)
 	{
@@ -165,7 +165,7 @@ igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 
 }
 
-igor_result s_igorDatabase::create_section(u64 virtualAddress, u64 size, igor_section_handle& sectionHandle)
+igor_result s_igorDatabase::create_section(igorAddress virtualAddress, u64 size, igor_section_handle& sectionHandle)
 {
 	sectionHandle = m_sections.size();
 	s_igorSection* pNewSection = new s_igorSection;
@@ -279,7 +279,7 @@ igor_result s_igorDatabase::flag_address_as_instruction(igorAddress virtualAddre
         return IGOR_FAILURE;
     }
 
-    if ((virtualAddress + instructionSize).offset > pSection->m_virtualAddress + pSection->m_size)
+    if ((virtualAddress + instructionSize) > pSection->m_virtualAddress + pSection->m_size)
     {
         return IGOR_FAILURE;
     }
@@ -289,7 +289,7 @@ igor_result s_igorDatabase::flag_address_as_instruction(igorAddress virtualAddre
         pSection->createInstructionArray();
     }
 
-    u8* pInstructionSize = &pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress).offset];
+    u8* pInstructionSize = &pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress)];
 
     if (*pInstructionSize) // already an instruction there
     {
@@ -316,7 +316,7 @@ igor_result s_igorDatabase::is_address_flagged_as_code(igorAddress virtualAddres
         return IGOR_FAILURE;
     }
 
-    u8* pInstructionSize = &pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress).offset];
+    u8* pInstructionSize = &pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress)];
 
     if (*pInstructionSize)
     {
@@ -342,7 +342,7 @@ igorAddress s_igorDatabase::get_next_valid_address_before(igorAddress virtualAdd
         return virtualAddress;
     }
 
-    while (pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress).offset] == 0xFF)
+    while (pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress)] == 0xFF)
     {
         virtualAddress--;
     }
@@ -364,7 +364,7 @@ igorAddress s_igorDatabase::get_next_valid_address_after(igorAddress virtualAddr
         return virtualAddress;
     }
 
-    while (pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress).offset] == 0xFF)
+    while (pSection->m_instructionSize[(virtualAddress - pSection->m_virtualAddress)] == 0xFF)
     {
         virtualAddress++;
     }
@@ -383,7 +383,7 @@ igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAdd
 	{
 		s_igorSection* pSection = m_sections[i];
 
-        if ((pSection->m_virtualAddress <= virtualAddress.offset) && (pSection->m_virtualAddress + pSection->m_size > virtualAddress.offset))
+        if ((pSection->m_virtualAddress <= virtualAddress) && (pSection->m_virtualAddress + pSection->m_size > virtualAddress))
 		{
 			return i;
 		}

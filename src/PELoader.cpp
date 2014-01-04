@@ -175,16 +175,16 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 		db->load_section_data(sectionHandle, reader, SizeOfRawData);
 	}
 
+	loadDebug(db, reader);
 	loadImports(db, reader);
-    igorAddress addressBase(m_ImageBase);
-    addressBase += m_EntryPoint;
 
-    db->declare_name(addressBase, "entryPoint");
+	igorAddress entryPoint = m_ImageBase + m_EntryPointVA;
+	db->m_entryPoint = entryPoint;
 
-    db->m_entryPoint = addressBase;
+	db->declare_name(entryPoint, "entryPoint");
     
     igorAddress base(m_ImageBase);
-    base += m_EntryPoint;
+    base += m_EntryPointVA;
     analysis->setDB(db);
     analysis->add_code_analysis_task(base);
 
@@ -202,10 +202,10 @@ int c_PELoader::loadOptionalHeader386(BFile reader)
 	u32                  SizeOfCode = reader->readU32().get();
 	u32                  SizeOfInitializedData = reader->readU32().get();
 	u32                  SizeOfUninitializedData = reader->readU32().get();
-	m_EntryPoint = reader->readU32().get();
+	m_EntryPointVA = reader->readU32().get();
 	u32                  BaseOfCode = reader->readU32().get();
 	u32                  BaseOfData = reader->readU32().get();
-	m_ImageBase = reader->readU32().get();
+	m_ImageBase = igorAddress(reader->readU32().get());
 	u32                  SectionAlignment = reader->readU32().get();
 	u32                  FileAlignment = reader->readU32().get();
 	u16                  MajorOperatingSystemVersion = reader->readU16().get();
@@ -250,9 +250,9 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
 	u32         SizeOfCode = reader->readU32().get();
 	u32         SizeOfInitializedData = reader->readU32().get();
 	u32         SizeOfUninitializedData = reader->readU32().get();
-	m_EntryPoint = reader->readU32().get();
+	m_EntryPointVA = reader->readU32().get();
 	u32         BaseOfCode = reader->readU32().get();
-	m_ImageBase = reader->readU64().get();
+	m_ImageBase = igorAddress(reader->readU64().get());
 	u32         SectionAlignment = reader->readU32().get();
 	u32         FileAlignment = reader->readU32().get();
 	u16         MajorOperatingSystemVersion = reader->readU16().get();
@@ -287,44 +287,79 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
 	return 0;
 }
 
+void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
+{
+	IMAGE_DATA_DIRECTORY* pDebugDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
+
+	igorAddress debugTableVA = m_ImageBase + pDebugDirectory->VirtualAddress;
+
+	while (debugTableVA < m_ImageBase + pDebugDirectory->VirtualAddress + pDebugDirectory->Size)
+	{
+		u32 characteristics = db->readU32(debugTableVA); debugTableVA += 4;
+		u32 timeDateStamp = db->readU32(debugTableVA); debugTableVA += 4;
+		u16 majorVersion = db->readU16(debugTableVA); debugTableVA += 2;
+		u16 minorVersion = db->readU16(debugTableVA); debugTableVA += 2;
+		u32 type = db->readU32(debugTableVA); debugTableVA += 4;
+		u32 sizeOfData = db->readU32(debugTableVA); debugTableVA += 4;
+		u32 addresOfRawData = db->readU32(debugTableVA); debugTableVA += 4;
+		u32 pointerToRawData = db->readU32(debugTableVA); debugTableVA += 4;
+
+		if (type == 2) // IMAGE_DEBUG_TYPE_CODEVIEW
+		{
+			igorAddress codeViewData = m_ImageBase + addresOfRawData;
+
+			u32 signature = db->readU32(codeViewData); codeViewData += 4;
+			u8 guid[16];
+			for (int i = 0; i < 16; i++)
+			{
+				guid[i] = db->readU8(codeViewData); codeViewData++;
+			}
+			u32 age = db->readU32(codeViewData); codeViewData += 4;
+
+			Balau::String pdbName;
+			db->readString(codeViewData, pdbName);
+		}
+	}
+}
+
 void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
 {
 	IMAGE_DATA_DIRECTORY* pImportDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
 
-	u64 importTableVA = pImportDirectory->VirtualAddress + m_ImageBase;
+	igorAddress importTableAddress = m_ImageBase + pImportDirectory->VirtualAddress;
 
-	while (importTableVA < pImportDirectory->VirtualAddress + m_ImageBase + pImportDirectory->Size)
+	while (importTableAddress < m_ImageBase + pImportDirectory->VirtualAddress + pImportDirectory->Size)
 	{
-		u32 originalFirstThunkRVA = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
+		u32 originalFirstThunkRVA = db->readU32(importTableAddress); importTableAddress += 4;
 
 		if (originalFirstThunkRVA == 0)
 			break;
 
-        u32 timestamp = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
-        u32 forwardChain = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
-        u32 nameRVA = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
-        u32 firstThunkRVA = db->readU32(igorAddress(importTableVA)); importTableVA += 4;
+		u32 timestamp = db->readU32(importTableAddress); importTableAddress += 4;
+		u32 forwardChain = db->readU32(importTableAddress); importTableAddress += 4;
+		u32 nameRVA = db->readU32(importTableAddress); importTableAddress += 4;
+		u32 firstThunkRVA = db->readU32(importTableAddress); importTableAddress += 4;
 
 		Balau::String name;
-        db->readString(igorAddress(nameRVA + m_ImageBase), name);
+		db->readString(m_ImageBase + nameRVA, name);
 
 		u32 importFunctionIndex = 0;
-		u64 thunkVA = originalFirstThunkRVA + m_ImageBase;
-        while (u32 functionNameRVA = db->readU32(igorAddress(thunkVA)))
+		igorAddress thunkAddress = m_ImageBase + originalFirstThunkRVA;
+        while (u32 functionNameRVA = db->readU32(thunkAddress))
 		{
-			thunkVA += 4;
+			thunkAddress += 4;
 
 			if (functionNameRVA & 0x80000000)
 			{
 			}
 			else
 			{
-                u16 functionId = db->readU16(igorAddress(functionNameRVA + m_ImageBase));
+				u16 functionId = db->readU16(m_ImageBase + functionNameRVA);
 				Balau::String functionName;
-                db->readString(igorAddress(functionNameRVA + m_ImageBase + 2), functionName);
+				db->readString(m_ImageBase + functionNameRVA + 2, functionName);
 
-                db->declare_variable(igorAddress(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex), s_igorDatabase::TYPE_U32); // should we have a db type like "function pointer"?
-                db->declare_name(igorAddress(firstThunkRVA + m_ImageBase + 4 * importFunctionIndex), functionName);
+				db->declare_variable(m_ImageBase + firstThunkRVA + 4 * importFunctionIndex, s_igorDatabase::TYPE_U32); // should we have a db type like "function pointer"?
+				db->declare_name(m_ImageBase + firstThunkRVA + 4 * importFunctionIndex, functionName);
 			}
 
 			importFunctionIndex++;

@@ -157,7 +157,7 @@ struct s_igorDatabase
 
     int readString(igorAddress address, Balau::String& outputString);
 
-    igor_result create_section(u64 virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
+	igor_result create_section(igorAddress virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
 	igor_result set_section_name(const Balau::String& sectionName);
 	igor_result set_section_option(igor_section_handle sectionHandle, e_igor_section_option option);
 	igor_result load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size);

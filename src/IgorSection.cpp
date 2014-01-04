@@ -1,7 +1,7 @@
 #include "IgorAPI.h"
 #include "IgorDatabase.h"
 
-igor_result igor_create_section(s_igorDatabase* pDatabase, u64 virtualAddress, u64 size, igor_section_handle& sectionHandle)
+igor_result igor_create_section(s_igorDatabase* pDatabase, igorAddress virtualAddress, u64 size, igor_section_handle& sectionHandle)
 {
 	return pDatabase->create_section(virtualAddress, size, sectionHandle);
 }

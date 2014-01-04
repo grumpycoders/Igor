@@ -318,6 +318,10 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
 
 			Balau::String pdbName;
 			db->readString(codeViewData, pdbName);
+
+			if (signature == 'SDSR')
+			{
+			}
 		}
 	}
 }

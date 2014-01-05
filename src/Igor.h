@@ -13,19 +13,21 @@ typedef int32_t s32;
 typedef int16_t s16;
 typedef int8_t s8;
 
+typedef u64 igorLinearAddress;
+
 struct igorAddress {
     igorAddress & operator++() { ++offset; return *this; }
     igorAddress & operator--() { --offset; return *this; }
     igorAddress operator++(int) { igorAddress t(*this); operator++(); return t; }
     igorAddress operator--(int) { igorAddress t(*this); operator--(); return t; }
 
-    igorAddress & operator+=(u64 d) { offset += d; return *this; }
-    igorAddress & operator-=(u64 d) { offset -= d; return *this; }
+    igorAddress & operator+=(igorLinearAddress d) { offset += d; return *this; }
+    igorAddress & operator-=(igorLinearAddress d) { offset -= d; return *this; }
 
-    igorAddress operator+(u64 d) const { igorAddress t(*this); t += d; return t; }
-    igorAddress operator-(u64 d) const { igorAddress t(*this); t -= d; return t; }
+    igorAddress operator+(igorLinearAddress d) const { igorAddress t(*this); t += d; return t; }
+    igorAddress operator-(igorLinearAddress d) const { igorAddress t(*this); t -= d; return t; }
 
-    u64 operator-(const igorAddress & d) const { return this->offset - d.offset; }
+    igorLinearAddress operator-(const igorAddress & d) const { return this->offset - d.offset; }
 
     bool operator<(const igorAddress & b) const { return this->offset < b.offset; }
     bool operator<=(const igorAddress & b) const { return this->offset <= b.offset; }
@@ -35,9 +37,9 @@ struct igorAddress {
     bool operator!=(const igorAddress & b) const { return this->offset != b.offset; }
 
     igorAddress() { } // keep it this way, otherwise it's not trivial
-    explicit igorAddress(u64 offset) : offset(offset) { }
+    explicit igorAddress(igorLinearAddress offset) : offset(offset) { }
 
-    u64 offset;
+    igorLinearAddress offset;
 };
 
 extern const igorAddress IGOR_MIN_ADDRESS;

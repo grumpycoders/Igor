@@ -26,7 +26,7 @@ public:
 	u16 m_Characteristics;
 
 	// IMAGE_OPTIONAL_HEADER64
-	igorAddress m_ImageBase;
+	igorLinearAddress m_ImageBase;
 	u64 m_EntryPointVA;
 
 	struct IMAGE_DATA_DIRECTORY

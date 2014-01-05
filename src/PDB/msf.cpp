@@ -45,11 +45,19 @@ static PVOID MsfLoadPages(MSF* msf, ULONG *pdwPointers, SIZE_T nPages)
 MSF* MsfOpen(const char *szFileName)
 {
     IO<Input> file(new Input(szFileName));
-    file->open();
+    try
+    {
+        file->open();
+    }
+    catch (ENoEnt & e)
+    {
+        return NULL;
+    }
 
     size_t size = file->getSize();
     uint8_t * buffer = (uint8_t *)malloc(size);
     file->forceRead(buffer, size);
+    file->close();
 
     MSF* msf = (MSF*)malloc(sizeof(MSF));
 

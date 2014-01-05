@@ -1,3 +1,5 @@
+#include <Input.h>
+
 #include "PELoader.h"
 #include "IgorAPI.h"
 #include "IgorDatabase.h"
@@ -65,6 +67,8 @@
 #define IMAGE_DIRECTORY_ENTRY_IAT            12   // Import Address Table
 #define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   13   // Delay Load Import Descriptors
 #define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14   // COM Runtime descriptor
+
+using namespace Balau;
 
 igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSession * analysis)
 {
@@ -324,6 +328,7 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
 			{
                 PPDB pPdb = PdbOpen(pdbName.to_charp());
 
+                if (pPdb)
                 {
                     PSYM Sym = pPdb->Symd->SymRecs;
                     while (Sym < pPdb->Symd->SymMac)

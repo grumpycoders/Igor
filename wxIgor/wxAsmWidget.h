@@ -69,7 +69,7 @@ public:
     wxFont m_currentFont;
     wxSize m_fontSize;
 
-    std::vector<igorAddress> m_visibleAddresses;
+    igorAddress m_addressOfCursor;
 
 	DECLARE_EVENT_TABLE()
 };

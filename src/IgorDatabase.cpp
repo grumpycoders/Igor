@@ -240,6 +240,18 @@ igor_result s_igorDatabase::declare_name(igorAddress virtualAddress, Balau::Stri
 	return IGOR_SUCCESS;
 }
 
+bool s_igorDatabase::getSymbolName(igorAddress address, Balau::String& name)
+{
+    s_symbolDefinition* pSymbolDef = get_Symbol(address);
+
+    if (pSymbolDef == NULL)
+        return false;
+
+    name = pSymbolDef->m_name;
+
+    return true;
+}
+
 s_igorDatabase::s_symbolDefinition* s_igorDatabase::get_Symbol(igorAddress virtualAddress)
 {
 	auto t = m_symbolMap.find(virtualAddress);

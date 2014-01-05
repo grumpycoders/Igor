@@ -62,7 +62,7 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 	m_timer = new wxTimer(this, EVT_RefreshDatabase);
 	m_timer->Start(300);
 
-    m_currentPosition = m_pSession->findSymbol("entryPoint");
+    m_currentPosition = m_pSession->getEntryPoint();
 
 	SetScrollbar(wxVERTICAL, 250, 16, 500, 15);
 	//SetScrollbar(wxVERTICAL, 0, 0, 0); // hide the default scrollbar
@@ -92,17 +92,11 @@ void c_wxAsmWidget::OnSize(wxSizeEvent& event)
 
 igorAddress c_wxAsmWidget::GetAddressOfCursor()
 {
-    u64 cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
-
-    igorAddress addressOfCursor = m_visibleAddresses[cursorLine];
-
-    return addressOfCursor;
+    return m_addressOfCursor;
 }
 
 void c_wxAsmWidget::OnDraw(wxDC& dc)
 {
-    m_visibleAddresses.clear();
-
 	wxColour BGColor = GetBackgroundColour();
 	wxBrush MyBrush(BGColor, wxSOLID);
 	dc.SetBackground(MyBrush);
@@ -136,10 +130,23 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 		while (numDrawnLines < numLinesInWindow)
 		{
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
+            {
+                dc.SetTextForeground(*wxBLUE);
+                dc.DrawText(symbolName.to_charp(), 0, drawY);
+
+                numDrawnLines++;
+                drawY += m_fontSize.GetHeight();
+            }
+
 			String fullDisassembledString;
 			fullDisassembledString.set("%016llX: ", analyzeState.m_PC.offset);
 
-            m_visibleAddresses.push_back(analyzeState.m_PC);
+            if ((drawY <= m_mousePosition.y) && (drawY + m_fontSize.GetHeight() > m_mousePosition.y))
+            {
+                m_addressOfCursor = analyzeState.m_PC;
+            }
 
 			if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
 			{

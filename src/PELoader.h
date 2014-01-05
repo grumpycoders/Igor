@@ -18,7 +18,7 @@ public:
 
 	// IMAGE_FILE_HEADER
 	u16 m_Machine;
-	u16 m_NumberOfSections;
+	u16 m_NumberOfSegments;
 	u32 m_TimeDateStamp;
 	u32 m_PointerToSymbolTable;
 	u32 m_NumberOfSymbols;
@@ -34,4 +34,20 @@ public:
 		u32     VirtualAddress;
 		u32     Size;
 	} m_imageDirectory[16];
+
+    struct s_segmentData
+    {
+        u8      Name[8];
+        u32     Misc;
+        u32     VirtualAddress;
+        u32     SizeOfRawData;
+        u32     PointerToRawData;
+        u32     PointerToRelocations;
+        u32     PointerToLinenumbers;
+        u16     NumberOfRelocations;
+        u16     NumberOfLinenumbers;
+        u32     Characteristics;
+    };
+
+    std::vector<s_segmentData> m_segments;
 };

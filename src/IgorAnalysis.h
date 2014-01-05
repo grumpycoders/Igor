@@ -97,6 +97,8 @@ public:
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() = 0;
     virtual igorAddress linearToVirtual(u64) = 0;
 
+    virtual bool getSymbolName(igorAddress, Balau::String& name) = 0;
+
 private:
     Balau::String m_uuid, m_name;
     static Balau::RWLock m_listLock;
@@ -139,6 +141,8 @@ public:
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges();
     virtual igorAddress linearToVirtual(u64);
+
+    virtual bool getSymbolName(igorAddress, Balau::String& name);
 
 private:
     enum {

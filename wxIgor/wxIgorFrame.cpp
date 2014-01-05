@@ -154,6 +154,7 @@ void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
 		if (m_sessionPanel->m_pAsmWidget && address)
 		{
 			m_sessionPanel->m_pAsmWidget->m_currentPosition = igorAddress(address);
+            m_sessionPanel->m_pAsmWidget->Refresh();
 		}
 	}
 

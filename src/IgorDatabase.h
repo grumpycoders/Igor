@@ -184,6 +184,8 @@ struct s_igorDatabase
     std::tuple<igorAddress, igorAddress, size_t> getRanges();
     igorAddress linearToVirtual(u64);
 
+    bool getSymbolName(igorAddress address, Balau::String& name);
+
 private:
     s_igorSection* findSectionFromAddress(igorAddress address);
     s_symbolDefinition* get_Symbol(igorAddress virtualAddress);

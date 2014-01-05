@@ -231,6 +231,9 @@
     <Filter Include="Third Party\wxWidgets\includes">
       <UniqueIdentifier>{93ea1d17-31b9-4527-9241-4aec5a255901}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Igor\PDB">
+      <UniqueIdentifier>{474a74c8-3b96-4707-ae70-cb493080acc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Balau\libtomcrypt\src\ciphers\anubis.c">
@@ -2209,6 +2212,21 @@
     </ClCompile>
     <ClCompile Include="wxIgor\stdafx.cpp">
       <Filter>wxIgor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PDB\msf.cpp">
+      <Filter>Igor\PDB</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PDB\pdb.cpp">
+      <Filter>Igor\PDB</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PDB\gsi.cpp">
+      <Filter>Igor\PDB</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PDB\tpi.cpp">
+      <Filter>Igor\PDB</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PDB\sym.cpp">
+      <Filter>Igor\PDB</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4236,6 +4254,24 @@
     </ClInclude>
     <ClInclude Include="wxIgor\stdafx.h">
       <Filter>wxIgor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PDB\msf.h">
+      <Filter>Igor\PDB</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PDB\pdb.h">
+      <Filter>Igor\PDB</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PDB\pdb_info.h">
+      <Filter>Igor\PDB</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PDB\gsi.h">
+      <Filter>Igor\PDB</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PDB\tpi.h">
+      <Filter>Igor\PDB</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PDB\sym.h">
+      <Filter>Igor\PDB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

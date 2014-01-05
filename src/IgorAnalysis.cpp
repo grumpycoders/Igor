@@ -188,6 +188,8 @@ u64 IgorLocalSession::getSectionSize(igor_section_handle sectionHandle) { return
 std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }
 igorAddress IgorLocalSession::linearToVirtual(u64 linear) { return m_pDatabase->linearToVirtual(linear); }
 
+bool IgorLocalSession::getSymbolName(igorAddress address, Balau::String& name) { return m_pDatabase->getSymbolName(address, name); }
+
 void IgorAnalysis::Do()
 {
     u8 counter = 0;

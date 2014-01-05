@@ -2,6 +2,7 @@
 #include "IgorAPI.h"
 #include "IgorDatabase.h"
 #include "cpu/x86/cpu_x86.h"
+#include "PDB/pdb.h"
 
 #define IMAGE_FILE_RELOCS_STRIPPED           0x0001  // Relocation info stripped from file.
 #define IMAGE_FILE_EXECUTABLE_IMAGE          0x0002  // File is executable  (i.e. no unresolved externel references).
@@ -108,7 +109,7 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 
 	// IMAGE_FILE_HEADER
 	m_Machine = reader->readU16().get();
-	m_NumberOfSections = reader->readU16().get();
+	m_NumberOfSegments = reader->readU16().get();
 	m_TimeDateStamp = reader->readU32().get();
 	m_PointerToSymbolTable = reader->readU32().get();
 	m_NumberOfSymbols = reader->readU32().get();
@@ -134,45 +135,47 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 	}
 
 	//IMAGE_SECTION_HEADER
-	for(int i=0; i<m_NumberOfSections; i++)
+	for(int i=0; i<m_NumberOfSegments; i++)
 	{
 		reader->seek(optionalHeaderOffset + m_SizeOfOptionalHeader + i*40);
 
-		u8      Name[8];
-		reader->read(Name, 8);
-		u32     Misc = reader->readU32().get(); // u32   PhysicalAddress union with u32   VirtualSize; (depends if it's a DLL or a .EXE)
-		u32     VirtualAddress = reader->readU32().get();
-		u32     SizeOfRawData = reader->readU32().get();
-		u32     PointerToRawData = reader->readU32().get();
-		u32     PointerToRelocations = reader->readU32().get();
-		u32     PointerToLinenumbers = reader->readU32().get();
-		u16     NumberOfRelocations = reader->readU16().get();
-		u16     NumberOfLinenumbers = reader->readU16().get();
-		u32     Characteristics = reader->readU32().get();
+        s_segmentData segmentData;
+        reader->read(segmentData.Name, 8);
+        segmentData.Misc = reader->readU32().get(); // u32   PhysicalAddress union with u32   VirtualSize; (depends if it's a DLL or a .EXE)
+        segmentData.VirtualAddress = reader->readU32().get();
+        segmentData.SizeOfRawData = reader->readU32().get();
+        segmentData.PointerToRawData = reader->readU32().get();
+        segmentData.PointerToRelocations = reader->readU32().get();
+        segmentData.PointerToLinenumbers = reader->readU32().get();
+        segmentData.NumberOfRelocations = reader->readU16().get();
+        segmentData.NumberOfLinenumbers = reader->readU16().get();
+        segmentData.Characteristics = reader->readU32().get();
 
 		igor_section_handle sectionHandle;
-        db->create_section(m_ImageBase + VirtualAddress, Misc, sectionHandle);
+        db->create_section(m_ImageBase + segmentData.VirtualAddress, segmentData.Misc, sectionHandle);
 
 		// IMAGE_SCN_CNT_CODE
-		if(Characteristics & 0x00000020)
+        if (segmentData.Characteristics & 0x00000020)
 		{
 			db->set_section_option(sectionHandle, IGOR_SECTION_OPTION_CODE);
 		}
 
 		//IMAGE_SCN_MEM_EXECUTE
-		if(Characteristics & 0x20000000)
+        if (segmentData.Characteristics & 0x20000000)
 		{
 			db->set_section_option(sectionHandle, IGOR_SECTION_OPTION_EXECUTE);
 		}
 
 		//IMAGE_SCN_MEM_READ
-		if(Characteristics & 0x40000000)
+        if (segmentData.Characteristics & 0x40000000)
 		{
 			db->set_section_option(sectionHandle, IGOR_SECTION_OPTION_READ);
 		}
 
-		reader->seek(PointerToRawData);
-		db->load_section_data(sectionHandle, reader, SizeOfRawData);
+        reader->seek(segmentData.PointerToRawData);
+        db->load_section_data(sectionHandle, reader, segmentData.SizeOfRawData);
+
+        m_segments.push_back(segmentData);
 	}
 
 	loadDebug(db, reader);
@@ -180,8 +183,6 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 
 	igorAddress entryPoint = m_ImageBase + m_EntryPointVA;
 	db->m_entryPoint = entryPoint;
-
-	db->declare_name(entryPoint, "entryPoint");
     
     igorAddress base(m_ImageBase);
     base += m_EntryPointVA;
@@ -321,6 +322,44 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
 
 			if (signature == 'SDSR')
 			{
+                PPDB pPdb = PdbOpen(pdbName.to_charp());
+
+                {
+                    PSYM Sym = pPdb->Symd->SymRecs;
+                    while (Sym < pPdb->Symd->SymMac)
+                    {
+                        if (Sym->Sym.rectyp)
+                        {
+                            switch (Sym->Sym.rectyp)
+                            {
+                            case S_PUB32:
+                                /*
+                                printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
+                                    Sym->Pub32.seg, // 0x0c
+                                    Sym->Pub32.pubsymflags.fCode ? " code" : "",
+                                    Sym->Pub32.pubsymflags.fFunction ? " function" : "",
+                                    Sym->Pub32.off, Sym->Pub32.name, // 0x08 0x0e
+                                    Sym->Data32.typind); // 0x04
+                                printf("\n");*/
+
+                                if (Sym->Pub32.pubsymflags.fFunction)
+                                {
+                                    igorAddress symbolAddress(m_ImageBase + m_segments[Sym->Pub32.seg-1].VirtualAddress + Sym->Pub32.off);
+                                    db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
+                                }
+
+                                break;
+                            default:
+                                break;
+                            }
+                            //SYMpDumpSymbol(Symd, Sym);
+                        }
+
+                        Sym = NextSym(Sym);
+                    }
+                }
+
+                //SYMDumpSymbols(pPdb->Symd, 0xFFFF);
 			}
 		}
 	}

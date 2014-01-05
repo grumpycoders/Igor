@@ -552,13 +552,19 @@ VOID  TPIDisplayRecord(PlfRecord plr,
     return;
 }
 
+#ifdef _WIN32
+static inline int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
+    return _vsnprintf(str, size, format, ap);
+}
+#endif
+
 char *staticprintf(char *format, ...)
 {
     static char buffer[512];
     va_list va;
 
     va_start(va, format);
-    _vsnprintf(buffer, sizeof(buffer), format, va);
+    vsnprintf(buffer, sizeof(buffer), format, va);
 
     return buffer;
 }

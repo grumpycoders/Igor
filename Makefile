@@ -27,7 +27,7 @@ CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
-vpath %.cpp src:src/cpu/x86
+vpath %.cpp src:src/cpu/x86:src/PDB
 
 IGOR_SOURCES = \
 Igor.cpp \
@@ -42,6 +42,12 @@ PELoader.cpp \
 cpu/x86/cpu_x86.cpp \
 cpu/x86/cpu_x86_opcodes.cpp \
 cpu/x86/cpu_x86_opcodes_F.cpp \
+\
+PDB/gsi.cpp \
+PDB/msf.cpp \
+PDB/pdb.cpp \
+PDB/sym.cpp \
+PDB/tpi.cpp \
 
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(IGOR_SOURCES))))

@@ -17,6 +17,12 @@
 #include "tpi.h"
 #include "gsi.h"
 
+#ifdef _WIN32
+static inline int strcasecmp(const char *s1, const char *s2) {
+    return _stricmp(s1, s2);
+}
+#endif
+
 //
 // Load symbols for the MSF
 //
@@ -484,7 +490,7 @@ PSYM GSIByName(PSYMD Symd, char *name, BOOL CaseInSensitive)
     {
         PPUBSYM32 s = (PPUBSYM32)((PUCHAR)Symd->SymRecs + pAddrMap[i]);
 
-        if ((CaseInSensitive ? strcmp : _stricmp) (name, (char*)s->name) == 0)
+        if ((CaseInSensitive ? strcmp : strcasecmp) (name, (char*)s->name) == 0)
         {
             return (PSYM)s;
         }
@@ -502,25 +508,25 @@ PSYM SYMByName(PSYMD Symd, char *name, BOOL CaseInSensitive)
         switch (Sym->Sym.rectyp)
         {
         case S_PUB32:
-            success = ((CaseInSensitive ? strcmp : _stricmp) (name, (char*)Sym->Pub32.name) == 0);
+            success = ((CaseInSensitive ? strcmp : strcasecmp) (name, (char*)Sym->Pub32.name) == 0);
             break;
 
         case S_CONSTANT:
-            success = ((CaseInSensitive ? strcmp : _stricmp) (name, (char*)Sym->Const.name) == 0);
+            success = ((CaseInSensitive ? strcmp : strcasecmp) (name, (char*)Sym->Const.name) == 0);
             break;
 
         case S_UDT:
-            success = ((CaseInSensitive ? strcmp : _stricmp) (name, (char*)Sym->Udt.name) == 0);
+            success = ((CaseInSensitive ? strcmp : strcasecmp) (name, (char*)Sym->Udt.name) == 0);
             break;
 
         case S_LPROCREF:
         case S_PROCREF:
-            success = ((CaseInSensitive ? strcmp : _stricmp) (name, (char*)Sym->Ref2.name) == 0);
+            success = ((CaseInSensitive ? strcmp : strcasecmp) (name, (char*)Sym->Ref2.name) == 0);
             break;
 
         case S_LDATA32:
         case S_GDATA32:
-            success = ((CaseInSensitive ? strcmp : _stricmp) (name, (char*)Sym->Data32.name) == 0);
+            success = ((CaseInSensitive ? strcmp : strcasecmp) (name, (char*)Sym->Data32.name) == 0);
             break;
         }
 

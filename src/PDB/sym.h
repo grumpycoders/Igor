@@ -24,6 +24,6 @@ VOID SymFreeSymbol(PSYMBOL Symbol);
 //PSYMBOL SymNextSym(PPDB_SYMBOLS syms, PSYMBOL Symbol);
 BOOL SymDownloadFromServerForImage(PVOID Image, PSTR szServerUrl, PSTR szLocalStorage);
 
-typedef void(_cdecl *PPRINTF_CALLOUT)(PSTR, ...);
-VOID SymSetPrintfCallout(PPRINTF_CALLOUT Callout);
+//typedef void(_cdecl *PPRINTF_CALLOUT)(PSTR, ...);
+//VOID SymSetPrintfCallout(PPRINTF_CALLOUT Callout);
 //PPDB_SYMBOLS SymLoadSymbolsForImageFile(PSTR szFileName);

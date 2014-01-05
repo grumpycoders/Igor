@@ -296,19 +296,18 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
 {
 	IMAGE_DATA_DIRECTORY* pDebugDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
 
-	igorLinearAddress debugTableVA = m_ImageBase + pDebugDirectory->VirtualAddress;
+    igorAddress debugTableVA = igorAddress(m_ImageBase + pDebugDirectory->VirtualAddress);
 
-	while (debugTableVA < m_ImageBase + pDebugDirectory->VirtualAddress + pDebugDirectory->Size)
+	while (debugTableVA < igorAddress(m_ImageBase + pDebugDirectory->VirtualAddress + pDebugDirectory->Size))
 	{
-        igorAddress debugTableVAaddr(debugTableVA);
-        u32 characteristics = db->readU32(debugTableVAaddr); debugTableVAaddr += 4;
-        u32 timeDateStamp = db->readU32(debugTableVAaddr); debugTableVAaddr += 4;
-        u16 majorVersion = db->readU16(debugTableVAaddr); debugTableVAaddr += 2;
-        u16 minorVersion = db->readU16(debugTableVAaddr); debugTableVAaddr += 2;
-        u32 type = db->readU32(debugTableVAaddr); debugTableVAaddr += 4;
-        u32 sizeOfData = db->readU32(debugTableVAaddr); debugTableVAaddr += 4;
-        u32 addressOfRawData = db->readU32(debugTableVAaddr); debugTableVAaddr += 4;
-        u32 pointerToRawData = db->readU32(debugTableVAaddr); debugTableVAaddr += 4;
+        u32 characteristics = db->readU32(debugTableVA); debugTableVA += 4;
+        u32 timeDateStamp = db->readU32(debugTableVA); debugTableVA += 4;
+        u16 majorVersion = db->readU16(debugTableVA); debugTableVA += 2;
+        u16 minorVersion = db->readU16(debugTableVA); debugTableVA += 2;
+        u32 type = db->readU32(debugTableVA); debugTableVA += 4;
+        u32 sizeOfData = db->readU32(debugTableVA); debugTableVA += 4;
+        u32 addressOfRawData = db->readU32(debugTableVA); debugTableVA += 4;
+        u32 pointerToRawData = db->readU32(debugTableVA); debugTableVA += 4;
 
 		if (type == 2) // IMAGE_DEBUG_TYPE_CODEVIEW
 		{
@@ -376,11 +375,10 @@ void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
 {
 	IMAGE_DATA_DIRECTORY* pImportDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
 
-	igorLinearAddress importTableAddress = m_ImageBase + pImportDirectory->VirtualAddress;
+    igorAddress importTableAddressVirtual(m_ImageBase + pImportDirectory->VirtualAddress);
 
-	while (importTableAddress < m_ImageBase + pImportDirectory->VirtualAddress + pImportDirectory->Size)
+    while (importTableAddressVirtual < igorAddress(m_ImageBase + pImportDirectory->VirtualAddress + pImportDirectory->Size))
 	{
-        igorAddress importTableAddressVirtual(importTableAddress);
         u32 originalFirstThunkRVA = db->readU32(importTableAddressVirtual); importTableAddressVirtual += 4;
 
 		if (originalFirstThunkRVA == 0)

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include <atomic>
 
+#include <Exceptions.h>
+
 #include "wxIgorApp.h"
 #include "wxIgorFrame.h"
 #include "IgorDatabase.h"
@@ -20,6 +22,8 @@
 #pragma comment(lib, "wxpng.lib")
 #pragma comment(lib, "wxtiff.lib")
 #endif
+
+using namespace Balau;
 
 wxIMPLEMENT_APP_NO_MAIN(c_wxIgorApp);
 
@@ -65,7 +69,27 @@ std::pair<bool, int> c_wxIgorApp::balauLoop() {
         m_mainLoop = loop = new wxIgorEventLoop(CreateMainLoop());
         wxEventLoopBase::SetActive(loop);
     }
-    int r = loop->run();
+    int r = 0;
+    bool exception = false;
+    try {
+        r = loop->run();
+    }
+    catch (GeneralException & e) {
+        exception = true;
+        Printer::log(M_WARNING, "wxWidgets caused an exception: %s", e.getMsg());
+        const char * details = e.getDetails();
+        if (details)
+            Printer::log(M_WARNING, "  %s", details);
+        auto trace = e.getTrace();
+        for (String & str : trace)
+            Printer::log(M_DEBUG, "%s", str.to_charp());
+    }
+    catch (...) {
+        exception = true;
+        Printer::log(M_WARNING, "wxWidgets caused an unknown exception - stopping.");
+    }
+    if (exception)
+        return std::pair<bool, int>(true, 0);
     return std::pair<bool, int>(s_exitting.load(), r);
 }
 

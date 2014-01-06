@@ -74,45 +74,53 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 
 void c_wxIgorFrame::OpenFile(wxString& fileName)
 {
-	// add to history
-	{
-		c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
-		pApp->m_fileHistory->AddFileToHistory(fileName);
-		pApp->m_fileHistory->Save(*pApp->m_config);
-	}
+    s_igorDatabase * db = NULL;
 
-	Balau::IO<Balau::Input> file(new Balau::Input(fileName.c_str()));
-	file->open();
+    try {
 
-	size_t size = file->getSize();
-	uint8_t * buffer = (uint8_t *)malloc(size);
-	file->forceRead(buffer, size);
-	Balau::IO<Balau::Buffer> reader(new Balau::Buffer(buffer, file->getSize()));
+        // add to history
+        {
+            c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
+            pApp->m_fileHistory->AddFileToHistory(fileName);
+            pApp->m_fileHistory->Save(*pApp->m_config);
+        }
 
-	m_session = new IgorLocalSession();
+        Balau::IO<Balau::Input> file(new Balau::Input(fileName.c_str()));
+        file->open();
 
-	s_igorDatabase * db = new s_igorDatabase;
+        size_t size = file->getSize();
+        uint8_t * buffer = (uint8_t *)malloc(size);
+        file->forceRead(buffer, size);
+        Balau::IO<Balau::Buffer> reader(new Balau::Buffer(buffer, file->getSize()));
 
-    // TODO: make a reader selector UI
-	c_PELoader PELoader;
-    // Note: having the session here is actually useful not just for the entry point,
-    // but for all the possible hints the file might have for us.
-	igor_result r = PELoader.loadPE(db, reader, m_session);
-	reader->close();
-	free(buffer);
+        m_session = new IgorLocalSession();
 
-    // Add the task even in case of failure, so it can properly clean itself out.
-	Balau::TaskMan::registerTask(m_session);
+        db = new s_igorDatabase;
 
-    if (r != IGOR_SUCCESS)
-    {
-        delete db;
-        return;
+        // TODO: make a reader selector UI
+        c_PELoader PELoader;
+        // Note: having the session here is actually useful not just for the entry point,
+        // but for all the possible hints the file might have for us.
+        igor_result r = PELoader.loadPE(db, reader, m_session);
+        reader->close();
+        free(buffer);
+
+        // Add the task even in case of failure, so it can properly clean itself out.
+        Balau::TaskMan::registerTask(m_session);
+
+        if (r != IGOR_SUCCESS)
+        {
+            delete db;
+            return;
+        }
+
+        m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
+
+        SendSizeEvent();
     }
-
-	m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
-
-	SendSizeEvent();
+    catch (...) {
+        delete db;
+    }
 }
 
 void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))

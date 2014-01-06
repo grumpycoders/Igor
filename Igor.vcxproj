@@ -85,7 +85,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -104,7 +104,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -124,7 +124,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -146,7 +146,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>

@@ -234,6 +234,12 @@
     <Filter Include="Igor\PDB">
       <UniqueIdentifier>{474a74c8-3b96-4707-ae70-cb493080acc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Igor\protobufs">
+      <UniqueIdentifier>{8d5502bf-3ad5-4ba7-ab21-d41d15a6a9b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Igor\protobufs\generated">
+      <UniqueIdentifier>{12d5a56a-c81e-4bb9-b6b4-456e9ef44100}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Balau\libtomcrypt\src\ciphers\anubis.c">
@@ -2227,6 +2233,9 @@
     </ClCompile>
     <ClCompile Include="src\PDB\sym.cpp">
       <Filter>Igor\PDB</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protobufs\igorDB.pb.cc">
+      <Filter>Igor\protobufs\generated</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4273,6 +4282,9 @@
     <ClInclude Include="src\PDB\sym.h">
       <Filter>Igor\PDB</Filter>
     </ClInclude>
+    <ClInclude Include="src\protobufs\igorDB.pb.h">
+      <Filter>Igor\protobufs\generated</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Balau\win32\iconv\aliases.gperf">
@@ -4320,5 +4332,10 @@
     <None Include="Balau\src\jsoncpp\src\json_valueiterator.inl">
       <Filter>Third Party\jsoncpp</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\protobufs\igorDB.proto">
+      <Filter>Igor\protobufs</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

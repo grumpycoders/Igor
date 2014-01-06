@@ -36,6 +36,14 @@ bool igor_export_to_text(std::function<bool(const char * fmt, va_list ap)> outpu
 
     while (analyzeState.m_PC < sectionStart + sectionSize)
     {
+        String symbolName;
+        if (session->getSymbolName(analyzeState.m_PC, symbolName))
+        {
+            success = vararg_lambda(output, "%s:\n", symbolName.to_charp());
+            if (!success)
+                break;
+        }
+
         if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
         {
             String disassembledString;

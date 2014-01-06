@@ -27,7 +27,7 @@ class wxIdler : public Task {
             if (r.first)
                 throw Exit(r.second);
             m_evt.resetMaybe();
-            m_evt.set(0.01);
+            m_evt.set(0.05);
             waitFor(&m_evt);
             yield();
         }

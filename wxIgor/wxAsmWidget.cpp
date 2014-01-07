@@ -151,7 +151,8 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 			if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
 			{
-				String disassembledString;
+                
+				/*String disassembledString;
 				pCpu->printInstruction(&analyzeState, disassembledString);
 
 				fullDisassembledString += disassembledString;
@@ -159,11 +160,62 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 				wxString displayDisassembledString;
 				displayDisassembledString = fullDisassembledString.to_charp();
 
-				//SetDefaultStyle(wxTextAttr(*wxBLUE));
 				dc.SetTextForeground(*wxBLUE);
 				dc.DrawText(displayDisassembledString, 0, drawY);
-				//AppendText(displayDisassembledString);
-				//AppendText("\n");
+*/
+                int currentX = 0;
+
+                Balau::String mnemonic;
+                pCpu->getMnemonic(&analyzeState, mnemonic);
+
+                const int numMaxOperand = 4;
+
+                Balau::String operandStrings[numMaxOperand];
+
+                int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
+                EAssert(numMaxOperand >= numOperandsInInstruction);
+
+                for (int i = 0; i < numOperandsInInstruction; i++)
+                {
+                    pCpu->getOperand(&analyzeState, i, operandStrings[i]);
+                }
+
+                dc.SetTextForeground(*wxBLUE);
+
+                // draw address
+                dc.DrawText(fullDisassembledString.to_charp(), currentX, drawY);
+                currentX += m_fontSize.GetWidth() * fullDisassembledString.strlen();
+
+                // draw mnemonic
+                dc.DrawText(mnemonic.to_charp(), currentX, drawY);
+                currentX += m_fontSize.GetWidth() * mnemonic.strlen();
+                currentX += m_fontSize.GetWidth();
+
+                // draw operandes
+                for (int i = 0; i < numOperandsInInstruction; i++)
+                {
+                    dc.DrawText(operandStrings[i].to_charp(), currentX, drawY);
+                    currentX += m_fontSize.GetWidth() * operandStrings[i].strlen();
+                    currentX += m_fontSize.GetWidth();
+                }
+                /*
+                for (int i = 0; i < x86_analyse_result->m_numOperands; i++)
+                {
+                    Balau::String operandString;
+                    getOperand(pState, i, operandString);
+                    if (i == 0)
+                    {
+                        instructionString += " ";
+                    }
+                    else
+                    {
+                        instructionString += ", ";
+                    }
+
+                    instructionString += operandString;
+                }
+                */
+
 				numDrawnLines++;
 
 				analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
@@ -172,8 +224,6 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 			{
 				wxString displayDisassembledString = wxString::Format("%016llX: 0x%02X\n", analyzeState.m_PC.offset, m_pSession->readU8(analyzeState.m_PC));
 
-				//SetDefaultStyle(wxTextAttr(*wxRED));
-				//AppendText(displayDisassembledString);
 				dc.SetTextForeground(*wxRED);
 				dc.DrawText(displayDisassembledString, 0, drawY);
 				numDrawnLines++;

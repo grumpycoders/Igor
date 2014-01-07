@@ -57,6 +57,9 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(wxID_OPEN, "&Open");
 	menuFile->Append(ID_EXPORT_DISASSEMBLY, "Export disassembly");
+    menuFile->AppendSeparator();
+    menuFile->Append(ID_SAVE_DATABASE, "Save database");
+    menuFile->Append(ID_LOAD_DATABASE, "Load database");
 
 	pApp->m_fileHistory->UseMenu(menuFile);
 	pApp->m_fileHistory->AddFilesToMenu();
@@ -184,6 +187,29 @@ void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 	}
 }
 
+void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
+{
+    wxFileDialog fileDialog(this, "Save database", "", "", "Igor database (*.igorDB)|*.igorDB", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (fileDialog.ShowModal() == wxID_OK)
+    {
+        wxString fileName = fileDialog.GetPath();
+
+        m_session->serialize(fileName.c_str().AsChar());
+    }
+}
+
+void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
+{
+    wxFileDialog fileDialog(this, "Choose a file", "", "", "Igor database (*.igorDB)|*.igorDB", wxFD_OPEN);
+    if (fileDialog.ShowModal() == wxID_OK)
+    {
+        wxString fileName = fileDialog.GetPath();
+
+        m_session = new IgorLocalSession;
+        m_session->deserialize(fileName.c_str().AsChar());
+    }
+}
+
 void c_wxIgorFrame::OnIdle(wxIdleEvent& event)
 {
 	if (m_session)
@@ -196,6 +222,8 @@ BEGIN_EVENT_TABLE(c_wxIgorFrame, wxFrame)
 EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
 EVT_MENU(ID_GO_TO_ADDRESS, c_wxIgorFrame::OnGoToAddress)
 EVT_MENU(ID_EXPORT_DISASSEMBLY, c_wxIgorFrame::OnExportDisassembly)
+EVT_MENU(ID_SAVE_DATABASE, c_wxIgorFrame::OnSaveDatabase)
+EVT_MENU(ID_LOAD_DATABASE, c_wxIgorFrame::OnLoadDatabase)
 EVT_IDLE(c_wxIgorFrame::OnIdle)
 
 // history

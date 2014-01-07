@@ -417,6 +417,9 @@ public:
 	const char* getMnemonicName(e_x86_mnemonic mnemonic);
 
 	void printInstruction(c_cpu_analyse_result* result);
+    igor_result getMnemonic(s_analyzeState* pState, Balau::String& outputString);
+    int getNumOperands(s_analyzeState* pState);
+    igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString);
 
 private:
 

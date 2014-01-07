@@ -24,6 +24,8 @@ public:
 	{
 		ID_GO_TO_ADDRESS = wxID_HIGHEST,
 		ID_EXPORT_DISASSEMBLY,
+        ID_SAVE_DATABASE,
+        ID_LOAD_DATABASE,
 	};
 
 	c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
@@ -36,6 +38,9 @@ public:
 
 	void OnGoToAddress(wxCommandEvent& event);
 	void OnExportDisassembly(wxCommandEvent& event);
+
+    void OnSaveDatabase(wxCommandEvent& event);
+    void OnLoadDatabase(wxCommandEvent& event);
 
 	c_wxIgorSessionPanel* m_sessionPanel;
 	IgorLocalSession * m_session;

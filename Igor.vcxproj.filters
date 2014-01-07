@@ -2234,7 +2234,7 @@
     <ClCompile Include="src\PDB\sym.cpp">
       <Filter>Igor\PDB</Filter>
     </ClCompile>
-    <ClCompile Include="src\protobufs\igorDB.pb.cc">
+    <ClCompile Include="src\protobufs\IgorProtoFile.pb.cc">
       <Filter>Igor\protobufs\generated</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4282,7 +4282,7 @@
     <ClInclude Include="src\PDB\sym.h">
       <Filter>Igor\PDB</Filter>
     </ClInclude>
-    <ClInclude Include="src\protobufs\igorDB.pb.h">
+    <ClInclude Include="src\protobufs\IgorProtoFile.pb.h">
       <Filter>Igor\protobufs\generated</Filter>
     </ClInclude>
   </ItemGroup>
@@ -4334,7 +4334,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="src\protobufs\igorDB.proto">
+    <CustomBuild Include="src\protobufs\IgorProtoFile.proto">
       <Filter>Igor\protobufs</Filter>
     </CustomBuild>
   </ItemGroup>

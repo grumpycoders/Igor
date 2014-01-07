@@ -1676,7 +1676,7 @@
     <ClCompile Include="src\PDB\sym.cpp" />
     <ClCompile Include="src\PDB\tpi.cpp" />
     <ClCompile Include="src\PELoader.cpp" />
-    <ClCompile Include="src\protobufs\igorDB.pb.cc" />
+    <ClCompile Include="src\protobufs\IgorProtoFile.pb.cc" />
     <ClCompile Include="wxIgor\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -1988,7 +1988,7 @@
     <ClInclude Include="src\PDB\sym.h" />
     <ClInclude Include="src\PDB\tpi.h" />
     <ClInclude Include="src\PELoader.h" />
-    <ClInclude Include="src\protobufs\igorDB.pb.h" />
+    <ClInclude Include="src\protobufs\IgorProtoFile.pb.h" />
     <ClInclude Include="wxIgor\stdafx.h" />
     <ClInclude Include="wxIgor\wxAsmWidget.h" />
     <ClInclude Include="wxIgor\wxIgorApp.h" />
@@ -2402,19 +2402,19 @@
     <None Include="Balau\win32\iconv\Makefile.os2" />
     <None Include="Balau\win32\iconv\Makefile.vms" />
     <None Include="Balau\win32\iconv\translit.def" />
-    <CustomBuild Include="src\protobufs\igorDB.proto">
+    <CustomBuild Include="src\protobufs\IgorProtoFile.proto">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">msvc\google\protoc --cpp_out=. ./src/protobufs/igorDB.proto</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">src/protobufs/igorDB.pb.cc;src/protobufs/igorDB.pb.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">msvc\google\protoc --cpp_out=. ./src/protobufs/IgorProtoFile.proto</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">src/protobufs/IgorProtoFile.pb.cc;src/protobufs/IgorProtoFile.pb.h;%(Outputs)</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">msvc\google\protoc --cpp_out=. ./src/protobufs/igorDB.proto</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">src/protobufs/igorDB.pb.cc;src/protobufs/igorDB.pb.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">msvc\google\protoc --cpp_out=. ./src/protobufs/IgorProtoFile.proto</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">src/protobufs/IgorProtoFile.pb.cc;src/protobufs/IgorProtoFile.pb.h;%(Outputs)</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">msvc\google\protoc --cpp_out=. ./src/protobufs/igorDB.proto</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src/protobufs/igorDB.pb.cc;src/protobufs/igorDB.pb.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">msvc\google\protoc --cpp_out=. ./src/protobufs/IgorProtoFile.proto</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src/protobufs/IgorProtoFile.pb.cc;src/protobufs/IgorProtoFile.pb.h;%(Outputs)</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">msvc\google\protoc --cpp_out=. ./src/protobufs/igorDB.proto</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">src/protobufs/igorDB.pb.cc;src/protobufs/igorDB.pb.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">msvc\google\protoc --cpp_out=. ./src/protobufs/IgorProtoFile.proto</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">src/protobufs/IgorProtoFile.pb.cc;src/protobufs/IgorProtoFile.pb.h;%(Outputs)</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>

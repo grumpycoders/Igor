@@ -97,7 +97,15 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         // Note: having the session here is actually useful not just for the entry point,
         // but for all the possible hints the file might have for us.
         r = PELoader.loadPE(db, reader, m_session);
+        // Note: destroying the object from the stack would do the same, but
+        // as this might trigger a context switch, it's better to do it explicitely
+        // than from a destructor, as a general good practice.
         reader->close();
+    }
+    catch (GeneralException & e) {
+        wxString errorMsg = wxT("Error loading file:\n") + wxString(e.getMsg());
+        wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, wxT("Error"), wxOK | wxICON_ERROR);
+        dial->ShowModal();
     }
     catch (...) {
         wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error loading file."), wxT("Error"), wxOK | wxICON_ERROR);

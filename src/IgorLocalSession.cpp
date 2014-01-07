@@ -1,6 +1,8 @@
 #include "IgorAnalysis.h"
 #include "IgorLocalSession.h"
 
+#include "protobufs/IgorProtoFile.pb.h"
+
 #include <Printer.h>
 #include <BString.h>
 #include <TaskMan.h>
@@ -68,6 +70,19 @@ void IgorLocalSession::Do()
         }
         yieldNoWait();
     }
+}
+
+void IgorLocalSession::serialize(const char * filename) {
+    IgorProtoFile::IgorFile file;
+
+    file.set_uuid(getUUID().to_charp());
+    const char * name = getName();
+    if (name && name[0])
+        file.set_name(name);
+}
+
+void IgorLocalSession::deserialize(const char * filename) {
+
 }
 
 const char * IgorLocalSession::getStatusString() {

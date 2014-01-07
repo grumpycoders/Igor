@@ -1,1 +1,6 @@
 package IgorProtoFile;
+
+message IgorFile {
+    required string uuid = 1;
+    required string name = 2;
+}

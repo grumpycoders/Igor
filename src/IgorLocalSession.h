@@ -13,16 +13,19 @@ class c_cpu_module;
 class c_cpu_state;
 
 class IgorLocalSession : public Balau::Task, public IgorSession {
-public:
+  public:
       IgorLocalSession() : m_pDatabase(new s_igorDatabase) { }
       ~IgorLocalSession() { delete m_pDatabase; }
 
     void loaded(const char * filename);
 
+    void serialize(const char * filename);
+    void deserialize(const char * filename);
+
     void add_code_analysis_task(igorAddress PC);
-    void Do();
+    virtual void Do() override;
     void stop() { add_code_analysis_task(IGOR_INVALID_ADDRESS); }
-    const char * getName() const { return "IgorAnalysisManagerLocal"; }
+    virtual const char * getName() const override { return "IgorAnalysisManagerLocal"; }
     bool isRunning() { return m_status == RUNNING; }
     void setDB(s_igorDatabase * db) { AAssert(m_pDatabase == NULL, "Can only set database once"); m_pDatabase = db; }
     s_igorDatabase * getDB() { return m_pDatabase; }
@@ -45,17 +48,17 @@ public:
     virtual igor_result flag_address_as_u32(igorAddress virtualAddress) override;
     virtual igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize) override;
 
-    igorAddress getEntryPoint();
-    igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
-    igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
-    u64 getSectionSize(igor_section_handle sectionHandle);
+    virtual igorAddress getEntryPoint() override;
+    virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) override;
+    virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) override;
+    virtual u64 getSectionSize(igor_section_handle sectionHandle) override;
 
-    virtual std::tuple<igorAddress, igorAddress, size_t> getRanges();
-    virtual igorAddress linearToVirtual(u64);
+    virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() override;
+    virtual igorAddress linearToVirtual(u64) override;
 
-    virtual bool getSymbolName(igorAddress, Balau::String& name);
+    virtual bool getSymbolName(igorAddress, Balau::String& name) override;
 
-private:
+  private:
     enum {
         IDLE,
         RUNNING,

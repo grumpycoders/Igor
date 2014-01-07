@@ -7,6 +7,8 @@
 #include <TaskMan.h>
 #include <HttpServer.h>
 
+#include "google/protobuf/stubs/common.h"
+
 #include "PELoader.h"
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
@@ -17,6 +19,17 @@ const igorAddress IGOR_MAX_ADDRESS((u64) -1);
 const igorAddress IGOR_INVALID_ADDRESS((u64) -1);
 
 using namespace Balau;
+
+class GoogleProtoBufs : public AtStart, public AtExit {
+public:
+      GoogleProtoBufs() : AtStart(10), AtExit(10) { }
+    virtual void doStart() override {
+        GOOGLE_PROTOBUF_VERIFY_VERSION;
+    }
+    virtual void doExit() override {
+        google::protobuf::ShutdownProtobufLibrary();
+    }
+};
 
 #ifdef USE_WXWIDGETS
 #include "../wxIgor/wxIgorShared.h"

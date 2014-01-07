@@ -1,16 +1,49 @@
 #include "IgorAnalysis.h"
 #include "IgorLocalSession.h"
 
+#include "google/protobuf/io/zero_copy_stream.h"
 #include "protobufs/IgorProtoFile.pb.h"
 
 #include <Printer.h>
 #include <BString.h>
 #include <TaskMan.h>
+#include <Output.h>
 
 using namespace Balau;
 
-void IgorLocalSession::Do()
-{
+class gprotOutput : public google::protobuf::io::ZeroCopyOutputStream {
+  public:
+      gprotOutput(IO<Handle> h) : m_h(h) { }
+      virtual ~gprotOutput() { maybeFlush(); }
+
+    void maybeFlush();
+
+  private:
+    virtual bool Next(void ** data, int * size) override;
+    virtual void BackUp(int count) override { m_bufSize -= count; }
+    virtual google::protobuf::int64 ByteCount() const override { return m_size; }
+
+    char m_data[1024];
+    IO<Handle> m_h;
+    int m_bufSize = 0;
+    google::protobuf::int64 m_size = 0;
+};
+
+bool gprotOutput::Next(void ** data, int * size) {
+    maybeFlush();
+    m_bufSize = *size = sizeof(m_data);
+    *data = m_data;
+    return true;
+}
+
+void gprotOutput::maybeFlush() {
+    if (m_bufSize)
+        m_h->forceWrite(m_data, m_bufSize);
+    m_size += m_bufSize;
+    m_bufSize = 0;
+}
+
+void IgorLocalSession::Do() {
     if (!m_pDatabase)
         return;
 
@@ -19,13 +52,10 @@ void IgorLocalSession::Do()
     Printer::log(M_INFO, "AnalysisManager starting...");
     m_instructions = 0;
 
-    for (;;)
-    {
-        for (auto i = m_evts.begin(); i != m_evts.end(); i++)
-        {
+    for (;;) {
+        for (auto i = m_evts.begin(); i != m_evts.end(); i++) {
             Events::TaskEvent * evt = i->first;
-            if (evt->gotSignal())
-            {
+            if (evt->gotSignal()) {
                 evt->ack();
                 delete evt;
                 m_evts.erase(i);
@@ -34,8 +64,7 @@ void IgorLocalSession::Do()
                     break;
             }
         }
-        if (m_evts.size() == 0)
-        {
+        if (m_evts.size() == 0) {
             if (m_status == STOPPING)
                 return;
             else if (m_pDatabase->m_analysisRequests.isEmpty())
@@ -54,8 +83,7 @@ void IgorLocalSession::Do()
             s_analysisRequest* pRequest = m_pDatabase->m_analysisRequests.pop();
             igorAddress currentPC = pRequest->m_pc;
 
-            if (m_status == STOPPING || currentPC == IGOR_INVALID_ADDRESS)
-            {
+            if (m_status == STOPPING || currentPC == IGOR_INVALID_ADDRESS) {
                 m_status = STOPPING;
                 continue;
             }
@@ -73,16 +101,25 @@ void IgorLocalSession::Do()
 }
 
 void IgorLocalSession::serialize(const char * filename) {
-    IgorProtoFile::IgorFile file;
+    IgorProtoFile::IgorFile protoFile;
 
-    file.set_uuid(getUUID().to_charp());
-    const char * name = getName();
+    protoFile.set_uuid(getUUID().to_charp());
+    const char * name = getSessionName().to_charp();
     if (name && name[0])
-        file.set_name(name);
+        protoFile.set_name(name);
+
+    IO<Output> file(new Output(filename));
+    file->open();
+
+    gprotOutput gpFile(file);
+    protoFile.SerializeToZeroCopyStream(&gpFile);
+
+    gpFile.maybeFlush();
+    file->close();
 }
 
-void IgorLocalSession::deserialize(const char * filename) {
-
+IgorLocalSession * IgorLocalSession::deserialize(const char * filename) {
+    return NULL;
 }
 
 const char * IgorLocalSession::getStatusString() {
@@ -96,7 +133,7 @@ const char * IgorLocalSession::getStatusString() {
 
 void IgorLocalSession::loaded(const char * filename) {
     assignNewUUID();
-    setName(filename);
+    setSessionName(filename);
     linkMe();
 }
 

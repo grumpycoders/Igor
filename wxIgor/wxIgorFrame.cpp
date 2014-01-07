@@ -190,11 +190,22 @@ void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
 {
     wxFileDialog fileDialog(this, "Save database", "", "", "Igor database (*.igorDB)|*.igorDB", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    if (fileDialog.ShowModal() == wxID_OK)
+    if (fileDialog.ShowModal() == wxID_OK && m_session)
     {
         wxString fileName = fileDialog.GetPath();
-
-        m_session->serialize(fileName.c_str().AsChar());
+        try
+        {
+            m_session->serialize(fileName.c_str().AsChar());
+        }
+        catch (GeneralException & e) {
+            wxString errorMsg = wxT("Error saving file:\n") + wxString(e.getMsg());
+            wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, wxT("Error"), wxOK | wxICON_ERROR);
+            dial->ShowModal();
+        }
+        catch (...) {
+            wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error saving file."), wxT("Error"), wxOK | wxICON_ERROR);
+            dial->ShowModal();
+        }
     }
 }
 
@@ -205,8 +216,19 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
     {
         wxString fileName = fileDialog.GetPath();
 
-        m_session = new IgorLocalSession;
-        m_session->deserialize(fileName.c_str().AsChar());
+        try
+        {
+            m_session = IgorLocalSession::deserialize(fileName.c_str().AsChar());
+        }
+        catch (GeneralException & e) {
+            wxString errorMsg = wxT("Error loading file:\n") + wxString(e.getMsg());
+            wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, wxT("Error"), wxOK | wxICON_ERROR);
+            dial->ShowModal();
+        }
+        catch (...) {
+            wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error loading file."), wxT("Error"), wxOK | wxICON_ERROR);
+            dial->ShowModal();
+        }
     }
 }
 

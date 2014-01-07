@@ -13,10 +13,10 @@ class IgorSession
   public:
       virtual ~IgorSession();
 
-    void setName(const Balau::String & name) { m_name = name; }
-    void setName(const char * name) { m_name = name; }
+    void setSessionName(const Balau::String & name) { m_name = name; }
+    void setSessionName(const char * name) { m_name = name; }
 
-    const Balau::String & getName() { return m_name; }
+    const Balau::String & getSessionName() { return m_name; }
     const Balau::String & getUUID() { return m_uuid; }
 
     static void enumerate(std::function<bool(IgorSession *)>);

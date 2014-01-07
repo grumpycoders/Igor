@@ -326,7 +326,7 @@ bool ListSessionsAction::Do(HttpServer * server, Http::Request & req, HttpServer
     Json::StyledWriter writer;
 
     IgorSession::enumerate([&](IgorSession * session) -> bool {
-        String name = session->getName();
+        String name = session->getSessionName();
         if (name == "")
             name = session->getUUID();
         reply[idx]["name"] = name.to_charp();

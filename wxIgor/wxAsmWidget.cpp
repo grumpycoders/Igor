@@ -7,6 +7,7 @@
 
 #include <wx/scrolBar.h>
 #include <wx/dcbuffer.h>
+#include <wx/caret.h>
 
 using namespace Balau;
 
@@ -77,6 +78,10 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
     m_currentFont.MakeBold();
 
     m_fontSize = m_currentFont.GetPixelSize();
+
+    m_caret = new wxCaret(this, m_fontSize);
+    SetCaret(m_caret);
+    m_caret->Show();
 }
 
 c_wxAsmWidget::~c_wxAsmWidget()
@@ -86,6 +91,8 @@ c_wxAsmWidget::~c_wxAsmWidget()
 
 void c_wxAsmWidget::OnSize(wxSizeEvent& event)
 {
+    m_numLinesInWindow = (GetSize().GetY() / m_fontSize.GetHeight());
+
 	Refresh();
 	//skip the event.
 	event.Skip();
@@ -107,7 +114,6 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 	wxSize size = GetSize();
 	int width = size.GetWidth();
 
-    int numLinesInWindow = (GetSize().GetY() / m_fontSize.GetHeight()) + 1;
 	int numDrawnLines = 0;
     
 	int drawY = 0;
@@ -129,7 +135,7 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 		analyzeState.pSession = m_pSession;
 		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
-		while (numDrawnLines < numLinesInWindow)
+		while (numDrawnLines < m_numLinesInWindow + 1)
 		{
             Balau::String symbolName;
             if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
@@ -258,12 +264,53 @@ void c_wxAsmWidget::OnMouseMotion(wxMouseEvent& event)
     Refresh();
 }
 
+void c_wxAsmWidget::OnMouseLeftDown(wxMouseEvent& event)
+{
+    int cursorCollumn = m_mousePosition.x / m_fontSize.GetWidth();
+    int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
+    
+    m_caret->Move(cursorCollumn * m_fontSize.GetWidth(), cursorLine * m_fontSize.GetHeight());
+
+    Refresh();
+}
+
+void c_wxAsmWidget::moveCaret(int x, int y)
+{
+    m_caret->Move(m_caret->GetPosition() + wxPoint(x * m_fontSize.GetWidth(), y * m_fontSize.GetHeight()));
+
+    if (m_caret->GetPosition().y < 0)
+    {
+        seekPC(-1);
+        m_caret->Move(m_caret->GetPosition().x, 0);
+        Refresh();
+    }
+
+    if (m_caret->GetPosition().y > m_numLinesInWindow * m_fontSize.GetHeight())
+    {
+        seekPC(1);
+        m_caret->Move(m_caret->GetPosition().x, (m_numLinesInWindow) * m_fontSize.GetHeight());
+        Refresh();
+    }
+}
+
 void c_wxAsmWidget::OnKeyDown(wxKeyEvent& event)
 {
     switch (event.GetKeyCode())
     {
     case 'C':
         m_pSession->add_code_analysis_task(GetAddressOfCursor());
+        break;
+    case WXK_LEFT:
+        moveCaret(-1, 0);
+        break;
+    case WXK_RIGHT:
+        moveCaret(1, 0);
+        break;
+    case WXK_UP:
+        moveCaret(0, -1);
+        break;
+    case WXK_DOWN:
+        moveCaret(0, 1);
         break;
     }
 }
@@ -288,6 +335,11 @@ BEGIN_EVENT_TABLE(c_wxAsmWidget, wxScrolledWindow)
 EVT_TIMER(c_wxAsmWidget::EVT_RefreshDatabase, c_wxAsmWidget::OnTimer)
 EVT_PAINT(c_wxAsmWidget::OnPaint)
 EVT_SIZE(c_wxAsmWidget::OnSize)
+
+// Mouse stuff
 EVT_MOTION(c_wxAsmWidget::OnMouseMotion)
+EVT_LEFT_DOWN(c_wxAsmWidget::OnMouseLeftDown)
+
 EVT_KEY_DOWN(c_wxAsmWidget::OnKeyDown)
+
 END_EVENT_TABLE()

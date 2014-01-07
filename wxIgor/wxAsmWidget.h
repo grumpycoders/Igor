@@ -52,11 +52,20 @@ public:
 	void OnTimer(wxTimerEvent &event);
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
+
     void OnMouseMotion(wxMouseEvent& event);
+    void OnMouseLeftDown(wxMouseEvent& event);
+    
     void OnKeyDown(wxKeyEvent& event);
 	void OnDraw(wxDC& dc);
 
+    void moveCaret(int x, int y);
+
     igorAddress GetAddressOfCursor();
+
+    int m_numLinesInWindow;
+
+    wxCaret* m_caret;
 
     IgorSession* m_pSession;
 

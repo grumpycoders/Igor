@@ -11,7 +11,7 @@
 #include "IgorUtils.h"
 #include "PELoader.h"
 
-//using namespace Balau;
+using namespace Balau;
 
 c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent) : wxPanel(parent)
 {
@@ -87,7 +87,7 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
     m_session = new IgorLocalSession();
 
     try {
-        Balau::IO<Balau::Input> reader(new Balau::Input(fileName.c_str()));
+        IO<Input> reader(new Input(fileName.c_str()));
         reader->open();
 
         db = new s_igorDatabase;
@@ -105,7 +105,7 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
     }
 
     // Add the task even in case of failure, so it can properly clean itself out.
-    Balau::TaskMan::registerTask(m_session);
+    TaskMan::registerTask(m_session);
 
     if (r != IGOR_SUCCESS)
     {
@@ -151,7 +151,7 @@ void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
 	{
 		wxString wxEnteredString = pAddressEntryDialog->GetValue();
 
-		Balau::String enteredString(wxEnteredString.c_str());
+		String enteredString(wxEnteredString.c_str());
 		u64 address = enteredString.to_int(16);
 
 		if (m_sessionPanel->m_pAsmWidget && address)

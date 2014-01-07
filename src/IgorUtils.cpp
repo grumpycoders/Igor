@@ -3,7 +3,7 @@
 #include <Exceptions.h>
 
 #include "Igor.h"
-#include "IgorAnalysis.h"
+#include "IgorSession.h"
 #include "IgorUtils.h"
 
 using namespace Balau;

@@ -12,6 +12,7 @@
 #include <TaskMan.h>
 
 #include "IgorAnalysis.h"
+#include "IgorSession.h"
 #include "IgorHttp.h"
 
 using namespace Balau;

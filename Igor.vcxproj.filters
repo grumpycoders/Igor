@@ -2237,6 +2237,12 @@
     <ClCompile Include="src\protobufs\IgorProtoFile.pb.cc">
       <Filter>Igor\protobufs\generated</Filter>
     </ClCompile>
+    <ClCompile Include="src\IgorLocalSession.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IgorSession.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">
@@ -4284,6 +4290,12 @@
     </ClInclude>
     <ClInclude Include="src\protobufs\IgorProtoFile.pb.h">
       <Filter>Igor\protobufs\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorLocalSession.h">
+      <Filter>Igor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorSession.h">
+      <Filter>Igor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

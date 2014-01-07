@@ -3,6 +3,7 @@
 #include "PELoader.h"
 #include "IgorAPI.h"
 #include "IgorDatabase.h"
+#include "IgorLocalSession.h"
 #include "cpu/x86/cpu_x86.h"
 #include "PDB/pdb.h"
 

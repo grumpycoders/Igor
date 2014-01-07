@@ -8,6 +8,7 @@
 #include <TaskMan.h>
 
 #include "IgorAnalysis.h"
+#include "IgorLocalSession.h"
 #include "IgorUtils.h"
 #include "PELoader.h"
 

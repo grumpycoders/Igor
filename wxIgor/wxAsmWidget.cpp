@@ -3,6 +3,7 @@
 
 #include "IgorDatabase.h"
 #include "IgorAnalysis.h"
+#include "IgorSession.h"
 
 #include <wx/scrolBar.h>
 #include <wx/dcbuffer.h>

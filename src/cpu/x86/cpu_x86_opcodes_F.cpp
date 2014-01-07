@@ -1,4 +1,5 @@
 #include "IgorDatabase.h"
+#include "IgorSession.h"
 #include "cpu_x86.h"
 #include "cpu_x86_opcodes.h"
 

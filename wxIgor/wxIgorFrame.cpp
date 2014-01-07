@@ -84,16 +84,11 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         pApp->m_fileHistory->Save(*pApp->m_config);
     }
 
+    m_session = new IgorLocalSession();
+
     try {
-        Balau::IO<Balau::Input> file(new Balau::Input(fileName.c_str()));
-        file->open();
-
-        size_t size = file->getSize();
-        uint8_t * buffer = (uint8_t *)malloc(size);
-        file->forceRead(buffer, size);
-        Balau::IO<Balau::Buffer> reader(new Balau::Buffer(buffer, file->getSize()));
-
-        m_session = new IgorLocalSession();
+        Balau::IO<Balau::Input> reader(new Balau::Input(fileName.c_str()));
+        reader->open();
 
         db = new s_igorDatabase;
 
@@ -103,15 +98,14 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         // but for all the possible hints the file might have for us.
         r = PELoader.loadPE(db, reader, m_session);
         reader->close();
-        free(buffer);
-
-        // Add the task even in case of failure, so it can properly clean itself out.
-        Balau::TaskMan::registerTask(m_session);
     }
     catch (...) {
         wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error loading file."), wxT("Error"), wxOK | wxICON_ERROR);
         dial->ShowModal();
     }
+
+    // Add the task even in case of failure, so it can properly clean itself out.
+    Balau::TaskMan::registerTask(m_session);
 
     if (r != IGOR_SUCCESS)
     {

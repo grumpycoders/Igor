@@ -8,8 +8,8 @@ CPPFLAGS += -g3 -gdwarf-2 -DDEBUG
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = src src/cpu/x86 Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include
-LIBS = z uuid
+INCLUDES = . src src/cpu/x86 Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include
+LIBS = z uuid protobuf
 
 ifeq ($(SYSTEM),Darwin)
     LIBS += pthread iconv
@@ -28,14 +28,20 @@ LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
 vpath %.cpp src:src/cpu/x86:src/PDB
+vpath %.cc src/protobufs
+vpath %.proto src/protobufs
 
 IGOR_SOURCES = \
 Igor.cpp \
+IgorSession.cpp \
+IgorLocalSession.cpp \
 IgorDatabase.cpp \
 IgorSection.cpp \
 IgorAnalysis.cpp \
 IgorHttp.cpp \
 IgorWS.cpp \
+\
+IgorProtoFile.pb.cc \
 \
 PELoader.cpp \
 \
@@ -65,8 +71,6 @@ Balau:
 
 tests: all
 	$(MAKE) -C Balau tests
-	./$(TARGET) tests/alltests.lua tests/runtests.lua
-	./$(TARGET) tests/alltests.lua -e 'runtests()'
 
 Balau/libBalau.a:
 	$(MAKE) -C Balau
@@ -76,11 +80,17 @@ $(TARGET): Balau/libBalau.a $(ALL_OBJECTS)
 
 dep: $(ALL_DEPS)
 
-%.dep : %.cpp
+%.dep: %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS_NO_ARCH) -M $< > $@
 
-%.dep : %.c
+%.dep: %.cc
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS_NO_ARCH) -M $< > $@
+
+%.dep: %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS_NO_ARCH) -M $< > $@
+
+%.pb.cc %.pb.h: %.proto
+	protoc --cpp_out=. $<
 
 -include $(ALL_DEPS)
 

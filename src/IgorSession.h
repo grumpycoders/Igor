@@ -10,15 +10,13 @@ class c_cpu_state;
 
 class IgorSession
 {
-public:
-    IgorSession();
-    IgorSession(const Balau::String & uuid);
-    ~IgorSession();
+  public:
+      virtual ~IgorSession();
 
     void setName(const Balau::String & name) { m_name = name; }
     void setName(const char * name) { m_name = name; }
-    const Balau::String & getName() { return m_name; }
 
+    const Balau::String & getName() { return m_name; }
     const Balau::String & getUUID() { return m_uuid; }
 
     static void enumerate(std::function<bool(IgorSession *)>);
@@ -96,7 +94,11 @@ public:
 
     virtual bool getSymbolName(igorAddress, Balau::String& name) = 0;
 
-private:
+  protected:
+    void assignNewUUID();
+    void linkMe();
+
+  private:
     Balau::String m_uuid, m_name;
     static Balau::RWLock m_listLock;
     static IgorSession * m_head;

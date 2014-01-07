@@ -71,7 +71,7 @@
 
 using namespace Balau;
 
-igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSession * analysis)
+igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
 {
     bool success = false;
 	// DOS .EXE header
@@ -125,6 +125,7 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
 
 	igor_cpu_handle cpuHandle;
 	c_cpu_x86* pCpu = new c_cpu_x86();
+    s_igorDatabase * db = session->getDB();
     db->igor_add_cpu(pCpu, cpuHandle);
 
 	switch(m_Machine)
@@ -191,8 +192,7 @@ igor_result c_PELoader::loadPE(s_igorDatabase * db, BFile reader, IgorLocalSessi
     
     igorAddress base(m_ImageBase);
     base += m_EntryPointVA;
-    analysis->setDB(db);
-    analysis->add_code_analysis_task(base);
+    session->add_code_analysis_task(base);
 
 	return IGOR_SUCCESS;
 }

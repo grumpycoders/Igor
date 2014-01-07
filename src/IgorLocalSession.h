@@ -14,6 +14,11 @@ class c_cpu_state;
 
 class IgorLocalSession : public Balau::Task, public IgorSession {
 public:
+      IgorLocalSession() : m_pDatabase(new s_igorDatabase) { }
+      ~IgorLocalSession() { delete m_pDatabase; }
+
+    void loaded(const char * filename);
+
     void add_code_analysis_task(igorAddress PC);
     void Do();
     void stop() { add_code_analysis_task(IGOR_INVALID_ADDRESS); }
@@ -24,21 +29,21 @@ public:
     const char * getStatusString();
     void add_instruction() { m_instructions++; }
 
-    igor_result readS32(igorAddress address, s32& output);
-    igor_result readU32(igorAddress address, u32& output);
-    igor_result readS16(igorAddress address, s16& output);
-    igor_result readU16(igorAddress address, u16& output);
-    igor_result readS8(igorAddress address, s8& output);
-    igor_result readU8(igorAddress address, u8& output);
-    igorAddress findSymbol(const char* symbolName);
-    int readString(igorAddress address, Balau::String& outputString);
-    c_cpu_module* getCpuForAddress(igorAddress PC);
-    c_cpu_state* getCpuStateForAddress(igorAddress PC);
-    igor_result is_address_flagged_as_code(igorAddress virtualAddress);
-    igorAddress get_next_valid_address_before(igorAddress virtualAddress);
-    igorAddress get_next_valid_address_after(igorAddress virtualAddress);
-    igor_result flag_address_as_u32(igorAddress virtualAddress);
-    igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize);
+    virtual igor_result readS32(igorAddress address, s32& output) override;
+    virtual igor_result readU32(igorAddress address, u32& output) override;
+    virtual igor_result readS16(igorAddress address, s16& output) override;
+    virtual igor_result readU16(igorAddress address, u16& output) override;
+    virtual igor_result readS8(igorAddress address, s8& output) override;
+    virtual igor_result readU8(igorAddress address, u8& output) override;
+    virtual igorAddress findSymbol(const char* symbolName) override;
+    virtual int readString(igorAddress address, Balau::String& outputString) override;
+    virtual c_cpu_module* getCpuForAddress(igorAddress PC) override;
+    virtual c_cpu_state* getCpuStateForAddress(igorAddress PC) override;
+    virtual igor_result is_address_flagged_as_code(igorAddress virtualAddress) override;
+    virtual igorAddress get_next_valid_address_before(igorAddress virtualAddress) override;
+    virtual igorAddress get_next_valid_address_after(igorAddress virtualAddress) override;
+    virtual igor_result flag_address_as_u32(igorAddress virtualAddress) override;
+    virtual igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize) override;
 
     igorAddress getEntryPoint();
     igor_section_handle getSectionFromAddress(igorAddress virtualAddress);

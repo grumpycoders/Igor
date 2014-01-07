@@ -9,6 +9,7 @@
 
 #include "PELoader.h"
 #include "IgorDatabase.h"
+#include "IgorLocalSession.h"
 #include "IgorHttp.h"
 
 const igorAddress IGOR_MIN_ADDRESS(0);
@@ -48,40 +49,28 @@ void MainTask::Do() {
     
     Printer::enable(M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT);
 
+    if (argc == 2) {
+        IO<Input> reader(new Input(argv[1]));
+        reader->open();
+
+        IgorLocalSession * session = new IgorLocalSession();
+
+        c_PELoader PELoader;
+        PELoader.loadPE(reader, session);
+
+        reader->close();
+        session->loaded(argv[1]);
+
+        TaskMan::registerTask(session);
+    }
+
 #ifdef USE_WXWIDGETS
     bool wxStarted = wxIgorStartup(argc, argv);
     IAssert(wxStarted, "wxWidgets couldn't start...");
     TaskMan::registerTask(new wxIdler());
 #endif
     
-    if (argc > 2)
-        return;
-
     stopTaskManOnExit(false);
-
-#ifndef USE_WXWIDGETS
-    if (argc == 2) {
-        IO<Input> file(new Input(argv[1]));
-        file->open();
-
-        size_t size = file->getSize();
-        uint8_t * buffer = (uint8_t *)malloc(size);
-        file->forceRead(buffer, size);
-        IO<Buffer> reader(new Buffer(buffer, file->getSize()));
-
-        IgorLocalSession * session = new IgorLocalSession();
-
-        s_igorDatabase * db = new s_igorDatabase;
-
-        c_PELoader PELoader;
-        PELoader.loadPE(db, reader, session);
-
-        reader->close();
-        free(buffer);
-
-        TaskMan::registerTask(session);
-    }
-#endif
 
     igor_setup_httpserver();
 

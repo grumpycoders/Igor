@@ -51,7 +51,7 @@ static String generateUUID() {
 RWLock IgorSession::m_listLock;
 IgorSession * IgorSession::m_head = NULL;
 
-IgorSession::IgorSession(const String & uuid) : m_uuid(uuid) {
+void IgorSession::linkMe() {
     ScopeLockW sl(m_listLock);
 
     m_next = m_head;
@@ -59,7 +59,10 @@ IgorSession::IgorSession(const String & uuid) : m_uuid(uuid) {
     m_head = this;
 }
 
-IgorSession::IgorSession() : IgorSession(generateUUID()) { }
+void IgorSession::assignNewUUID() {
+    AAssert(m_uuid == "", "Can't assign UUID twice");
+    m_uuid = generateUUID();
+}
 
 IgorSession::~IgorSession() {
     ScopeLockW sl(m_listLock);

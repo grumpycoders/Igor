@@ -79,6 +79,12 @@ const char * IgorLocalSession::getStatusString() {
     return "ERROR";
 }
 
+void IgorLocalSession::loaded(const char * filename) {
+    assignNewUUID();
+    setName(filename);
+    linkMe();
+}
+
 void IgorLocalSession::add_code_analysis_task(igorAddress PC)
 {
     if (!m_pDatabase->is_address_flagged_as_code(PC))

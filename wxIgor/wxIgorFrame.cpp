@@ -91,17 +91,17 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         IO<Input> reader(new Input(fileName.c_str()));
         reader->open();
 
-        db = new s_igorDatabase;
-
         // TODO: make a reader selector UI
         c_PELoader PELoader;
         // Note: having the session here is actually useful not just for the entry point,
         // but for all the possible hints the file might have for us.
-        r = PELoader.loadPE(db, reader, m_session);
+        r = PELoader.loadPE(reader, m_session);
         // Note: destroying the object from the stack would do the same, but
         // as this might trigger a context switch, it's better to do it explicitely
         // than from a destructor, as a general good practice.
         reader->close();
+
+        m_session->loaded(fileName.c_str());
     }
     catch (GeneralException & e) {
         wxString errorMsg = wxT("Error loading file:\n") + wxString(e.getMsg());

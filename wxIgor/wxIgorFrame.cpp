@@ -75,16 +75,16 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 void c_wxIgorFrame::OpenFile(wxString& fileName)
 {
     s_igorDatabase * db = NULL;
+    igor_result r = IGOR_FAILURE;
+
+    // add to history
+    {
+        c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
+        pApp->m_fileHistory->AddFileToHistory(fileName);
+        pApp->m_fileHistory->Save(*pApp->m_config);
+    }
 
     try {
-
-        // add to history
-        {
-            c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
-            pApp->m_fileHistory->AddFileToHistory(fileName);
-            pApp->m_fileHistory->Save(*pApp->m_config);
-        }
-
         Balau::IO<Balau::Input> file(new Balau::Input(fileName.c_str()));
         file->open();
 
@@ -101,26 +101,27 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         c_PELoader PELoader;
         // Note: having the session here is actually useful not just for the entry point,
         // but for all the possible hints the file might have for us.
-        igor_result r = PELoader.loadPE(db, reader, m_session);
+        r = PELoader.loadPE(db, reader, m_session);
         reader->close();
         free(buffer);
 
         // Add the task even in case of failure, so it can properly clean itself out.
         Balau::TaskMan::registerTask(m_session);
-
-        if (r != IGOR_SUCCESS)
-        {
-            delete db;
-            return;
-        }
-
-        m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
-
-        SendSizeEvent();
     }
     catch (...) {
-        delete db;
+        wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error loading file."), wxT("Error"), wxOK | wxICON_ERROR);
+        dial->ShowModal();
     }
+
+    if (r != IGOR_SUCCESS)
+    {
+        delete db;
+        return;
+    }
+
+    m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
+
+    SendSizeEvent();
 }
 
 void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))

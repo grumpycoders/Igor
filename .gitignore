@@ -13,3 +13,10 @@ wxWidgets/build/msw/vc_mswud
 /*.sdf
 
 /*.suo
+
+/*.o
+/*.dep
+/*.bin
+
+/src/protobufs/*.pb.cc
+/src/protobufs/*.pb.h

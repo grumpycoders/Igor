@@ -17,6 +17,8 @@
 #include "tpi.h"
 #include "gsi.h"
 
+#include "IgorMemory.h"
+
 #ifdef _WIN32
 static inline int strcasecmp(const char *s1, const char *s2) {
     return _stricmp(s1, s2);

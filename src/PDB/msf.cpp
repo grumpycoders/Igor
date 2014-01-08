@@ -14,6 +14,8 @@
 #include <Buffer.h>
 #include <Input.h>
 
+#include "IgorMemory.h"
+
 using namespace Balau;
 
 //

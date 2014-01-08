@@ -12,6 +12,8 @@
 #include "sym.h"
 #include "pdb.h"
 
+#include "IgorMemory.h"
+
 #if 0
 void _cdecl PrintfNull(char*, ...)
 {

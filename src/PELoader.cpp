@@ -7,6 +7,8 @@
 #include "cpu/x86/cpu_x86.h"
 #include "PDB/pdb.h"
 
+#include "IgorMemory.h"
+
 #define IMAGE_FILE_RELOCS_STRIPPED           0x0001  // Relocation info stripped from file.
 #define IMAGE_FILE_EXECUTABLE_IMAGE          0x0002  // File is executable  (i.e. no unresolved externel references).
 #define IMAGE_FILE_LINE_NUMS_STRIPPED        0x0004  // Line nunbers stripped from file.

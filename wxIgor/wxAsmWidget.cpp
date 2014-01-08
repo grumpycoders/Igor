@@ -9,6 +9,8 @@
 #include <wx/dcbuffer.h>
 #include <wx/caret.h>
 
+#define new DEBUG_NEW
+
 using namespace Balau;
 
 c_wxAsmWidgetScrollbar::c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id) : wxScrollBar(parent, id, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL)

@@ -25,6 +25,8 @@
 
 using namespace Balau;
 
+#define new DEBUG_NEW
+
 wxIMPLEMENT_APP_NO_MAIN(c_wxIgorApp);
 
 bool c_wxIgorApp::OnInit()

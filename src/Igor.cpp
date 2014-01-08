@@ -14,6 +14,8 @@
 #include "IgorLocalSession.h"
 #include "IgorHttp.h"
 
+#include "IgorMemory.h"
+
 const igorAddress IGOR_MIN_ADDRESS(0);
 const igorAddress IGOR_MAX_ADDRESS((u64) -1);
 const igorAddress IGOR_INVALID_ADDRESS((u64) -1);

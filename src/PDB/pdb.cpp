@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "pdb.h"
 
+#include "IgorMemory.h"
+
 PPDB PdbOpen(const char *szPdbFileName, GUID* guidSig, DWORD age)
 {
     PDB* pdb = (PDB*)malloc(sizeof(PDB));

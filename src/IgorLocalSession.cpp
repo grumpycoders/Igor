@@ -8,6 +8,8 @@
 #include <BString.h>
 #include <TaskMan.h>
 
+#include "IgorMemory.h"
+
 using namespace Balau;
 
 class gprotOutput : public google::protobuf::io::ZeroCopyOutputStream {

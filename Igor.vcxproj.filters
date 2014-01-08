@@ -4301,6 +4301,9 @@
       <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\IgorMemory.h">
+      <Filter>Igor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Balau\win32\iconv\aliases.gperf">

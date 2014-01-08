@@ -42,6 +42,7 @@
 #include "msf.h"
 #include "pdb.h"
 
+#include "IgorMemory.h"
 
 PBYTE TPIRecordValue(PBYTE pbData, PDWORD pdValue)
 {

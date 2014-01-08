@@ -1996,6 +1996,7 @@
     <ClInclude Include="src\IgorDatabase.h" />
     <ClInclude Include="src\IgorHttp.h" />
     <ClInclude Include="src\IgorLocalSession.h" />
+    <ClInclude Include="src\IgorMemory.h" />
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\IgorSession.h" />
     <ClInclude Include="src\IgorUtils.h" />

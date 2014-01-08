@@ -59,6 +59,16 @@ public:
     void OnKeyDown(wxKeyEvent& event);
 	void OnDraw(wxDC& dc);
 
+    void updateTextCache();
+
+    struct s_textCacheEntry
+    {
+        igorAddress m_address;
+        Balau::String m_text;
+    };
+    std::vector<s_textCacheEntry> m_textCache;
+    bool m_textCacheIsDirty;
+
     void moveCaret(int x, int y);
 
     igorAddress GetAddressOfCursor();

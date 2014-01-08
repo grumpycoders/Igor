@@ -106,8 +106,94 @@ igorAddress c_wxAsmWidget::GetAddressOfCursor()
     return m_addressOfCursor;
 }
 
+void c_wxAsmWidget::updateTextCache()
+{
+    if (m_textCacheIsDirty == false)
+        return;
+
+    m_textCacheIsDirty = false;
+
+    m_textCache.clear();
+
+    igorAddress currentPC = m_currentPosition;
+    int numLinesToDraw = (GetSize().GetY() / m_fontSize.GetHeight());
+
+    {
+        c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
+
+        s_analyzeState analyzeState;
+        analyzeState.m_PC = currentPC;
+        analyzeState.pCpu = pCpu;
+        analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
+        analyzeState.pSession = m_pSession;
+        analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+
+        while (m_textCache.size() < numLinesToDraw + 1)
+        {
+            s_textCacheEntry currentEntry;
+
+            currentEntry.m_address = analyzeState.m_PC;
+
+            currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
+
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
+            {
+                s_textCacheEntry symbolNameEntry;
+
+                symbolNameEntry.m_address = analyzeState.m_PC;
+                symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
+                symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL));
+
+                m_textCache.push_back(symbolNameEntry);
+            }
+
+            currentEntry.m_text.append("        "); // alignment of code/data
+
+            if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
+            {
+                /*
+                Balau::String mnemonic;
+                pCpu->getMnemonic(&analyzeState, mnemonic);
+
+                const int numMaxOperand = 4;
+
+                Balau::String operandStrings[numMaxOperand];
+
+                int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
+                EAssert(numMaxOperand >= numOperandsInInstruction);
+
+                for (int i = 0; i < numOperandsInInstruction; i++)
+                {
+                    pCpu->getOperand(&analyzeState, i, operandStrings[i]);
+                }
+                */
+
+                pCpu->printInstruction(&analyzeState, currentEntry.m_text, true);
+
+                m_textCache.push_back(currentEntry);
+
+                analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
+            }
+            else
+            {
+                currentEntry.m_text.append("db    0x%02X", m_pSession->readU8(analyzeState.m_PC));
+
+                m_textCache.push_back(currentEntry);
+
+                analyzeState.m_PC++;
+            }
+        }
+
+        delete analyzeState.m_cpu_analyse_result;
+    }
+}
+
 void c_wxAsmWidget::OnDraw(wxDC& dc)
 {
+    m_textCacheIsDirty = true;
+    updateTextCache();
+
 	wxColour BGColor = GetBackgroundColour();
 	wxBrush MyBrush(BGColor, wxSOLID);
 	dc.SetBackground(MyBrush);
@@ -123,6 +209,75 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 	igorAddress currentPC = m_currentPosition;
 
+    int currentLine = 0;
+
+    while(currentLine < m_textCache.size())
+    {
+        // draw the text while honoring color changes
+        int currentX = 0;
+        Balau::String& currentText = m_textCache[currentLine].m_text;
+        int currentPositionInText = 0;
+
+        Balau::String::List stringList= currentText.split(';');
+
+        dc.SetTextForeground(*wxBLACK);
+
+        for (int i = 0; i < stringList.size(); i++)
+        {
+            if (strstr(stringList[i].to_charp(), "C="))
+            {
+                if (strstr(c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), stringList[i].to_charp()))
+                {
+                    dc.SetTextForeground(*wxBLUE);
+                }
+                if (strstr(c_cpu_module::startColor(c_cpu_module::RESET_COLOR), stringList[i].to_charp()))
+                {
+                    dc.SetTextForeground(*wxBLACK);
+                }
+            }
+            else
+            {
+                dc.DrawText(stringList[i].to_charp(), currentX, drawY);
+
+                currentX += stringList[i].strlen() * m_fontSize.GetX();
+            }
+        }
+
+        /*
+        while (currentPositionInText < currentText.strlen())
+        {
+            if (currentText[currentPositionInText] == '<')
+            {
+                if (currentText.compare())
+            }
+            else
+            {
+                char buffer[2];
+                buffer[0] = currentText[currentPositionInText];
+                buffer[1] = 0;
+
+                dc.DrawText(buffer, currentX, drawY);
+
+                currentPositionInText++;
+                currentX += m_fontSize.GetX();
+            }
+        }*/
+
+/*        int nextColorChange = currentText.strstr("<C:");
+
+        if (nextColorChange)
+        {
+            Balau::String text = currentText;
+            text.trim()
+        }*/
+        
+
+        drawY += m_fontSize.GetHeight();
+
+        currentLine++;
+    }
+
+#if 0
 	{
 		c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
 
@@ -261,7 +416,7 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 		delete analyzeState.m_cpu_analyse_result;
 	}
-
+#endif
     int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
     {
         wxBrush oldBrush = dc.GetBrush();
@@ -293,6 +448,8 @@ void c_wxAsmWidget::OnMouseMotion(wxMouseEvent& event)
 
 void c_wxAsmWidget::OnMouseLeftDown(wxMouseEvent& event)
 {
+    GetFocus();
+
     int cursorCollumn = m_mousePosition.x / m_fontSize.GetWidth();
     int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
     

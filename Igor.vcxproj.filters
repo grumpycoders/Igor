@@ -2243,6 +2243,9 @@
     <ClCompile Include="src\IgorSession.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
+    <ClCompile Include="src\cpu\cpuModule.cpp">
+      <Filter>Igor\cpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Balau\win32\zlib\zutil.h">

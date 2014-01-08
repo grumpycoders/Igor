@@ -410,7 +410,7 @@ class c_cpu_x86 : public c_cpu_module
 public:
 
 	igor_result analyze(s_analyzeState* pState);
-	igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString);
+    igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false);
 	c_cpu_analyse_result* allocateCpuSpecificAnalyseResult(){ return new c_x86_analyse_result; }
 
 	const char* getRegisterName(e_operandSize size, u8 regIndex, bool sizeOverride = false);
@@ -419,7 +419,7 @@ public:
 	void printInstruction(c_cpu_analyse_result* result);
     igor_result getMnemonic(s_analyzeState* pState, Balau::String& outputString);
     int getNumOperands(s_analyzeState* pState);
-    igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString);
+    igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor = false);
 
 private:
 

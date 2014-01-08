@@ -4297,6 +4297,7 @@
     <ClInclude Include="src\IgorSession.h">
       <Filter>Igor</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Balau\win32\iconv\aliases.gperf">
@@ -4349,5 +4350,10 @@
     <CustomBuild Include="src\protobufs\IgorProtoFile.proto">
       <Filter>Igor\protobufs</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="wxIgor\wxIgor.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

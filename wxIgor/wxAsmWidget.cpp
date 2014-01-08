@@ -59,18 +59,11 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 	long style,
 	const wxString& name) : wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize)
 {
+    // First let's set everything in our object...
     m_pSession = pSession;
 
 	m_timer = new wxTimer(this, EVT_RefreshDatabase);
-	m_timer->Start(300);
-
     m_currentPosition = m_pSession->getEntryPoint();
-
-	SetScrollbar(wxVERTICAL, 250, 16, 500, 15);
-	//SetScrollbar(wxVERTICAL, 0, 0, 0); // hide the default scrollbar
-	SetFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
-
-	//m_scrollbar = new c_wxAsmWidgetScrollbar(this, this, id);
 
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 
@@ -80,8 +73,18 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
     m_fontSize = m_currentFont.GetPixelSize();
 
     m_caret = new wxCaret(this, m_fontSize);
+
+    // ...then let's start calling stuff, as it will go back into our object.
+    m_timer->Start(300);
+
     SetCaret(m_caret);
     m_caret->Show();
+
+    SetScrollbar(wxVERTICAL, 250, 16, 500, 15);
+    //SetScrollbar(wxVERTICAL, 0, 0, 0); // hide the default scrollbar
+    SetFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
+
+    //m_scrollbar = new c_wxAsmWidgetScrollbar(this, this, id);
 }
 
 c_wxAsmWidget::~c_wxAsmWidget()

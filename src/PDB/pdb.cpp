@@ -32,3 +32,8 @@ PPDB PdbOpen(const char *szPdbFileName, GUID* guidSig, DWORD age)
 
     return pdb;
 }
+
+void PdbClose(PDB* pPDB)
+{
+	SYMUnloadSymbols(pPDB->Symd);
+}

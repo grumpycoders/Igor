@@ -100,6 +100,11 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 	CreateStatusBar();
 }
 
+c_wxIgorFrame::~c_wxIgorFrame()
+{
+
+}
+
 void c_wxIgorFrame::OpenFile(wxString& fileName)
 {
     igor_result r = IGOR_FAILURE;

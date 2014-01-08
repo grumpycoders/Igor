@@ -366,6 +366,8 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
 
                         Sym = NextSym(Sym);
                     }
+
+					PdbClose(pPdb);
                 }
 
                 //SYMDumpSymbols(pPdb->Symd, 0xFFFF);

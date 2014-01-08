@@ -23,3 +23,4 @@ typedef struct _PDB
 #define PDB_STREAM_FPO    5
 
 PPDB PdbOpen(const char *szPdbFileName, GUID* guidSig=NULL, DWORD age=0);
+void PdbClose(PDB* pPDB);

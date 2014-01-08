@@ -54,9 +54,12 @@ class wxIdler : public Task {
 
 class wxExit : public AtExit {
 public:
-    wxExit() : AtExit(12) { }
+	wxExit() : AtExit(12) { }
     void doExit() { wxIgorExit(); }
 };
+
+static wxExit wxexit;
+
 #endif
 
 void MainTask::Do() {

@@ -123,11 +123,6 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 	igorAddress currentPC = m_currentPosition;
 
-    int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
-    {
-        dc.DrawRectangle(0, cursorLine * m_fontSize.GetHeight(), size.GetWidth(), m_fontSize.GetHeight() + 1);
-    }
-
 	{
 		c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
 
@@ -203,6 +198,27 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
                 // draw operandes
                 for (int i = 0; i < numOperandsInInstruction; i++)
                 {
+                    int xBeforeOperand = currentX;
+                    int xAfterOperand = currentX + m_fontSize.GetWidth() * operandStrings[i].strlen();
+
+                    // are we on the caret line?
+                    if (numDrawnLines == m_caret->GetPosition().y / m_fontSize.GetHeight())
+                    {
+                        // is the caret over the current operand?
+                        if ((xBeforeOperand <= m_caret->GetPosition().x) && (xAfterOperand > m_caret->GetPosition().x))
+                        {
+                            wxBrush oldBrush = dc.GetBrush();
+                            wxPen oldPen = dc.GetPen();
+
+                            dc.SetBrush(*wxYELLOW_BRUSH);
+                            dc.SetPen(*wxYELLOW_PEN);
+
+                            dc.DrawRectangle(xBeforeOperand, drawY, xAfterOperand - xBeforeOperand, m_fontSize.GetHeight());
+
+                            dc.SetBrush(oldBrush);
+                            dc.SetPen(oldPen);
+                        }
+                    }
                     dc.DrawText(operandStrings[i].to_charp(), currentX, drawY);
                     currentX += m_fontSize.GetWidth() * operandStrings[i].strlen();
                     currentX += m_fontSize.GetWidth();
@@ -245,6 +261,14 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 		delete analyzeState.m_cpu_analyse_result;
 	}
+
+    int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
+    {
+        wxBrush oldBrush = dc.GetBrush();
+        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+        dc.DrawRectangle(0, cursorLine * m_fontSize.GetHeight(), size.GetWidth(), m_fontSize.GetHeight() + 1);
+        dc.SetBrush(oldBrush);
+    }
 }
 
 void c_wxAsmWidget::OnPaint(wxPaintEvent& event)

@@ -73,11 +73,13 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 	c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
 
 	wxMenu *menuFile = new wxMenu;
-	menuFile->Append(wxID_OPEN, "&Open");
+    menuFile->Append(new wxMenuItem(menuFile, wxID_OPEN, wxT("&Open\tCtrl+O")));
 	menuFile->Append(ID_EXPORT_DISASSEMBLY, "Export disassembly");
     menuFile->AppendSeparator();
     menuFile->Append(ID_SAVE_DATABASE, "Save database");
     menuFile->Append(ID_LOAD_DATABASE, "Load database");
+    menuFile->AppendSeparator();
+    menuFile->Append(new wxMenuItem(menuFile, wxID_EXIT, wxT("&Quit\tCtrl+W")));
 
 	pApp->m_fileHistory->UseMenu(menuFile);
 	pApp->m_fileHistory->AddFilesToMenu();

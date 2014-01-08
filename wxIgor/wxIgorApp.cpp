@@ -29,6 +29,13 @@ wxIMPLEMENT_APP_NO_MAIN(c_wxIgorApp);
 
 bool c_wxIgorApp::OnInit()
 {
+    // this test for windows XP and 32bit color depth
+    if (wxTheApp->GetComCtl32Version() >= 600 && ::wxDisplayDepth() >= 32)
+    {
+        // this disable color remapping for icons and use full 32 bit colors
+        wxSystemOptions::SetOption("msw.remap", 2);
+    }
+
 	m_config = new wxConfig("wxIgor");
 
 	m_fileHistory = new wxFileHistory();

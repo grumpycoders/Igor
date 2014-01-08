@@ -5,3 +5,4 @@
 #include <wx/textctrl.h>
 #include <wx/timer.h>
 #include <wx/scrolbar.h>
+#include <wx/sysopt.h>

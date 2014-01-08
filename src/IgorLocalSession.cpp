@@ -7,7 +7,6 @@
 #include <Printer.h>
 #include <BString.h>
 #include <TaskMan.h>
-#include <Output.h>
 
 using namespace Balau;
 
@@ -100,7 +99,7 @@ void IgorLocalSession::Do() {
     }
 }
 
-void IgorLocalSession::serialize(const char * filename) {
+void IgorLocalSession::serialize(IO<Handle> file) {
     IgorProtoFile::IgorFile protoFile;
 
     protoFile.set_uuid(getUUID().to_charp());
@@ -108,17 +107,13 @@ void IgorLocalSession::serialize(const char * filename) {
     if (name && name[0])
         protoFile.set_name(name);
 
-    IO<Output> file(new Output(filename));
-    file->open();
-
     gprotOutput gpFile(file);
     protoFile.SerializeToZeroCopyStream(&gpFile);
 
     gpFile.maybeFlush();
-    file->close();
 }
 
-IgorLocalSession * IgorLocalSession::deserialize(const char * filename) {
+IgorLocalSession * IgorLocalSession::deserialize(IO<Handle> file) {
     return NULL;
 }
 

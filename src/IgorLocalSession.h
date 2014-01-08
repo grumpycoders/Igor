@@ -4,6 +4,7 @@
 #include <list>
 #include <Task.h>
 #include <StacklessTask.h>
+#include <Handle.h>
 #include "Igor.h"
 #include "IgorDatabase.h"
 #include "cpu/cpuModule.h"
@@ -19,8 +20,8 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
 
     void loaded(const char * filename);
 
-    void serialize(const char * filename);
-    static IgorLocalSession * deserialize(const char * filename);
+    void serialize(Balau::IO<Balau::Handle>);
+    static IgorLocalSession * deserialize(Balau::IO<Balau::Handle>);
 
     void add_code_analysis_task(igorAddress PC);
     virtual void Do() override;

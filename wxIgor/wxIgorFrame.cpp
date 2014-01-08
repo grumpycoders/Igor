@@ -4,6 +4,7 @@
 #include "wxIgorApp.h"
 
 #include <Input.h>
+#include <Output.h>
 #include <Buffer.h>
 #include <TaskMan.h>
 
@@ -13,6 +14,23 @@
 #include "PELoader.h"
 
 using namespace Balau;
+
+static void fileOperationSafe(std::function<void()> lambda) {
+    Task::SimpleContext simpleContext;
+
+    try {
+        lambda();
+    }
+    catch (GeneralException & e) {
+        wxString errorMsg = "File error:\n" + wxString(e.getMsg());
+        wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, "Error", wxOK | wxICON_ERROR);
+        dial->ShowModal();
+    }
+    catch (...) {
+        wxMessageDialog * dial = new wxMessageDialog(NULL, "Unknown file error.", "Error", wxOK | wxICON_ERROR);
+        dial->ShowModal();
+    }
+}
 
 c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent) : wxPanel(parent)
 {
@@ -78,7 +96,6 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 
 void c_wxIgorFrame::OpenFile(wxString& fileName)
 {
-    s_igorDatabase * db = NULL;
     igor_result r = IGOR_FAILURE;
 
     // add to history
@@ -90,7 +107,7 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
 
     m_session = new IgorLocalSession();
 
-    try {
+    fileOperationSafe([&]() {
         IO<Input> reader(new Input(fileName.c_str()));
         reader->open();
 
@@ -105,25 +122,10 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         reader->close();
 
         m_session->loaded(fileName.c_str());
-    }
-    catch (GeneralException & e) {
-        wxString errorMsg = wxT("Error loading file:\n") + wxString(e.getMsg());
-        wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, wxT("Error"), wxOK | wxICON_ERROR);
-        dial->ShowModal();
-    }
-    catch (...) {
-        wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error loading file."), wxT("Error"), wxOK | wxICON_ERROR);
-        dial->ShowModal();
-    }
+    });
 
     // Add the task even in case of failure, so it can properly clean itself out.
     TaskMan::registerTask(m_session);
-
-    if (r != IGOR_SUCCESS)
-    {
-        delete db;
-        return;
-    }
 
     m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
 
@@ -193,19 +195,12 @@ void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK && m_session)
     {
         wxString fileName = fileDialog.GetPath();
-        try
-        {
-            m_session->serialize(fileName.c_str().AsChar());
-        }
-        catch (GeneralException & e) {
-            wxString errorMsg = wxT("Error saving file:\n") + wxString(e.getMsg());
-            wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, wxT("Error"), wxOK | wxICON_ERROR);
-            dial->ShowModal();
-        }
-        catch (...) {
-            wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error saving file."), wxT("Error"), wxOK | wxICON_ERROR);
-            dial->ShowModal();
-        }
+        fileOperationSafe([&]() {
+            IO<Output> file(new Output(fileName.c_str().AsChar()));
+            file->open();
+            m_session->serialize(file);
+            file->close();
+        });
     }
 }
 
@@ -216,19 +211,12 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
     {
         wxString fileName = fileDialog.GetPath();
 
-        try
-        {
-            m_session = IgorLocalSession::deserialize(fileName.c_str().AsChar());
-        }
-        catch (GeneralException & e) {
-            wxString errorMsg = wxT("Error loading file:\n") + wxString(e.getMsg());
-            wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, wxT("Error"), wxOK | wxICON_ERROR);
-            dial->ShowModal();
-        }
-        catch (...) {
-            wxMessageDialog * dial = new wxMessageDialog(NULL, wxT("Error loading file."), wxT("Error"), wxOK | wxICON_ERROR);
-            dial->ShowModal();
-        }
+        fileOperationSafe([&]() {
+            IO<Input> file(new Input(fileName.c_str().AsChar()));
+            file->open();
+            m_session = IgorLocalSession::deserialize(file);
+            file->close();
+        });
     }
 }
 

@@ -305,6 +305,12 @@ void c_wxAsmWidget::goToSelectedSymbol()
     {
         goToAddress(address);
     }
+
+	u64 offset;
+	if (m_selectedText.scanf("0x%08llX", &offset))
+	{
+		goToAddress(igorAddress(offset));
+	}
 }
 
 void c_wxAsmWidget::OnMouseLeftDClick(wxMouseEvent& event)
@@ -352,7 +358,7 @@ void c_wxAsmWidget::updateSelectedText()
             if (finishX > caretCollumn)
             {
                 int startOfString = caretCollumn;
-                while (IsCharAlphaNumeric(stringList[i][startOfString]) && startOfString)
+				while (startOfString && (startOfString >= 1 && IsCharAlphaNumeric(stringList[i][startOfString-1])))
                 {
                     startOfString--;
                 }
@@ -361,7 +367,7 @@ void c_wxAsmWidget::updateSelectedText()
                 {
                     endOfString++;
                 }
-                m_selectedText = stringList[i];
+				m_selectedText = stringList[i].to_charp(startOfString);
                 return;
             }
 

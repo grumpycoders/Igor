@@ -265,7 +265,15 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
 			else
 			if ((RMIndex == 5) && pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_INDIRECT)
 			{
-				operandString.set("%s[0x%08llX]", segmentString, pOperand->m_registerRM.m_mod_reg_rm.offset);
+				Balau::String symbolName;
+				if (pState->pSession->getSymbolName(igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset), symbolName))
+				{
+					operandString.set("%s[%s%s%s]", segmentString, startColor(KNOWN_SYMBOL, bUseColor), symbolName.to_charp(), finishColor(KNOWN_SYMBOL, bUseColor));
+				}
+				else
+				{
+					operandString.set("%s[0x%08llX]", segmentString, pOperand->m_registerRM.m_mod_reg_rm.offset);
+				}
 			}
 			else
 			{

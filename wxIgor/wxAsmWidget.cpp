@@ -305,11 +305,13 @@ void c_wxAsmWidget::goToSelectedSymbol()
     {
         goToAddress(address);
     }
-
-	u64 offset;
-	if (m_selectedText.scanf("0x%08llX", &offset))
+	else
 	{
-		goToAddress(igorAddress(offset));
+		u64 offset;
+		if (m_selectedText.scanf("0x%08llX", &offset))
+		{
+			goToAddress(igorAddress(offset));
+		}
 	}
 }
 
@@ -339,6 +341,26 @@ void c_wxAsmWidget::moveCaret(int x, int y)
     Refresh();
 }
 
+bool IsValidCharForSymbol(char character)
+{
+	if (character >= 'a' && character <= 'z')
+		return true;
+
+	if (character >= 'A' && character <= 'Z')
+		return true;
+
+	if (character >= '0' && character <= '9')
+		return true;
+
+	if (character == '_')
+		return true;
+
+	if (character == '?')
+		return true;
+
+	return false;
+}
+
 void c_wxAsmWidget::updateSelectedText()
 {
     int caretCollumn = m_caret->GetPosition().x / m_fontSize.GetWidth();
@@ -358,12 +380,12 @@ void c_wxAsmWidget::updateSelectedText()
             if (finishX > caretCollumn)
             {
                 int startOfString = caretCollumn;
-				while (startOfString && (startOfString >= 1 && IsCharAlphaNumeric(stringList[i][startOfString-1])))
+				while (startOfString && (startOfString >= 1 && IsValidCharForSymbol(stringList[i][startOfString-1])))
                 {
                     startOfString--;
                 }
                 int endOfString = caretCollumn;
-                while (IsCharAlphaNumeric(stringList[i][endOfString]) && (endOfString+1 < stringList[i].strlen()))
+				while (IsValidCharForSymbol(stringList[i][endOfString]) && (endOfString + 1 < stringList[i].strlen()))
                 {
                     endOfString++;
                 }

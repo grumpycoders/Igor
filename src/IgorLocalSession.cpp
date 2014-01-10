@@ -168,6 +168,7 @@ void IgorLocalSession::Do() {
         while (!m_pDatabase->m_analysisRequests.isEmpty()) {
             s_analysisRequest* pRequest = m_pDatabase->m_analysisRequests.pop();
             igorAddress currentPC = pRequest->m_pc;
+            delete pRequest;
 
             if (m_status == STOPPING || currentPC == IGOR_INVALID_ADDRESS) {
                 m_status = STOPPING;

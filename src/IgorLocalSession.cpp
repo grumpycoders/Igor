@@ -10,12 +10,90 @@
 
 using namespace Balau;
 
+static bool safeOperationLambda(std::function<bool()> lambda) {
+    bool success = true;
+
+    try {
+        success = lambda();
+    }
+    catch (...) {
+        success = false;
+    }
+
+    return success;
+}
+
+class gprotInput : public google::protobuf::io::ZeroCopyInputStream {
+  public:
+      gprotInput(IO<Handle> h) : m_h(h) { }
+
+  private:
+    virtual bool Next(const void ** data, int * size) override;
+    virtual void BackUp(int count) override { m_availBytes += count; }
+    virtual bool Skip(int count) override;
+    virtual google::protobuf::int64 ByteCount() const override { return m_availBytes; }
+
+    char m_data[1024];
+    IO<Handle> m_h;
+    int m_availBytes = 0;
+
+    google::protobuf::int64 m_size = 0;
+};
+
+bool gprotInput::Next(const void ** data, int * size) {
+    return safeOperationLambda([&]() -> bool {
+        if (!m_availBytes) {
+            ssize_t r = m_h->read(m_data, sizeof(m_data));
+            if (r < 0)
+                return false;
+            m_availBytes = r;
+            m_size += r;
+        }
+        *data = m_data;
+        *size = m_availBytes;
+
+        return true;
+    });
+}
+
+bool gprotInput::Skip(int count) {
+    bool success = safeOperationLambda([&]() -> bool {
+        if (m_availBytes < count) {
+            count -= m_availBytes;
+            m_availBytes = 0;
+            if (m_h->canSeek()) {
+                m_h->seek(count, SEEK_CUR);
+            }
+            else {
+                void * buf;
+
+                if (count >= 1024)
+                    buf = malloc(count);
+                else
+                    buf = alloca(count);
+
+                m_h->forceRead(buf, count);
+
+                if (count >= 1024)
+                    free(buf);
+            }
+        }
+        else {
+            m_availBytes -= count;
+        }
+
+        return true;
+    });
+
+    return success || !m_h->isEOF();
+}
+
 class gprotOutput : public google::protobuf::io::ZeroCopyOutputStream {
   public:
       gprotOutput(IO<Handle> h) : m_h(h) { }
       virtual ~gprotOutput() { maybeFlush(); }
 
-    void maybeFlush();
+    bool maybeFlush();
 
   private:
     virtual bool Next(void ** data, int * size) override;
@@ -29,17 +107,24 @@ class gprotOutput : public google::protobuf::io::ZeroCopyOutputStream {
 };
 
 bool gprotOutput::Next(void ** data, int * size) {
-    maybeFlush();
-    m_bufSize = *size = sizeof(m_data);
-    *data = m_data;
-    return true;
+    return safeOperationLambda([&]() {
+        if (!maybeFlush())
+            return false;
+        m_bufSize = *size = sizeof(m_data);
+        *data = m_data;
+        return true;
+    });
 }
 
-void gprotOutput::maybeFlush() {
+bool gprotOutput::maybeFlush() {
+    ssize_t r = 0;
     if (m_bufSize)
-        m_h->forceWrite(m_data, m_bufSize);
-    m_size += m_bufSize;
+        r = m_h->forceWrite(m_data, m_bufSize);
+    if (r < 0)
+        return false;
+    m_size += r;
     m_bufSize = 0;
+    return true;
 }
 
 void IgorLocalSession::Do() {
@@ -99,13 +184,32 @@ void IgorLocalSession::Do() {
     }
 }
 
+void IgorLocalSession::freeze() {
+
+}
+
+void IgorLocalSession::thaw() {
+
+}
+
 void IgorLocalSession::serialize(IO<Handle> file) {
     IgorProtoFile::IgorFile protoFile;
+
+    s_igorDatabase * db = getDB();
 
     protoFile.set_uuid(getUUID().to_charp());
     const char * name = getSessionName().to_charp();
     if (name && name[0])
         protoFile.set_name(name);
+    protoFile.mutable_architecture()->set_manufacturer(IgorProtoFile::IgorFile_CPUManufacturer_INTEL);
+    auto protoSymbols = protoFile.mutable_symbols();
+    protoSymbols->Reserve(db->m_symbolMap.size());
+    for (auto & i : db->m_symbolMap) {
+        auto fileSymbol = protoSymbols->Add();
+        const igorAddress & addr = i.first;
+        const s_igorDatabase::s_symbolDefinition & symbol = i.second;
+
+    }
 
     gprotOutput gpFile(file);
     protoFile.SerializeToZeroCopyStream(&gpFile);

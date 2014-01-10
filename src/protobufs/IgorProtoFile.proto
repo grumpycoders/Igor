@@ -1,6 +1,27 @@
 package IgorProtoFile;
 
 message IgorFile {
+    enum CPUManufacturer {
+        INTEL = 0;
+    }
+
     required string uuid = 1;
     optional string name = 2;
+
+    message Architecture {
+        required CPUManufacturer manufacturer = 1;
+    }
+
+    optional Architecture architecture = 3;
+
+    message Address {
+        required uint64 offset = 1;
+    }
+
+    message Symbol {
+        required Address address = 1;
+        required string name = 2;
+    }
+
+    repeated Symbol symbols = 4;
 }

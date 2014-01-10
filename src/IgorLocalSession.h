@@ -33,6 +33,9 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
     const char * getStatusString();
     void add_instruction() { m_instructions++; }
 
+    void freeze();
+    void thaw();
+
     virtual igor_result readS32(igorAddress address, s32& output) override;
     virtual igor_result readU32(igorAddress address, u32& output) override;
     virtual igor_result readS16(igorAddress address, s16& output) override;

@@ -33,6 +33,8 @@ public:
     }
 };
 
+static GoogleProtoBufs gprotobufs;
+
 #ifdef USE_WXWIDGETS
 #include "../wxIgor/wxIgorShared.h"
 
@@ -60,6 +62,16 @@ public:
 
 static wxExit wxexit;
 
+static void startWX(int argc, char ** argv) {
+    bool wxStarted = wxIgorStartup(argc, argv);
+    IAssert(wxStarted, "wxWidgets couldn't start...");
+    TaskMan::registerTask(new wxIdler());
+}
+
+#else
+
+static void startWS(...) { }
+
 #endif
 
 void MainTask::Do() {
@@ -82,11 +94,7 @@ void MainTask::Do() {
         TaskMan::registerTask(session);
     }
 
-#ifdef USE_WXWIDGETS
-    bool wxStarted = wxIgorStartup(argc, argv);
-    IAssert(wxStarted, "wxWidgets couldn't start...");
-    TaskMan::registerTask(new wxIdler());
-#endif
+    startWX(argc, argv);
     
     stopTaskManOnExit(false);
 

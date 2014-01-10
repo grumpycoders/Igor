@@ -60,7 +60,6 @@ bool c_wxIgorApp::balauStart(int & argc, char ** argv) {
 }
 
 static std::atomic<bool> s_exitting;
-static std::atomic<bool> s_onExitCalled;
 
 bool c_wxIgorApp::balauStart() {
     CallOnInit();
@@ -103,8 +102,7 @@ std::pair<bool, int> c_wxIgorApp::balauLoop() {
 }
 
 void c_wxIgorApp::balauExit() {
-    if (!s_onExitCalled.load())
-        OnExit();
+    OnExit();
 
     wxIgorEventLoop * loop = dynamic_cast<wxIgorEventLoop *>(m_mainLoop);
     if (loop)
@@ -143,11 +141,7 @@ int wxIgorEventLoop::run() {
 void wxIgorEventLoop::ScheduleExit(int rc) {
     m_exitcode = rc;
     m_shouldExit = true;
-	if (!s_onExitCalled.load())
-	{
-		s_onExitCalled.exchange(true);
-		OnExit();
-	}
+    OnExit();
     WakeUp();
 }
 

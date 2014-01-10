@@ -203,15 +203,14 @@ int s_igorDatabase::readString(igorAddress address, Balau::String& outputString)
 {
 	int length = 0;
 	s8 currentChar;
-	do 
+    for (;;)
 	{
 		currentChar = readS8(address++);
 
-		if (currentChar)
-		{
-			length++;
-		}
-		outputString.append("%c", currentChar);
+        if (!currentChar)
+            break;
+        length++;
+        outputString.append("%c", currentChar);
 
 	} while (currentChar);
 

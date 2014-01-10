@@ -358,10 +358,35 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
                                 }
 
                                 break;
+                            case S_LDATA32:
+                            case S_GDATA32:
+                                /*
+                                char *type = TPILookupTypeName(Symd->TpiHdr, Sym->Data32.typind);
+                                char *decl = TPIGetSymbolDeclaration(Symd->TpiHdr, type, (char*)Sym->Data32.name);
+                                printf("S_%sDATA32| data [%s; type %04x] %p = %s",
+                                    Sym->Sym.rectyp == S_LDATA32 ? "L" : "G",
+                                    Sym->Sym.rectyp == S_LDATA32 ? "local" : "global",
+                                    Sym->Data32.typind, Sym->Data32.off, decl);
+                                */
+                                if (Sym->Data32.seg == 0)
+                                {
+                                    igorAddress symbolAddress(m_ImageBase + Sym->Data32.off);
+                                    db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
+                                }
+                                else
+                                {
+                                    int segmentIndex = Sym->Data32.seg - 1;
+                                    if (segmentIndex < m_segments.size())
+                                    {
+                                        igorAddress symbolAddress(m_ImageBase + m_segments[Sym->Data32.seg - 1].VirtualAddress + Sym->Data32.off);
+                                        db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
+                                    }
+                                }
                             default:
                                 break;
                             }
-                            //SYMpDumpSymbol(Symd, Sym);
+                            //VOID SYMpDumpSymbol(PSYMD Symd, PSYM Sym);
+                            //SYMpDumpSymbol(pPdb->Symd, Sym);
                         }
 
                         Sym = NextSym(Sym);

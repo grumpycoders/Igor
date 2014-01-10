@@ -358,6 +358,12 @@ bool IsValidCharForSymbol(char character)
 	if (character == '?')
 		return true;
 
+    if (character == '@')
+        return true;
+
+    if (character == ':')
+        return true;
+
 	return false;
 }
 

@@ -6,6 +6,8 @@
 #include <BString.h>
 #include <TaskMan.h>
 
+#include "IgorMemory.h"
+
 using namespace Balau;
 
 void IgorAnalysis::Do()

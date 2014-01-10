@@ -90,4 +90,5 @@ BOOL MsfReferenceStreamType(MSF* msf, ULONG iStreamNumber, MSF_STREAM_REF<T> *st
 }
 
 MSF* MsfOpen(const char *szFileName);
+void MsfClose(MSF* pMSF);
 MSF_STREAM* MsfLoadStream(MSF* msf, ULONG iStreamNumber);

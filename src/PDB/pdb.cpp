@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "pdb.h"
 
+#include "IgorMemory.h"
+
 PPDB PdbOpen(const char *szPdbFileName, GUID* guidSig, DWORD age)
 {
     PDB* pdb = (PDB*)malloc(sizeof(PDB));
@@ -29,4 +31,9 @@ PPDB PdbOpen(const char *szPdbFileName, GUID* guidSig, DWORD age)
     GSIInit(pdb->Symd);
 
     return pdb;
+}
+
+void PdbClose(PDB* pPDB)
+{
+	SYMUnloadSymbols(pPDB->Symd);
 }

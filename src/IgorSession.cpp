@@ -10,6 +10,8 @@
 #include <BString.h>
 #include <TaskMan.h>
 
+#include "IgorMemory.h"
+
 using namespace Balau;
 
 static String generateUUID() {

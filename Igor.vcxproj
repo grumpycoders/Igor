@@ -1672,6 +1672,7 @@
     <ClCompile Include="Balau\win32\zlib\trees.c" />
     <ClCompile Include="Balau\win32\zlib\uncompr.c" />
     <ClCompile Include="Balau\win32\zlib\zutil.c" />
+    <ClCompile Include="src\cpu\cpuModule.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp" />
@@ -1995,6 +1996,7 @@
     <ClInclude Include="src\IgorDatabase.h" />
     <ClInclude Include="src\IgorHttp.h" />
     <ClInclude Include="src\IgorLocalSession.h" />
+    <ClInclude Include="src\IgorMemory.h" />
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\IgorSession.h" />
     <ClInclude Include="src\IgorUtils.h" />

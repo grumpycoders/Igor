@@ -9,6 +9,8 @@
 #include <wx/dcbuffer.h>
 #include <wx/caret.h>
 
+#define new DEBUG_NEW
+
 using namespace Balau;
 
 c_wxAsmWidgetScrollbar::c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id) : wxScrollBar(parent, id, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL)
@@ -45,6 +47,8 @@ void c_wxAsmWidgetScrollbar::OnScroll(wxScrollEvent& event)
 	{
 		SetScrollbar(250, 16, 500, 15);
 		m_previousThumPosition = 250;
+
+        m_AsmWidget->SetFocus();
 	}
 }
 
@@ -57,7 +61,7 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 	const wxPoint& pos,
 	const wxSize& size,
 	long style,
-	const wxString& name) : wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize)
+    const wxString& name) : wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize)
 {
     // First let's set everything in our object...
     m_pSession = pSession;
@@ -80,7 +84,7 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
     SetCaret(m_caret);
     m_caret->Show();
 
-    SetScrollbar(wxVERTICAL, 250, 16, 500, 15);
+//    SetScrollbars(20, 20, 50, 50);
     //SetScrollbar(wxVERTICAL, 0, 0, 0); // hide the default scrollbar
     SetFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
 
@@ -106,8 +110,94 @@ igorAddress c_wxAsmWidget::GetAddressOfCursor()
     return m_addressOfCursor;
 }
 
+void c_wxAsmWidget::updateTextCache()
+{
+    if (m_textCacheIsDirty == false)
+        return;
+
+    m_textCacheIsDirty = false;
+
+    m_textCache.clear();
+
+    igorAddress currentPC = m_currentPosition;
+    int numLinesToDraw = (GetSize().GetY() / m_fontSize.GetHeight());
+
+    {
+        c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
+
+        s_analyzeState analyzeState;
+        analyzeState.m_PC = currentPC;
+        analyzeState.pCpu = pCpu;
+        analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
+        analyzeState.pSession = m_pSession;
+        analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+
+        while (m_textCache.size() < numLinesToDraw + 1)
+        {
+            s_textCacheEntry currentEntry;
+
+            currentEntry.m_address = analyzeState.m_PC;
+
+            currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
+
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
+            {
+                s_textCacheEntry symbolNameEntry;
+
+                symbolNameEntry.m_address = analyzeState.m_PC;
+                symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
+                symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL));
+
+                m_textCache.push_back(symbolNameEntry);
+            }
+
+            currentEntry.m_text.append("        "); // alignment of code/data
+
+            if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
+            {
+                /*
+                Balau::String mnemonic;
+                pCpu->getMnemonic(&analyzeState, mnemonic);
+
+                const int numMaxOperand = 4;
+
+                Balau::String operandStrings[numMaxOperand];
+
+                int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
+                EAssert(numMaxOperand >= numOperandsInInstruction);
+
+                for (int i = 0; i < numOperandsInInstruction; i++)
+                {
+                    pCpu->getOperand(&analyzeState, i, operandStrings[i]);
+                }
+                */
+
+                pCpu->printInstruction(&analyzeState, currentEntry.m_text, true);
+
+                m_textCache.push_back(currentEntry);
+
+                analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
+            }
+            else
+            {
+                currentEntry.m_text.append("db    0x%02X", m_pSession->readU8(analyzeState.m_PC));
+
+                m_textCache.push_back(currentEntry);
+
+                analyzeState.m_PC++;
+            }
+        }
+
+        delete analyzeState.m_cpu_analyse_result;
+    }
+}
+
 void c_wxAsmWidget::OnDraw(wxDC& dc)
 {
+    m_textCacheIsDirty = true;
+    updateTextCache();
+
 	wxColour BGColor = GetBackgroundColour();
 	wxBrush MyBrush(BGColor, wxSOLID);
 	dc.SetBackground(MyBrush);
@@ -123,144 +213,42 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 	igorAddress currentPC = m_currentPosition;
 
-	{
-		c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
+    int currentLine = 0;
 
-		s_analyzeState analyzeState;
-		analyzeState.m_PC = currentPC;
-		analyzeState.pCpu = pCpu;
-		analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
-		analyzeState.pSession = m_pSession;
-		analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+    while(currentLine < m_textCache.size())
+    {
+        // draw the text while honoring color changes
+        int currentX = 0;
+        Balau::String& currentText = m_textCache[currentLine].m_text;
+        Balau::String::List stringList= currentText.split(';');
 
-		while (numDrawnLines < m_numLinesInWindow + 1)
-		{
-            Balau::String symbolName;
-            if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
+        dc.SetTextForeground(*wxBLACK);
+
+        for (int i = 0; i < stringList.size(); i++)
+        {
+            if (strstr(stringList[i].to_charp(), "C="))
             {
-                dc.SetTextForeground(*wxBLUE);
-                dc.DrawText(symbolName.to_charp(), 0, drawY);
-
-                numDrawnLines++;
-                drawY += m_fontSize.GetHeight();
+                if (strstr(c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), stringList[i].to_charp()))
+                {
+                    dc.SetTextForeground(*wxBLUE);
+                }
+                if (strstr(c_cpu_module::startColor(c_cpu_module::RESET_COLOR), stringList[i].to_charp()))
+                {
+                    dc.SetTextForeground(*wxBLACK);
+                }
             }
-
-			String fullDisassembledString;
-			fullDisassembledString.set("%016llX: ", analyzeState.m_PC.offset);
-
-            if ((drawY <= m_mousePosition.y) && (drawY + m_fontSize.GetHeight() > m_mousePosition.y))
+            else
             {
-                m_addressOfCursor = analyzeState.m_PC;
+                dc.DrawText(stringList[i].to_charp(), currentX, drawY);
+
+                currentX += stringList[i].strlen() * m_fontSize.GetX();
             }
+        }
 
-			if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
-			{
-                
-				/*String disassembledString;
-				pCpu->printInstruction(&analyzeState, disassembledString);
+        drawY += m_fontSize.GetHeight();
 
-				fullDisassembledString += disassembledString;
-
-				wxString displayDisassembledString;
-				displayDisassembledString = fullDisassembledString.to_charp();
-
-				dc.SetTextForeground(*wxBLUE);
-				dc.DrawText(displayDisassembledString, 0, drawY);
-*/
-                int currentX = 0;
-
-                Balau::String mnemonic;
-                pCpu->getMnemonic(&analyzeState, mnemonic);
-
-                const int numMaxOperand = 4;
-
-                Balau::String operandStrings[numMaxOperand];
-
-                int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
-                EAssert(numMaxOperand >= numOperandsInInstruction);
-
-                for (int i = 0; i < numOperandsInInstruction; i++)
-                {
-                    pCpu->getOperand(&analyzeState, i, operandStrings[i]);
-                }
-
-                dc.SetTextForeground(*wxBLUE);
-
-                // draw address
-                dc.DrawText(fullDisassembledString.to_charp(), currentX, drawY);
-                currentX += m_fontSize.GetWidth() * fullDisassembledString.strlen();
-
-                // draw mnemonic
-                dc.DrawText(mnemonic.to_charp(), currentX, drawY);
-                currentX += m_fontSize.GetWidth() * mnemonic.strlen();
-                currentX += m_fontSize.GetWidth();
-
-                // draw operandes
-                for (int i = 0; i < numOperandsInInstruction; i++)
-                {
-                    int xBeforeOperand = currentX;
-                    int xAfterOperand = currentX + m_fontSize.GetWidth() * operandStrings[i].strlen();
-
-                    // are we on the caret line?
-                    if (numDrawnLines == m_caret->GetPosition().y / m_fontSize.GetHeight())
-                    {
-                        // is the caret over the current operand?
-                        if ((xBeforeOperand <= m_caret->GetPosition().x) && (xAfterOperand > m_caret->GetPosition().x))
-                        {
-                            wxBrush oldBrush = dc.GetBrush();
-                            wxPen oldPen = dc.GetPen();
-
-                            dc.SetBrush(*wxYELLOW_BRUSH);
-                            dc.SetPen(*wxYELLOW_PEN);
-
-                            dc.DrawRectangle(xBeforeOperand, drawY, xAfterOperand - xBeforeOperand, m_fontSize.GetHeight());
-
-                            dc.SetBrush(oldBrush);
-                            dc.SetPen(oldPen);
-                        }
-                    }
-                    dc.DrawText(operandStrings[i].to_charp(), currentX, drawY);
-                    currentX += m_fontSize.GetWidth() * operandStrings[i].strlen();
-                    currentX += m_fontSize.GetWidth();
-                }
-                /*
-                for (int i = 0; i < x86_analyse_result->m_numOperands; i++)
-                {
-                    Balau::String operandString;
-                    getOperand(pState, i, operandString);
-                    if (i == 0)
-                    {
-                        instructionString += " ";
-                    }
-                    else
-                    {
-                        instructionString += ", ";
-                    }
-
-                    instructionString += operandString;
-                }
-                */
-
-				numDrawnLines++;
-
-				analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
-			}
-			else
-			{
-				wxString displayDisassembledString = wxString::Format("%016llX: 0x%02X\n", analyzeState.m_PC.offset, m_pSession->readU8(analyzeState.m_PC));
-
-				dc.SetTextForeground(*wxRED);
-				dc.DrawText(displayDisassembledString, 0, drawY);
-				numDrawnLines++;
-
-				analyzeState.m_PC++;
-			}
-
-            drawY += m_fontSize.GetHeight();
-		}
-
-		delete analyzeState.m_cpu_analyse_result;
-	}
+        currentLine++;
+    }
 
     int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
     {
@@ -273,8 +261,6 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 void c_wxAsmWidget::OnPaint(wxPaintEvent& event)
 {
-	wxScrolledWindow::OnPaint(event);
-
 	wxAutoBufferedPaintDC dc(this);
 	OnDraw(dc);
 }
@@ -293,12 +279,45 @@ void c_wxAsmWidget::OnMouseMotion(wxMouseEvent& event)
 
 void c_wxAsmWidget::OnMouseLeftDown(wxMouseEvent& event)
 {
+    SetFocus();
+
     int cursorCollumn = m_mousePosition.x / m_fontSize.GetWidth();
     int cursorLine = m_mousePosition.y / m_fontSize.GetHeight();
     
     m_caret->Move(cursorCollumn * m_fontSize.GetWidth(), cursorLine * m_fontSize.GetHeight());
+    updateSelectedText();
 
     Refresh();
+}
+
+void c_wxAsmWidget::goToAddress(igorAddress address)
+{
+    m_currentPosition = address;
+
+    Refresh();
+}
+
+void c_wxAsmWidget::goToSelectedSymbol()
+{
+    igorAddress address = m_pSession->findSymbol(m_selectedText.to_charp());
+
+    if (address != IGOR_INVALID_ADDRESS)
+    {
+        goToAddress(address);
+    }
+	else
+	{
+		u64 offset;
+		if (m_selectedText.scanf("0x%08llX", &offset))
+		{
+			goToAddress(igorAddress(offset));
+		}
+	}
+}
+
+void c_wxAsmWidget::OnMouseLeftDClick(wxMouseEvent& event)
+{
+    goToSelectedSymbol();
 }
 
 void c_wxAsmWidget::moveCaret(int x, int y)
@@ -309,14 +328,74 @@ void c_wxAsmWidget::moveCaret(int x, int y)
     {
         seekPC(-1);
         m_caret->Move(m_caret->GetPosition().x, 0);
-        Refresh();
     }
 
     if (m_caret->GetPosition().y > m_numLinesInWindow * m_fontSize.GetHeight())
     {
         seekPC(1);
         m_caret->Move(m_caret->GetPosition().x, (m_numLinesInWindow) * m_fontSize.GetHeight());
-        Refresh();
+    }
+
+    updateSelectedText();
+
+    Refresh();
+}
+
+bool IsValidCharForSymbol(char character)
+{
+	if (character >= 'a' && character <= 'z')
+		return true;
+
+	if (character >= 'A' && character <= 'Z')
+		return true;
+
+	if (character >= '0' && character <= '9')
+		return true;
+
+	if (character == '_')
+		return true;
+
+	if (character == '?')
+		return true;
+
+	return false;
+}
+
+void c_wxAsmWidget::updateSelectedText()
+{
+    int caretCollumn = m_caret->GetPosition().x / m_fontSize.GetWidth();
+    int caretLine = m_caret->GetPosition().y / m_fontSize.GetHeight();
+
+    Balau::String& currentText = m_textCache[caretLine].m_text;
+    Balau::String::List stringList = currentText.split(';');
+
+    int currentX = 0;
+    for (int i = 0; i < stringList.size(); i++)
+    {
+        // skip any color change
+        if (strstr(stringList[i].to_charp(), "C=") == NULL)
+        {
+            int finishX = stringList[i].strlen();
+
+            if (finishX > caretCollumn)
+            {
+                int startOfString = caretCollumn;
+				while (startOfString && (startOfString >= 1 && IsValidCharForSymbol(stringList[i][startOfString-1])))
+                {
+                    startOfString--;
+                }
+                int endOfString = caretCollumn;
+				while (IsValidCharForSymbol(stringList[i][endOfString]) && (endOfString + 1 < stringList[i].strlen()))
+                {
+                    endOfString++;
+                }
+				m_selectedText = stringList[i].to_charp(startOfString);
+                return;
+            }
+
+            caretCollumn -= finishX;
+            currentX = finishX;
+        }
     }
 }
 
@@ -340,6 +419,8 @@ void c_wxAsmWidget::OnKeyDown(wxKeyEvent& event)
         moveCaret(0, 1);
         break;
     }
+
+    event.Skip();
 }
 
 void c_wxAsmWidget::seekPC(int amount)
@@ -366,6 +447,7 @@ EVT_SIZE(c_wxAsmWidget::OnSize)
 // Mouse stuff
 EVT_MOTION(c_wxAsmWidget::OnMouseMotion)
 EVT_LEFT_DOWN(c_wxAsmWidget::OnMouseLeftDown)
+EVT_LEFT_DCLICK(c_wxAsmWidget::OnMouseLeftDClick)
 
 EVT_KEY_DOWN(c_wxAsmWidget::OnKeyDown)
 

@@ -16,11 +16,14 @@ class c_wxAsmWidgetScrollbar : public wxScrollBar
 public:
 	c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id);
 
+    virtual bool AcceptsFocus() const { return false; }
+    virtual bool AcceptsFocusFromKeyboard() const { return false; }
 
 private:
 	c_wxAsmWidget* m_AsmWidget;
 
 	void OnScroll(wxScrollEvent& event);
+
 
 	int m_previousThumPosition;
 
@@ -55,9 +58,25 @@ public:
 
     void OnMouseMotion(wxMouseEvent& event);
     void OnMouseLeftDown(wxMouseEvent& event);
+    void OnMouseLeftDClick(wxMouseEvent& event);
     
     void OnKeyDown(wxKeyEvent& event);
 	void OnDraw(wxDC& dc);
+
+    void updateTextCache();
+    void updateSelectedText();
+    void goToSelectedSymbol();
+    void goToAddress(igorAddress address);
+
+    struct s_textCacheEntry
+    {
+        igorAddress m_address;
+        Balau::String m_text;
+    };
+    std::vector<s_textCacheEntry> m_textCache;
+    bool m_textCacheIsDirty;
+
+    Balau::String m_selectedText;
 
     void moveCaret(int x, int y);
 

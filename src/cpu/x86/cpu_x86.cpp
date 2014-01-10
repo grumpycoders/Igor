@@ -194,7 +194,7 @@ int c_cpu_x86::getNumOperands(s_analyzeState* pState)
     return x86_analyse_result->m_numOperands;
 }
 
-igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Balau::String& operandString)
+igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Balau::String& operandString, bool bUseColor)
 {
     c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 
@@ -265,7 +265,15 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
 			else
 			if ((RMIndex == 5) && pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_INDIRECT)
 			{
-				operandString.set("%s[0x%08llX]", segmentString, pOperand->m_registerRM.m_mod_reg_rm.offset);
+				Balau::String symbolName;
+				if (pState->pSession->getSymbolName(igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset), symbolName))
+				{
+					operandString.set("%s[%s%s%s]", segmentString, startColor(KNOWN_SYMBOL, bUseColor), symbolName.to_charp(), finishColor(KNOWN_SYMBOL, bUseColor));
+				}
+				else
+				{
+					operandString.set("%s[0x%08llX]", segmentString, pOperand->m_registerRM.m_mod_reg_rm.offset);
+				}
 			}
 			else
 			{
@@ -291,11 +299,11 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
         {
             if (pOperand->m_address.m_dereference)
             {
-                operandString.set("%s[%s]", segmentString, symbolName.to_charp());
+                operandString.set("%s[%s%s%s]", segmentString, startColor(KNOWN_SYMBOL, bUseColor), symbolName.to_charp(), finishColor(KNOWN_SYMBOL, bUseColor));
             }
             else
             {
-                operandString.set("%s%s", segmentString, symbolName.to_charp());
+                operandString.set("%s%s%s%s", segmentString, startColor(KNOWN_SYMBOL, bUseColor), symbolName.to_charp(), finishColor(KNOWN_SYMBOL, bUseColor));
             }
         }
         else
@@ -318,7 +326,7 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
     return IGOR_SUCCESS;
 }
 
-igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& instructionString)
+igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& instructionString, bool bUseColor)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 
@@ -327,7 +335,7 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 	for (int i = 0; i < x86_analyse_result->m_numOperands; i++)
 	{
         Balau::String operandString;
-        getOperand(pState, i, operandString);
+        getOperand(pState, i, operandString, bUseColor);
 		if (i == 0)
 		{
 			instructionString += " ";

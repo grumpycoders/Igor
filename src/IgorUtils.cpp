@@ -6,6 +6,8 @@
 #include "IgorSession.h"
 #include "IgorUtils.h"
 
+#include "IgorMemory.h"
+
 using namespace Balau;
 
 static bool vararg_lambda(std::function<bool(const char * fmt, va_list ap)> output, const char * fmt, ...) {

@@ -25,6 +25,8 @@
 
 using namespace Balau;
 
+#define new DEBUG_NEW
+
 wxIMPLEMENT_APP_NO_MAIN(c_wxIgorApp);
 
 bool c_wxIgorApp::OnInit()
@@ -103,9 +105,11 @@ std::pair<bool, int> c_wxIgorApp::balauLoop() {
 void c_wxIgorApp::balauExit() {
     if (!s_onExitCalled.load())
         OnExit();
+
     wxIgorEventLoop * loop = dynamic_cast<wxIgorEventLoop *>(m_mainLoop);
     if (loop)
         loop->run();
+
     wxEventLoopBase::SetActive(NULL);
     wxEntryCleanup();
 }
@@ -139,8 +143,11 @@ int wxIgorEventLoop::run() {
 void wxIgorEventLoop::ScheduleExit(int rc) {
     m_exitcode = rc;
     m_shouldExit = true;
-    s_onExitCalled.exchange(true);
-    OnExit();
+	if (!s_onExitCalled.load())
+	{
+		s_onExitCalled.exchange(true);
+		OnExit();
+	}
     WakeUp();
 }
 

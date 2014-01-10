@@ -15,6 +15,8 @@
 
 using namespace Balau;
 
+#define new DEBUG_NEW
+
 static void fileOperationSafe(std::function<void()> lambda) {
     Task::SimpleContext simpleContext;
 
@@ -70,6 +72,8 @@ END_EVENT_TABLE()
 
 c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size) : wxFrame((wxFrame *)NULL, -1, title, pos, size)
 {
+	m_session = NULL;
+
 	c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
 
 	wxMenu *menuFile = new wxMenu;
@@ -94,6 +98,11 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 	SetMenuBar(menuBar);
 
 	CreateStatusBar();
+}
+
+c_wxIgorFrame::~c_wxIgorFrame()
+{
+
 }
 
 void c_wxIgorFrame::OpenFile(wxString& fileName)

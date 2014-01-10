@@ -14,6 +14,8 @@
 #include "IgorAnalysis.h"
 #include "IgorHttp.h"
 
+#include "IgorMemory.h"
+
 using namespace Balau;
 
 class IgorWSWorker;

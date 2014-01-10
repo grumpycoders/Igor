@@ -15,6 +15,8 @@
 #include "IgorSession.h"
 #include "IgorHttp.h"
 
+#include "IgorMemory.h"
+
 using namespace Balau;
 
 static std::atomic<SimpleMustache *> s_template;

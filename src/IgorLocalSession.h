@@ -62,6 +62,9 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
 
     virtual bool getSymbolName(igorAddress, Balau::String& name) override;
 
+    virtual void addReference(igorAddress referencedAddress, igorAddress referencedFrom);
+    virtual void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom);
+
   private:
     enum {
         IDLE,

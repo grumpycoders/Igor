@@ -94,6 +94,9 @@ class IgorSession
 
     virtual bool getSymbolName(igorAddress, Balau::String& name) = 0;
 
+    virtual void addReference(igorAddress referencedAddress, igorAddress referencedFrom) = 0;
+    virtual void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom) = 0;
+
   protected:
     void assignNewUUID();
     void linkMe();

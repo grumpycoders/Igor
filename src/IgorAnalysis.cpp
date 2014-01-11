@@ -45,6 +45,8 @@ void IgorAnalysis::Do()
         {
             m_pDatabase->flag_address_as_instruction(m_analyzeState.m_cpu_analyse_result->m_startOfInstruction, m_analyzeState.m_cpu_analyse_result->m_instructionSize);
             m_session->add_instruction();
+
+            m_pCpu->generateReferences(&m_analyzeState);
         }
                 
         if (++counter == 0)

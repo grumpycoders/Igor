@@ -420,6 +420,8 @@ public:
     igor_result getMnemonic(s_analyzeState* pState, Balau::String& outputString);
     int getNumOperands(s_analyzeState* pState);
     igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor = false);
+    void generateReferences(s_analyzeState* pState);
+    void generateReferences(s_analyzeState* pState, int operandIndex);
 
 private:
 

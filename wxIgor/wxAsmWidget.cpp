@@ -152,6 +152,32 @@ void c_wxAsmWidget::updateTextCache()
                 m_textCache.push_back(symbolNameEntry);
             }
 
+            // display cross references
+            {
+                std::vector<igorAddress> crossReferences;
+                m_pSession->getReferences(analyzeState.m_PC, crossReferences);
+
+                for (int i = 0; i < crossReferences.size(); i++)
+                {
+                    s_textCacheEntry crossRefEntry;
+                    crossRefEntry.m_address = analyzeState.m_PC;
+                    crossRefEntry.m_text.append(currentEntry.m_text.to_charp());
+                    crossRefEntry.m_text.append("                            xref: "); // alignment of xref
+
+                    Balau::String symbolName;
+                    if (m_pSession->getSymbolName(crossReferences[i], symbolName))
+                    {
+                        crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL));
+                    }
+                    else
+                    {
+                        crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL));
+                    }
+
+                    m_textCache.push_back(crossRefEntry);
+                }
+            }
+
             currentEntry.m_text.append("        "); // alignment of code/data
 
             if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))

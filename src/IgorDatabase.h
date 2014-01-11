@@ -78,6 +78,13 @@ struct s_igorDatabase
 
 	std::map<igorAddress, s_symbolDefinition> m_symbolMap;
 
+    // should the references be implicit instead of explicit?
+    typedef std::multimap<igorAddress, igorAddress> t_references;
+    t_references m_references;
+
+    void addReference(igorAddress referencedAddress, igorAddress referencedFrom);
+    void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom);
+
 	// a map of the name of all symbols. Should the name of a symbol be included in the global m_symbolTypeMap?
 	// Technically, only symbol could have name...
 	//std::map<u64, Balau::String> m_stringMap;

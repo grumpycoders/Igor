@@ -99,6 +99,17 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 	return IGOR_SUCCESS;
 }
 
+void c_cpu_x86::generateReferences(s_analyzeState* pState)
+{
+    c_x86_analyse_result& result = *(c_x86_analyse_result*)pState->m_cpu_analyse_result;
+
+    // generate references
+    for (int i = 0; i < result.m_numOperands; i++)
+    {
+        generateReferences(pState, i);
+    }
+}
+
 const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex, bool sizeOverride)
 {
 	if (size == e_operandSize::OPERAND_Default)
@@ -192,6 +203,86 @@ int c_cpu_x86::getNumOperands(s_analyzeState* pState)
     c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 
     return x86_analyse_result->m_numOperands;
+}
+
+void c_cpu_x86::generateReferences(s_analyzeState* pState, int operandIndex)
+{
+    c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
+    s_x86_operand* pOperand = &x86_analyse_result->m_operands[operandIndex];
+
+	switch (pOperand->m_type)
+	{
+	case s_x86_operand::type_register:
+		break;
+	case s_x86_operand::type_registerRM:
+	{
+		if (pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_DIRECT)
+		{
+		}
+		else
+		{
+			u8 RMIndex = pOperand->m_registerRM.m_mod_reg_rm.getRM();
+			if (RMIndex == 4)
+			{
+				// use SIB
+				u8 SIB_BASE = pOperand->m_registerRM.m_mod_reg_rm.getSIBBase();
+				const char* baseString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_BASE);
+
+				if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 5)
+				{
+					EAssert(pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() != 4, "bad scaled index");
+					u8 SIB_SCALE = pOperand->m_registerRM.m_mod_reg_rm.getSIBScale();
+					u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
+					u8 multiplier = 1 << SIB_SCALE;
+
+					const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
+
+                    pState->pSession->addReference(igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset), pState->m_cpu_analyse_result->m_startOfInstruction);
+				}
+				else
+				{
+					if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 4)
+					{
+					}
+					else
+					{
+						u8 SIB_SCALE = pOperand->m_registerRM.m_mod_reg_rm.getSIBScale();
+						u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
+						u8 multiplier = 1 << SIB_SCALE;
+
+						const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
+
+						//operandString.set("[%s+%s*%d+%d]", baseString, indexString, multiplier, pOperand->m_registerRM.m_mod_reg_rm.offset);
+					}
+				}
+			}
+			else
+			if ((RMIndex == 5) && pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_INDIRECT)
+			{
+                pState->pSession->addReference(igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset), pState->m_cpu_analyse_result->m_startOfInstruction);
+			}
+			else
+			{
+				//operandString.set("[%s%+d]", getRegisterName(pOperand->m_registerRM.m_operandSize, RMIndex), pOperand->m_registerRM.m_mod_reg_rm.offset);
+			}
+		}
+		break;
+	}
+    case s_x86_operand::type_registerST:
+        break;
+	case s_x86_operand::type_immediate:
+	{
+//		operandString.set("%s%Xh", segmentString, pOperand->m_immediate.m_immediateValue);
+		break;
+	}
+	case s_x86_operand::type_address:
+	{
+        pState->pSession->addReference(igorAddress(pOperand->m_address.m_addressValue), pState->m_cpu_analyse_result->m_startOfInstruction);
+		break;
+	}
+	default:
+		Failure("Bad operand type");
+	}
 }
 
 igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Balau::String& operandString, bool bUseColor)

@@ -56,6 +56,8 @@ public:
 
 	virtual c_cpu_analyse_result* allocateCpuSpecificAnalyseResult() = 0;
 
+    virtual void generateReferences(s_analyzeState* pState) = 0;
+
     enum e_colors
     {
         RESET_COLOR,

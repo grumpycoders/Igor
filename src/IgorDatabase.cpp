@@ -460,3 +460,19 @@ igorAddress s_igorDatabase::linearToVirtual(u64 linear) {
 
     return IGOR_MAX_ADDRESS;
 }
+
+void s_igorDatabase::addReference(igorAddress referencedAddress, igorAddress referencedFrom)
+{
+    m_references.insert( std::pair<igorAddress, igorAddress>(referencedAddress, referencedFrom));
+}
+
+void s_igorDatabase::getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom)
+{
+    std::pair<t_references::iterator, t_references::iterator> range;
+    range = m_references.equal_range(referencedAddress);
+
+    for (t_references::iterator it = range.first; it != range.second; ++it)
+    {
+        referencedFrom.push_back(it->second);
+    }
+}

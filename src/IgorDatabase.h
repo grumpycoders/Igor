@@ -111,6 +111,8 @@ struct s_igorDatabase
     c_cpu_module* getCpuForAddress(igorAddress PC);
     c_cpu_state* getCpuStateForAddress(igorAddress PC);
 
+	igor_result readS64(igorAddress address, s64& output);
+	igor_result readU64(igorAddress address, u64& output);
     igor_result readS32(igorAddress address, s32& output);
     igor_result readU32(igorAddress address, u32& output);
     igor_result readS16(igorAddress address, s16& output);

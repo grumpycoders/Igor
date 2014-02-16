@@ -107,7 +107,8 @@ void c_wxAsmWidget::OnSize(wxSizeEvent& event)
 
 igorAddress c_wxAsmWidget::GetAddressOfCursor()
 {
-    return m_addressOfCursor;
+    int caretLine = m_caret->GetPosition().y / m_fontSize.GetHeight();
+    return m_textCache[caretLine].m_address;
 }
 
 void c_wxAsmWidget::updateTextCache()
@@ -334,7 +335,7 @@ void c_wxAsmWidget::goToSelectedSymbol()
 	else
 	{
 		u64 offset;
-		if (m_selectedText.scanf("0x%08llX", &offset))
+		if (m_selectedText.scanf("0x%016llX", &offset))
 		{
 			goToAddress(igorAddress(offset));
 		}

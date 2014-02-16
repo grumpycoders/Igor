@@ -8,13 +8,34 @@
 #include <Printer.h>
 using namespace Balau;
 
-const char* registerName[5][8] =
+// this matches e_registerMode:
+/*
+REGISTER_r8 = 0,
+REGISTER_r16 = 1,
+REGISTER_r32 = 2,
+REGISTER_r64 = 3,
+REGISTER_mm = 4,
+REGISTER_xmm = 5,
+*/
+
+const char* registerName32bitsMode[6][8] =
 {
 	{ "AL", "CL", "DL", "BL", "AH", "CH", "DH", "BH" }, // 8bit
 	{ "AX", "CX", "DX", "BX", "SP", "BP", "SI", "DI" }, // 16bits
 	{ "EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI" }, // 32 bits
-	{ "MM0", "MM1", "MM2", "MM3", "MM4", "MM5", "MM6", "MM7" }, // 64 bits
-	{ "XMM0", "XMM1", "XMM2", "XMM3", "XMM4", "XMM5", "XMM6", "XMM7" }, // 128 bits
+	{ "", "", "", "", "", "", "", "" },
+	{ "MM0", "MM1", "MM2", "MM3", "MM4", "MM5", "MM6", "MM7" }, // mm
+	{ "XMM0", "XMM1", "XMM2", "XMM3", "XMM4", "XMM5", "XMM6", "XMM7" }, // xmm
+};
+
+const char* registerName64bitsREXMode[6][16] =
+{
+	{	"AL",	"CL",	"DL",	"BL",	"SPL",	"BPL",	"SIL",	"DIL",	"R8B",	"R9B",	"R10B",	"R11B",	"R12B",	"R13B",	"R14B",	"R15B"}, // 8bit
+	{	"AX",	"CX",	"DX",	"BX",	"SP",	"BP",	"SI",	"DI",	"R8W",	"R9W",	"R10W",	"R11W",	"R12W",	"R13W",	"R14W",	"R15W"}, // 16bits
+	{	"EAX",	"ECX",	"EDX",	"EBX",	"ESP",	"EBP",	"ESI",	"EDI",	"R8D",	"R9D",	"R10D",	"R11D",	"R12D",	"R13D",	"R14D",	"R15D"}, // 32 bits
+	{	"RAX",	"RCX",	"RDX",	"RBX",	"RSP",	"RBP",	"RSI",	"RDI",	"R8",	"R9",	"R10",	"R11",	"R12",	"R13",	"R14",	"R15"}, // 64 bits
+	{	"MM0",	"MM1",	"MM2",	"MM3",	"MM4",	"MM5",	"MM6",	"MM7",	"MM8",	"MM9",	"MM10",	"MM11",	"MM12",	"MM13",	"MM14",	"MM15" }, // mm
+	{	"XMM0",	"XMM1",	"XMM2",	"XMM3",	"XMM4",	"XMM5",	"XMM6",	"XMM7",	"XMM8",	"XMM9",	"XMM10","XMM11","XMM12","XMM13","XMM14","XMM15"}, // xmm
 };
 
 igor_result c_cpu_x86::analyze(s_analyzeState* pState)
@@ -71,6 +92,19 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 		default:
 			break;
 		}
+
+		if (pX86State->m_executionMode == c_cpu_x86_state::_64bits)
+		{
+			switch (currentByte)
+			{
+				case 0x48:
+					bIsPrefix = true;
+					result.m_Prefix64Bit_43 = true;
+					break;
+				default:
+					break;
+			}
+		}
 	} while (bIsPrefix);
 
 	if (x86_opcode_table[currentByte] == NULL)
@@ -110,12 +144,20 @@ void c_cpu_x86::generateReferences(s_analyzeState* pState)
     }
 }
 
-const char* c_cpu_x86::getRegisterName(e_operandSize size, u8 regIndex, bool sizeOverride)
+const char* c_cpu_x86::getRegisterName(s_analyzeState* pState, s_registerDefinition definition, u8 regIndex, bool sizeOverride)
 {
-	if (size == e_operandSize::OPERAND_Default)
-		size = OPERAND_32bit;
+	c_cpu_x86_state* pX86State = (c_cpu_x86_state*)pState->pCpuState;
 
-	return registerName[(int)size][regIndex];
+	if (pX86State->m_executionMode == c_cpu_x86_state::_64bits)
+	{
+		return registerName64bitsREXMode[definition.m_mode][regIndex];
+	}
+	else
+	{
+		return registerName32bitsMode[definition.m_mode][regIndex];
+	}
+
+	return NULL;
 }
 
 #define MKNAME(inst) std::make_pair(INST_X86_##inst, #inst)
@@ -226,7 +268,6 @@ void c_cpu_x86::generateReferences(s_analyzeState* pState, int operandIndex)
 			{
 				// use SIB
 				u8 SIB_BASE = pOperand->m_registerRM.m_mod_reg_rm.getSIBBase();
-				const char* baseString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_BASE);
 
 				if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 5)
 				{
@@ -235,25 +276,7 @@ void c_cpu_x86::generateReferences(s_analyzeState* pState, int operandIndex)
 					u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
 					u8 multiplier = 1 << SIB_SCALE;
 
-					const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
-
                     pState->pSession->addReference(igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset), pState->m_cpu_analyse_result->m_startOfInstruction);
-				}
-				else
-				{
-					if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 4)
-					{
-					}
-					else
-					{
-						u8 SIB_SCALE = pOperand->m_registerRM.m_mod_reg_rm.getSIBScale();
-						u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
-						u8 multiplier = 1 << SIB_SCALE;
-
-						const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
-
-						//operandString.set("[%s+%s*%d+%d]", baseString, indexString, multiplier, pOperand->m_registerRM.m_mod_reg_rm.offset);
-					}
 				}
 			}
 			else
@@ -307,13 +330,13 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
 	switch (pOperand->m_type)
 	{
 	case s_x86_operand::type_register:
-		operandString.set("%s", getRegisterName(pOperand->m_register.m_operandSize, pOperand->m_register.m_registerIndex, x86_analyse_result->m_sizeOverride));
+		operandString.set("%s", getRegisterName(pState, pOperand->m_register.m_registerDefinition, pOperand->m_register.m_registerIndex, x86_analyse_result->m_sizeOverride));
 		break;
 	case s_x86_operand::type_registerRM:
 	{
 		if (pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_DIRECT)
 		{
-			operandString.set("%s", getRegisterName(pOperand->m_registerRM.m_operandSize, pOperand->m_registerRM.m_mod_reg_rm.getRM()));
+			operandString.set("%s", getRegisterName(pState, pOperand->m_registerRM.m_registerDefinition, pOperand->m_registerRM.m_mod_reg_rm.getRM()));
 		}
 		else
 		{
@@ -322,7 +345,7 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
 			{
 				// use SIB
 				u8 SIB_BASE = pOperand->m_registerRM.m_mod_reg_rm.getSIBBase();
-				const char* baseString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_BASE);
+				const char* baseString = getRegisterName(pState, pOperand->m_registerRM.m_registerDefinition, SIB_BASE);
 
 				if (pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex() == 5)
 				{
@@ -331,7 +354,7 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
 					u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
 					u8 multiplier = 1 << SIB_SCALE;
 
-					const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
+					const char* indexString = getRegisterName(pState, pOperand->m_registerRM.m_registerDefinition, SIB_INDEX);
 
                     operandString.set("0x%08llX[%s*%d]", pOperand->m_registerRM.m_mod_reg_rm.offset, indexString, multiplier);
 				}
@@ -347,7 +370,7 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
 						u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
 						u8 multiplier = 1 << SIB_SCALE;
 
-						const char* indexString = getRegisterName(pOperand->m_registerRM.m_operandSize, SIB_INDEX);
+						const char* indexString = getRegisterName(pState, pOperand->m_registerRM.m_registerDefinition, SIB_INDEX);
 
 						operandString.set("[%s+%s*%d+%d]", baseString, indexString, multiplier, pOperand->m_registerRM.m_mod_reg_rm.offset);
 					}
@@ -368,7 +391,7 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
 			}
 			else
 			{
-				operandString.set("[%s%+d]", getRegisterName(pOperand->m_registerRM.m_operandSize, RMIndex), pOperand->m_registerRM.m_mod_reg_rm.offset);
+				operandString.set("[%s%+d]", getRegisterName(pState, pOperand->m_registerRM.m_registerDefinition, RMIndex), pOperand->m_registerRM.m_mod_reg_rm.offset);
 			}
 		}
 		break;
@@ -442,28 +465,12 @@ igor_result c_cpu_x86::printInstruction(s_analyzeState* pState, Balau::String& i
 	return IGOR_SUCCESS;
 }
 
-void s_x86_operand::setAsRegisterRM(s_analyzeState* pState, e_operandSize size)
+void s_x86_operand::setAsRegisterRM(s_analyzeState* pState, operandDefinition size)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	m_type = type_registerRM;
 
-	if (x86_analyse_result->m_mod_reg_rm.getMod() == MOD_DIRECT)
-	{
-		if (x86_analyse_result->m_sizeOverride)
-		{
-			m_registerRM.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
-		}
-		else
-		{
-			m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
-		}
-	}
-	else
-	{
-		// should do the address override here
-		m_registerRM.m_operandSize = x86_analyse_result->getDefaultAddressSize();
-	}
-	
+	m_registerRM.m_registerDefinition.init(pState, size);
 	m_registerRM.m_mod_reg_rm = x86_analyse_result->m_mod_reg_rm;
 }
 
@@ -483,55 +490,128 @@ void s_x86_operand::setAsRegisterST(s_analyzeState* pState)
     m_registerST.m_registerIndex = 0;
 }
 
-void s_x86_operand::setAsRegister(s_analyzeState* pState, e_register registerIndex, e_operandSize size)
+void s_registerDefinition::init(s_analyzeState* pState, operandDefinition inputDefinition)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
-	m_type = type_register;
+	c_cpu_x86_state* pX86State = (c_cpu_x86_state*)pState->pCpuState;
+
+	switch (inputDefinition & 0x0000FFFF)
+	{
+		case OPERAND_SIZE_8:
+			m_size = OPERAND_8bit;
+			break;
+		case OPERAND_SIZE_16_32:
+			// figure out if we are in 16, 32
+			if (x86_analyse_result->m_sizeOverride)
+			{
+				m_size = OPERAND_16bit;
+			}
+			else
+			{
+				m_size = OPERAND_32bit;
+			}
+			break;
+		case OPERAND_SIZE_16_32_64:
+			// figure out if we are in 16, 32 or 64 bit
+			if (x86_analyse_result->m_sizeOverride)
+			{
+				m_size = OPERAND_16bit;
+			}
+			else if (x86_analyse_result->m_Prefix64Bit_43)
+			{
+				EAssert(pX86State->m_executionMode == c_cpu_x86_state::_64bits);
+				m_size = OPERAND_64bit;
+			}
+			else
+			{
+				m_size = OPERAND_32bit;
+			}
+			break;
+		case OPERAND_SIZE_64_16:
+			if (x86_analyse_result->m_sizeOverride)
+			{
+				m_size = OPERAND_16bit;
+			}
+			else
+			{
+				m_size = OPERAND_64bit;
+			}
+			break;
+		default:
+			Failure("");
+	}
+	switch (inputDefinition & 0xFFFF0000)
+	{
+		case OPERAND_REG:
+			if (m_size == OPERAND_8bit)
+				m_mode = REGISTER_r8;
+			else if (m_size == OPERAND_16bit)
+				m_mode = REGISTER_r16;
+			else if (m_size == OPERAND_32bit)
+				m_mode = REGISTER_r32;
+			else
+				m_mode = REGISTER_r64;
+			break;
+		default:
+			Failure("");
+	}
+}
+
+operandDefinition s_x86_operand::computeOperandSize(s_analyzeState* pState, operandDefinition size)
+{
+	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 
 	if (x86_analyse_result->m_sizeOverride)
 	{
-		m_register.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
+		return x86_analyse_result->getAlternateOperandSize(size);
 	}
 	else
 	{
-		m_register.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
-	}
+		c_cpu_x86_state* pX86State = (c_cpu_x86_state*)pState->pCpuState;
 
+		if (pX86State->m_executionMode == c_cpu_x86_state::_64bits)
+		{
+			if (x86_analyse_result->m_Prefix64Bit_43)
+			{
+				return x86_analyse_result->getAlternate2OperandSize(size);
+			}
+			else
+			{
+				return x86_analyse_result->getDefaultOperandSize(size);
+			}
+		}
+		else
+		{
+			return x86_analyse_result->getDefaultOperandSize(size);
+		}
+	}
+}
+
+void s_x86_operand::setAsRegister(s_analyzeState* pState, e_register registerIndex, operandDefinition size)
+{
+	m_type = type_register;
+	m_register.m_registerDefinition.init(pState, size);
+	m_register.m_operandSize = computeOperandSize(pState, size);
 	m_register.m_registerIndex = registerIndex;
 }
 
-void s_x86_operand::setAsRegisterR(s_analyzeState* pState, e_operandSize size)
+void s_x86_operand::setAsRegisterR(s_analyzeState* pState, operandDefinition size)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	m_type = type_register;
-
-	if (x86_analyse_result->m_sizeOverride)
-	{
-		m_registerRM.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
-	}
-	else
-	{
-		m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
-	}
-
+	m_registerRM.m_registerDefinition.init(pState, size);
+	m_registerRM.m_operandSize = computeOperandSize(pState, size);
 	m_register.m_registerIndex = x86_analyse_result->m_mod_reg_rm.getREG();
 }
 
-void s_x86_operand::setAsRegisterRM_XMM(s_analyzeState* pState, e_operandSize size)
+void s_x86_operand::setAsRegisterRM_XMM(s_analyzeState* pState, operandDefinition size)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	m_type = type_registerRM;
 
 	if (x86_analyse_result->m_mod_reg_rm.getMod() == MOD_DIRECT)
 	{
-		if (x86_analyse_result->m_sizeOverride)
-		{
-			m_registerRM.m_operandSize = x86_analyse_result->getAlternateOperandSize(size);
-		}
-		else
-		{
-			m_registerRM.m_operandSize = x86_analyse_result->getDefaultOperandSize(size);
-		}
+		m_registerRM.m_operandSize = computeOperandSize(pState, size);
 	}
 	else
 	{
@@ -542,7 +622,7 @@ void s_x86_operand::setAsRegisterRM_XMM(s_analyzeState* pState, e_operandSize si
 	m_registerRM.m_mod_reg_rm = x86_analyse_result->m_mod_reg_rm;
 }
 
-void s_x86_operand::setAsRegisterR_XMM(s_analyzeState* pState, e_operandSize size)
+void s_x86_operand::setAsRegisterR_XMM(s_analyzeState* pState, operandDefinition size)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	m_type = type_register;
@@ -559,7 +639,7 @@ void s_x86_operand::setAsRegisterR_XMM(s_analyzeState* pState, e_operandSize siz
 	m_register.m_registerIndex = x86_analyse_result->m_mod_reg_rm.getREG();
 }
 
-void s_x86_operand::setAsAddressRel(s_analyzeState* pState, e_operandSize size, bool dereference)
+void s_x86_operand::setAsAddressRel(s_analyzeState* pState, operandDefinition size, bool dereference)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	m_type = type_address;
@@ -596,19 +676,12 @@ void s_x86_operand::setAsAddressRel(s_analyzeState* pState, e_operandSize size, 
 	m_address.m_dereference = dereference;
 }
 
-void s_x86_operand::setAsImmediate(s_analyzeState* pState, e_operandSize size)
+void s_x86_operand::setAsImmediate(s_analyzeState* pState, operandDefinition size)
 {
 	c_x86_analyse_result* x86_analyse_result = (c_x86_analyse_result*)pState->m_cpu_analyse_result;
 	m_type = type_immediate;
 
-	if (x86_analyse_result->m_sizeOverride)
-	{
-		size = x86_analyse_result->getAlternateOperandSize(size);
-	}
-	else
-	{
-		size = x86_analyse_result->getDefaultOperandSize(size);
-	}
+	size = computeOperandSize(pState, size);
 
 	u64 immediateValue = 0;
 
@@ -616,6 +689,18 @@ void s_x86_operand::setAsImmediate(s_analyzeState* pState, e_operandSize size)
 
 	switch (size)
 	{
+	case OPERAND_64bit:
+		{
+			u64 immediate = 0;
+			if (pState->pSession->readU64(pState->m_PC, immediate) != IGOR_SUCCESS)
+				throw X86AnalysisException("Failure in setAsImmediate!");
+
+			pState->m_PC += 8;
+
+			immediateValue = immediate;
+			immediateSize = IMMEDIATE_U64;
+			break;
+		}
 	case OPERAND_32bit:
 		{
 			u32 immediate = 0;

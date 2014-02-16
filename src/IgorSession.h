@@ -21,6 +21,8 @@ class IgorSession
 
     static void enumerate(std::function<bool(IgorSession *)>);
 
+	virtual igor_result readS64(igorAddress address, s64& output) = 0;
+	virtual igor_result readU64(igorAddress address, u64& output) = 0;
     virtual igor_result readS32(igorAddress address, s32& output) = 0;
     virtual igor_result readU32(igorAddress address, u32& output) = 0;
     virtual igor_result readS16(igorAddress address, s16& output) = 0;
@@ -29,6 +31,20 @@ class IgorSession
     virtual igor_result readU8(igorAddress address, u8& output) = 0;
 
     virtual igorAddress findSymbol(const char* symbolName) = 0;
+
+	s64 readS64(igorAddress address)
+	{
+		s64 output;
+		readS64(address, output);
+		return output;
+	}
+
+	u64 readU64(igorAddress address)
+	{
+		u64 output;
+		readU64(address, output);
+		return output;
+	}
 
     s32 readS32(igorAddress address)
     {

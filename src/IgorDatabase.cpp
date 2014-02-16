@@ -36,6 +36,49 @@ s_igorSection* s_igorDatabase::findSectionFromAddress(igorAddress address)
 	return NULL;
 }
 
+igor_result s_igorDatabase::readS64(igorAddress address, s64& output)
+{
+	s_igorSection* pSection = findSectionFromAddress(address);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+
+	if (rawOffset > pSection->m_rawDataSize)
+	{
+		return IGOR_FAILURE;
+	}
+
+	output = *(s64*)(pSection->m_rawData + rawOffset);
+
+	return IGOR_SUCCESS;
+}
+
+igor_result s_igorDatabase::readU64(igorAddress address, u64& output)
+{
+	s_igorSection* pSection = findSectionFromAddress(address);
+
+	if (pSection == NULL)
+	{
+		return IGOR_FAILURE;
+	}
+
+	igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+
+	if (rawOffset > pSection->m_rawDataSize)
+	{
+		return IGOR_FAILURE;
+	}
+
+	output = *(u64*)(pSection->m_rawData + rawOffset);
+
+	return IGOR_SUCCESS;
+
+}
+
 igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
 {
 	s_igorSection* pSection = findSectionFromAddress(address);

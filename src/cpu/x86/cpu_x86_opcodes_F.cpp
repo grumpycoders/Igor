@@ -22,7 +22,7 @@ igor_result x86_opcode_F_set(s_analyzeState* pState, c_cpu_x86_state* pX86State,
 	x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 
 	x86_analyse_result->m_numOperands = 1;
-	x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8bit);
+	x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8);
 
 	return IGOR_SUCCESS;
 }
@@ -39,7 +39,7 @@ igor_result x86_opcode_movzx(s_analyzeState* pState, c_cpu_x86_state* pX86State,
 	case 0xB6:
 		x86_analyse_result->m_numOperands = 2;
 		x86_analyse_result->m_operands[0].setAsRegisterR(pState);
-		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8);
 		break;
 	case 0xB7:
 		x86_analyse_result->m_numOperands = 2;
@@ -65,7 +65,7 @@ igor_result x86_opcode_movsx(s_analyzeState* pState, c_cpu_x86_state* pX86State,
 	case 0xBE:
 		x86_analyse_result->m_numOperands = 2;
 		x86_analyse_result->m_operands[0].setAsRegisterR(pState);
-		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8);
 		break;
 	case 0xBF:
 		x86_analyse_result->m_numOperands = 2;

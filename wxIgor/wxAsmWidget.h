@@ -97,7 +97,5 @@ public:
     wxFont m_currentFont;
     wxSize m_fontSize;
 
-    igorAddress m_addressOfCursor;
-
 	DECLARE_EVENT_TABLE()
 };

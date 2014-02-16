@@ -24,7 +24,7 @@ public:
 	};
 
 	c_cpu_x86_state() :
-		m_executionMode(_32bits)
+        m_executionMode(undefined)
 	{
 
 	}
@@ -152,20 +152,59 @@ enum e_register
 	REG_EDI = 7,
 };
 
+enum e_registerMode
+{
+	REGISTER_r8 = 0,
+	REGISTER_r16 = 1,
+	REGISTER_r32 = 2,
+	REGISTER_r64 = 3,
+	REGISTER_mm = 4,
+	REGISTER_xmm = 5,
+};
+
 enum e_operandSize
 {
 	OPERAND_Default = -2,
 	OPERAND_Unkown = -1,
+
 	OPERAND_8bit = 0,
 	OPERAND_16bit = 1,
 	OPERAND_32bit = 2,
-	OPERAND_MM_64 = 3,
-	OPERAND_XMM_128 = 4,
+	OPERAND_64bit = 3,
+	OPERAND_128bit = 4,
+};
 
-	OPERAND_XMM_m32,
-	OPERAND_XMM_m64,
-	OPERAND_16_32,
-	OPERAND_XMM_64_128,
+#define OPERAND_SIZE_8 (1<<e_operandSize::OPERAND_8bit)
+#define OPERAND_SIZE_16 (1<<e_operandSize::OPERAND_16bit)
+#define OPERAND_SIZE_32 (1<<e_operandSize::OPERAND_32bit)
+#define OPERAND_SIZE_64 (1<<e_operandSize::OPERAND_64bit)
+#define OPERAND_SIZE_128 (1<<e_operandSize::OPERAND_128bit)
+
+#define OPERAND_SIZE_16_32 (OPERAND_SIZE_16 | OPERAND_SIZE_32)
+#define OPERAND_SIZE_16_32_64 (OPERAND_SIZE_16 | OPERAND_SIZE_32 | OPERAND_SIZE_64)
+#define OPERAND_SIZE_64_16 (OPERAND_SIZE_64 | OPERAND_SIZE_16)
+#define OPERAND_SIZE_64_128 (OPERAND_SIZE_64 | OPERAND_SIZE_128)
+
+#define OPERAND_REG (1 << (16+0))
+#define OPERAND_REG_MM (1 << (16+1))
+#define OPERAND_REG_XMM (1 << (16+2))
+
+typedef u32 operandDefinition;
+
+#define OPERAND_8 (operandDefinition)(OPERAND_REG | OPERAND_SIZE_8)
+#define OPERAND_16_32 (operandDefinition)(OPERAND_REG | OPERAND_SIZE_16_32)
+#define OPERAND_16_32_64 (operandDefinition)(OPERAND_REG |OPERAND_SIZE_16_32_64)
+#define OPERAND_64_16 (operandDefinition)(OPERAND_REG |OPERAND_SIZE_64_16)
+#define OPERAND_XMM_m32 (operandDefinition)(OPERAND_REG_MM | OPERAND_SIZE_32)
+#define OPERAND_XMM_m64 (operandDefinition)(OPERAND_REG_MM | OPERAND_SIZE_64)
+#define OPERAND_XMM_64_128 (operandDefinition)(OPERAND_REG_XMM | OPERAND_SIZE_64_128)
+
+struct s_registerDefinition
+{
+	void init(s_analyzeState* pState, operandDefinition inputDefinition);
+
+	e_operandSize m_size;
+	e_registerMode m_mode;
 };
 
 enum e_immediateSize
@@ -176,6 +215,8 @@ enum e_immediateSize
 	IMMEDIATE_U16,
 	IMMEDIATE_S32,
 	IMMEDIATE_U32,
+	IMMEDIATE_U64,
+	IMMEDIATE_S64,
 };
 
 enum e_mod
@@ -239,13 +280,15 @@ struct s_x86_operand
 
     struct register_t
     {
-        e_operandSize m_operandSize;
+		s_registerDefinition m_registerDefinition;
+		operandDefinition m_operandSize;
         u16 m_registerIndex;
     };
 
     struct registerRM_t
     {
-        e_operandSize m_operandSize;
+		s_registerDefinition m_registerDefinition;
+        operandDefinition m_operandSize;
         s_mod_reg_rm m_mod_reg_rm;
     };
 
@@ -276,20 +319,22 @@ struct s_x86_operand
         address_t m_address;
     };
 
-	void setAsRegister(s_analyzeState* pState, e_register registerIndex, e_operandSize size = OPERAND_Default);
+	operandDefinition computeOperandSize(s_analyzeState* pState, operandDefinition size);
 
-	void setAsRegisterRM(s_mod_reg_rm modRegRm, e_operandSize size = OPERAND_Default)
+	void setAsRegister(s_analyzeState* pState, e_register registerIndex, operandDefinition size = OPERAND_16_32_64);
+
+	void setAsRegisterRM(s_analyzeState* pState, s_mod_reg_rm modRegRm, operandDefinition size = OPERAND_16_32_64)
 	{
 		m_type = type_registerRM;
+		m_registerRM.m_registerDefinition.init(pState, size);
 		m_registerRM.m_operandSize = size;
 		m_registerRM.m_mod_reg_rm = modRegRm;
 	}
 
-	void setAsRegisterRM(s_analyzeState* pState, e_operandSize size = OPERAND_16_32);
-	void setAsRegisterR(s_analyzeState* pState, e_operandSize size = OPERAND_16_32);
-
-	void setAsRegisterRM_XMM(s_analyzeState* pState, e_operandSize size = OPERAND_XMM_64_128);
-	void setAsRegisterR_XMM(s_analyzeState* pState, e_operandSize size = OPERAND_XMM_64_128);
+	void setAsRegisterRM(s_analyzeState* pState, operandDefinition definition = OPERAND_16_32_64);
+	void setAsRegisterR(s_analyzeState* pState, operandDefinition definition = OPERAND_16_32_64);
+	void setAsRegisterRM_XMM(s_analyzeState* pState, operandDefinition size = OPERAND_XMM_64_128);
+	void setAsRegisterR_XMM(s_analyzeState* pState, operandDefinition size = OPERAND_XMM_64_128);
 
     void setAsRegisterSTi(s_analyzeState* pState);
     void setAsRegisterST(s_analyzeState* pState);
@@ -315,8 +360,8 @@ struct s_x86_operand
 		m_immediate.m_immediateValue = immediateValue;
 	}
 
-	void setAsAddressRel(s_analyzeState* pState, e_operandSize size = OPERAND_16_32, bool dereference = false);
-	void setAsImmediate(s_analyzeState* pState, e_operandSize size = OPERAND_16_32);
+	void setAsAddressRel(s_analyzeState* pState, operandDefinition size = OPERAND_16_32, bool dereference = false);
+	void setAsImmediate(s_analyzeState* pState, operandDefinition size = OPERAND_16_32);
 
 	void setAsAddress(u64 address, bool dereference = false)
 	{
@@ -359,37 +404,49 @@ public:
 		m_lockPrefix = false;
 		m_repPrefixF2 = false;
 		m_repPrefixF3 = false;
+
+		m_Prefix64Bit_43 = false;
 	}
 
-	e_operandSize getAlternateOperandSize(e_operandSize inputSize)
+	operandDefinition getAlternateOperandSize(operandDefinition inputSize)
 	{
-		if (inputSize == OPERAND_16_32)
+		if ((inputSize & 0xFFFF) == OPERAND_16_32)
 		{
 			return OPERAND_16bit;
 		}
-		if (inputSize == OPERAND_XMM_64_128)
+		if ((inputSize & 0xFFFF) == OPERAND_XMM_64_128)
 		{
-			return OPERAND_XMM_128;
+			return OPERAND_128bit;
 		}
 
 		return inputSize;
 	}
 
-	e_operandSize getDefaultOperandSize(e_operandSize inputSize)
+	operandDefinition getAlternate2OperandSize(operandDefinition inputSize)
 	{
-		if (inputSize == OPERAND_16_32)
+		if ((inputSize & 0xFFFF) == OPERAND_16_32_64)
+		{
+			return OPERAND_64bit;
+		}
+
+		return inputSize;
+	}
+
+	operandDefinition getDefaultOperandSize(operandDefinition inputSize)
+	{
+		if ((inputSize & 0xFFFF) == OPERAND_16_32)
 		{
 			return OPERAND_32bit;
 		}
-		if (inputSize == OPERAND_XMM_64_128)
+		if ((inputSize & 0xFFFF) == OPERAND_XMM_64_128)
 		{
-			return OPERAND_MM_64;
+			return OPERAND_64bit;
 		}
 
 		return inputSize;
 	}
 
-	e_operandSize getDefaultAddressSize()
+	operandDefinition getDefaultAddressSize()
 	{
 		return OPERAND_32bit;
 	}
@@ -403,6 +460,8 @@ public:
 	bool m_lockPrefix;
 	bool m_repPrefixF2;
 	bool m_repPrefixF3;
+
+	bool m_Prefix64Bit_43;
 };
 
 class c_cpu_x86 : public c_cpu_module
@@ -413,7 +472,7 @@ public:
     igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false);
 	c_cpu_analyse_result* allocateCpuSpecificAnalyseResult(){ return new c_x86_analyse_result; }
 
-	const char* getRegisterName(e_operandSize size, u8 regIndex, bool sizeOverride = false);
+	const char* getRegisterName(s_analyzeState* pState, s_registerDefinition definition, u8 regIndex, bool sizeOverride = false);
 	const char* getMnemonicName(e_x86_mnemonic mnemonic);
 
 	void printInstruction(c_cpu_analyse_result* result);
@@ -423,7 +482,7 @@ public:
     void generateReferences(s_analyzeState* pState);
     void generateReferences(s_analyzeState* pState, int operandIndex);
 
-private:
+//private:
 
 	c_cpu_x86_state m_defaultState;
 };

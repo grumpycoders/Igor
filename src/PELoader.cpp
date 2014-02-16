@@ -133,9 +133,11 @@ igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
 	switch(m_Machine)
 	{
 	case IMAGE_FILE_MACHINE_I386:
+        pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_32bits;
 		loadOptionalHeader386(reader);
 		break;
 	case IMAGE_FILE_MACHINE_AMD64:
+        pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_64bits;
 		loadOptionalHeader64(reader);
 		break;
 	default:

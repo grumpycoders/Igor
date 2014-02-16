@@ -128,19 +128,19 @@ igor_result x86_opcode_call(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	x86_analyse_result->m_mnemonic = INST_X86_CALL;
 
 	s32 jumpTarget = 0;
-    if (pState->pSession->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
+	if (pState->pSession->readS32(pState->m_PC, jumpTarget) != IGOR_SUCCESS)
 	{
 		return IGOR_FAILURE;
 	}
 
 	pState->m_PC += 4;
-    igorAddress jumpTargetAddress = pState->m_PC;
-    jumpTargetAddress += jumpTarget;
+	igorAddress jumpTargetAddress = pState->m_PC;
+	jumpTargetAddress += jumpTarget;
 
-    pState->pSession->add_code_analysis_task(jumpTargetAddress);
+	pState->pSession->add_code_analysis_task(jumpTargetAddress);
 
 	x86_analyse_result->m_numOperands = 1;
-    x86_analyse_result->m_operands[0].setAsAddress(jumpTargetAddress.offset);
+	x86_analyse_result->m_operands[0].setAsAddress(jumpTargetAddress.offset);
 
 	return IGOR_SUCCESS;
 }
@@ -166,7 +166,7 @@ igor_result x86_opcode_int(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		x86_analyse_result->m_operands[0].setAsImmediate(IMMEDIATE_U8, (u8)3);
 		break;
 	case 0xCD:
-		x86_analyse_result->m_operands[0].setAsImmediate(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[0].setAsImmediate(pState, OPERAND_8);
 		break;
 	default:
 		X86_DECODER_FAILURE("Unhandled x86_opcode_int");
@@ -484,7 +484,7 @@ igor_result x86_opcode_C1(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 
     x86_analyse_result->m_numOperands = 2;
     x86_analyse_result->m_operands[0].setAsRegisterRM(pState);
-    x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8bit);
+    x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8);
 
     u8 variation = x86_analyse_result->m_mod_reg_rm.getREGRaw();
 
@@ -569,8 +569,8 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		{
 			x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8bit);
-			x86_analyse_result->m_operands[1].setAsRegisterR(pState, OPERAND_8bit);
+			x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8);
+			x86_analyse_result->m_operands[1].setAsRegisterR(pState, OPERAND_8);
 			break;
 		}
 	case 0x89:
@@ -585,7 +585,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		{
 			x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegister(pState, REG_AL, OPERAND_8bit);
+			x86_analyse_result->m_operands[0].setAsRegister(pState, REG_AL, OPERAND_8);
 			x86_analyse_result->m_operands[1].setAsRegisterRM(pState);
 			break;
 		}
@@ -638,8 +638,8 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		{
 			u8 registerIdx = currentByte & 7;
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)registerIdx, OPERAND_8bit);
-			x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8bit);
+			x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)registerIdx, OPERAND_8);
+			x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8);
 			break;
 		}
 	case 0xB8:
@@ -653,16 +653,27 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		{
 			u8 registerIdx = currentByte & 7;
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)registerIdx, OPERAND_16_32);
-			x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_16_32);
+			switch (pX86State->m_executionMode)
+			{
+				case c_cpu_x86_state::_32bits:
+					x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)registerIdx, OPERAND_16_32);
+					x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_16_32);
+					break;
+				case c_cpu_x86_state::_64bits:
+					x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)registerIdx, OPERAND_16_32_64);
+					x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_16_32_64);
+					break;
+				default:
+					Failure("");
+			}
 			break;
 		}
 	case 0xC6:
 		{
 			x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8bit);
-			x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8bit);
+			x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8);
+			x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8);
 			break;
 		}
 	case 0xC7:
@@ -675,7 +686,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 			pState->m_PC += 4;
 
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegisterRM(modRegRm);
+			x86_analyse_result->m_operands[0].setAsRegisterRM(pState, modRegRm);
 			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U32, target);
 			break;
 		}
@@ -732,8 +743,8 @@ igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
     case 0x38:
         x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
         x86_analyse_result->m_numOperands = 2;
-        x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8bit);
-        x86_analyse_result->m_operands[1].setAsRegisterR(pState, OPERAND_8bit);
+        x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8);
+        x86_analyse_result->m_operands[1].setAsRegisterR(pState, OPERAND_8);
         break;
 	case 0x39:
 		x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
@@ -744,8 +755,8 @@ igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0x3A:
 		x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 		x86_analyse_result->m_numOperands = 2;
-		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8bit);
-		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8);
 		break;
 	case 0x3B:
 		x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
@@ -760,7 +771,7 @@ igor_result x86_opcode_cmp(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 				return IGOR_FAILURE;
 
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegister(pState, REG_AL, OPERAND_8bit);
+			x86_analyse_result->m_operands[0].setAsRegister(pState, REG_AL, OPERAND_8);
 			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U8, immediate);
 			break;
 		}
@@ -788,8 +799,8 @@ igor_result x86_opcode_test(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	case 0x84:
 		x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 		x86_analyse_result->m_numOperands = 2;
-		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8bit);
-		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8);
 		break;
 	case 0x85:
 		x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
@@ -831,8 +842,8 @@ igor_result x86_opcode_add(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	case 0x04:
 		x86_analyse_result->m_mod_reg_rm = GET_MOD_REG_RM(pState);
 		x86_analyse_result->m_numOperands = 2;
-		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8bit);
-		x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8);
+		x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8);
 		break;
     case 0x05:
         x86_analyse_result->m_numOperands = 2;
@@ -906,8 +917,8 @@ igor_result x86_opcode_or(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 		break;
 	case 0x0C:
 		x86_analyse_result->m_numOperands = 2;
-		x86_analyse_result->m_operands[0].setAsRegister(pState, REG_AL, OPERAND_8bit);
-		x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[0].setAsRegister(pState, REG_AL, OPERAND_8);
+		x86_analyse_result->m_operands[1].setAsImmediate(pState, OPERAND_8);
 		break;
 	case 0x0D:
 		{
@@ -943,8 +954,8 @@ igor_result x86_opcode_xor(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 		break;
 	case 0x32:
 		x86_analyse_result->m_numOperands = 2;
-		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8bit);
-		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8bit);
+		x86_analyse_result->m_operands[0].setAsRegisterR(pState, OPERAND_8);
+		x86_analyse_result->m_operands[1].setAsRegisterRM(pState, OPERAND_8);
 		break;
 	case 0x33:
 		x86_analyse_result->m_numOperands = 2;
@@ -1032,7 +1043,14 @@ igor_result x86_opcode_pop(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
 	
 
 	x86_analyse_result->m_numOperands = 1;
-	x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)(currentByte & 7));
+	if (pX86State->m_executionMode == c_cpu_x86_state::_64bits)
+	{
+		x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)(currentByte & 7), OPERAND_64_16);
+	}
+	else
+	{
+		x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)(currentByte & 7), OPERAND_16_32);
+	}
 
 	return IGOR_SUCCESS;
 }
@@ -1054,7 +1072,15 @@ igor_result x86_opcode_push(s_analyzeState* pState, c_cpu_x86_state* pX86State, 
 	case 0x56:
 	case 0x57:
 		x86_analyse_result->m_numOperands = 1;
-		x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)(currentByte & 7));
+		if (pX86State->m_executionMode == c_cpu_x86_state::_64bits)
+		{
+			x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)(currentByte & 7), OPERAND_64_16);
+		}
+		else
+		{
+			x86_analyse_result->m_operands[0].setAsRegister(pState, (e_register)(currentByte & 7), OPERAND_16_32);
+		}
+		
 		break;
 	case 0x68:
 		{
@@ -1174,7 +1200,7 @@ igor_result x86_opcode_F6(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 
 			x86_analyse_result->m_mnemonic = INST_X86_TEST;
 			x86_analyse_result->m_numOperands = 2;
-			x86_analyse_result->m_operands[0].setAsRegisterRM(modRegRm);
+			x86_analyse_result->m_operands[0].setAsRegisterRM(pState, modRegRm);
 			x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U8, immediate);
 			break;
 		}
@@ -1312,7 +1338,7 @@ igor_result x86_opcode_80(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	}
 
 	x86_analyse_result->m_numOperands = 2;
-	x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8bit);
+	x86_analyse_result->m_operands[0].setAsRegisterRM(pState, OPERAND_8);
 	x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U8, immediate);
 
 	return IGOR_SUCCESS;
@@ -1397,7 +1423,7 @@ igor_result x86_opcode_83(s_analyzeState* pState, c_cpu_x86_state* pX86State, u8
 	}
 
 	x86_analyse_result->m_numOperands = 2;
-	x86_analyse_result->m_operands[0].setAsRegisterRM(modRegRm);
+	x86_analyse_result->m_operands[0].setAsRegisterRM(pState, modRegRm);
 	x86_analyse_result->m_operands[1].setAsImmediate(IMMEDIATE_U8, immediate);
 
 	return IGOR_SUCCESS;

@@ -36,6 +36,8 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
     void freeze();
     void thaw();
 
+	virtual igor_result readS64(igorAddress address, s64& output) override;
+	virtual igor_result readU64(igorAddress address, u64& output) override;
     virtual igor_result readS32(igorAddress address, s32& output) override;
     virtual igor_result readU32(igorAddress address, u32& output) override;
     virtual igor_result readS16(igorAddress address, s16& output) override;

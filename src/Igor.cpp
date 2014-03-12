@@ -9,7 +9,9 @@
 
 #include "google/protobuf/stubs/common.h"
 
-#include "PELoader.h"
+#include "Loaders/PE/PELoader.h"
+#include "Loaders/Elf/elfLoader.h"
+
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
 #include "IgorHttp.h"
@@ -85,8 +87,16 @@ void MainTask::Do() {
 
         IgorLocalSession * session = new IgorLocalSession();
 
-        c_PELoader PELoader;
-        PELoader.loadPE(reader, session);
+		if (strstr(argv[1], ".exe"))
+		{
+			c_PELoader PELoader;
+			PELoader.loadPE(reader, session);
+		}
+		else if (strstr(argv[1], ".elf"))
+		{
+			c_elfLoader elfLoader;
+			elfLoader.load(reader, session);
+		}
 
         reader->close();
         session->loaded(argv[1]);

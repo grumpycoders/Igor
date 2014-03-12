@@ -11,7 +11,8 @@
 #include "IgorAnalysis.h"
 #include "IgorLocalSession.h"
 #include "IgorUtils.h"
-#include "PELoader.h"
+#include "Loaders/PE/PELoader.h"
+#include "Loaders/Elf/elfLoader.h"
 
 using namespace Balau;
 
@@ -122,14 +123,21 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
         IO<Input> reader(new Input(fileName.c_str()));
         reader->open();
 
-        // TODO: make a reader selector UI
-        c_PELoader PELoader;
-        // Note: having the session here is actually useful not just for the entry point,
-        // but for all the possible hints the file might have for us.
-        r = PELoader.loadPE(reader, m_session);
-        // Note: destroying the object from the stack would do the same, but
-        // as this might trigger a context switch, it's better to do it explicitely
-        // than from a destructor, as a general good practice.
+		if (fileName.find(".exe") != -1)
+		{
+			c_PELoader PELoader;
+			// Note: having the session here is actually useful not just for the entry point,
+			// but for all the possible hints the file might have for us.
+			r = PELoader.loadPE(reader, m_session);
+			// Note: destroying the object from the stack would do the same, but
+			// as this might trigger a context switch, it's better to do it explicitely
+			// than from a destructor, as a general good practice.
+		}
+		else if (fileName.find(".elf") != -1)
+		{
+			c_elfLoader elfLoader;
+			r = elfLoader.load(reader, m_session);
+		}
         reader->close();
 
         m_session->loaded(fileName.c_str());
@@ -143,9 +151,14 @@ void c_wxIgorFrame::OpenFile(wxString& fileName)
     SendSizeEvent();
 }
 
+const char* supportedFormats =
+"PE executables(*.exe) | *.exe"
+"|Elf executalbes(*.elf) | *.elf";
+
+
 void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 {
-	wxFileDialog fileDialog(this, "Choose a file", "", "", "Executables (*.exe)|*.exe", wxFD_OPEN | wxFD_MULTIPLE);
+	wxFileDialog fileDialog(this, "Choose a file", "", "", supportedFormats, wxFD_OPEN | wxFD_MULTIPLE);
 	if (fileDialog.ShowModal() == wxID_OK)
 	{
 		wxArrayString stringArray;

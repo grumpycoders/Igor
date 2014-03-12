@@ -240,6 +240,15 @@
     <Filter Include="Igor\protobufs\generated">
       <UniqueIdentifier>{12d5a56a-c81e-4bb9-b6b4-456e9ef44100}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Igor\Loaders">
+      <UniqueIdentifier>{27deeb22-ed25-4a41-8e0a-635ea8dd207c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Igor\Loaders\PE">
+      <UniqueIdentifier>{cd0db3df-bbaf-423c-8b1d-16459479d4d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Igor\Loaders\Elf">
+      <UniqueIdentifier>{b309b213-6c1b-42e0-ae69-fcf9a3992615}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Balau\libtomcrypt\src\ciphers\anubis.c">
@@ -1787,9 +1796,6 @@
     <ClCompile Include="src\IgorSection.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
-    <ClCompile Include="src\PELoader.cpp">
-      <Filter>Igor</Filter>
-    </ClCompile>
     <ClCompile Include="Balau\win32\regex\msvc-regex.c">
       <Filter>Third Party\regex</Filter>
     </ClCompile>
@@ -2245,6 +2251,12 @@
     </ClCompile>
     <ClCompile Include="src\cpu\cpuModule.cpp">
       <Filter>Igor\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loaders\Elf\elfLoader.cpp">
+      <Filter>Igor\Loaders\Elf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loaders\PE\PELoader.cpp">
+      <Filter>Igor\Loaders\PE</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2972,9 +2984,6 @@
       <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorSection.h">
-      <Filter>Igor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PELoader.h">
       <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="Balau\win32\regex\regex.h">
@@ -4303,6 +4312,12 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\IgorMemory.h">
       <Filter>Igor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loaders\Elf\elfLoader.h">
+      <Filter>Igor\Loaders\Elf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loaders\PE\PELoader.h">
+      <Filter>Igor\Loaders\PE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

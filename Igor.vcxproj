@@ -1685,12 +1685,13 @@
     <ClCompile Include="src\IgorSession.cpp" />
     <ClCompile Include="src\IgorUtils.cpp" />
     <ClCompile Include="src\IgorWS.cpp" />
+    <ClCompile Include="src\Loaders\Elf\elfLoader.cpp" />
+    <ClCompile Include="src\Loaders\PE\PELoader.cpp" />
     <ClCompile Include="src\PDB\gsi.cpp" />
     <ClCompile Include="src\PDB\msf.cpp" />
     <ClCompile Include="src\PDB\pdb.cpp" />
     <ClCompile Include="src\PDB\sym.cpp" />
     <ClCompile Include="src\PDB\tpi.cpp" />
-    <ClCompile Include="src\PELoader.cpp" />
     <ClCompile Include="src\protobufs\IgorProtoFile.pb.cc" />
     <ClCompile Include="wxIgor\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -2000,13 +2001,14 @@
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\IgorSession.h" />
     <ClInclude Include="src\IgorUtils.h" />
+    <ClInclude Include="src\Loaders\Elf\elfLoader.h" />
+    <ClInclude Include="src\Loaders\PE\PELoader.h" />
     <ClInclude Include="src\PDB\gsi.h" />
     <ClInclude Include="src\PDB\msf.h" />
     <ClInclude Include="src\PDB\pdb.h" />
     <ClInclude Include="src\PDB\pdb_info.h" />
     <ClInclude Include="src\PDB\sym.h" />
     <ClInclude Include="src\PDB\tpi.h" />
-    <ClInclude Include="src\PELoader.h" />
     <ClInclude Include="src\protobufs\IgorProtoFile.pb.h" />
     <ClInclude Include="wxIgor\stdafx.h" />
     <ClInclude Include="wxIgor\wxAsmWidget.h" />

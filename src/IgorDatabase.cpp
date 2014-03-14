@@ -13,7 +13,12 @@ igor_result s_igorDatabase::igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_hand
 
 c_cpu_module* s_igorDatabase::getCpuForAddress(igorAddress PC)
 {
-	return m_cpu_modules[0];
+	if (m_cpu_modules.size())
+	{
+		return m_cpu_modules[0];
+	}
+	
+	return NULL;
 }
 
 c_cpu_state* s_igorDatabase::getCpuStateForAddress(igorAddress PC)

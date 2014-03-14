@@ -131,7 +131,11 @@ void c_wxAsmWidget::updateTextCache()
         analyzeState.pCpu = pCpu;
         analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
         analyzeState.pSession = m_pSession;
-        analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+		analyzeState.m_cpu_analyse_result = NULL;
+		if (pCpu)
+		{
+			analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+		}
 
         while (m_textCache.size() < numLinesToDraw + 1)
         {

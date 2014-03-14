@@ -1,5 +1,6 @@
 #include "elfLoader.h"
 #include <Exceptions.h>
+#include "IgorLocalSession.h"
 
 using namespace Balau;
 
@@ -29,7 +30,7 @@ struct s_sectionHeader
 	u64 m_entriesSize;
 };
 
-igor_result c_elfLoader::load(BFile reader, IgorLocalSession *)
+igor_result c_elfLoader::load(BFile reader, IgorLocalSession * pSession)
 {
 	u32 elfMagic = reader->readBEU32().get();
 
@@ -56,7 +57,7 @@ igor_result c_elfLoader::load(BFile reader, IgorLocalSession *)
 	}
 
 	u16 elfType = reader->readU16().get(); // 1=relocatable, 2=executable, 3=shared, 4=core
-	u16 elfMachine = reader->readU16().get(); // 3=x86, 0x14/0x15=PPC
+	u16 elfMachine = reader->readU16().get(); // 3=x86, 0x14=PPC 0x15=PPC64 0x17=SPU
 	u32 elfVersion2 = reader->readU32().get();
 	if (elfVersion2 != 1)
 	{
@@ -146,6 +147,31 @@ igor_result c_elfLoader::load(BFile reader, IgorLocalSession *)
 
 		sectionHeaders.push_back(sectionHeader);
 	}
+
+	// load into db
+	s_igorDatabase * pDataBase = pSession->getDB();
+
+	for (u32 sectionIndex = 0; sectionIndex < shnum; sectionIndex++)
+	{
+		s_sectionHeader* pSectionHeader = &sectionHeaders[sectionIndex];
+
+		// get the section name
+		Balau::String sectionName;
+		reader->seek(sectionHeaders[shstrndx].m_offset + pSectionHeader->m_name);
+		while (char character = reader->readI8().get())
+		{
+			sectionName.append("%c", character);
+		}
+
+		igor_section_handle sectionHandle;
+		pDataBase->create_section(pSectionHeader->m_addr, pSectionHeader->m_size, sectionHandle);
+
+		reader->seek(pSectionHeader->m_offset);
+		pDataBase->load_section_data(sectionHandle, reader, pSectionHeader->m_size);
+
+	}
+
+	pDataBase->m_entryPoint.offset = entryPoint;
 
 	return IGOR_SUCCESS;
 }

@@ -249,6 +249,15 @@
     <Filter Include="Igor\Loaders\Elf">
       <UniqueIdentifier>{b309b213-6c1b-42e0-ae69-fcf9a3992615}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party\c-ares">
+      <UniqueIdentifier>{dc2387cc-ddf0-4105-9612-2bc3a39eb7a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\c-ares\sources">
+      <UniqueIdentifier>{83ad787c-247a-4406-9e5d-24e1c2b2549c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party\c-ares\includes">
+      <UniqueIdentifier>{cfed47ab-6f2f-4a98-8b53-1f7d3f58a447}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Balau\libtomcrypt\src\ciphers\anubis.c">
@@ -2257,6 +2266,150 @@
     </ClCompile>
     <ClCompile Include="src\Loaders\PE\PELoader.cpp">
       <Filter>Igor\Loaders\PE</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares__close_sockets.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares__get_hostent.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares__read_line.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares__timeval.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_cancel.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_create_query.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_data.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_destroy.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_expand_name.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_expand_string.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_fds.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_free_hostent.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_free_string.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_getenv.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_gethostbyaddr.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_gethostbyname.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_getnameinfo.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_getsock.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_init.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_library_init.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_llist.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_mkquery.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_nowarn.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_options.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_a_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_aaaa_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_mx_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_naptr_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_ns_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_ptr_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_soa_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_srv_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_txt_reply.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_platform.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_process.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_query.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_search.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_send.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_strcasecmp.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_strdup.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_strerror.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_timeout.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_version.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\ares_writev.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\bitncmp.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\inet_net_pton.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\inet_ntop.c">
+      <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\win32\c-ares\windows_port.c">
+      <Filter>Third Party\c-ares\sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4318,6 +4471,69 @@
     </ClInclude>
     <ClInclude Include="src\Loaders\PE\PELoader.h">
       <Filter>Igor\Loaders\PE</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_data.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_dns.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_getenv.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_iphlpapi.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_ipv6.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_library_init.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_llist.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_nowarn.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_platform.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_private.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_rules.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_setup.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_strcasecmp.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_strdup.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_version.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\ares_writev.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\config-win32.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\nameser.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\c-ares\setup_once.h">
+      <Filter>Third Party\c-ares\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Balau\win32\ares_build.h">
+      <Filter>Third Party\c-ares\includes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

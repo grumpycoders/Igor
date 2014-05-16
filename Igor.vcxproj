@@ -85,9 +85,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -107,9 +106,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;DEBUG;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -130,9 +128,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -155,9 +152,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -738,6 +734,54 @@
     <ClCompile Include="Balau\src\TaskMan.cc" />
     <ClCompile Include="Balau\src\Threads.cc" />
     <ClCompile Include="Balau\src\ZHandle.cc" />
+    <ClCompile Include="Balau\win32\c-ares\ares_cancel.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_create_query.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_data.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_destroy.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_expand_name.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_expand_string.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_fds.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_free_hostent.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_free_string.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_getenv.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_gethostbyaddr.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_gethostbyname.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_getnameinfo.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_getsock.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_init.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_library_init.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_llist.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_mkquery.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_nowarn.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_options.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_aaaa_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_a_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_mx_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_naptr_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_ns_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_ptr_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_soa_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_srv_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_parse_txt_reply.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_platform.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_process.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_query.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_search.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_send.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_strcasecmp.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_strdup.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_strerror.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_timeout.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_version.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares_writev.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares__close_sockets.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares__get_hostent.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares__read_line.c" />
+    <ClCompile Include="Balau\win32\c-ares\ares__timeval.c" />
+    <ClCompile Include="Balau\win32\c-ares\bitncmp.c" />
+    <ClCompile Include="Balau\win32\c-ares\inet_net_pton.c" />
+    <ClCompile Include="Balau\win32\c-ares\inet_ntop.c" />
+    <ClCompile Include="Balau\win32\c-ares\windows_port.c" />
     <ClCompile Include="Balau\win32\iconv\iconv.c" />
     <ClCompile Include="Balau\win32\iconv\localcharset.c" />
     <ClCompile Include="Balau\win32\iconv\relocatable.c" />
@@ -1786,6 +1830,27 @@
     <ClInclude Include="Balau\src\jsoncpp\include\json\value.h" />
     <ClInclude Include="Balau\src\jsoncpp\include\json\writer.h" />
     <ClInclude Include="Balau\src\jsoncpp\src\json_batchallocator.h" />
+    <ClInclude Include="Balau\win32\ares_build.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_data.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_dns.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_getenv.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_iphlpapi.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_ipv6.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_library_init.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_llist.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_nowarn.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_platform.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_private.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_rules.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_setup.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_strcasecmp.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_strdup.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_version.h" />
+    <ClInclude Include="Balau\win32\c-ares\ares_writev.h" />
+    <ClInclude Include="Balau\win32\c-ares\config-win32.h" />
+    <ClInclude Include="Balau\win32\c-ares\nameser.h" />
+    <ClInclude Include="Balau\win32\c-ares\setup_once.h" />
     <ClInclude Include="Balau\win32\iconv\aliases.h" />
     <ClInclude Include="Balau\win32\iconv\aliases2.h" />
     <ClInclude Include="Balau\win32\iconv\aliases_aix.h" />

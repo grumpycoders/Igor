@@ -527,7 +527,7 @@ void s_registerDefinition::init(s_analyzeState* pState, operandDefinition inputD
 			}
 			else if (x86_analyse_result->m_Prefix64Bit_43)
 			{
-				EAssert(pX86State->m_executionMode == c_cpu_x86_state::_64bits);
+				EAssert(pX86State->m_executionMode == c_cpu_x86_state::_64bits, "Got 64 bits operand size while not in 64 bits mode.");
 				m_size = OPERAND_64bit;
 			}
 			else

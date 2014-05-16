@@ -8,7 +8,7 @@ CPPFLAGS += -g3 -gdwarf-2 -DDEBUG
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = . src src/cpu/x86 Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include
+INCLUDES = . src src/cpu/x86 src/Loaders Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include
 LIBS = z uuid protobuf
 
 ifeq ($(SYSTEM),Darwin)
@@ -27,7 +27,7 @@ CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
-vpath %.cpp src:src/cpu/x86:src/PDB
+vpath %.cpp src:src/cpu:src/cpu/x86:src/Loaders/PE:src/Loaders/Elf:src/PDB
 vpath %.cc src/protobufs
 vpath %.proto src/protobufs
 
@@ -43,8 +43,10 @@ IgorWS.cpp \
 \
 IgorProtoFile.pb.cc \
 \
-PELoader.cpp \
+Loaders/PE/PELoader.cpp \
+Loaders/Elf/elfLoader.cpp \
 \
+cpu/cpuModule.cpp \
 cpu/x86/cpu_x86.cpp \
 cpu/x86/cpu_x86_opcodes.cpp \
 cpu/x86/cpu_x86_opcodes_F.cpp \

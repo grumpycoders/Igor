@@ -72,7 +72,7 @@ static void startWX(int argc, char ** argv) {
 
 #else
 
-static void startWS(...) { }
+static void startWX(...) { }
 
 #endif
 

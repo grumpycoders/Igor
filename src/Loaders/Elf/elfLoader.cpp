@@ -53,7 +53,7 @@ igor_result c_elfLoader::load(BFile reader, IgorLocalSession * pSession)
 
 	if (elfData == 2)
 	{
-		reader->setEndianness(Handle::BIG_ENDIAN);
+		reader->setEndianness(Handle::BALAU_BIG_ENDIAN);
 	}
 
 	u16 elfType = reader->readU16().get(); // 1=relocatable, 2=executable, 3=shared, 4=core

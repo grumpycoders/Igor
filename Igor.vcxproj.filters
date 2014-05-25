@@ -5,9 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Balau">
-      <UniqueIdentifier>{b9a21c6f-dab1-45d6-8107-c29b47e404d0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="wxIgor">
       <UniqueIdentifier>{592a8b91-cabc-44f3-81e6-ef2e2a2d7982}</UniqueIdentifier>
     </Filter>

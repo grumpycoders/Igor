@@ -172,6 +172,11 @@ void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 	}
 }
 
+void c_wxIgorFrame::OnExit(wxCommandEvent& WXUNUSED(event))
+{
+	Close(true);
+}
+
 void c_wxIgorFrame::OnHistory(wxCommandEvent& event)
 {
 	c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
@@ -254,6 +259,7 @@ void c_wxIgorFrame::OnIdle(wxIdleEvent& event)
 
 BEGIN_EVENT_TABLE(c_wxIgorFrame, wxFrame)
 EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
+EVT_MENU(wxID_EXIT, c_wxIgorFrame::OnExit)
 EVT_MENU(ID_GO_TO_ADDRESS, c_wxIgorFrame::OnGoToAddress)
 EVT_MENU(ID_EXPORT_DISASSEMBLY, c_wxIgorFrame::OnExportDisassembly)
 EVT_MENU(ID_SAVE_DATABASE, c_wxIgorFrame::OnSaveDatabase)

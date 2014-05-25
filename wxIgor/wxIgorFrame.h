@@ -34,6 +34,7 @@ public:
 	void OpenFile(wxString& fileName);
 
 	void OnOpen(wxCommandEvent& event);
+	void OnExit(wxCommandEvent& event);
 	void OnHistory(wxCommandEvent& event);
 	void OnIdle(wxIdleEvent& event);
 

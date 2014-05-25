@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\arch">
+      <UniqueIdentifier>{178d16bf-a3ed-4736-9a2f-d87b135e864a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\arch\X86">
+      <UniqueIdentifier>{34318cfa-bfd5-4fde-9fc6-fe082f5a214f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="capstone\arch\X86\X86ATTInstPrinter.c">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\arch\X86\X86Disassembler.c">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\arch\X86\X86DisassemblerDecoder.c">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\arch\X86\X86IntelInstPrinter.c">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\arch\X86\X86Mapping.c">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\arch\X86\X86Module.c">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\cs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\MCInst.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\MCInstrDesc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\MCRegisterInfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\SStream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="capstone\utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="capstone\arch\X86\X86Disassembler.h">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\arch\X86\X86DisassemblerDecoder.h">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\arch\X86\X86DisassemblerDecoderCommon.h">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\arch\X86\X86InstPrinter.h">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\arch\X86\X86Mapping.h">
+      <Filter>Source Files\arch\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\cs_priv.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\LEB128.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\MathExtras.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\MCDisassembler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\MCFixedLenDisassembler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\MCInst.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\MCInstrDesc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\MCRegisterInfo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\SStream.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\SubtargetFeature.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="capstone\utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="capstone\arch\X86\X86GenAsmWriter.inc">
+      <Filter>Source Files\arch\X86</Filter>
+    </None>
+    <None Include="capstone\arch\X86\X86GenAsmWriter1.inc">
+      <Filter>Source Files\arch\X86</Filter>
+    </None>
+    <None Include="capstone\arch\X86\X86GenDisassemblerTables.inc">
+      <Filter>Source Files\arch\X86</Filter>
+    </None>
+    <None Include="capstone\arch\X86\X86GenInstrInfo.inc">
+      <Filter>Source Files\arch\X86</Filter>
+    </None>
+    <None Include="capstone\arch\X86\X86GenRegisterInfo.inc">
+      <Filter>Source Files\arch\X86</Filter>
+    </None>
+  </ItemGroup>
+</Project>

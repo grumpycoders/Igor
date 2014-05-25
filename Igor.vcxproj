@@ -86,7 +86,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;lua51_32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>wxwidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
@@ -107,14 +107,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;lua51_64d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>wxwidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
@@ -129,7 +129,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -138,7 +138,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;lua51_32r.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>wxwidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
@@ -153,7 +153,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_BUILDING_LIBRARY;CARES_STATICLIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -162,7 +162,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dbghelp.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;lua51_64r.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>wxwidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
@@ -170,6 +170,31 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Balau\lcrypt\lcrypt.c" />
+    <ClCompile Include="Balau\lcrypt\lcrypt_bits.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt_ciphers.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt_hashes.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt_math.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Balau\libev\ev.c" />
     <ClCompile Include="Balau\libev\event.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -678,12 +703,7 @@
     <ClCompile Include="Balau\src\Async.cc" />
     <ClCompile Include="Balau\src\Base64.cc" />
     <ClCompile Include="Balau\src\BigInt.cc" />
-    <ClCompile Include="Balau\src\BLua.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="Balau\src\BLua.cc" />
     <ClCompile Include="Balau\src\BRegex.cc" />
     <ClCompile Include="Balau\src\BStream.cc" />
     <ClCompile Include="Balau\src\BString.cc" />
@@ -700,24 +720,9 @@
     <ClCompile Include="Balau\src\jsoncpp\src\json_value.cpp" />
     <ClCompile Include="Balau\src\jsoncpp\src\json_writer.cpp" />
     <ClCompile Include="Balau\src\Local.cc" />
-    <ClCompile Include="Balau\src\LuaBigInt.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Balau\src\LuaHandle.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Balau\src\LuaTask.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="Balau\src\LuaBigInt.cc" />
+    <ClCompile Include="Balau\src\LuaHandle.cc" />
+    <ClCompile Include="Balau\src\LuaTask.cc" />
     <ClCompile Include="Balau\src\Main.cc" />
     <ClCompile Include="Balau\src\Output.cc" />
     <ClCompile Include="Balau\src\Printer.cc" />

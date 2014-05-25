@@ -258,6 +258,9 @@
     <Filter Include="Third Party\c-ares\includes">
       <UniqueIdentifier>{cfed47ab-6f2f-4a98-8b53-1f7d3f58a447}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party\lcrypt">
+      <UniqueIdentifier>{93c01cb9-6971-4972-9ba9-581c9fe652ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Balau\libtomcrypt\src\ciphers\anubis.c">
@@ -2410,6 +2413,21 @@
     </ClCompile>
     <ClCompile Include="Balau\win32\c-ares\windows_port.c">
       <Filter>Third Party\c-ares\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt_bits.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt_ciphers.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt_hashes.c">
+      <Filter>Third Party\lcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Balau\lcrypt\lcrypt_math.c">
+      <Filter>Third Party\lcrypt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

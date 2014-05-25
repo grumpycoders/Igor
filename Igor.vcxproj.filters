@@ -36,6 +36,9 @@
     <Filter Include="Igor\Loaders\Elf">
       <UniqueIdentifier>{b309b213-6c1b-42e0-ae69-fcf9a3992615}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Igor\cpu\x86_capstone">
+      <UniqueIdentifier>{16edb46f-e54d-4b8c-9a92-fd6d43639d14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Igor.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="src\Loaders\PE\PELoader.cpp">
       <Filter>Igor\Loaders\PE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\x86_capstone\cpu_x86_capstone.cpp">
+      <Filter>Igor\cpu\x86_capstone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="src\Loaders\PE\PELoader.h">
       <Filter>Igor\Loaders\PE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\x86_capstone\cpu_x86_capstone.h">
+      <Filter>Igor\cpu\x86_capstone</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -178,6 +178,7 @@
     <ClCompile Include="src\cpu\x86\cpu_x86.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp" />
+    <ClCompile Include="src\cpu\x86_capstone\cpu_x86_capstone.cpp" />
     <ClCompile Include="src\Igor.cpp" />
     <ClCompile Include="src\IgorAnalysis.cpp" />
     <ClCompile Include="src\IgorDatabase.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="src\cpu\cpuModule.h" />
     <ClInclude Include="src\cpu\x86\cpu_x86.h" />
     <ClInclude Include="src\cpu\x86\cpu_x86_opcodes.h" />
+    <ClInclude Include="src\cpu\x86_capstone\cpu_x86_capstone.h" />
     <ClInclude Include="src\Igor.h" />
     <ClInclude Include="src\IgorAnalysis.h" />
     <ClInclude Include="src\IgorAPI.h" />
@@ -270,6 +272,9 @@
   <ItemGroup>
     <ProjectReference Include="Balau\win32\project\Balau.vcxproj">
       <Project>{6e74c651-e02e-4bec-addb-7e2a79e0f6f7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="capstone.vcxproj">
+      <Project>{1188eaab-3a8d-40ba-8043-9a053a01be43}</Project>
     </ProjectReference>
     <ProjectReference Include="msvc\google\libprotobuf.vcxproj">
       <Project>{3e283f37-a4ed-41b7-a3e6-a2d89d131a30}</Project>

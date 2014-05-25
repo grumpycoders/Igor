@@ -36,7 +36,7 @@ struct s_analyzeState
 	igorAddress m_PC;
 	c_cpu_module* pCpu;
 	c_cpu_state* pCpuState;
-    IgorSession* pSession;
+	IgorSession* pSession;
 
 	// output
 	c_cpu_analyse_result* m_cpu_analyse_result;
@@ -50,20 +50,20 @@ public:
 	virtual igor_result analyze(s_analyzeState* pState) = 0;
 	virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
 
-    virtual igor_result getMnemonic(s_analyzeState* pState, Balau::String& outputString) = 0;
-    virtual int getNumOperands(s_analyzeState* pState) = 0;
-    virtual igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor = false) = 0;
+	virtual igor_result getMnemonic(s_analyzeState* pState, Balau::String& outputString) = 0;
+	virtual int getNumOperands(s_analyzeState* pState) = 0;
+	virtual igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor = false) = 0;
 
 	virtual c_cpu_analyse_result* allocateCpuSpecificAnalyseResult() = 0;
 
-    virtual void generateReferences(s_analyzeState* pState) = 0;
+	virtual void generateReferences(s_analyzeState* pState) = 0;
 
-    enum e_colors
-    {
-        RESET_COLOR,
-        KNOWN_SYMBOL,
-    };
+	enum e_colors
+	{
+		RESET_COLOR,
+		KNOWN_SYMBOL,
+	};
 
-    static const char* startColor(e_colors, bool bUseColor=true);
-    static const char* finishColor(e_colors, bool bUseColor=true);
+	static const char* startColor(e_colors, bool bUseColor = true);
+	static const char* finishColor(e_colors, bool bUseColor = true);
 };

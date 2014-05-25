@@ -4,3 +4,6 @@
 [submodule "wxwidget"]
 	path = wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets.git
+[submodule "capstone"]
+	path = capstone
+	url = https://github.com/yaz0r/capstone

@@ -6,6 +6,7 @@
 #include <StacklessTask.h>
 #include <TaskMan.h>
 #include <HttpServer.h>
+#include <LuaTask.h>
 
 #include "google/protobuf/stubs/common.h"
 
@@ -23,6 +24,8 @@ const igorAddress IGOR_MAX_ADDRESS((u64) -1);
 const igorAddress IGOR_INVALID_ADDRESS((u64) -1);
 
 using namespace Balau;
+
+LuaMainTask * g_luaTask = NULL;
 
 class GoogleProtoBufs : public AtStart, public AtExit {
 public:
@@ -80,6 +83,20 @@ void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
     
     Printer::enable(M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT);
+
+    g_luaTask = new LuaMainTask();
+    TaskMan::registerTask(g_luaTask);
+    LuaExecString strLuaHello(
+        "local jitstatus = { jit.status() } "
+        "local features = 'Features:' "
+        "for i = 2, #jitstatus do "
+        "  features = features .. ' ' .. jitstatus[i] "
+        "end "
+        "print(jit.version .. ' running on ' .. jit.os .. '/' .. jit.arch .. '.') "
+        "print(features .. '.') "
+        "print('Lua engine up and running, JIT compiler is ' .. (jitstatus[1] and 'enabled' or 'disabled') .. '.') "
+    );
+    strLuaHello.exec(g_luaTask);
 
     if (argc == 2) {
         IO<Input> reader(new Input(argv[1]));

@@ -36,6 +36,7 @@ public:
 	void OnOpen(wxCommandEvent& event);
 	void OnExit(wxCommandEvent& event);
 	void OnHistory(wxCommandEvent& event);
+	void OnClose(wxCloseEvent& event);
 	void OnIdle(wxIdleEvent& event);
 
 	void OnGoToAddress(wxCommandEvent& event);

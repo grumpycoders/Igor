@@ -249,6 +249,20 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
     }
 }
 
+void c_wxIgorFrame::OnClose(wxCloseEvent& event)
+{
+	if (event.CanVeto())
+	{
+		if (wxMessageBox("Do you really want to exit ?", "Exit", wxICON_QUESTION | wxYES_NO) != wxYES)
+		{
+			event.Veto();
+			return;
+		}
+	}
+
+	event.Skip();
+}
+
 void c_wxIgorFrame::OnIdle(wxIdleEvent& event)
 {
 	if (m_session)
@@ -265,6 +279,7 @@ EVT_MENU(ID_EXPORT_DISASSEMBLY, c_wxIgorFrame::OnExportDisassembly)
 EVT_MENU(ID_SAVE_DATABASE, c_wxIgorFrame::OnSaveDatabase)
 EVT_MENU(ID_LOAD_DATABASE, c_wxIgorFrame::OnLoadDatabase)
 EVT_IDLE(c_wxIgorFrame::OnIdle)
+EVT_CLOSE(c_wxIgorFrame::OnClose)
 
 // history
 EVT_MENU(wxID_FILE1, c_wxIgorFrame::OnHistory)

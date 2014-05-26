@@ -122,7 +122,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 			return IGOR_FAILURE;
 		}
 	}
-	catch (X86AnalysisException & e) {
+	catch (X86AnalysisException &) {
         Printer::log(M_INFO, "Exception while decoding instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction.offset);
 		pState->m_PC = result.m_startOfInstruction;
 		return IGOR_FAILURE;

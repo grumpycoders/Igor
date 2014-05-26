@@ -259,14 +259,23 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
         {
             if (strstr(stringList[i].to_charp(), "C="))
             {
+				if (strstr(c_cpu_module::startColor(c_cpu_module::RESET_COLOR), stringList[i].to_charp()))
+				{
+					dc.SetTextForeground(*wxBLACK);
+				}
                 if (strstr(c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), stringList[i].to_charp()))
                 {
                     dc.SetTextForeground(*wxBLUE);
                 }
-                if (strstr(c_cpu_module::startColor(c_cpu_module::RESET_COLOR), stringList[i].to_charp()))
-                {
-                    dc.SetTextForeground(*wxBLACK);
-                }
+				if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_DEFAULT), stringList[i].to_charp()))
+				{
+					dc.SetTextForeground(wxColour(0xFF775577));
+				}
+				if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL), stringList[i].to_charp()))
+				{
+					dc.SetTextForeground(*wxRED);
+				}
+
             }
             else
             {

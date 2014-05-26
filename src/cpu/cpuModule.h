@@ -62,6 +62,8 @@ public:
 	{
 		RESET_COLOR,
 		KNOWN_SYMBOL,
+		MNEMONIC_DEFAULT,
+		MNEMONIC_FLOW_CONTROL,
 	};
 
 	static const char* startColor(e_colors, bool bUseColor = true);

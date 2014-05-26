@@ -15,8 +15,8 @@ c_cpu_x86_capstone::~c_cpu_x86_capstone()
 
 igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
 {
-	u8 buffer[256];
-	for (int i = 0; i < 256; i++)
+	u8 buffer[32];
+	for (int i = 0; i < 32; i++)
 	{
 		buffer[i] = pState->pSession->readU8(pState->m_PC + i);
 	}
@@ -39,7 +39,7 @@ igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
 
 igor_result c_cpu_x86_capstone::printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor)
 {
-	u8 buffer[256];
+	u8 buffer[32];
 	for (int i = 0; i < pState->m_cpu_analyse_result->m_instructionSize; i++)
 	{
 		buffer[i] = pState->pSession->readU8(pState->m_cpu_analyse_result->m_startOfInstruction + i);
@@ -49,7 +49,29 @@ igor_result c_cpu_x86_capstone::printInstruction(s_analyzeState* pState, Balau::
 
 	if (count)
 	{
-		outputString.append("%s %s", insn[0].mnemonic, insn[0].op_str);
+		c_cpu_module::e_colors mnemonicColor = c_cpu_module::MNEMONIC_DEFAULT;
+
+		const char* flowControl[] =
+		{
+			"call",
+			"jmp",
+			"jae",
+			"jne",
+			"je",
+			"jbe",
+			"jb",
+			"ret",
+		};
+
+		for (int i = 0; i < sizeof(flowControl) / sizeof(flowControl[0]); i++)
+		{
+			if (strcmp(insn[0].mnemonic, flowControl[i]) == 0)
+			{
+				mnemonicColor = c_cpu_module::MNEMONIC_FLOW_CONTROL;
+			}
+		}
+
+		outputString.append("%s%s%s %s", startColor(mnemonicColor), insn[0].mnemonic, finishColor(mnemonicColor), insn[0].op_str);
 
 		cs_free(insn, count);
 

@@ -14,7 +14,11 @@ const char* c_cpu_module::startColor(e_colors color, bool bUseColor)
     case RESET_COLOR:
         return ";C=DEFAULT;";
     case KNOWN_SYMBOL:
-        return ";C=BLUE;";
+        return ";C=KNOWN_SYMBOL;";
+	case MNEMONIC_DEFAULT:
+		return ";C=MNEMONIC_DEFAULT;";
+	case MNEMONIC_FLOW_CONTROL:
+		return ";C=MNEMONIC_FLOW_CONTROL;";
     }
 
     return "";

@@ -51,7 +51,7 @@ MSF* MsfOpen(const char *szFileName)
     {
         file->open();
     }
-    catch (ENoEnt & e)
+    catch (...)
     {
         return NULL;
     }

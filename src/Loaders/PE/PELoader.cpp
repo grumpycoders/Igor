@@ -150,17 +150,14 @@ igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
 	}
 	else
 	{
-		c_cpu_x86_capstone* pCpu = new c_cpu_x86_capstone();
-		db->igor_add_cpu(pCpu, cpuHandle);
-
 		switch (m_Machine)
 		{
 			case IMAGE_FILE_MACHINE_I386:
-				//pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_32bits;
+				db->igor_add_cpu(new c_cpu_x86_capstone(CS_MODE_32), cpuHandle);
 				loadOptionalHeader386(reader);
 				break;
 			case IMAGE_FILE_MACHINE_AMD64:
-				//pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_64bits;
+				db->igor_add_cpu(new c_cpu_x86_capstone(CS_MODE_64), cpuHandle);
 				loadOptionalHeader64(reader);
 				break;
 			default:

@@ -13,9 +13,9 @@ int strcasecmp(const char *f1, const char *f2)
 	return 0;
 }
 
-c_cpu_x86_capstone::c_cpu_x86_capstone()
+c_cpu_x86_capstone::c_cpu_x86_capstone(cs_mode mode)
 {
-	cs_open(CS_ARCH_X86, CS_MODE_64, &m_csHandle);
+	cs_open(CS_ARCH_X86, mode, &m_csHandle);
 }
 
 c_cpu_x86_capstone::~c_cpu_x86_capstone()

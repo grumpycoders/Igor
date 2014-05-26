@@ -11,7 +11,7 @@ public:
 class c_cpu_x86_capstone : public c_cpu_module
 {
 public:
-	c_cpu_x86_capstone();
+	c_cpu_x86_capstone(cs_mode mode);
 	virtual ~c_cpu_x86_capstone();
 
 	igor_result analyze(s_analyzeState* pState);

@@ -675,6 +675,9 @@
     <ProjectReference Include="Balau\win32\project\c-ares.vcxproj">
       <Project>{4d6afe58-8573-4f3f-9cb7-eff38bdc9662}</Project>
     </ProjectReference>
+    <ProjectReference Include="Balau\win32\project\iconv.vcxproj">
+      <Project>{aa262abd-09df-4573-bf62-81dea60e196c}</Project>
+    </ProjectReference>
     <ProjectReference Include="Balau\win32\project\zlib.vcxproj">
       <Project>{c98a6524-5aa7-4ffd-8dda-679a1016d185}</Project>
     </ProjectReference>

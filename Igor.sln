@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Third Party", "Third Party"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Third Party - Balau", "Third Party - Balau", "{1F771FD4-C1C7-4220-89F8-1E0D5069E205}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "Balau\win32\project\zlib.vcxproj", "{C98A6524-5AA7-4FFD-8DDA-679A1016D185}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -80,11 +82,25 @@ Global
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Debug|Win32.Build.0 = Debug|Win32
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Debug|x64.ActiveCfg = Debug|x64
+		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Debug|x64.Build.0 = Debug|x64
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Release|Win32.ActiveCfg = Release|Win32
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Release|Win32.Build.0 = Release|Win32
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Release|x64.ActiveCfg = Release|x64
+		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662}.Release|x64.Build.0 = Release|x64
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Debug|Win32.Build.0 = Debug|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Debug|x64.ActiveCfg = Debug|x64
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Debug|x64.Build.0 = Debug|x64
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Release|Win32.ActiveCfg = Release|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Release|Win32.Build.0 = Release|Win32
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Release|x64.ActiveCfg = Release|x64
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,5 +109,6 @@ Global
 		{1188EAAB-3A8D-40BA-8043-9A053A01BE43} = {41A44AFD-7691-46CC-BCF3-EE8AB4A1F829}
 		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30} = {41A44AFD-7691-46CC-BCF3-EE8AB4A1F829}
 		{4D6AFE58-8573-4F3F-9CB7-EFF38BDC9662} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
+		{C98A6524-5AA7-4FFD-8DDA-679A1016D185} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
 	EndGlobalSection
 EndGlobal

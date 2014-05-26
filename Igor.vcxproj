@@ -669,6 +669,9 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Balau\win32\project\pthreads.vcxproj">
+      <Project>{e5b79c22-07b5-4830-8e28-224457c0fdb8}</Project>
+    </ProjectReference>
     <ProjectReference Include="Balau\win32\project\Balau.vcxproj">
       <Project>{6e74c651-e02e-4bec-addb-7e2a79e0f6f7}</Project>
     </ProjectReference>

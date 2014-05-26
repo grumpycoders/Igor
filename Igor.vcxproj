@@ -681,6 +681,9 @@
     <ProjectReference Include="Balau\win32\project\iconv.vcxproj">
       <Project>{aa262abd-09df-4573-bf62-81dea60e196c}</Project>
     </ProjectReference>
+    <ProjectReference Include="Balau\win32\project\tommath.vcxproj">
+      <Project>{0c334d26-6f19-4959-bb14-b4fb81099e99}</Project>
+    </ProjectReference>
     <ProjectReference Include="Balau\win32\project\zlib.vcxproj">
       <Project>{c98a6524-5aa7-4ffd-8dda-679a1016d185}</Project>
     </ProjectReference>

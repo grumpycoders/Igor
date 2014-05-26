@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iconv", "Balau\win32\projec
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pthreads", "Balau\win32\project\pthreads.vcxproj", "{E5B79C22-07B5-4830-8E28-224457C0FDB8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tommath", "Balau\win32\project\tommath.vcxproj", "{0C334D26-6F19-4959-BB14-B4FB81099E99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -129,6 +131,18 @@ Global
 		{E5B79C22-07B5-4830-8E28-224457C0FDB8}.Release|Win32.Build.0 = Release|Win32
 		{E5B79C22-07B5-4830-8E28-224457C0FDB8}.Release|x64.ActiveCfg = Release|x64
 		{E5B79C22-07B5-4830-8E28-224457C0FDB8}.Release|x64.Build.0 = Release|x64
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Debug|Win32.Build.0 = Debug|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Debug|x64.ActiveCfg = Debug|x64
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Debug|x64.Build.0 = Debug|x64
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Release|Win32.ActiveCfg = Release|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Release|Win32.Build.0 = Release|Win32
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Release|x64.ActiveCfg = Release|x64
+		{0C334D26-6F19-4959-BB14-B4FB81099E99}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,5 +154,6 @@ Global
 		{C98A6524-5AA7-4FFD-8DDA-679A1016D185} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
 		{AA262ABD-09DF-4573-BF62-81DEA60E196C} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
 		{E5B79C22-07B5-4830-8E28-224457C0FDB8} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
+		{0C334D26-6F19-4959-BB14-B4FB81099E99} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
 	EndGlobalSection
 EndGlobal

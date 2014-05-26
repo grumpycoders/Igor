@@ -3,16 +3,6 @@
 
 #include "cpu_x86_capstone.h"
 
-extern "C" {
-	int strcasecmp(const char *f1, const char *f2);
-}
-
-int strcasecmp(const char *f1, const char *f2)
-{
-	Failure("strcasecmp not implemented");
-	return 0;
-}
-
 c_cpu_x86_capstone::c_cpu_x86_capstone(cs_mode mode)
 {
 	cs_open(CS_ARCH_X86, mode, &m_csHandle);

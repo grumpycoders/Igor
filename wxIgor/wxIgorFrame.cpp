@@ -98,6 +98,8 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 
 	SetMenuBar(menuBar);
 
+    SetIcon(wxICON(appicon)); // loads resource under win32, or appicon.xpm elsewhere
+
 	CreateStatusBar();
 }
 

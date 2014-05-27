@@ -230,7 +230,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\cpu\cpuModule.h" />
     <ClInclude Include="src\cpu\x86\cpu_x86.h" />
     <ClInclude Include="src\cpu\x86\cpu_x86_opcodes.h" />

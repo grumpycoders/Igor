@@ -202,7 +202,6 @@
     <ClInclude Include="src\IgorSession.h">
       <Filter>Igor</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\IgorMemory.h">
       <Filter>Igor</Filter>
     </ClInclude>

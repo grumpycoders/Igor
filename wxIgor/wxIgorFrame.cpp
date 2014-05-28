@@ -226,12 +226,7 @@ void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK && m_session)
     {
         wxString fileName = fileDialog.GetPath();
-        fileOperationSafe([&]() {
-            IO<Output> file(new Output(fileName.c_str().AsChar()));
-            file->open();
-            m_session->serialize(file);
-            file->close();
-        });
+        m_session->serialize(fileName.c_str().AsChar());
     }
 }
 
@@ -241,13 +236,7 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK)
     {
         wxString fileName = fileDialog.GetPath();
-
-        fileOperationSafe([&]() {
-            IO<Input> file(new Input(fileName.c_str().AsChar()));
-            file->open();
-            m_session = IgorLocalSession::deserialize(file);
-            file->close();
-        });
+        m_session = IgorLocalSession::deserialize(fileName.c_str().AsChar());
     }
 }
 

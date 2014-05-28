@@ -15,7 +15,7 @@ void IgorSqlite3::createVersionnedDB(std::function<int(int)> upgradeFunc, int de
     stmtStr.set("SELECT version, ROWID FROM %s.version;", db);
     sqlite3_stmt * stmt = safeStmt(stmtStr);
     do {
-        r = sqlite3_step(stmt);
+        r = safeStep(stmt);
         if (r == SQLITE_ROW) {
             IAssert(version == 0, "Table %s.version contains multiple rows, db");
             version = sqlite3_column_int(stmt, 0);
@@ -52,7 +52,7 @@ void IgorSqlite3::closeDB() {
     if (m_sqlite) {
         int r;
         r = sqlite3_close_v2(m_sqlite);
-        RAssert(r == SQLITE_OK, "Unable to close Igor.db");
+        RAssert(r == SQLITE_OK, "Unable to close database");
     }
     m_sqlite = NULL;
 }

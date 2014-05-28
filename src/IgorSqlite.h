@@ -4,6 +4,11 @@
 
 class IgorSqlite3 {
 public:
+      IgorSqlite3() { }
+      IgorSqlite3(const IgorSqlite3 &) = delete;
+      IgorSqlite3(IgorSqlite3 &&) = delete;
+      IgorSqlite3 & operator=(const IgorSqlite3 &) = delete;
+      ~IgorSqlite3() { closeDB(); }
     void openDB(const char * filename);
     void closeDB();
     void createVersionnedDB(std::function<int(int)> upgradeFunc, int desiredVersion, const char * db = "main");
@@ -64,34 +69,48 @@ public:
     void safeWriteStmt(const Balau::String & stmtStr, std::function<void(sqlite3_stmt *)> binds) {
         return safeWriteStmt(stmtStr.to_charp(), binds, stmtStr.strlen());
     }
-    void safeBind(sqlite3_stmt * stmt, int pt, double value) {
+    static void safeBind(sqlite3_stmt * stmt, int pt, double value) {
         int r = sqlite3_bind_double(stmt, pt, value);
         RAssert(r == SQLITE_OK, "Unable to bind value");
     }
-    void safeBind(sqlite3_stmt * stmt, int pt, int value) {
+    static void safeBind(sqlite3_stmt * stmt, int pt, int value) {
         int r = sqlite3_bind_int(stmt, pt, value);
         RAssert(r == SQLITE_OK, "Unable to bind value");
     }
-    void safeBind(sqlite3_stmt * stmt, int pt, sqlite3_int64 value) {
+    static void safeBind(sqlite3_stmt * stmt, int pt, sqlite3_int64 value) {
         int r = sqlite3_bind_int64(stmt, pt, value);
         RAssert(r == SQLITE_OK, "Unable to bind value");
     }
-    void safeBind(sqlite3_stmt * stmt, int pt) {
+    static void safeBind(sqlite3_stmt * stmt, int pt) {
         int r = sqlite3_bind_null(stmt, pt);
         RAssert(r == SQLITE_OK, "Unable to bind value");
     }
-    template<size_t L>
-    void safeBind(sqlite3_stmt * stmt, int pt, const char(&stmtStr)[L]) {
+    static void safeBind(sqlite3_stmt * stmt, int pt, const char * stmtStr, ssize_t L = -1) {
         int sqlite3_bind_text(sqlite3_stmt*, int, const char*, int n, void(*)(void*));
         int r = sqlite3_bind_text(stmt, pt, stmtStr, L, NULL);
         RAssert(r == SQLITE_OK, "Unable to bind value");
     }
-    void safeBind(sqlite3_stmt * stmt, int pt, const char * stmtStr) {
-        int sqlite3_bind_text(sqlite3_stmt*, int, const char*, int n, void(*)(void*));
-        int r = sqlite3_bind_text(stmt, pt, stmtStr, -1, NULL);
-        RAssert(r == SQLITE_OK, "Unable to bind value");
+    template<size_t L>
+    static void safeBind(sqlite3_stmt * stmt, int pt, const char(&stmtStr)[L]) {
+        safeBind(stmt, pt, stmtStr, L);
     }
-    void safeFinalize(sqlite3_stmt *& stmt) {
+    static void safeBind(sqlite3_stmt * stmt, int pt, const Balau::String & stmtStr) {
+        safeBind(stmt, pt, stmtStr.to_charp(), stmtStr.strlen());
+    }
+    static int safeStep(sqlite3_stmt * stmt) {
+        int r = sqlite3_step(stmt);
+        RAssert(r == SQLITE_DONE || r == SQLITE_ROW, "Unable to step statement");
+        return r;
+    }
+    static void safeWriteStep(sqlite3_stmt * stmt) {
+        int r = sqlite3_step(stmt);
+        RAssert(r == SQLITE_DONE, "Unable to step statement");
+    }
+    static void safeReset(sqlite3_stmt * stmt) {
+        int r = sqlite3_reset(stmt);
+        RAssert(r == SQLITE_OK, "Unable to reset statement");
+    }
+    static void safeFinalize(sqlite3_stmt *& stmt) {
         int r = sqlite3_finalize(stmt);
         RAssert(r == SQLITE_OK, "Unable to finalize statement");
         stmt = NULL;

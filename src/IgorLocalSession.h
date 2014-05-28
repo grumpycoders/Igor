@@ -20,8 +20,8 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
 
     void loaded(const char * filename);
 
-    void serialize(Balau::IO<Balau::Handle>);
-    static IgorLocalSession * deserialize(Balau::IO<Balau::Handle>);
+    void serialize(const char * name);
+    static IgorLocalSession * deserialize(const char * name);
 
     void add_code_analysis_task(igorAddress PC);
     virtual void Do() override;

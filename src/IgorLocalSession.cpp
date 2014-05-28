@@ -1,5 +1,6 @@
 #include "IgorAnalysis.h"
 #include "IgorLocalSession.h"
+#include "IgorSqlite.h"
 
 #include "google/protobuf/io/zero_copy_stream.h"
 #include "protobufs/IgorProtoFile.pb.h"
@@ -23,110 +24,6 @@ static bool safeOperationLambda(std::function<bool()> lambda) {
     }
 
     return success;
-}
-
-class gprotInput : public google::protobuf::io::ZeroCopyInputStream {
-  public:
-      gprotInput(IO<Handle> h) : m_h(h) { }
-
-  private:
-    virtual bool Next(const void ** data, int * size) override;
-    virtual void BackUp(int count) override { m_availBytes += count; }
-    virtual bool Skip(int count) override;
-    virtual google::protobuf::int64 ByteCount() const override { return m_availBytes; }
-
-    char m_data[1024];
-    IO<Handle> m_h;
-    int m_availBytes = 0;
-
-    google::protobuf::int64 m_size = 0;
-};
-
-bool gprotInput::Next(const void ** data, int * size) {
-    return safeOperationLambda([&]() -> bool {
-        if (!m_availBytes) {
-            ssize_t r = m_h->read(m_data, sizeof(m_data));
-            if (r < 0)
-                return false;
-            m_availBytes = r;
-            m_size += r;
-        }
-        *data = m_data;
-        *size = m_availBytes;
-
-        return true;
-    });
-}
-
-bool gprotInput::Skip(int count) {
-    bool success = safeOperationLambda([&]() -> bool {
-        if (m_availBytes < count) {
-            count -= m_availBytes;
-            m_availBytes = 0;
-            if (m_h->canSeek()) {
-                m_h->seek(count, SEEK_CUR);
-            }
-            else {
-                void * buf;
-
-                if (count >= 1024)
-                    buf = malloc(count);
-                else
-                    buf = alloca(count);
-
-                m_h->forceRead(buf, count);
-
-                if (count >= 1024)
-                    free(buf);
-            }
-        }
-        else {
-            m_availBytes -= count;
-        }
-
-        return true;
-    });
-
-    return success || !m_h->isEOF();
-}
-
-class gprotOutput : public google::protobuf::io::ZeroCopyOutputStream {
-  public:
-      gprotOutput(IO<Handle> h) : m_h(h) { }
-      virtual ~gprotOutput() { maybeFlush(); }
-
-    bool maybeFlush();
-
-  private:
-    virtual bool Next(void ** data, int * size) override;
-    virtual void BackUp(int count) override { m_bufSize -= count; }
-    virtual google::protobuf::int64 ByteCount() const override { return m_size; }
-
-    char m_data[1024];
-    IO<Handle> m_h;
-    int m_bufSize = 0;
-    google::protobuf::int64 m_size = 0;
-};
-
-bool gprotOutput::Next(void ** data, int * size) {
-    return safeOperationLambda([&]() {
-        if (!maybeFlush())
-            return false;
-        m_bufSize = *size = sizeof(m_data);
-        *data = m_data;
-        return true;
-    });
-}
-
-bool gprotOutput::maybeFlush() {
-    ssize_t r = 0;
-    if (m_bufSize)
-        r = m_h->forceWrite(m_data, m_bufSize);
-    if (r < 0)
-        return false;
-    m_size += r;
-    m_bufSize = 0;
-    return true;
 }
 
 void IgorLocalSession::Do() {
@@ -195,32 +92,64 @@ void IgorLocalSession::thaw() {
 
 }
 
-void IgorLocalSession::serialize(IO<Handle> file) {
-    IgorProtoFile::IgorFile protoFile;
+class IgorSessionSqlite : public IgorSqlite3 {
+public:
+    static const int CURRENT_VERSION = 1;
+    int upgradeDB(int version);
+};
 
-    s_igorDatabase * db = getDB();
-
-    protoFile.set_uuid(getUUID().to_charp());
-    const char * name = getSessionName().to_charp();
-    if (name && name[0])
-        protoFile.set_name(name);
-    protoFile.mutable_architecture()->set_manufacturer(IgorProtoFile::IgorFile_CPUManufacturer_INTEL);
-    auto protoSymbols = protoFile.mutable_symbols();
-    protoSymbols->Reserve(db->m_symbolMap.size());
-    for (auto & i : db->m_symbolMap) {
-        auto fileSymbol = protoSymbols->Add();
-        const igorAddress & addr = i.first;
-        const s_igorDatabase::s_symbolDefinition & symbol = i.second;
-
+int IgorSessionSqlite::upgradeDB(int version) {
+    switch (version) {
+    case 0:
+        version = 1;
+        safeWriteStmt("CREATE TABLE IF NOT EXISTS main.properties (name TEXT PRIMARY KEY, value);");
+        safeWriteStmt("CREATE TABLE IF NOT EXISTS main.symbols (address, name TEXT PRIMARY KEY, type);");
+        //safeWriteStmt("CREATE TABLE IF NOT EXISTS main.references (addressSrc, addressDst);");
+        //safeWriteStmt("CREATE TABLE IF NOT EXISTS main.sections (virtualAddress PRIMARY KEY, size, rawData BLOB, option, instructionSize BLOB);");
+        break;
+    default:
+        Failure("Upgrade case not supported");
     }
-
-    gprotOutput gpFile(file);
-    protoFile.SerializeToZeroCopyStream(&gpFile);
-
-    gpFile.maybeFlush();
+    return version;
 }
 
-IgorLocalSession * IgorLocalSession::deserialize(IO<Handle> file) {
+void IgorLocalSession::serialize(const char * name) {
+    if (!m_pDatabase)
+        return;
+
+    try {
+        IgorSessionSqlite db;
+        db.openDB(name);
+        db.createVersionnedDB([&](int version) { return db.upgradeDB(version); }, IgorSessionSqlite::CURRENT_VERSION);
+        db.safeWriteStmt("DELETE FROM main.properties;");
+        db.safeWriteStmt("DELETE FROM main.symbols;");
+        //db.safeWriteStmt("DELETE FROM main.references;");
+        //db.safeWriteStmt("DELETE FROM main.sections;");
+        sqlite3_stmt * stmt = NULL;
+
+        stmt = db.safeStmt("INSERT INTO main.properties (name, value) VALUES(?1, ?2);");
+        db.safeBind(stmt, 1, "CPU");
+        db.safeBind(stmt, 2, "x86");
+        db.safeWriteStep(stmt);
+        db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("INSERT INTO main.symbols (address, name, type) VALUES(?1, ?2, ?3);");
+        for (auto & symbol : m_pDatabase->m_symbolMap) {
+            db.safeBind(stmt, 1, (sqlite3_int64)symbol.first.offset);
+            db.safeBind(stmt, 2, symbol.second.m_name);
+            db.safeBind(stmt, 3, symbol.second.m_type);
+            db.safeWriteStep(stmt);
+            db.safeReset(stmt);
+        }
+        db.safeFinalize(stmt);
+        db.closeDB();
+    }
+    catch (...) {
+
+    }
+}
+
+IgorLocalSession * IgorLocalSession::deserialize(const char * name) {
     return NULL;
 }
 

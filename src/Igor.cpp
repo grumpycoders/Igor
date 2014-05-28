@@ -41,7 +41,7 @@ public:
 static GoogleProtoBufs gprotobufs;
 
 #ifdef USE_WXWIDGETS
-#include "../wxIgor/wxIgorShared.h"
+#include "wxIgor/wxIgorShared.h"
 
 class wxIdler : public Task {
     void Do() throw (GeneralException) {
@@ -59,17 +59,19 @@ class wxIdler : public Task {
     Events::Timeout m_evt;
 };
 
+bool s_wxStarted = false;
+
 class wxExit : public AtExit {
 public:
 	wxExit() : AtExit(12) { }
-    void doExit() { wxIgorExit(); }
+    void doExit() { if (s_wxStarted) wxIgorExit(); }
 };
 
 static wxExit wxexit;
 
 static void startWX(int argc, char ** argv) {
-    bool wxStarted = wxIgorStartup(argc, argv);
-    IAssert(wxStarted, "wxWidgets couldn't start...");
+    s_wxStarted = wxIgorStartup(argc, argv);
+    IAssert(s_wxStarted, "wxWidgets couldn't start...");
     TaskMan::registerTask(new wxIdler());
 }
 

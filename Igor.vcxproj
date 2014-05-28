@@ -194,6 +194,7 @@
     <ClCompile Include="src\IgorLocalSession.cpp" />
     <ClCompile Include="src\IgorSection.cpp" />
     <ClCompile Include="src\IgorSession.cpp" />
+    <ClCompile Include="src\IgorSqlite.cpp" />
     <ClCompile Include="src\IgorUtils.cpp" />
     <ClCompile Include="src\IgorWS.cpp" />
     <ClCompile Include="src\Loaders\Elf\elfLoader.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="src\IgorMemory.h" />
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\IgorSession.h" />
+    <ClInclude Include="src\IgorSqlite.h" />
     <ClInclude Include="src\IgorUtils.h" />
     <ClInclude Include="src\Loaders\Elf\elfLoader.h" />
     <ClInclude Include="src\Loaders\PE\PELoader.h" />
@@ -694,6 +696,9 @@
     </ProjectReference>
     <ProjectReference Include="msvc\google\libprotobuf.vcxproj">
       <Project>{3e283f37-a4ed-41b7-a3e6-a2d89d131a30}</Project>
+    </ProjectReference>
+    <ProjectReference Include="sqlite.vcxproj">
+      <Project>{70eb01d2-ee71-4f7e-9d87-a91249f5e4ac}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -128,6 +128,9 @@
     <ClCompile Include="src\cpu\x86_capstone\cpu_x86_capstone.cpp">
       <Filter>Igor\cpu\x86_capstone</Filter>
     </ClCompile>
+    <ClCompile Include="src\IgorSqlite.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Igor.h">
@@ -1386,6 +1389,9 @@
     </ClInclude>
     <ClInclude Include="wxWidgets\include\wx\zstream.h">
       <Filter>Third Party\wxWidgets\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorSqlite.h">
+      <Filter>Igor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

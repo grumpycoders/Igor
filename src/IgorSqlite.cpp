@@ -66,6 +66,7 @@ public:
         switch (version) {
         case 0:
             version = 1;
+            safeWriteStmt("CREATE TABLE config (name TEXT PRIMARY KEY, value);");
             break;
         default:
             Failure("Upgrade case not supported");

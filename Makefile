@@ -27,7 +27,7 @@ CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 LDFLAGS += $(ARCH_FLAGS)
 LDLIBS = $(addprefix -l, $(LIBS))
 
-vpath %.cpp src:src/cpu:src/cpu/x86:src/Loaders/PE:src/Loaders/Elf:src/PDB
+vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_capstone:src/Loaders/PE:src/Loaders/Elf:src/PDB
 vpath %.cc src/protobufs
 vpath %.proto src/protobufs
 
@@ -50,6 +50,7 @@ cpu/cpuModule.cpp \
 cpu/x86/cpu_x86.cpp \
 cpu/x86/cpu_x86_opcodes.cpp \
 cpu/x86/cpu_x86_opcodes_F.cpp \
+cpu/x86/cpu_x86_capstone.cpp \
 \
 PDB/gsi.cpp \
 PDB/msf.cpp \
@@ -77,8 +78,11 @@ tests: all
 Balau/libBalau.a:
 	$(MAKE) -C Balau
 
-$(TARGET): Balau/libBalau.a $(ALL_OBJECTS)
-	$(LD) $(LDFLAGS) -o $@ $(ALL_OBJECTS) ./Balau/libBalau.a ./Balau/LuaJIT/src/libluajit.a ./Balau/libtomcrypt/libtomcrypt.a ./Balau/libtommath/libtommath.a $(LDLIBS)
+capstone/libcapstone.a:
+	capstone/make.sh
+
+$(TARGET): Balau/libBalau.a capstone/libcapstone.a $(ALL_OBJECTS)
+	$(LD) $(LDFLAGS) -o $@ $(ALL_OBJECTS) ./Balau/libBalau.a ./capstone/libcapstone.a ./Balau/LuaJIT/src/libluajit.a ./Balau/libtomcrypt/libtomcrypt.a ./Balau/libtommath/libtommath.a $(LDLIBS)
 
 dep: $(ALL_DEPS)
 

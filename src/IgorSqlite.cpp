@@ -83,4 +83,6 @@ public:
 
 static IgorSqlite3MainInit igorSqlite3;
 
+IgorSqlite3 * const g_igorSqlite3 = &igorSqlite3;
+
 sqlite3 * IgorSqlite3::g_sqlite = NULL;

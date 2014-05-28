@@ -97,3 +97,5 @@ public:
 protected:
     static sqlite3 * g_sqlite;
 };
+
+extern IgorSqlite3 * const g_igorSqlite3;

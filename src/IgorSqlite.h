@@ -4,11 +4,13 @@
 
 class IgorSqlite3 {
 public:
-    void createVersionnedDB(std::function<int(int)> upgradeFunc, const char * db, int desiredVersion);
+    void openDB(const char * filename);
+    void closeDB();
+    void createVersionnedDB(std::function<int(int)> upgradeFunc, int desiredVersion, const char * db = "main");
     sqlite3_stmt * safeStmt(const char * stmtStr, ssize_t L = -1) {
         int r;
         sqlite3_stmt * stmt = NULL;
-        r = sqlite3_prepare_v2(g_sqlite, stmtStr, L, &stmt, NULL);
+        r = sqlite3_prepare_v2(m_sqlite, stmtStr, L, &stmt, NULL);
         RAssert(r == SQLITE_OK, "Unable to prepare statement; check sqlite logs");
         return stmt;
     }
@@ -94,8 +96,8 @@ public:
         RAssert(r == SQLITE_OK, "Unable to finalize statement");
         stmt = NULL;
     }
-protected:
-    static sqlite3 * g_sqlite;
+private:
+    sqlite3 * m_sqlite = NULL;
 };
 
 extern IgorSqlite3 * const g_igorSqlite3;

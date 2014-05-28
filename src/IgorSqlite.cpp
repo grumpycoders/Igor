@@ -4,7 +4,7 @@
 
 #include "IgorSqlite.h"
 
-void IgorSqlite3::createVersionnedDB(std::function<int(int)> upgradeFunc, const char * db, int desiredVersion) {
+void IgorSqlite3::createVersionnedDB(std::function<int(int)> upgradeFunc, int desiredVersion, const char * db) {
     int r;
     int version = 0;
     sqlite3_int64 rowid = 0;
@@ -42,6 +42,21 @@ void IgorSqlite3::createVersionnedDB(std::function<int(int)> upgradeFunc, const 
     });
 }
 
+void IgorSqlite3::openDB(const char * name) {
+    EAssert(m_sqlite == NULL, "Can't open the database twice");
+    int r = sqlite3_open(name, &m_sqlite);
+    RAssert(r == SQLITE_OK, "Unable to open %s", name);
+}
+
+void IgorSqlite3::closeDB() {
+    if (m_sqlite) {
+        int r;
+        r = sqlite3_close_v2(m_sqlite);
+        RAssert(r == SQLITE_OK, "Unable to close Igor.db");
+    }
+    m_sqlite = NULL;
+}
+
 namespace {
 
 class IgorSqlite3MainInit : public IgorSqlite3, public Balau::AtStart, public Balau::AtExit {
@@ -66,15 +81,11 @@ public:
         RAssert(r == SQLITE_OK, "Unable to set config value CONFIG_LOG");
         r = sqlite3_initialize();
         RAssert(r == SQLITE_OK, "Unable to initialize sqlite3");
-        r = sqlite3_open("Igor.db", &g_sqlite);
-        RAssert(r == SQLITE_OK, "Unable to open Igor.db");
-        createVersionnedDB([&](int version) { return upgradeMainDB(version); }, "main", 1);
+        openDB("Igor.db");
+        createVersionnedDB([&](int version) { return upgradeMainDB(version); }, 1);
     }
     virtual void doExit() override {
-        int r;
-        r = sqlite3_close_v2(g_sqlite);
-        RAssert(r == SQLITE_OK, "Unable to close Igor.db");
-        g_sqlite = NULL;
+        closeDB();
         sqlite3_shutdown();
     }
 };
@@ -84,5 +95,3 @@ public:
 static IgorSqlite3MainInit igorSqlite3;
 
 IgorSqlite3 * const g_igorSqlite3 = &igorSqlite3;
-
-sqlite3 * IgorSqlite3::g_sqlite = NULL;

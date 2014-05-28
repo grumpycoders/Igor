@@ -448,24 +448,57 @@ void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
 
 		u32 importFunctionIndex = 0;
 		igorAddress thunkAddress = imageBase + originalFirstThunkRVA;
-		while (u32 functionNameRVA = db->readU32(thunkAddress))
+		do
 		{
-			thunkAddress += 4;
+			u64 functionNameRVA;
 
-			if (functionNameRVA & 0x80000000)
+			switch (m_Machine)
 			{
+				case IMAGE_FILE_MACHINE_I386:
+					functionNameRVA = db->readU32(thunkAddress);
+					thunkAddress += 4;
+					break;
+				case IMAGE_FILE_MACHINE_AMD64:
+					functionNameRVA = db->readU64(thunkAddress);
+					thunkAddress += 8;
+					break;
+				default:
+					Failure("Unknown machine type");
 			}
-			else
+
+			if (functionNameRVA == 0)
+			{
+				break;
+			}
+
+			if ((m_Machine == IMAGE_FILE_MACHINE_I386) && (functionNameRVA & 0x80000000))
+			{
+				continue;
+			}
+
+			if ((m_Machine == IMAGE_FILE_MACHINE_AMD64) && (functionNameRVA & 0x8000000000000000))
+			{
+				continue;
+			}
+
 			{
 				u16 functionId = db->readU16(imageBase + functionNameRVA);
 				Balau::String functionName;
 				db->readString(imageBase + functionNameRVA + 2, functionName);
 
-				db->declare_variable(imageBase + firstThunkRVA + 4 * importFunctionIndex, s_igorDatabase::TYPE_U32); // should we have a db type like "function pointer"?
-				db->declare_name(imageBase + firstThunkRVA + 4 * importFunctionIndex, functionName);
+				if (m_Machine == IMAGE_FILE_MACHINE_I386)
+				{
+					db->declare_variable(imageBase + firstThunkRVA + 4 * importFunctionIndex, s_igorDatabase::TYPE_U32); // should we have a db type like "function pointer"?
+					db->declare_name(imageBase + firstThunkRVA + 4 * importFunctionIndex, functionName);
+				}
+				else
+				{
+					db->declare_variable(imageBase + firstThunkRVA + 8 * importFunctionIndex, s_igorDatabase::TYPE_U64); // should we have a db type like "function pointer"?
+					db->declare_name(imageBase + firstThunkRVA + 8 * importFunctionIndex, functionName);
+				}
 			}
 
 			importFunctionIndex++;
-		}
+		} while (1);
 	}
 }

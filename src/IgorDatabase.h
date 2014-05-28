@@ -30,6 +30,8 @@ struct s_igorDatabase
 		TYPE_S16,
 		TYPE_U32,
 		TYPE_S32,
+		TYPE_U64,
+		TYPE_S64,
 
 		TYPE_STRUCT,
 	};
@@ -121,6 +123,20 @@ struct s_igorDatabase
     igor_result readU8(igorAddress address, u8& output);
 
     igorAddress findSymbol(const char* symbolName);
+
+	s64 readS64(igorAddress address)
+	{
+		s64 output;
+		readS64(address, output);
+		return output;
+	}
+
+	u64 readU64(igorAddress address)
+	{
+		u64 output;
+		readU64(address, output);
+		return output;
+	}
 
     s32 readS32(igorAddress address)
 	{

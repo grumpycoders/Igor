@@ -93,7 +93,7 @@ Balau/libBalau.a:
 	$(MAKE) -C Balau
 
 capstone/libcapstone.a:
-	capstone/make.sh
+	$(MAKE) -C capstone
 
 wxIgor/appicon.xpm: wxIgor/igor.ico
 	convert wxIgor/igor.ico[0] wxIgor/appicon.xpm
@@ -101,6 +101,8 @@ wxIgor/appicon.xpm: wxIgor/igor.ico
 
 $(TARGET): Balau/libBalau.a capstone/libcapstone.a $(ALL_OBJECTS)
 	$(LD) $(LDFLAGS) -o $@ $(ALL_OBJECTS) ./Balau/libBalau.a ./capstone/libcapstone.a ./Balau/LuaJIT/src/libluajit.a ./Balau/libtomcrypt/libtomcrypt.a ./Balau/libtommath/libtommath.a $(LDLIBS)
+
+wxIgorFrame.dep: wxIgor/appicon.xpm
 
 dep: $(ALL_DEPS)
 
@@ -121,6 +123,7 @@ dep: $(ALL_DEPS)
 clean:
 	rm -f $(ALL_OBJECTS) $(ALL_DEPS) $(TARGET)
 	$(MAKE) -C Balau clean
+	$(MAKE) -C capstone clean
 
 deepclean:
 	git clean -f -d -x

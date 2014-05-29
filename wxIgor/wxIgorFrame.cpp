@@ -159,9 +159,10 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
 }
 
 const char* supportedFormats =
-"PE executables(*.exe) | *.exe"
-"|Elf executalbes(*.elf) | *.elf";
-
+"PE executables(*.exe)|*.exe"
+"|Elf executalbes(*.elf)|*.elf"
+"|Anything|*.*"
+;
 
 void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 {

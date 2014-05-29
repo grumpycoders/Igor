@@ -232,7 +232,11 @@ void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK && m_session)
     {
         wxString fileName = fileDialog.GetPath();
-        m_session->serialize(fileName.c_str().AsChar());
+        auto result = m_session->serialize(fileName.c_str().AsChar());
+        if (result.first)
+        {
+            wxMessageBox(result.second.to_charp(), "Error", wxICON_ERROR | wxOK);
+        }
     }
 }
 

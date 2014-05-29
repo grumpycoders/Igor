@@ -20,7 +20,7 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
 
     void loaded(const char * filename);
 
-    void serialize(const char * name);
+    std::pair<bool, Balau::String> serialize(const char * name);
     static IgorLocalSession * deserialize(const char * name);
 
     void add_code_analysis_task(igorAddress PC);

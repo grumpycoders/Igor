@@ -113,9 +113,12 @@ int IgorSessionSqlite::upgradeDB(int version) {
     return version;
 }
 
-void IgorLocalSession::serialize(const char * name) {
+std::pair<bool, String> IgorLocalSession::serialize(const char * name) {
     if (!m_pDatabase)
-        return;
+        return std::pair<bool, String>(true, "No database loaded");
+
+    bool failure = false;
+    String errorMsg;
 
     try {
         IgorSessionSqlite db;
@@ -175,9 +178,16 @@ void IgorLocalSession::serialize(const char * name) {
 
         db.closeDB();
     }
-    catch (...) {
-
+    catch (GeneralException & e) {
+        failure = true;
+        errorMsg = String(e.getMsg()) + " - " + e.getDetails();
     }
+    catch (...) {
+        failure = true;
+        errorMsg = "An unknown error has occured";
+    }
+
+    return std::pair<bool, String>(failure, errorMsg);
 }
 
 IgorLocalSession * IgorLocalSession::deserialize(const char * name) {

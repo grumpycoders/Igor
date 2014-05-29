@@ -16,7 +16,7 @@ public:
         int r;
         sqlite3_stmt * stmt = NULL;
         r = sqlite3_prepare_v2(m_sqlite, stmtStr, L, &stmt, NULL);
-        RAssert(r == SQLITE_OK, "Unable to prepare statement; check sqlite logs");
+        RAssert(r == SQLITE_OK, "Unable to prepare statement: %s", getError(r).to_charp());
         return stmt;
     }
     template<size_t L>

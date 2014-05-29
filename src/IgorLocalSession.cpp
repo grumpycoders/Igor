@@ -104,8 +104,8 @@ int IgorSessionSqlite::upgradeDB(int version) {
         version = 1;
         safeWriteStmt("CREATE TABLE IF NOT EXISTS main.properties (name TEXT PRIMARY KEY, value);");
         safeWriteStmt("CREATE TABLE IF NOT EXISTS main.symbols (address, name TEXT PRIMARY KEY, type);");
-        //safeWriteStmt("CREATE TABLE IF NOT EXISTS main.references (addressSrc, addressDst);");
-        //safeWriteStmt("CREATE TABLE IF NOT EXISTS main.sections (virtualAddress PRIMARY KEY, size, rawData BLOB, option, instructionSize BLOB);");
+        safeWriteStmt("CREATE TABLE IF NOT EXISTS main.'references' (addressSrc, addressDst);");
+        safeWriteStmt("CREATE TABLE IF NOT EXISTS main.sections (virtualAddress PRIMARY KEY, option, rawData BLOB, instructionSize BLOB);");
         break;
     default:
         Failure("Upgrade case not supported");
@@ -120,11 +120,12 @@ void IgorLocalSession::serialize(const char * name) {
     try {
         IgorSessionSqlite db;
         db.openDB(name);
+        db.safeWriteStmt("BEGIN EXCLUSIVE TRANSACTION;");
         db.createVersionnedDB([&](int version) { return db.upgradeDB(version); }, IgorSessionSqlite::CURRENT_VERSION);
         db.safeWriteStmt("DELETE FROM main.properties;");
         db.safeWriteStmt("DELETE FROM main.symbols;");
-        //db.safeWriteStmt("DELETE FROM main.references;");
-        //db.safeWriteStmt("DELETE FROM main.sections;");
+        db.safeWriteStmt("DELETE FROM main.'references';");
+        db.safeWriteStmt("DELETE FROM main.sections;");
         sqlite3_stmt * stmt = NULL;
 
         stmt = db.safeStmt("INSERT INTO main.properties (name, value) VALUES(?1, ?2);");
@@ -142,6 +143,36 @@ void IgorLocalSession::serialize(const char * name) {
             db.safeReset(stmt);
         }
         db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("INSERT INTO main.'references' (addressSrc, addressDst) VALUES(?1, ?2);");
+        for (auto & ref : m_pDatabase->m_references) {
+            db.safeBind(stmt, 1, (sqlite3_int64)ref.first.offset);
+            db.safeBind(stmt, 2, (sqlite3_int64)ref.second.offset);
+            db.safeWriteStep(stmt);
+            db.safeReset(stmt);
+        }
+        db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("INSERT INTO main.sections (virtualAddress, option, rawData, instructionSize) VALUES(?1, ?2, ?3, ?4);");
+        for (auto & section : m_pDatabase->m_sections) {
+            db.safeBind(stmt, 1, (sqlite3_int64)section->m_virtualAddress);
+            db.safeBind(stmt, 2, (sqlite3_int64)section->m_option);
+            if (section->m_rawData)
+                db.safeBindBlob(stmt, 3, section->m_rawDataSize);
+            if (section->m_instructionSize)
+                db.safeBindBlob(stmt, 4, section->m_size);
+            db.safeWriteStep(stmt);
+            sqlite3_int64 rowid = db.lastInsertRowID();
+            if (section->m_rawData)
+                db.safeWriteWholeBlob("main", "sections", "rawData", rowid, section->m_rawData, section->m_rawDataSize);
+            if (section->m_instructionSize)
+                db.safeWriteWholeBlob("main", "sections", "instructionSize", rowid, section->m_instructionSize, section->m_size);
+            db.safeReset(stmt);
+        }
+        db.safeFinalize(stmt);
+
+        db.safeWriteStmt("COMMIT TRANSACTION;");
+
         db.closeDB();
     }
     catch (...) {

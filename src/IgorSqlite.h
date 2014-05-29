@@ -97,6 +97,10 @@ public:
     static void safeBind(sqlite3_stmt * stmt, int pt, const Balau::String & stmtStr) {
         safeBind(stmt, pt, stmtStr.to_charp(), stmtStr.strlen());
     }
+    static void safeBindBlob(sqlite3_stmt * stmt, int pt, int n) {
+        int r = sqlite3_bind_zeroblob(stmt, pt, n);
+        RAssert(r == SQLITE_OK, "Unable to bind zeroblob");
+    }
     static int safeStep(sqlite3_stmt * stmt) {
         int r = sqlite3_step(stmt);
         RAssert(r == SQLITE_DONE || r == SQLITE_ROW, "Unable to step statement");
@@ -107,13 +111,48 @@ public:
         RAssert(r == SQLITE_DONE, "Unable to step statement");
     }
     static void safeReset(sqlite3_stmt * stmt) {
-        int r = sqlite3_reset(stmt);
+        int r;
+        r = sqlite3_reset(stmt);
         RAssert(r == SQLITE_OK, "Unable to reset statement");
+        r = sqlite3_clear_bindings(stmt);
+        RAssert(r == SQLITE_OK, "Unable to clear bindings");
     }
     static void safeFinalize(sqlite3_stmt *& stmt) {
         int r = sqlite3_finalize(stmt);
         RAssert(r == SQLITE_OK, "Unable to finalize statement");
         stmt = NULL;
+    }
+    sqlite3_int64 lastInsertRowID() {
+        return sqlite3_last_insert_rowid(m_sqlite);
+    }
+    sqlite3_blob * safeOpenBlob(const char * db, const char * table, const char * column, sqlite3_int64 rowid, bool readOnly = false) {
+        sqlite3_blob * h = NULL;
+        int r = sqlite3_blob_open(m_sqlite, db, table, column, rowid, readOnly ? 0 : 1, &h);
+        RAssert(r == SQLITE_OK, "Unable to open blob %s.%s:%s#%lli", db, table, column, rowid);
+        return h;
+    }
+    static void safeReadBlob(sqlite3_blob * blob, void * z, int n, int offset) {
+        int r = sqlite3_blob_read(blob, z, n, offset);
+        RAssert(r == SQLITE_OK, "Unable to read from blob");
+    }
+    static void safeWriteBlob(sqlite3_blob * blob, const void * z, int n, int offset) {
+        int r = sqlite3_blob_write(blob, z, n, offset);
+        RAssert(r == SQLITE_OK, "Unable to write to blob");
+    }
+    static void safeCloseBlob(sqlite3_blob *& blob) {
+        int r = sqlite3_blob_close(blob);
+        RAssert(r == SQLITE_OK, "Unable to close blob");
+        blob = NULL;
+    }
+    void safeReadWholeBlob(const char * db, const char * table, const char * column, sqlite3_int64 rowid, void * z, int n) {
+        sqlite3_blob * blob = safeOpenBlob(db, table, column, rowid, true);
+        safeReadBlob(blob, z, n, 0);
+        safeCloseBlob(blob);
+    }
+    void safeWriteWholeBlob(const char * db, const char * table, const char * column, sqlite3_int64 rowid, const void * z, int n) {
+        sqlite3_blob * blob = safeOpenBlob(db, table, column, rowid, false);
+        safeWriteBlob(blob, z, n, 0);
+        safeCloseBlob(blob);
     }
 private:
     sqlite3 * m_sqlite = NULL;

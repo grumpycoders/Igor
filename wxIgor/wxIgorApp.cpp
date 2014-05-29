@@ -31,12 +31,14 @@ wxIMPLEMENT_APP_NO_MAIN(c_wxIgorApp);
 
 bool c_wxIgorApp::OnInit()
 {
+#ifdef _WIN32
     // this test for windows XP and 32bit color depth
     if (wxTheApp->GetComCtl32Version() >= 600 && ::wxDisplayDepth() >= 32)
     {
         // this disable color remapping for icons and use full 32 bit colors
         wxSystemOptions::SetOption("msw.remap", 2);
     }
+#endif
 
 	m_config = new wxConfig("wxIgor");
 
@@ -124,7 +126,9 @@ int wxIgorEventLoop::run() {
         }
 
         if (Pending()) {
+            wxEventLoopBase::SetActive(m_proxyLoop);
             Dispatch();
+            wxEventLoopBase::SetActive(this);
             hasMoreEvents = true;
         }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <varargs.h>
+#include <stdarg.h>
 #include <functional>
 
 bool igor_export_to_text(std::function<bool(const char * fmt, va_list ap)> output, IgorSession * session);

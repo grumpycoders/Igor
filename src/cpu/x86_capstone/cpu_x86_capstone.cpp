@@ -132,8 +132,8 @@ igor_result c_cpu_x86_capstone::printInstruction(s_analyzeState* pState, Balau::
 					{
 						if (insn[0].detail->x86.operands[0].mem.base == X86_REG_RIP)
 						{
-							EAssert(insn[0].detail->x86.operands[0].mem.index == 0);
-							EAssert(insn[0].detail->x86.operands[0].mem.scale == 1);
+							EAssert(insn[0].detail->x86.operands[0].mem.index == 0, "Wrong index");
+							EAssert(insn[0].detail->x86.operands[0].mem.scale == 1, "Wrong scale");
 
 							igorAddress effectiveAddress(insn[0].address + insn[0].size + insn[0].detail->x86.operands[0].mem.disp);
 

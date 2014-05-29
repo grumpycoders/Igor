@@ -5,7 +5,7 @@
 #include "IgorAnalysis.h"
 #include "IgorSession.h"
 
-#include <wx/scrolBar.h>
+#include <wx/scrolbar.h>
 #include <wx/dcbuffer.h>
 #include <wx/caret.h>
 

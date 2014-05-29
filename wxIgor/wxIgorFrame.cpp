@@ -14,6 +14,11 @@
 #include "Loaders/PE/PELoader.h"
 #include "Loaders/Elf/elfLoader.h"
 
+#ifndef _WIN32
+#include "appicon.xpm"
+static const char ** const appicon_xpm = appicon;
+#endif
+
 using namespace Balau;
 
 #define new DEBUG_NEW
@@ -108,7 +113,7 @@ c_wxIgorFrame::~c_wxIgorFrame()
 
 }
 
-void c_wxIgorFrame::OpenFile(wxString& fileName)
+void c_wxIgorFrame::OpenFile(const wxString& fileName)
 {
     igor_result r = IGOR_FAILURE;
 

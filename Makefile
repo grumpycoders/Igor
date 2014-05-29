@@ -64,7 +64,7 @@ ifneq (,$(wildcard /usr/include/wx-3.0/wx/wx.h))
     IGOR_SOURCES += $(WXIGOR_SOURCES)
     CPPFLAGS += $(shell wx-config --cppflags) -DUSE_WXWIDGETS
     CPPFLAGS_NO_ARCH += $(shell wx-config --cppflags)
-    LDFLAGS += $(shell wx-config --libs)
+    LDLIBS += $(shell wx-config --libs)
 endif
 
 ALL_OBJECTS = $(addsuffix .o, $(notdir $(basename $(IGOR_SOURCES))))
@@ -74,7 +74,7 @@ CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
 LDFLAGS += $(ARCH_FLAGS)
-LDLIBS = $(addprefix -l, $(LIBS))
+LDLIBS += $(addprefix -l, $(LIBS))
 
 TARGET=Igor.$(BINEXT)
 

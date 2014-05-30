@@ -7,6 +7,7 @@
 #include <TaskMan.h>
 #include <HttpServer.h>
 #include <LuaTask.h>
+#include <IgorUsers.h>
 
 #include "google/protobuf/stubs/common.h"
 
@@ -122,6 +123,8 @@ void MainTask::Do() {
 
         TaskMan::registerTask(session);
     }
+
+    IAssert(SRP::selfTest(), "SRP6a failed its self tests");
 
     startWX(argc, argv);
     

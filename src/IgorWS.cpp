@@ -123,8 +123,7 @@ void IgorWSWorker::receiveMessage(const uint8_t * msg, size_t len, bool binary) 
             const std::string destination = root["destination"].asString();
             const std::string call = root["call"].asString();
             dispatch(destination, call, root["data"]);
-        }
-        else {
+        } else {
             Printer::log(M_WARNING, "Error parsing json message '%s'", msg);
         }
     }

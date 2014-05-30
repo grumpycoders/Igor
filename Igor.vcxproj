@@ -93,7 +93,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -115,7 +115,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;DEBUG;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -138,7 +138,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -163,7 +163,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PTW32_STATIC_LIB;USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;PTW32_STATIC_LIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\regex;Balau\win32\c-ares;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;wxwidgets\lib\vc_x64_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>

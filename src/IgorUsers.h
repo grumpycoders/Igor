@@ -7,12 +7,32 @@
 class SRP {
   public:
     static Balau::String generateVerifier(const Balau::String & username, const Balau::String & password);
+    static bool selfTest();
+    static Balau::BigInt rand(int s = V_LEN);
+
+    typedef enum { SRP6_CLIENT, SRP6_SERVER } mode_t;
+
+    void setUsername(const Balau::String & username) { I = username; }
+    bool setPassword(const Balau::String & password, mode_t mode);
+
+    Balau::String getUsername() { return I; }
+
+    Balau::String clientSendPacketA();
+    bool clientRecvPacketB(const Balau::String & packet);
+    Balau::String clientSendProof();
+    bool clientRecvProof(const Balau::String & packet);
+
+    bool serverRecvPacketA(const Balau::String & packet);
+    Balau::String serverSendPacketB();
+    bool serverRecvProof(const Balau::String & packet);
+    Balau::String serverSendProof();
+
     class Hash {
       friend class SRP;
       public:
           Hash(const Hash &);
         static const int DIGEST_SIZE = 32;
-        const unsigned char * operator()() { return m_digest; }
+        const unsigned char * operator()() { IAssert(m_finalized, "Can't export a non-finalized hash."); return m_digest; }
         Balau::BigInt toBigInt();
       private:
           Hash();
@@ -33,7 +53,10 @@ class SRP {
         return h;
     }
 private:
-    static const int SALT_LEN = 64;
+    static const int SALT_LEN = 64 / 8;
+    static const int V_LEN = 1024 / 8;
+    Balau::String I, p;
+    Balau::BigInt a, A, b, B, u, v, s, S, K, M;
     static void Hi(Hash &) { }
     template<typename... Args>
     static void Hi(Hash & h, const Balau::BigInt & v, Args... args) {

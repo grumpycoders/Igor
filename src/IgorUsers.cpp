@@ -13,6 +13,8 @@
 
 using namespace Balau;
 
+static size_t Nlen = 0;
+
 class SRPBigNums : public AtStart {
   public:
       SRPBigNums() : AtStart(100) { }
@@ -26,7 +28,7 @@ class SRPBigNums : public AtStart {
         static BigInt N;
         N.set(N_str, 16);
         m_N = &N;
-        m_Nlen = 2 * ((strlen(N_str) * 4 + 7) >> 3);
+        Nlen = 2 * ((strlen(N_str) * 4 + 7) >> 3);
 
         static BigInt g;
         g.set(2);
@@ -36,7 +38,6 @@ class SRPBigNums : public AtStart {
         m_k = &k;
     }
     const BigInt & N() const { return *m_N; }
-    int Nlen() const { return m_Nlen; }
     const BigInt & g() const { return *m_g; }
     const BigInt & k() const { return *m_k; }
 
@@ -44,7 +45,6 @@ class SRPBigNums : public AtStart {
     BigInt * m_N = NULL;
     BigInt * m_g = NULL;
     BigInt * m_k = NULL;
-    int m_Nlen;
 };
 
 static SRPBigNums srpBigNums;
@@ -77,14 +77,14 @@ void SRP::Hash::updateBString(const String & str) {
 
 void SRP::Hash::updateBigInt(const BigInt & v) {
     String toHash = v.toString(16);
-    IAssert(toHash.strlen() <= srpBigNums.Nlen(), "Too many digits to hash...");
+    IAssert(toHash.strlen() <= Nlen, "Too many digits to hash...");
 
-    int nzeroes = srpBigNums.Nlen() - toHash.strlen();
+    int nzeroes = Nlen - toHash.strlen();
     if (nzeroes) {
         String zeroes;
         zeroes.reserve(nzeroes);
         for (int i = 0; i < nzeroes; i++) {
-            zeroes[i] = '0';
+            zeroes += "0";
         }
         toHash = zeroes + toHash;
     }

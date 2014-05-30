@@ -8,7 +8,7 @@ CPPFLAGS += -g3 -gdwarf-2 -DDEBUG
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = . src src/cpu/x86 src/Loaders Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include
+INCLUDES = . src src/cpu/x86 src/Loaders Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include Balau/libtomcrypt/src/headers
 LIBS = z uuid protobuf sqlite3
 
 ifeq ($(SYSTEM),Darwin)

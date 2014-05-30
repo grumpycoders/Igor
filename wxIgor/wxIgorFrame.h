@@ -26,6 +26,7 @@ public:
 		ID_EXPORT_DISASSEMBLY,
         ID_SAVE_DATABASE,
         ID_LOAD_DATABASE,
+		ID_MANAGE_USERS,
 	};
 
 	c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
@@ -44,6 +45,8 @@ public:
 
     void OnSaveDatabase(wxCommandEvent& event);
     void OnLoadDatabase(wxCommandEvent& event);
+
+	void OnManageUsers(wxCommandEvent& event);
 
 	c_wxIgorSessionPanel* m_sessionPanel;
 	IgorLocalSession * m_session;

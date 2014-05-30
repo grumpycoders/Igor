@@ -2,6 +2,7 @@
 #include "wxIgorFrame.h"
 #include "wxAsmWidget.h"
 #include "wxIgorApp.h"
+#include "wxManageUsers.h"
 
 #include <Input.h>
 #include <Output.h>
@@ -86,6 +87,8 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
     menuFile->Append(new wxMenuItem(menuFile, wxID_OPEN, wxT("&Open\tCtrl+O")));
 	menuFile->Append(ID_EXPORT_DISASSEMBLY, "Export disassembly");
     menuFile->AppendSeparator();
+	menuFile->Append(ID_MANAGE_USERS, "Manage users");
+	menuFile->AppendSeparator();
     menuFile->Append(ID_SAVE_DATABASE, "Save database");
     menuFile->Append(ID_LOAD_DATABASE, "Load database");
     menuFile->AppendSeparator();
@@ -272,6 +275,13 @@ void c_wxIgorFrame::OnIdle(wxIdleEvent& event)
 	}
 }
 
+void c_wxIgorFrame::OnManageUsers(wxCommandEvent& event)
+{
+	wxManageUsersDialog* pManageUserDialog = new wxManageUsersDialog(this);
+
+	pManageUserDialog->ShowModal();
+}
+
 BEGIN_EVENT_TABLE(c_wxIgorFrame, wxFrame)
 EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
 EVT_MENU(wxID_EXIT, c_wxIgorFrame::OnExit)
@@ -279,6 +289,9 @@ EVT_MENU(ID_GO_TO_ADDRESS, c_wxIgorFrame::OnGoToAddress)
 EVT_MENU(ID_EXPORT_DISASSEMBLY, c_wxIgorFrame::OnExportDisassembly)
 EVT_MENU(ID_SAVE_DATABASE, c_wxIgorFrame::OnSaveDatabase)
 EVT_MENU(ID_LOAD_DATABASE, c_wxIgorFrame::OnLoadDatabase)
+
+EVT_MENU(ID_MANAGE_USERS, c_wxIgorFrame::OnManageUsers)
+
 EVT_IDLE(c_wxIgorFrame::OnIdle)
 EVT_CLOSE(c_wxIgorFrame::OnClose)
 

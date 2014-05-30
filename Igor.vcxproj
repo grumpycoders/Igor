@@ -230,6 +230,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="wxIgor\wxManageUsers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cpu\cpuModule.h" />
@@ -261,6 +262,7 @@
     <ClInclude Include="wxIgor\wxAsmWidget.h" />
     <ClInclude Include="wxIgor\wxIgorApp.h" />
     <ClInclude Include="wxIgor\wxIgorFrame.h" />
+    <ClInclude Include="wxIgor\wxManageUsers.h" />
     <ClInclude Include="wxIgor\wxIgorShared.h" />
     <ClInclude Include="wxWidgets\include\wx\aboutdlg.h" />
     <ClInclude Include="wxWidgets\include\wx\accel.h" />

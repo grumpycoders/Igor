@@ -70,7 +70,7 @@ class SRPBigNums : public AtStart {
         g.set(2);
         m_g = &g;
 
-        static BigInt k = SRP::H(N, g).toBigInt();
+        static BigInt k = SRP::H(N, g)();
         m_k = &k;
     }
     const BigInt & N() const { return *m_N; }
@@ -115,13 +115,17 @@ void SRP::Hash::updateBigInt(const BigInt & v) {
     updateBString(v.toString());
 }
 
+void SRP::Hash::updateHash(const Hash & v) {
+    updateBigInt(v());
+}
+
 void SRP::Hash::final() {
     IAssert(!m_finalized, "Can't finalize a finalized hash.");
     sha256_done(&m_state, m_digest);
     m_finalized = true;
 }
 
-BigInt SRP::Hash::toBigInt() {
+BigInt SRP::Hash::toBigInt() const {
     BigInt v;
     IAssert(m_finalized, "Can't export a non-finalized hash.");
     v.importUBin(m_digest, DIGEST_SIZE);
@@ -142,7 +146,7 @@ String SRP::generateVerifier(const String & I, const String & p) {
     const BigInt & g = srpBigNums.g();
 
     BigInt s = rand(SALT_LEN);
-    BigInt x = H(s, I, p).toBigInt();
+    BigInt x = H(s, I, p)();
     BigInt v = g.modpow(x, N);
 
     IAssert(V_LEN >= v.exportUSize(), "Not enough bytes to export password verifier?!");
@@ -156,7 +160,7 @@ String SRP::generateVerifier(const String & I, const String & p) {
     return writer.write(vstr);
 }
 
-bool SRP::setPassword(const Balau::String & password, mode_t mode) {
+bool SRP::loadPassword(const Balau::String & password) {
     Json::Reader reader;
     Json::Value values;
 
@@ -164,71 +168,70 @@ bool SRP::setPassword(const Balau::String & password, mode_t mode) {
     ssize_t len = password.strlen();
     ssize_t lenV = V_LEN, lenS = SALT_LEN;
 
-    switch (mode) {
-    case SRP6_CLIENT:
-        p = password;
-        return true;
-    case SRP6_SERVER:
-        if (!reader.parse(pcharp, pcharp + len, values))
-            return false;
-        if (values["type"] != "SRP6a")
-            return false;
-        v.set(values["data"]["v"].asString(), 16);
-        s.set(values["data"]["s"].asString(), 16);
-        return true;
-    }
-
-    return false;
+    if (!reader.parse(pcharp, pcharp + len, values))
+        return false;
+    if (values["type"] != "SRP6a")
+        return false;
+    v.set(values["data"]["v"].asString(), 16);
+    s.set(values["data"]["s"].asString(), 16);
+    return true;
 }
 
 bool SRP::selfTest() {
+    IAssert(srpBigNums.N().isPrime(), "N isn't prime ?!");
+
     String I = "testUsername";
     String p = "testPassword";
-    String pv = generateVerifier(I, p).to_charp();
-    String msg;
-    bool success;
 
-    Printer::log(M_DEBUG, "Generated test pv: %s", pv.to_charp());
+    for (int round = 0; round < 20; round++) {
+        String pv = generateVerifier(I, p).to_charp();
+        String msg;
+        bool success;
 
-    SRP client, server;
-    client.setUsername(I);
-    success = client.setPassword(p, SRP6_CLIENT);
-    if (!success) return false;
+        Printer::log(M_DEBUG, "Generated test pv: %s", pv.to_charp());
 
-    msg = client.clientSendPacketA();
-    Printer::log(M_DEBUG, "Generated test packetA: %s", msg.to_charp());
-    server.setUsername(I);
-    success = server.setPassword(pv, SRP6_SERVER);
-    if (!success) return false;
-    
-    success = server.serverRecvPacketA(msg);
-    if (!success) return false;
+        SRP client, server;
+        client.setUsername(I);
+        client.setPassword(p);
 
-    msg = server.serverSendPacketB();
-    Printer::log(M_DEBUG, "Generated test packetB: %s", msg.to_charp());
-    success = client.clientRecvPacketB(msg);
-    if (!success) return false;
+        msg = client.clientSendPacketA();
+        Printer::log(M_DEBUG, "Generated test packetA: %s", msg.to_charp());
+        server.setUsername(I);
+        success = server.loadPassword(pv);
+        if (!success) return false;
 
-    msg = client.clientSendProof();
-    Printer::log(M_DEBUG, "Generated test clientProof: %s", msg.to_charp());
-    success = server.serverRecvProof(msg);
-    if (!success) return false;
+        success = server.serverRecvPacketA(msg);
+        if (!success) return false;
 
-    msg = server.serverSendProof();
-    Printer::log(M_DEBUG, "Generated test serverProof: %s", msg.to_charp());
-    success = client.clientRecvProof(msg);
-    if (!success) return false;
+        msg = server.serverSendPacketB();
+        Printer::log(M_DEBUG, "Generated test packetB: %s", msg.to_charp());
+        success = client.clientRecvPacketB(msg);
+        if (!success) return false;
+
+        msg = client.clientSendProof();
+        Printer::log(M_DEBUG, "Generated test clientProof: %s", msg.to_charp());
+        success = server.serverRecvProof(msg);
+        if (!success) return false;
+
+        msg = server.serverSendProof();
+        Printer::log(M_DEBUG, "Generated test serverProof: %s", msg.to_charp());
+        success = client.clientRecvProof(msg);
+        if (!success) return false;
+
+        if (client.getSessionKey() != server.getSessionKey()) return false;
+    }
 
     return true;
 }
 
 String SRP::clientSendPacketA() {
+    AAssert(I != "", "username not set");
+
     const BigInt & N = srpBigNums.N();
     const BigInt & g = srpBigNums.g();
 
-    AAssert(I != "", "username not set");
-    a = rand();
-    A = g.modpow(a, N);
+    // g ^ a
+    A = g.modpow(a = rand(), N);
 
     Json::Value packet;
     packet["clientPacketA"]["I"] = I.to_charp();
@@ -265,20 +268,20 @@ String SRP::serverSendPacketB() {
 
     const BigInt & N = srpBigNums.N();
     const BigInt & g = srpBigNums.g();
+    const BigInt & k = srpBigNums.k();
 
-    b = rand();
-    B = srpBigNums.k() * v;
-    B.do_modadd(g.modpow(b, N), N);
+    // k * v + g ^ b
+    B = k.modmul(v, N).modadd(g.modpow(b = rand(), N), N);
 
     Json::Value packet;
     packet["serverPacketB"]["s"] = s.toString(16).to_charp();
     packet["serverPacketB"]["B"] = B.toString(16).to_charp();
 
-    u = H(A, B).toBigInt();
+    u = H(A, B)();
 
-    S = A * v.modpow(u, N);
-    S.do_modpow(b, N);
-    K = H(S).toBigInt();
+    // (A * v ^ u) ^ b
+    S = A.modmul(v.modpow(u, N), N).modpow(b, N);
+    K = H(S)();
 
     Json::StyledWriter writer;
     return writer.write(packet);
@@ -303,12 +306,12 @@ bool SRP::clientRecvPacketB(const String & packetStr) {
     if ((B % N) == 0)
         return false;
 
-    u = H(A, B).toBigInt();
+    u = H(A, B)();
 
-    BigInt x = H(s, I, p).toBigInt();
-    S = B - k * g.modpow(x, N);
-    S.do_modpow(a + u * x, N);
-    K = H(S).toBigInt();
+    BigInt x = H(s, I, p)();
+    // (B - k * g ^ x) ^ (a + u * x)
+    S = B.modsub(k.modmul(g.modpow(x, N), N), N).modpow(a.modadd(u.modmul(x, N), N), N);
+    K = H(S)();
 
     return true;
 }
@@ -317,7 +320,7 @@ String SRP::clientSendProof() {
     const BigInt & N = srpBigNums.N();
     const BigInt & g = srpBigNums.g();
 
-    M = H(H(N).toBigInt() ^ H(g).toBigInt(), H(I).toBigInt(), s, A, B, K).toBigInt();
+    M = H(H(N)() ^ H(g)(), H(I), s, A, B, K)();
 
     Json::Value packet;
     packet["clientProof"]["M"] = M.toString(16).to_charp();
@@ -339,7 +342,7 @@ bool SRP::serverRecvProof(const String & packetStr) {
     if (!reader.parse(pcharp, pcharp + len, values))
         return false;
 
-    M = H(H(N).toBigInt() ^ H(g).toBigInt(), H(I).toBigInt(), s, A, B, K).toBigInt();
+    M = H(H(N)() ^ H(g)(), H(I), s, A, B, K)();
 
     BigInt Mc;
     Mc.set(values["clientProof"]["M"].asString(), 16);
@@ -349,7 +352,7 @@ bool SRP::serverRecvProof(const String & packetStr) {
 
 String SRP::serverSendProof() {
     Json::Value packet;
-    packet["serverProof"]["M"] = H(A, M, K).toBigInt().toString(16).to_charp();
+    packet["serverProof"]["M"] = H(A, M, K)().toString(16).to_charp();
 
     Json::StyledWriter writer;
     return writer.write(packet);
@@ -367,5 +370,9 @@ bool SRP::clientRecvProof(const String & packetStr) {
     BigInt Ms;
     Ms.set(values["serverProof"]["M"].asString(), 16);
 
-    return H(A, M, K).toBigInt() == Ms;
+    return H(A, M, K)() == Ms;
+}
+
+String SRP::getSessionKey() {
+    return K.toString(16);
 }

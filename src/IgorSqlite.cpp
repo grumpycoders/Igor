@@ -61,7 +61,7 @@ namespace {
 
 class IgorSqlite3MainInit : public IgorSqlite3, public Balau::AtStart, public Balau::AtExit {
 public:
-    static const int CONFIG_VERSION = 2;
+    static const int CONFIG_VERSION = 3;
     IgorSqlite3MainInit() : AtStart(100), AtExit(100) { }
     int upgradeMainDB(int version) {
         switch (version) {
@@ -71,6 +71,9 @@ public:
         case 1:
             version = 2;
             safeWriteStmt("CREATE TABLE users (name TEXT PRIMARY KEY, password TEXT);");
+        case 2:
+            version = 3;
+            safeWriteStmt("ALTER TABLE users ADD COLUMN is_admin;");
             break;
         default:
             Failure("Upgrade case not supported");

@@ -13,58 +13,20 @@
 
 using namespace Balau;
 
-/*
-
-$ openssl dhparam -text 1024
-Generating DH parameters, 1024 bit long safe prime, generator 2
-This is going to take a long time
-...............................................................................
-.......................................................................+.......
-..................+.......................+.........+..........................
-............+.......................................................+.+........
-...............................................+....+..........................
-.........................+.....................................................
-............+.................+................................................
-...............+...............................................+.....+.........
-..................................+...................................++*++*++*
-PKCS#3 DH Parameters: (1024 bit)
-prime:
-00:f6:dd:cf:59:98:06:d2:b1:07:7a:96:38:42:0a:
-e3:b8:81:5d:92:1e:a5:cd:95:a6:e5:8c:58:dc:cc:
-68:18:16:6f:7e:b9:1d:57:7d:52:70:ad:c6:3d:8a:
-9a:a5:98:42:49:69:18:51:60:3a:45:12:c7:e8:53:
-26:30:63:6c:bf:e7:22:ab:03:05:e5:8e:72:3f:db:
-e9:0e:31:d2:79:f8:f9:4e:86:29:be:5c:2f:da:7d:
-0f:1e:b4:21:15:c7:46:cb:84:c9:ba:ac:aa:1d:cc:
-89:af:48:7b:60:c7:19:af:b8:99:f5:ce:d7:a7:1b:
-7a:f3:40:3f:53:7f:7f:66:03
-generator: 2 (0x2)
------BEGIN DH PARAMETERS-----
-MIGHAoGBAPbdz1mYBtKxB3qWOEIK47iBXZIepc2VpuWMWNzMaBgWb365HVd9UnCt
-xj2KmqWYQklpGFFgOkUSx+hTJjBjbL/nIqsDBeWOcj/b6Q4x0nn4+U6GKb5cL9p9
-Dx60IRXHRsuEybqsqh3Mia9Ie2DHGa+4mfXO16cbevNAP1N/f2YDAgEC
------END DH PARAMETERS-----
-
-
-*/
-
 class SRPBigNums : public AtStart {
   public:
       SRPBigNums() : AtStart(100) { }
     void doStart() {
         static const char N_str[] =
-            "00f6ddcf599806d2b1077a9638420a"
-            "e3b8815d921ea5cd95a6e58c58dccc"
-            "6818166f7eb91d577d5270adc63d8a"
-            "9aa5984249691851603a4512c7e853"
-            "2630636cbfe722ab0305e58e723fdb"
-            "e90e31d279f8f94e8629be5c2fda7d"
-            "0f1eb42115c746cb84c9baacaa1dcc"
-            "89af487b60c719afb899f5ced7a71b"
-            "7af3403f537f7f6603";
+            "EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C"
+            "9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE4"
+            "8E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B29"
+            "7BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9A"
+            "FD5138FE8376435B9FC61D2FC0EB06E3";
         static BigInt N;
         N.set(N_str, 16);
         m_N = &N;
+        m_Nlen = 2 * ((strlen(N_str) * 4 + 7) >> 3);
 
         static BigInt g;
         g.set(2);
@@ -74,6 +36,7 @@ class SRPBigNums : public AtStart {
         m_k = &k;
     }
     const BigInt & N() const { return *m_N; }
+    int Nlen() const { return m_Nlen; }
     const BigInt & g() const { return *m_g; }
     const BigInt & k() const { return *m_k; }
 
@@ -81,6 +44,7 @@ class SRPBigNums : public AtStart {
     BigInt * m_N = NULL;
     BigInt * m_g = NULL;
     BigInt * m_k = NULL;
+    int m_Nlen;
 };
 
 static SRPBigNums srpBigNums;
@@ -112,7 +76,20 @@ void SRP::Hash::updateBString(const String & str) {
 }
 
 void SRP::Hash::updateBigInt(const BigInt & v) {
-    updateBString(v.toString());
+    String toHash = v.toString(16);
+    IAssert(toHash.strlen() <= srpBigNums.Nlen(), "Too many digits to hash...");
+
+    int nzeroes = srpBigNums.Nlen() - toHash.strlen();
+    if (nzeroes) {
+        String zeroes;
+        zeroes.reserve(nzeroes);
+        for (int i = 0; i < nzeroes; i++) {
+            zeroes[i] = '0';
+        }
+        toHash = zeroes + toHash;
+    }
+
+    updateBString(toHash);
 }
 
 void SRP::Hash::updateHash(const Hash & v) {
@@ -179,6 +156,7 @@ bool SRP::loadPassword(const Balau::String & password) {
 
 bool SRP::selfTest() {
     IAssert(srpBigNums.N().isPrime(), "N isn't prime ?!");
+    IAssert(sha256_desc.hashsize == Hash::DIGEST_SIZE, "Hash::DIGEST_SIZE needs to be 32 for SHA-256");
 
     String I = "testUsername";
     String p = "testPassword";

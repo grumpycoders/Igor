@@ -131,6 +131,9 @@
     <ClCompile Include="src\IgorSqlite.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
+    <ClCompile Include="src\IgorUsers.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Igor.h">
@@ -1391,6 +1394,9 @@
       <Filter>Third Party\wxWidgets\includes</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorSqlite.h">
+      <Filter>Igor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorUsers.h">
       <Filter>Igor</Filter>
     </ClInclude>
   </ItemGroup>

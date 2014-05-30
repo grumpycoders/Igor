@@ -195,6 +195,7 @@
     <ClCompile Include="src\IgorSection.cpp" />
     <ClCompile Include="src\IgorSession.cpp" />
     <ClCompile Include="src\IgorSqlite.cpp" />
+    <ClCompile Include="src\IgorUsers.cpp" />
     <ClCompile Include="src\IgorUtils.cpp" />
     <ClCompile Include="src\IgorWS.cpp" />
     <ClCompile Include="src\Loaders\Elf\elfLoader.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\IgorSession.h" />
     <ClInclude Include="src\IgorSqlite.h" />
+    <ClInclude Include="src\IgorUsers.h" />
     <ClInclude Include="src\IgorUtils.h" />
     <ClInclude Include="src\Loaders\Elf\elfLoader.h" />
     <ClInclude Include="src\Loaders\PE\PELoader.h" />

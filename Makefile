@@ -29,6 +29,7 @@ IGOR_SOURCES = \
 Igor.cpp \
 IgorSqlite.cpp \
 IgorUtils.cpp \
+IgorUsers.cpp \
 IgorSession.cpp \
 IgorLocalSession.cpp \
 IgorDatabase.cpp \

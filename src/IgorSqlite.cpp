@@ -61,12 +61,16 @@ namespace {
 
 class IgorSqlite3MainInit : public IgorSqlite3, public Balau::AtStart, public Balau::AtExit {
 public:
+    static const int CONFIG_VERSION = 2;
     IgorSqlite3MainInit() : AtStart(100), AtExit(100) { }
     int upgradeMainDB(int version) {
         switch (version) {
         case 0:
             version = 1;
             safeWriteStmt("CREATE TABLE config (name TEXT PRIMARY KEY, value);");
+        case 1:
+            version = 2;
+            safeWriteStmt("CREATE TABLE users (name TEXT PRIMARY KEY, password TEXT);");
             break;
         default:
             Failure("Upgrade case not supported");
@@ -83,7 +87,7 @@ public:
         r = sqlite3_initialize();
         RAssert(r == SQLITE_OK, "Unable to initialize sqlite3: %s", getError(r).to_charp());
         openDB("Igor.db");
-        createVersionnedDB([&](int version) { return upgradeMainDB(version); }, 1);
+        createVersionnedDB([&](int version) { return upgradeMainDB(version); }, CONFIG_VERSION);
     }
     virtual void doExit() override {
         closeDB();

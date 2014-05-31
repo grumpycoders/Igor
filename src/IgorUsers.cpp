@@ -123,7 +123,7 @@ String SRP::generateVerifier(const String & I, const String & p) {
     const BigInt & g = srpBigNums.g();
 
     BigInt s = rand(SALT_LEN);
-    BigInt x = H(s, I, p)();
+    BigInt x = H(s, I, ":", p)();
     BigInt v = g.modpow(x, N);
 
     IAssert(V_LEN >= v.exportUSize(), "Not enough bytes to export password verifier?!");
@@ -286,7 +286,7 @@ bool SRP::clientRecvPacketB(const String & packetStr) {
 
     u = H(A, B)();
 
-    BigInt x = H(s, I, p)();
+    BigInt x = H(s, I, ":", p)();
     // (B - k * g ^ x) ^ (a + u * x)
     S = B.modsub(k.modmul(g.modpow(x, N), N), N).modpow(a.modadd(u.modmul(x, N), N), N);
     K = H(S)();

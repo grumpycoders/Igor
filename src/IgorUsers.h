@@ -60,6 +60,7 @@ class SRP {
     }
 private:
     bool loadPassword(const Balau::String & password);
+    static Balau::BigInt generateX(const Balau::BigInt & s, const Balau::String & I, const Balau::String & p);
     static const int SALT_LEN = 64 / 8;
     static const int V_LEN = 1024 / 8;
     Balau::String I, p;

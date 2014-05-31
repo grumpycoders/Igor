@@ -28,13 +28,14 @@ class SRPBigNums : public AtStart {
         static BigInt N;
         N.set(N_str, 16);
         m_N = &N;
-        Nlen = 2 * ((strlen(N_str) * 4 + 7) >> 3);
+        Nlen = N.exportUSize();
 
         static BigInt g;
         g.set(2);
         m_g = &g;
 
         static BigInt k = SRP::H(N, g)();
+        String str = k.toString(16);
         m_k = &k;
     }
     const BigInt & N() const { return *m_N; }
@@ -76,20 +77,14 @@ void SRP::Hash::updateBString(const String & str) {
 }
 
 void SRP::Hash::updateBigInt(const BigInt & v) {
-    String toHash = v.toString(16);
-    IAssert(toHash.strlen() <= Nlen, "Too many digits to hash...");
+    uint8_t * data = (uint8_t *) alloca(Nlen);
+    size_t vlen = v.exportUSize();
+    IAssert(vlen <= Nlen, "Too many digits to hash...");
 
-    int nzeroes = Nlen - toHash.strlen();
-    if (nzeroes) {
-        String zeroes;
-        zeroes.reserve(nzeroes);
-        for (int i = 0; i < nzeroes; i++) {
-            zeroes += "0";
-        }
-        toHash = zeroes + toHash;
-    }
+    memset(data, 0, Nlen);
 
-    updateBString(toHash);
+    v.exportUBin(data + Nlen - vlen);
+    update(data, Nlen);
 }
 
 void SRP::Hash::updateHash(const Hash & v) {
@@ -123,7 +118,7 @@ String SRP::generateVerifier(const String & I, const String & p) {
     const BigInt & g = srpBigNums.g();
 
     BigInt s = rand(SALT_LEN);
-    BigInt x = H(s, I, ":", p)();
+    BigInt x = generateX(s, I, p);
     BigInt v = g.modpow(x, N);
 
     IAssert(V_LEN >= v.exportUSize(), "Not enough bytes to export password verifier?!");
@@ -284,14 +279,17 @@ bool SRP::clientRecvPacketB(const String & packetStr) {
     if ((B % N) == 0)
         return false;
 
+    BigInt x = generateX(s, I, p);
     u = H(A, B)();
-
-    BigInt x = H(s, I, ":", p)();
     // (B - k * g ^ x) ^ (a + u * x)
     S = B.modsub(k.modmul(g.modpow(x, N), N), N).modpow(a.modadd(u.modmul(x, N), N), N);
     K = H(S)();
 
     return true;
+}
+
+BigInt SRP::generateX(const BigInt & s, const String & I, const String & p) {
+    return H(s, H(I, ":", p))();
 }
 
 String SRP::clientSendProof() {

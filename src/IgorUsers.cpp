@@ -321,6 +321,13 @@ bool SRP::serverRecvPacketA(const String & packetStr) {
         return false;
 
     I = values["clientPacketA"]["I"].asString();
+
+    if (v == 0 || s == 0) {
+        auto vr = IgorUsers::getV(I);
+        if (!vr.first || !loadPassword(vr.second))
+            return false;
+    }
+
     A.set(values["clientPacketA"]["A"].asString(), 16);
 
     if ((A % N) == 0)

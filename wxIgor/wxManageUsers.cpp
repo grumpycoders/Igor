@@ -1,8 +1,11 @@
 #include "stdafx.h"
+#include "IgorUsers.h"
 #include "wxManageUsers.h"
 
 #include <vector>
-#include "Balau/includes/BString.h"
+#include "BString.h"
+
+using namespace Balau;
 
 wxManageUsersDialog::wxManageUsersDialog(wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style)
 {
@@ -42,7 +45,7 @@ void wxManageUsersDialog::CreateControls()
 	itemBoxSizer3->Add(new wxButton(this, ID_ADD_USER, "Add user"));
 	itemBoxSizer3->Add(new wxButton(this, ID_REMOVE_USER, "Remove user"));
 	itemBoxSizer3->AddSpacer(10);
-	itemBoxSizer3->Add(new wxButton(this, ID_CHANGE_PASSWORD, "Change admin\npassword"));
+	itemBoxSizer3->Add(new wxButton(this, ID_CHANGE_PASSWORD, "Change password"));
 }
 
 void wxManageUsersDialog::RefreshList()
@@ -55,27 +58,26 @@ void wxManageUsersDialog::RefreshList()
 	col0.SetWidth(300);
 	m_userList->InsertColumn(0, col0);
 
+#if 0
 	wxListItem col1;
 	col1.SetId(0);
 	col1.SetText(_("Permissions"));
 	col1.SetWidth(300);
 	m_userList->InsertColumn(1, col1);
+#endif
 
-	// add the real users here
-	{
-		wxListItem item;
-		item.SetId(0);
-		item.SetText("User1");
-		m_userList->InsertItem(item);
-		m_userList->SetItem(0, 1, "All");
-	}
-	{
-		wxListItem item;
-		item.SetId(1);
-		item.SetText("User2");
-		m_userList->InsertItem(item);
-		m_userList->SetItem(1, 1, "None");
-	}
+    std::vector<String> users = IgorUsers::getUsers();
+
+    int n = 0;
+
+    for (auto & user : users)
+    {
+        wxListItem item;
+        item.SetId(n);
+        item.SetText(user.to_charp());
+        m_userList->InsertItem(item);
+        n++;
+    }
 }
 
 void wxManageUsersDialog::OnAddUser(wxCommandEvent& event)
@@ -84,8 +86,11 @@ void wxManageUsersDialog::OnAddUser(wxCommandEvent& event)
 
 	if (pTextEntryDialog->ShowModal() == wxID_OK)
 	{
-		wxString newUserName = pTextEntryDialog->GetValue();
-		//TODO: implement
+		wxString wxNewUserName = pTextEntryDialog->GetValue();
+        Balau::String newUsername = wxNewUserName.char_str();
+        bool success = IgorUsers::addUser(newUsername, SRP::generateVerifier(newUsername, "default"));
+
+        // TODO: display message
 
 		RefreshList();
 	}
@@ -97,7 +102,8 @@ void wxManageUsersDialog::OnRemoveUser(wxCommandEvent& event)
 
 	long itemIndex = -1;
 
-	for (;;) {
+	for (;;)
+    {
 		itemIndex = m_userList->GetNextItem(itemIndex,
 			wxLIST_NEXT_ALL,
 			wxLIST_STATE_SELECTED);
@@ -110,6 +116,12 @@ void wxManageUsersDialog::OnRemoveUser(wxCommandEvent& event)
 
 	if (selectedUsernames.size())
 	{
+        for (auto & user : selectedUsernames)
+        {
+            bool success = IgorUsers::delUser(user);
+
+            // TODO: display message
+        }
 		//TODO: remove from list
 		RefreshList();
 	}
@@ -117,12 +129,23 @@ void wxManageUsersDialog::OnRemoveUser(wxCommandEvent& event)
 
 void wxManageUsersDialog::OnChangePassword(wxCommandEvent& event)
 {
-	wxTextEntryDialog* pNewPasswordEntryDialog = new wxTextEntryDialog(this, "Enter new password");
+    if (m_userList->GetSelectedItemCount() != 1)
+    {
+        // TODO: display message
+        return;
+    }
+
+    long itemIndex = m_userList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    String username = m_userList->GetItemText(itemIndex).char_str();
+
+    wxPasswordEntryDialog* pNewPasswordEntryDialog = new wxPasswordEntryDialog(this, "Enter new password");
 
 	if (pNewPasswordEntryDialog->ShowModal() == wxID_OK)
 	{
-		wxString newPassword = pNewPasswordEntryDialog->GetValue();
-		//TODO: implement
+		String newPassword = pNewPasswordEntryDialog->GetValue().char_str();
+        bool success = IgorUsers::changePassword(username, SRP::generateVerifier(username, newPassword));
+
+        // TODO: display message
 	}
 }
 

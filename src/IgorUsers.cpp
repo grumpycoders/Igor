@@ -13,6 +13,101 @@
 
 using namespace Balau;
 
+std::vector<String> IgorUsers::getUsers() {
+    int r;
+    sqlite3_stmt * stmt = NULL;
+
+    g_igorSqlite3->safeWriteStmt("BEGIN EXCLUSIVE TRANSACTION;");
+
+    stmt = g_igorSqlite3->safeStmt("SELECT COUNT(name) FROM main.users;");
+    r = g_igorSqlite3->safeStep(stmt);
+    IAssert(r == SQLITE_ROW, "A count query didn't return anything... ?");
+    std::vector<String> rows;
+    size_t count = sqlite3_column_int(stmt, 0);
+    rows.resize(count);
+    g_igorSqlite3->safeFinalize(stmt);
+    
+    stmt = g_igorSqlite3->safeStmt("SELECT name FROM main.users;");
+    for (size_t i = 0; i < count; i++) {
+        r = g_igorSqlite3->safeStep(stmt);
+        IAssert(r == SQLITE_ROW, "We didn't get enough rows... ?");
+        rows[i] = (const char *) sqlite3_column_text(stmt, 0);
+    }
+    g_igorSqlite3->safeFinalize(stmt);
+
+    g_igorSqlite3->safeWriteStmt("COMMIT TRANSACTION;");
+
+    return rows;
+}
+
+std::pair<bool, String> IgorUsers::getV(const String & user) {
+    int r;
+    bool found = false;
+    String v;
+    sqlite3_stmt * stmt = NULL;
+
+    stmt = g_igorSqlite3->safeStmt("SELECT password FROM main.users WHERE name=?1;");
+    g_igorSqlite3->safeBind(stmt, 1, user);
+    r = g_igorSqlite3->safeStep(stmt);
+    if (r == SQLITE_ROW) {
+        found = true;
+        v = (const char *) sqlite3_column_text(stmt, 0);
+        r = g_igorSqlite3->safeStep(stmt);
+        IAssert(r == SQLITE_DONE, "More than one user with the same name ?!");
+    }
+    g_igorSqlite3->safeFinalize(stmt);
+
+    return std::pair<bool, String>(found, v);
+}
+
+bool IgorUsers::addUser(const String & user, const String & v) {
+    bool success = true;
+
+    try {
+        g_igorSqlite3->safeWriteStmt("INSERT INTO main.users (name, password) VALUES (?1, ?2);", [&](sqlite3_stmt * stmt) {
+            g_igorSqlite3->safeBind(stmt, 1, user);
+            g_igorSqlite3->safeBind(stmt, 2, v);
+        });
+    }
+    catch (...) {
+        success = false;
+    }
+
+    return success;
+}
+
+bool IgorUsers::changePassword(const String & user, const String & v) {
+    bool success = true;
+
+    try {
+        g_igorSqlite3->safeWriteStmt("UPDATE main.users SET password=?1 WHERE name=?2;", [&](sqlite3_stmt * stmt) {
+            g_igorSqlite3->safeBind(stmt, 1, v);
+            g_igorSqlite3->safeBind(stmt, 2, user);
+        });
+    }
+    catch (...) {
+        success = false;
+    }
+
+    return success;
+}
+
+bool IgorUsers::delUser(const String & user) {
+    bool success = true;
+
+    try {
+        g_igorSqlite3->safeWriteStmt("DELETE FROM main.users WHERE name=?1;", [&](sqlite3_stmt * stmt) {
+            g_igorSqlite3->safeBind(stmt, 1, user);
+        });
+    }
+    catch (...) {
+        success = false;
+    }
+
+    return success;
+}
+
+
 static size_t Nlen = 0;
 
 class SRPBigNums : public AtStart {

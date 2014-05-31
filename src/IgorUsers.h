@@ -1,8 +1,18 @@
 #pragma once
 
+#include <vector>
 #include <BString.h>
 #include <BigInt.h>
 #include <tomcrypt.h>
+
+class IgorUsers {
+  public:
+    static std::vector<Balau::String> getUsers();
+    static std::pair<bool, Balau::String> getV(const Balau::String & user);
+    static bool addUser(const Balau::String & user, const Balau::String & v);
+    static bool changePassword(const Balau::String & user, const Balau::String & v);
+    static bool delUser(const Balau::String & user);
+};
 
 // Almost direct implementation from http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol
 class SRP {

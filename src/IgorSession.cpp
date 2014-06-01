@@ -14,7 +14,7 @@
 
 using namespace Balau;
 
-static String generateUUID() {
+String IgorSession::generateUUID() {
 #ifdef _WIN32
     UUID uuid;
     RPC_STATUS s;

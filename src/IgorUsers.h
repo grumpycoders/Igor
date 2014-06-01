@@ -26,7 +26,7 @@ class SRP {
     void setUsername(const Balau::String & username) { I = username; }
     void setPassword(const Balau::String & password) { p = password; }
 
-    Balau::String getUsername() { return I; }
+    const Balau::String & getUsername() const { return I; }
 
     // Client sequence
     Balau::String clientSendPacketA();
@@ -40,7 +40,9 @@ class SRP {
     bool serverRecvProof(const Balau::String & packet);
     Balau::String serverSendProof();
 
-    Balau::String getSessionKey();
+    Balau::String getSessionKey() const;
+    Balau::String generateProof(const Balau::BigInt & sequence, int rlen = 128) const;
+    bool verifyProof(const Balau::String & proof) const;
 
     class Hash {
       friend class SRP;

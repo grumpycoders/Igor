@@ -451,6 +451,35 @@ bool SRP::clientRecvProof(const String & packetStr) {
     return H(A, M, K)() == Ms;
 }
 
-String SRP::getSessionKey() {
+String SRP::getSessionKey() const {
     return K.toString(16);
+}
+
+Balau::String SRP::generateProof(const BigInt & seq, int rlen) const {
+    BigInt rnd = rand(rlen);
+
+    Json::Value values;
+    values["rnd"] = rnd.toString(16).to_charp();
+    values["seq"] = seq.toString(16).to_charp();
+    values["prf"] = H(K, H(seq, rnd))().toString(16).to_charp();
+
+    Json::FastWriter writer;
+    return writer.write(values);
+}
+
+bool SRP::verifyProof(const Balau::String & proof) const {
+    Json::Reader reader;
+    Json::Value values;
+    const char * pcharp = proof.to_charp();
+    size_t len = proof.strlen();
+
+    if (!reader.parse(pcharp, pcharp + len, values))
+        return false;
+
+    BigInt rnd, seq, prf;
+    rnd.set(values["rnd"].asString(), 16);
+    seq.set(values["snd"].asString(), 16);
+    prf.set(values["prf"].asString(), 16);
+
+    return H(K, H(seq, rnd))() == prf;
 }

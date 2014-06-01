@@ -8,5 +8,5 @@
 	path = capstone
 	url = https://github.com/yaz0r/capstone
 [submodule "data/web-ui/srp-client"]
-	path = data/web-ui/srp-client
+	path = data/web-ui/static/js/srp-client
 	url = https://github.com/symeapp/srp-client.git

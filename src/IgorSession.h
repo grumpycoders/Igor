@@ -20,6 +20,7 @@ class IgorSession
     const Balau::String & getUUID() { return m_uuid; }
 
     static void enumerate(std::function<bool(IgorSession *)>);
+    static Balau::String generateUUID();
 
 	virtual igor_result readS64(igorAddress address, s64& output) = 0;
 	virtual igor_result readU64(igorAddress address, u64& output) = 0;

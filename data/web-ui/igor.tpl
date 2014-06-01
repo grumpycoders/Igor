@@ -10,7 +10,11 @@
     <link rel='stylesheet' href='{{dojo_path}}/dojox/grid/resources/claroGrid.css' />
     <link rel='stylesheet' href='/static/js/dgrid/css/dgrid.css' />
     <link rel='stylesheet' href='/static/js/dgrid/css/skins/claro.css' />
-
+    <script type="text/javascript" src="/static/js/srp-client/lib/jsbn.js"></script>
+    <script type="text/javascript" src="/static/js/srp-client/lib/sha1.js"></script>
+    <script type="text/javascript" src="/static/js/srp-client/lib/sjcl.js"></script>
+    <script type="text/javascript" src="/static/js/srp-client.js"></script>
+  
     <style type='text/css'>
       html, body {
         height: 100%; width: 100%;
@@ -167,6 +171,7 @@
       var sendMessage;
       var currentSession = '';
       var entryPoint = '';
+      var srp, I, a, A, B, u, S, K, M;
 
       String.prototype.repeat = function(num) {
         return new Array(num + 1).join(this);
@@ -259,6 +264,30 @@
             },
             function(error) {
               showError("Error while loading reloadui: " + error);
+            }
+          );
+        };
+        
+        clientSendPacketA = function(username, password) {
+          I = username;
+          srp = new SRPClient(username, password, 1024, 'sha-256');
+          a = srp.srpRandom();
+          A = srp.calculateA(a);
+	  
+          return { clientPacketA: { A: A.toString(16), I: username }};
+        };
+        
+        loginAction = function(loginData) {
+          request.post('/dyn/auth/clientPacketA', {
+            data: {
+              msg: json.stringify(clientSendPacketA(loginData.username, loginData.password)),
+            },
+          }).then(
+            function(retStr) {
+              var ret = json.parse(retStr);
+            },
+            function(error) {
+              showError("Error while trying to log in: " + error);
             }
           );
         };
@@ -427,6 +456,7 @@
             </div>
             <div data-dojo-type='dijit/MenuSeparator'></div>
             <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: reloadUIAction'>Reload UI</div>
+            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: function() { loginForm.reset(); loginDialog.show(); }'>Login</div>
           </div>
         </div>
         <div data-dojo-type='dijit/PopupMenuBarItem'>
@@ -486,6 +516,26 @@
         <div class='dijitDialogPaneActionBar'>
           <button data-dojo-type='dijit/form/Button' type='submit'>Ok</button>
           <button data-dojo-type='dijit/form/Button' type='button' data-dojo-props='onClick:function() { broadcastEmitDialog.hide(); }'>Cancel</button>
+        </div>
+      </form>
+    </div>
+    
+    <div data-dojo-type='dijit/Dialog' data-dojo-id='loginDialog' title='Broadcast message' style='display: none'>
+      <form data-dojo-type='dijit/form/Form' data-dojo-id='loginForm'>
+        <script type='dojo/on' data-dojo-event='submit' data-dojo-args='e'>
+          e.preventDefault();
+          if (!loginForm.isValid()) { return; }
+          loginAction(loginForm.value);
+          loginDialog.hide();
+        </script>
+        <div class='dijitDialogPaneContentArea'>
+          <label for='username'>Username: </label>
+          <input type='text' name='username' id='username' required='true' data-dojo-type='dijit/form/ValidationTextBox' />
+          <label for='password'>Password: </label>
+          <input type='password' name='password' id='password' required='true' data-dojo-type='dijit/form/ValidationTextBox' />
+        </div>
+        <div class='dijitDialogPaneActionBar'>
+          <button data-dojo-type='dijit/form/Button' type='submit'>Login</button>
         </div>
       </form>
     </div>

@@ -364,17 +364,19 @@ class AuthClientPacketAAction : public HttpServer::Action {
 bool AuthClientPacketAAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     HttpServer::Response response(server, req, out);
 
-    std::shared_ptr<IgorHttpSession> session;
+    std::shared_ptr<IgorHttpSession> session = g_igorHttpSessionsManager->createSession();
 
-    if (!session->getSRP().serverRecvPacketA(req.variables["msg"])) {
+    SRP * srp = session->getSRP();
+
+    if (!srp->serverRecvPacketA(req.variables["msg"])) {
         response->writeString("{}");
         response.SetContentType("application/json");
         response.Flush();
         return true;
     }
 
-    response.AddHeader(String("Set-Cookie: session=") + session->getUUID());
-    response->writeString(session->getSRP().serverSendPacketB());
+    response.AddHeader(String("Set-Cookie: session=") + session->getUUID() + "; Path=/; HttpOnly");
+    response->writeString(srp->serverSendPacketB());
     response.SetContentType("application/json");
     response.Flush();
 
@@ -476,7 +478,9 @@ std::shared_ptr<IgorHttpSession> IgorHttpSessionsManager::createSession() {
 
     ScopeLockW lock(m_lock);
 
-    m_sessions[ret->getUUID()] = ret;
+    const String & uuid = ret->getUUID();
+
+    m_sessions[uuid] = ret;
 
     return ret;
 }

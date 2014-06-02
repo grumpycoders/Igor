@@ -14,6 +14,7 @@
 #include "IgorAnalysis.h"
 #include "IgorSession.h"
 #include "IgorHttp.h"
+#include "IgorHttpSession.h"
 
 #include "IgorMemory.h"
 
@@ -104,14 +105,14 @@ bool ReloadAction::Do(HttpServer * server, Http::Request & req, HttpServer::Acti
 
 static Regex igorRestDisasmURL("^/dyn/rest/disasm/([a-fA-F0-9-]+)(/(.*))?$");
 
-class RestDisasmAction : public HttpServer::Action {
+class RestDisasmAction : public AuthenticatedAction {
   public:
-      RestDisasmAction() : Action(igorRestDisasmURL) { }
+      RestDisasmAction() : AuthenticatedAction(igorRestDisasmURL) { }
   private:
-    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
+    virtual bool safeDo(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) override;
 };
 
-bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     HttpServer::Response response(server, req, out);
     Json::StyledWriter writer;
     String sessionUUID = match.uri[1];
@@ -314,30 +315,33 @@ bool RestDisasmAction::Do(HttpServer * server, Http::Request & req, HttpServer::
 
 static Regex listSessionsURL("^/dyn/listSessions$");
 
-class ListSessionsAction : public HttpServer::Action {
+class ListSessionsAction : public AuthenticatedAction {
   public:
-      ListSessionsAction() : Action(listSessionsURL) { }
+      ListSessionsAction() : AuthenticatedAction(listSessionsURL) { }
   private:
-    virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
+    virtual bool safeDo(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) override;
 };
 
-bool ListSessionsAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+bool ListSessionsAction::safeDo(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     Json::Value reply;
     Json::UInt idx = 0;
     HttpServer::Response response(server, req, out);
     Json::StyledWriter writer;
 
+    reply["status"] = "ok";
+
     IgorSession::enumerate([&](IgorSession * session) -> bool {
+        Json::Value & entry = reply["list"][idx];
         String name = session->getSessionName();
         if (name == "")
             name = session->getUUID();
-        reply[idx]["name"] = name.to_charp();
-        reply[idx]["uuid"] = session->getUUID().to_charp();
+        entry["name"] = name.to_charp();
+        entry["uuid"] = session->getUUID().to_charp();
         igorAddress entryPoint = session->getEntryPoint();
         String address;
         address.set("%016llx", entryPoint.offset);
         if (entryPoint != IGOR_INVALID_ADDRESS)
-            reply[idx]["entryPoint"] = address.to_charp();
+            entry["entryPoint"] = address.to_charp();
         return true;
         idx++;
     });

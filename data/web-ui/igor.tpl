@@ -260,6 +260,13 @@
           disassemblyStore = new jsonRest({ target: '/dyn/rest/disasm/' + session.uuid });
           entryPont = session.entryPoint;
         }
+        
+        var generateProof = function() {
+          if (!srp || !srp.authenticated)
+            return {};
+          
+          return { 'X-Auth-SRP-proof': json.stringify(srp.generateProof()) };
+        }
 
         showError = function(str) {
           errorDlg.set("content", str);
@@ -472,6 +479,7 @@
           statusMain.innerHTML = "Igor - logged in as '" + this.form.get("value").username + "'";
           setTimeout(lang.hitch(this, function() {
             loginDialog.hide();
+            reloadSessions();
           }), 1000);
         });
         
@@ -482,14 +490,21 @@
             onClick: reloadSessions
           }));
           sessionsMenu.addChild(new dijit.MenuSeparator());
-          request.get('/dyn/listSessions').then(
+          request.get('/dyn/listSessions', { headers: generateProof() }).then(
             function(retStr) {
-              array.forEach(json.parse(retStr), function(item) {
-                sessionsMenu.addChild(new dijit.MenuItem({
-                  label: item.name,
-                  onClick: function() { setSession(item); }
-                }));
-              });
+              var ret = json.parse(retStr);
+              if (!ret || !ret.status)
+                return;
+              if (ret.status == 'needAuth') {
+                loginDialog.show();
+              } else {
+                array.forEach(ret.list, function(item) {
+                  sessionsMenu.addChild(new dijit.MenuItem({
+                    label: item.name,
+                    onClick: function() { setSession(item); }
+                  }));
+                });
+              }
             },
             function(error) {
               showError("Error while loading reloading sessions: " + error);

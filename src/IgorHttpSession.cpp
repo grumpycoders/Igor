@@ -14,9 +14,9 @@ IgorHttpSessionsManager * g_igorHttpSessionsManager = NULL;
 static Regex authClientPacketAURL("^/dyn/auth/clientPacketA$");
 
 class AuthClientPacketAAction : public HttpServer::Action {
-public:
-    AuthClientPacketAAction() : Action(authClientPacketAURL) { }
-private:
+  public:
+      AuthClientPacketAAction() : Action(authClientPacketAURL) { }
+  private:
     virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
 };
 
@@ -45,9 +45,9 @@ bool AuthClientPacketAAction::Do(HttpServer * server, Http::Request & req, HttpS
 static Regex authClientProofURL("^/dyn/auth/clientProof$");
 
 class AuthClientProofAction : public HttpServer::Action {
-public:
-    AuthClientProofAction() : Action(authClientProofURL) { }
-private:
+  public:
+      AuthClientProofAction() : Action(authClientProofURL) { }
+  private:
     virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
 };
 
@@ -83,6 +83,13 @@ void IgorHttpSession::bumpExpiration() {
     m_expiration = time(NULL) + 24 * 3600;
 }
 
+bool IgorHttpSession::isProofValid(const String & proof) {
+    if (!m_authenticated)
+        return false;
+
+    return m_srp.verifyProof(proof);
+}
+
 void IgorHttpSessionsManager::Do() {
     if (!m_state) {
         m_state = 1;
@@ -95,8 +102,7 @@ void IgorHttpSessionsManager::Do() {
         m_clock.reset();
         m_clock.set(3600);
         waitFor(&m_clock);
-    }
-    else {
+    } else {
         yield();
     }
 
@@ -127,10 +133,7 @@ std::shared_ptr<IgorHttpSession> IgorHttpSessionsManager::createSession() {
     std::shared_ptr<IgorHttpSession> ret(new IgorHttpSession());
 
     ScopeLockW lock(m_lock);
-
-    const String & uuid = ret->getUUID();
-
-    m_sessions[uuid] = ret;
+    m_sessions[ret->getUUID()] = ret;
 
     return ret;
 }
@@ -139,4 +142,21 @@ void igor_setup_auth(Balau::HttpServer * s) {
     TaskMan::registerTask(g_igorHttpSessionsManager = new IgorHttpSessionsManager());
     s->registerAction(new AuthClientPacketAAction);
     s->registerAction(new AuthClientProofAction);
+}
+
+bool AuthenticatedAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+    const String & sessionUUID = req.cookies["session"];
+    const String & proofHeader = req.headers["X-Auth-SRP-proof"];
+    std::shared_ptr<IgorHttpSession> session = g_igorHttpSessionsManager->findSession(sessionUUID);
+
+    if (!session || !session->isProofValid(proofHeader)) {
+        HttpServer::Response response(server, req, out);
+
+        response->writeString("{ \"status\": \"needAuth\" }");
+        response.SetContentType("application/json");
+        response.Flush();
+        return true;
+    }
+
+    return safeDo(server, req, match, out);
 }

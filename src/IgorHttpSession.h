@@ -1,6 +1,7 @@
 #pragma once
 
 #include <StacklessTask.h>
+#include <Exceptions.h>
 #include "IgorUsers.h"
 
 class IgorHttpSession;
@@ -25,6 +26,7 @@ public:
     SRP * getSRP() { return &m_srp; }
     bool authenticated() { return m_authenticated; }
     void setAuthenticated() { m_authenticated = true; }
+    bool isProofValid(const Balau::String & proof);
 private:
     bool isExpired(time_t now) { return now > m_expiration; }
     void bumpExpiration();
@@ -32,6 +34,14 @@ private:
     Balau::String m_uuid;
     time_t m_expiration;
     bool m_authenticated = false;
+};
+
+class AuthenticatedAction : public Balau::HttpServer::Action {
+public:
+    AuthenticatedAction(const Balau::Regex & url) : Action(url) { }
+private:
+    virtual bool Do(Balau::HttpServer * server, Balau::Http::Request & req, Balau::HttpServer::Action::ActionMatch & match, Balau::IO<Balau::Handle> out) throw (Balau::GeneralException) override final;
+    virtual bool safeDo(Balau::HttpServer * server, Balau::Http::Request & req, Balau::HttpServer::Action::ActionMatch & match, Balau::IO<Balau::Handle> out) throw (Balau::GeneralException) = 0;
 };
 
 extern IgorHttpSessionsManager * g_igorHttpSessionsManager;

@@ -19,6 +19,8 @@ SRPClient = function () {
   this.zero = new BigInteger("0", 16);
   this.one = new BigInteger("1", 16);
   this.two = new BigInteger("2", 16);
+  
+  this.authenticated = false;
 
   this.seq = this.one;
 };
@@ -64,8 +66,9 @@ SRPClient.prototype = {
 
   clientRecvProof: function(serverProof) {
 
-    return this.calculateMs(this.A, this.M, this.K).equals(new BigInteger(serverProof.M, 16));
-
+    this.authenticated = this.calculateMs(this.A, this.M, this.K).equals(new BigInteger(serverProof.M, 16));
+    return this.authenticated;
+    
   },
 
   generateProof: function() {
@@ -73,10 +76,10 @@ SRPClient.prototype = {
     var seqHex = this.seq.toString(16);
     var rndHex = this.srpRandom().toString(16);
     
-    seq = seq.add(this.one);
+    this.seq = this.seq.add(this.one);
     
     var subHashHex = this.paddedHash([seqHex, rndHex]).toString(16);
-    var proofHex = this.paddedHash([subHashHex, this.K.toString(16)]);
+    var proofHex = this.paddedHash([subHashHex, this.K.toString(16)]).toString(16);
     
     return { rnd: rndHex, seq: seqHex, prf: proofHex };
   

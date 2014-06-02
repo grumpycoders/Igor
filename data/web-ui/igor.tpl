@@ -11,19 +11,19 @@
     <link rel='stylesheet' href='/static/js/dgrid/css/dgrid.css' />
     <link rel='stylesheet' href='/static/js/dgrid/css/skins/claro.css' />
 
-    <script type="text/javascript" src="/static/js/jsbn.js"></script>
-    <script type="text/javascript" src="/static/js/sha1.js"></script>
+    <script type="text/javascript" src="/static/js/srp/jsbn.js"></script>
+    <script type="text/javascript" src="/static/js/srp/sha1.js"></script>
 
-    <script type="text/javascript" src="/static/js/sjcl.js"></script>
+    <script type="text/javascript" src="/static/js/srp/sjcl.js"></script>
 
-    <script type="text/javascript" src="/static/js/aes.js"></script>
-    <script type="text/javascript" src="/static/js/bitArray.js"></script>
-    <script type="text/javascript" src="/static/js/codecHex.js"></script>
-    <script type="text/javascript" src="/static/js/codecString.js"></script>
-    <script type="text/javascript" src="/static/js/sha256.js"></script>
-    <script type="text/javascript" src="/static/js/random.js"></script>
+    <script type="text/javascript" src="/static/js/srp/aes.js"></script>
+    <script type="text/javascript" src="/static/js/srp/bitArray.js"></script>
+    <script type="text/javascript" src="/static/js/srp/codecHex.js"></script>
+    <script type="text/javascript" src="/static/js/srp/codecString.js"></script>
+    <script type="text/javascript" src="/static/js/srp/sha256.js"></script>
+    <script type="text/javascript" src="/static/js/srp/random.js"></script>
 
-    <script type="text/javascript" src="/static/js/srp-client.js"></script>
+    <script type="text/javascript" src="/static/js/srp/srp-client.js"></script>
   
     <style type='text/css'>
       html, body {

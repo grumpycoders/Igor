@@ -137,6 +137,9 @@
     <ClCompile Include="wxIgor\wxManageUsers.cpp">
       <Filter>wxIgor</Filter>
     </ClCompile>
+    <ClCompile Include="src\IgorHttpSession.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Igor.h">
@@ -1404,6 +1407,9 @@
     </ClInclude>
     <ClInclude Include="wxIgor\wxManageUsers.h">
       <Filter>wxIgor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorHttpSession.h">
+      <Filter>Igor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

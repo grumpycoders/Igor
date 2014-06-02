@@ -124,8 +124,6 @@ void MainTask::Do() {
         TaskMan::registerTask(session);
     }
 
-    IAssert(SRP::selfTest(), "SRP6a failed its self tests");
-
     startWX(argc, argv);
     
     stopTaskManOnExit(false);

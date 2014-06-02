@@ -15,6 +15,8 @@
 #include "Loaders/PE/PELoader.h"
 #include "Loaders/Elf/elfLoader.h"
 
+#include "IgorUsers.h"
+
 #ifndef _WIN32
 #include "appicon.xpm"
 static const char ** const appicon_xpm = appicon;
@@ -100,9 +102,13 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 	wxMenu *menuNavigation = new wxMenu;
 	menuNavigation->Append(ID_GO_TO_ADDRESS, "&Go to address");
 
-	wxMenuBar *menuBar = new wxMenuBar;
+    wxMenu *menuMisc = new wxMenu;
+    menuMisc->Append(ID_RUN_SELF_TESTS, "Run self &tests");
+
+    wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, "&File");
 	menuBar->Append(menuNavigation, "&Navigation");
+    menuBar->Append(menuMisc, "&Misc");
 
 	SetMenuBar(menuBar);
 
@@ -282,6 +288,24 @@ void c_wxIgorFrame::OnManageUsers(wxCommandEvent& event)
 	pManageUserDialog->ShowModal();
 }
 
+void c_wxIgorFrame::OnRunSelfTests(wxCommandEvent& event)
+{
+    bool success = false;
+    
+    try {
+        success = SRP::selfTest();
+    }
+    catch (...) {
+        success = false;
+    }
+
+    if (success) {
+        wxMessageBox("SRP self tests successful", "Success", wxICON_INFORMATION | wxOK);
+    } else {
+        wxMessageBox("SRP self tests failed", "Failure", wxICON_ERROR | wxOK);
+    }
+}
+
 BEGIN_EVENT_TABLE(c_wxIgorFrame, wxFrame)
 EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
 EVT_MENU(wxID_EXIT, c_wxIgorFrame::OnExit)
@@ -291,6 +315,7 @@ EVT_MENU(ID_SAVE_DATABASE, c_wxIgorFrame::OnSaveDatabase)
 EVT_MENU(ID_LOAD_DATABASE, c_wxIgorFrame::OnLoadDatabase)
 
 EVT_MENU(ID_MANAGE_USERS, c_wxIgorFrame::OnManageUsers)
+EVT_MENU(ID_RUN_SELF_TESTS, c_wxIgorFrame::OnRunSelfTests)
 
 EVT_IDLE(c_wxIgorFrame::OnIdle)
 EVT_CLOSE(c_wxIgorFrame::OnClose)

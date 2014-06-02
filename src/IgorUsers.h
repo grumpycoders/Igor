@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <set>
 #include <BString.h>
 #include <BigInt.h>
 #include <tomcrypt.h>
@@ -42,7 +43,7 @@ class SRP {
 
     Balau::String getSessionKey() const;
     Balau::String generateProof(const Balau::BigInt & sequence, int rlen = 128) const;
-    bool verifyProof(const Balau::String & proof) const;
+    bool verifyProof(const Balau::String & proof);
 
     class Hash {
       friend class SRP;
@@ -76,7 +77,9 @@ private:
     static const int SALT_LEN = 64 / 8;
     static const int V_LEN = 1024 / 8;
     Balau::String I, p;
-    Balau::BigInt a, A, b, B, u, v, s, S, K, M;
+    Balau::BigInt a, A, b, B, u, v, s, S, K, M, m_highestSeq = -1;
+    std::set<Balau::BigInt> m_seenSequences;
+    static const int OLD_SEQ_CUTOFF = 50;
     static void Hi(Hash &) { }
     template<typename... Args>
     static void Hi(Hash & h, const Hash & v, Args... args) {

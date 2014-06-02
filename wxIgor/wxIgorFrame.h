@@ -27,7 +27,8 @@ public:
         ID_SAVE_DATABASE,
         ID_LOAD_DATABASE,
 		ID_MANAGE_USERS,
-	};
+        ID_RUN_SELF_TESTS,
+    };
 
 	c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 	virtual ~c_wxIgorFrame();
@@ -47,6 +48,7 @@ public:
     void OnLoadDatabase(wxCommandEvent& event);
 
 	void OnManageUsers(wxCommandEvent& event);
+    void OnRunSelfTests(wxCommandEvent& event);
 
 	c_wxIgorSessionPanel* m_sessionPanel;
 	IgorLocalSession * m_session;

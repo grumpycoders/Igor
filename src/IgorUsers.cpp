@@ -478,7 +478,7 @@ Balau::String SRP::generateProof(const BigInt & seq, int rlen) const {
     return writer.write(values);
 }
 
-bool SRP::verifyProof(const Balau::String & proof) const {
+bool SRP::verifyProof(const Balau::String & proof) {
     Json::Reader reader;
     Json::Value values;
     const char * pcharp = proof.to_charp();
@@ -487,10 +487,32 @@ bool SRP::verifyProof(const Balau::String & proof) const {
     if (!reader.parse(pcharp, pcharp + len, values))
         return false;
 
-    BigInt rnd, seq, prf;
+    BigInt rnd, seq, prf, oldest;
     rnd.set(values["rnd"].asString(), 16);
     seq.set(values["seq"].asString(), 16);
     prf.set(values["prf"].asString(), 16);
 
-    return H(H(seq, rnd), K)() == prf;
+    if (m_highestSeq < seq)
+        m_highestSeq = seq;
+
+    oldest = m_highestSeq - OLD_SEQ_CUTOFF;
+
+    if (seq < oldest)
+        return false;
+
+    if (m_seenSequences.find(seq) != m_seenSequences.end())
+        return false;
+
+    bool valid = H(H(seq, rnd), K)() == prf;
+
+    if (!valid)
+        return false;
+
+    m_seenSequences.insert(seq);
+
+    for (auto iter = m_seenSequences.begin(); iter != m_seenSequences.end(); iter++)
+        if (*iter < oldest)
+            iter = m_seenSequences.erase(iter);
+
+    return true;
 }

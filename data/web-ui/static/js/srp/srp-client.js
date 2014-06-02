@@ -41,6 +41,16 @@ SRPClient.prototype = {
     return { clientPacketA: { A: this.A.toString(16), I: username }};
 
   },
+  
+  generateV: function(username, password) {
+  
+    this.I = username;
+    this.p = password;
+    this.s = this.srpRandom();
+    this.v = this.calculateV(this.s);
+    return { data: { v: this.v.toString(16), s: this.s.toString(16) }};
+  
+  },
         
   clientRecvPacketB: function(serverPacketB) {
 
@@ -121,6 +131,22 @@ SRPClient.prototype = {
     return this.paddedHash([salt.toString(16), usernamePasswordHash]);
   },
   
+  /*
+   * Calculate v = g^x % N
+   */
+  calculateV: function(salt) {
+    
+    // Verify presence of parameters.
+    if (!salt) throw 'Missing parameter.';
+    
+    // Get X from the salt value.
+    var x = this.calculateX(salt);
+    
+    // Calculate and return the verifier.
+    return this.g.modPow(x, this.N);
+    
+  },
+
   /*
    * Calculate u = SHA1(PAD(A) | PAD(B)), which serves
    * to prevent an attacker who learns a user's verifier

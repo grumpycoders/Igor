@@ -18,7 +18,9 @@ SRPClient = function () {
   // Convenience big integer objects for 1 and 2.
   this.zero = new BigInteger("0", 16);
   this.one = new BigInteger("1", 16);
-  this.two = new BigInteger("2", 16);  
+  this.two = new BigInteger("2", 16);
+
+  this.seq = this.one;
 };
 
 /*
@@ -65,7 +67,20 @@ SRPClient.prototype = {
     return this.calculateMs(this.A, this.M, this.K).equals(new BigInteger(serverProof.M, 16));
 
   },
-        
+
+  generateProof: function() {
+
+    var seqHex = this.seq.toString(16);
+    var rndHex = this.srpRandom().toString(16);
+    
+    seq = seq.add(this.one);
+    
+    var subHashHex = this.paddedHash([seqHex, rndHex]).toString(16);
+    var proofHex = this.paddedHash([subHashHex, this.K.toString(16)]);
+    
+    return { rnd: rndHex, seq: seqHex, prf: proofHex };
+  
+  },
 
   /*
    * Calculate k = H(N || g), which is used

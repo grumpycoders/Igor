@@ -489,7 +489,7 @@ bool SRP::verifyProof(const Balau::String & proof) const {
 
     BigInt rnd, seq, prf;
     rnd.set(values["rnd"].asString(), 16);
-    seq.set(values["snd"].asString(), 16);
+    seq.set(values["seq"].asString(), 16);
     prf.set(values["prf"].asString(), 16);
 
     return H(H(seq, rnd), K)() == prf;

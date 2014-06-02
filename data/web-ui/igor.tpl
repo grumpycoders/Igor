@@ -182,6 +182,7 @@
       var currentSession = '';
       var entryPoint = '';
       var srp;
+      var loginDialog;
 
       String.prototype.repeat = function(num) {
         return new Array(num + 1).join(this);
@@ -233,6 +234,7 @@
         var errorDlg;
         var clock;
         var sessionName;
+        var statusMain;
         var sessionsMenu;
         var consoleArea;
         var consolePane;
@@ -285,7 +287,7 @@
           );
         };
         
-        loginAction = function(loginData, deferred) {
+        var loginAction = function(loginData, deferred) {
           var packetA = null;
           try {
             srp = new SRPClient();
@@ -357,7 +359,7 @@
           BUSY: 1,
         
           title: "Login Dialog",
-          message: "",
+          message: "Enter your credentials",
           busyLabel: "Working...",
         
           // Binding property values to DOM nodes in templates
@@ -436,7 +438,7 @@
           },
         
           onCancel: function() {
-           this.emit("cancel");     
+            this.emit("cancel");
           },
 
           _onValidStateChange: function() {
@@ -462,21 +464,15 @@
         // since we do not have web service here to authenticate against    
         var loginController = new LoginController();
     
-        var loginDialog = new LoginDialog({ controller: loginController });
+        loginDialog = new LoginDialog({ controller: loginController });
         loginDialog.startup();      
-        loginDialog.show();
-    
-        loginDialog.on("cancel", function() {
-          console.log("Login cancelled.");        
-        });
-    
-        loginDialog.on("error", function() { 
-          console.log("Login error.");
-        });
     
         loginDialog.on("success", function() { 
           console.log("Login success.");
-          console.log(JSON.stringify(this.form.get("value")));
+          statusMain.innerHTML = "Igor - logged in as '" + this.form.get("value").username + "'";
+          setTimeout(lang.hitch(this, function() {
+            loginDialog.hide();
+          }), 1000);
         });
         
         reloadSessions = function() {
@@ -504,6 +500,7 @@
         
         clock = dojo.byId('clock');
         sessionName = dojo.byId('sessionName');
+        statusMain = dojo.byId('statusMain');
         sessionsMenu = registry.byId('sessionsMenu');
         consoleArea = dojo.byId('console');
         consolePane = dojo.byId('consolePane');
@@ -662,7 +659,6 @@
               <input data-dojo-type="dijit.form.ValidationTextBox" type="password" data-dojo-props='name: "password", required: true, style: "width: 200px;"'/>
             </td>
           </tr>
-
         </table>
       </form>
     </script>
@@ -682,7 +678,7 @@
             </div>
             <div data-dojo-type='dijit/MenuSeparator'></div>
             <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: reloadUIAction'>Reload UI</div>
-            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: function() { loginForm.reset(); loginDialog.show(); }'>Login</div>
+            <div data-dojo-type='dijit/MenuItem' data-dojo-props='onClick: function() { loginDialog.form.reset(); loginDialog.show(); }'>Login</div>
           </div>
         </div>
         <div data-dojo-type='dijit/PopupMenuBarItem'>
@@ -721,7 +717,7 @@
       <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"bottom"' id='statusBar'>
         <div data-dojo-type='dijit/layout/LayoutContainer' id='statusBarLayoutContainer'>
           <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"left"', id='sessionName'></div>
-          <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"center"' id='statusMain'>Igor</div>
+          <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"center"' id='statusMain'>Igor - not logged in</div>
           <div data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"right", layoutPriority:1' id='clock'>xx:xx</div>
         </div>
       </div>

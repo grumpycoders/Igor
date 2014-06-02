@@ -10,9 +10,19 @@
     <link rel='stylesheet' href='{{dojo_path}}/dojox/grid/resources/claroGrid.css' />
     <link rel='stylesheet' href='/static/js/dgrid/css/dgrid.css' />
     <link rel='stylesheet' href='/static/js/dgrid/css/skins/claro.css' />
-    <script type="text/javascript" src="/static/js/srp-client/lib/jsbn.js"></script>
-    <script type="text/javascript" src="/static/js/srp-client/lib/sha1.js"></script>
-    <script type="text/javascript" src="/static/js/srp-client/lib/sjcl.js"></script>
+
+    <script type="text/javascript" src="/static/js/jsbn.js"></script>
+    <script type="text/javascript" src="/static/js/sha1.js"></script>
+
+    <script type="text/javascript" src="/static/js/sjcl.js"></script>
+
+    <script type="text/javascript" src="/static/js/aes.js"></script>
+    <script type="text/javascript" src="/static/js/bitArray.js"></script>
+    <script type="text/javascript" src="/static/js/codecHex.js"></script>
+    <script type="text/javascript" src="/static/js/codecString.js"></script>
+    <script type="text/javascript" src="/static/js/sha256.js"></script>
+    <script type="text/javascript" src="/static/js/random.js"></script>
+
     <script type="text/javascript" src="/static/js/srp-client.js"></script>
   
     <style type='text/css'>
@@ -171,7 +181,7 @@
       var sendMessage;
       var currentSession = '';
       var entryPoint = '';
-      var srp, I, a, A, B, u, S, K, M;
+      var srp;
 
       String.prototype.repeat = function(num) {
         return new Array(num + 1).join(this);
@@ -193,11 +203,14 @@
       require([
         'dojo',
         'dijit/dijit',
+        'dojo/_base/declare',
         'dojo/_base/lang',
         'dojo/_base/array',
+        'dojo/_base/Deferred',
         'dojo/parser',
         'dojo/dom',
         'dojo/on',
+        'dojo/Evented',
         'dijit/registry',
         'dojo/request',
         'dojo/json',
@@ -208,11 +221,15 @@
         'dojo/store/Memory',
 		'dojo/store/JsonRest',
 		'dojo/store/Observable',
+        'dijit/_Widget',
+        'dijit/_TemplatedMixin',
+        'dijit/_WidgetsInTemplateMixin',
+        'dijit/Dialog',
         'dijit/dijit-all',
         'dojox/socket',
         'dojox/socket/Reconnect',
         'dojo/domReady!'],
-      function(dojo, dijit, lang, array, parser, dom, on, registry, request, json, DataGrid, ItemFileWriteStore, Grid, domForm, memory, jsonRest, observable) {
+      function(dojo, dijit, declare, lang, array, Deferred, parser, dom, on, Evented, registry, request, json, DataGrid, ItemFileWriteStore, Grid, domForm, memory, jsonRest, observable, _Widget, _TemplatedMixin, _WidgetsInTemplateMixin, Dialog) {
         var errorDlg;
         var clock;
         var sessionName;
@@ -268,30 +285,200 @@
           );
         };
         
-        clientSendPacketA = function(username, password) {
-          I = username;
-          srp = new SRPClient(username, password, 1024, 'sha-256');
-          a = srp.srpRandom();
-          A = srp.calculateA(a);
-	  
-          return { clientPacketA: { A: A.toString(16), I: username }};
-        };
-        
-        loginAction = function(loginData) {
+        loginAction = function(loginData, deferred) {
+          var packetA = null;
+          try {
+            srp = new SRPClient();
+            packetA = srp.clientSendPacketA(loginData.username, loginData.password);
+          }
+          catch(err) {
+            deferred.resolve(false);
+            return;
+          }
+          if (!packetA) {
+            deferred.resolve(false);
+            return;
+          }
           request.post('/dyn/auth/clientPacketA', {
             data: {
-              msg: json.stringify(clientSendPacketA(loginData.username, loginData.password)),
+              msg: json.stringify(packetA),
             },
           }).then(
             function(retStr) {
               var ret = json.parse(retStr);
+              var proof = null;
+              try {
+                if (ret.serverPacketB && srp.clientRecvPacketB(ret.serverPacketB)) {
+                  proof = srp.clientSendProof();
+                } else {
+                  deferred.resolve(false);
+                  return;
+                }
+              }
+              catch(err) {
+                deferred.resolve(false);
+                return;
+              }
+              if (!proof) {
+                deferred.resolve(false);
+                return;
+              }
+              request.post('/dyn/auth/clientProof', {
+                data: {
+                  msg: json.stringify(proof),
+                },
+              }).then(
+                function(retStr) {
+                  var ret = json.parse(retStr);
+                  try {
+                    if (ret.serverProof && srp.clientRecvProof(ret.serverProof)) {
+                      deferred.resolve(true);
+                    } else {
+                      deferred.resolve(false);
+                    }
+                  }
+                  catch(err) {
+                    deferred.resolve(false);
+                  }
+                },
+                function(error) {
+                  deferred.resolve(false);
+                }
+              );
             },
             function(error) {
-              showError("Error while trying to log in: " + error);
+              deferred.resolve(false);
             }
           );
         };
+        
+        var LoginDialog = declare([Dialog, Evented], {
+          READY: 0,
+          BUSY: 1,
+        
+          title: "Login Dialog",
+          message: "",
+          busyLabel: "Working...",
+        
+          // Binding property values to DOM nodes in templates
+          // see: http://www.enterprisedojo.com/2010/10/02/lessons-in-widgetry-binding-property-values-to-dom-nodes-in-templates/
+          attributeMap: lang.delegate(dijit._Widget.prototype.attributeMap, {
+            message: {
+              node: "messageNode",
+              type: "innerHTML"               
+            }            
+          }),
+        
+          constructor: function(/*Object*/ kwArgs) {
+            lang.mixin(this, kwArgs);            
+            var dialogTemplate = dom.byId("dialog-template").textContent; 
+            var formTemplate = dom.byId("login-form-template").textContent;
+            var template = lang.replace(dialogTemplate, {
+              form: formTemplate                
+            });
 
+            var contentWidget = new (declare(
+              [_Widget, _TemplatedMixin, _WidgetsInTemplateMixin],
+              {
+                templateString: template                   
+              }
+            )); 
+            contentWidget.startup();
+            var content = this.content = contentWidget;
+            this.form = content.form;
+            // shortcuts
+            this.submitButton = content.submitButton;
+            this.cancelButton = content.cancelButton;
+            this.messageNode = content.messageNode;
+          },
+        
+          postCreate: function() {
+            this.inherited(arguments);
+            
+            this.readyState= this.READY;
+            this.okLabel = this.submitButton.get("label");
+            
+            this.connect(this.submitButton, "onClick", "onSubmit");
+            this.connect(this.cancelButton, "onClick", "onCancel");
+            
+            this.watch("readyState", lang.hitch(this, "_onReadyStateChange"));
+            
+            this.form.watch("state", lang.hitch(this, "_onValidStateChange"));
+            this._onValidStateChange();
+          },
+        
+          onSubmit: function() {
+            this.set("readyState", this.BUSY);
+            this.set("message", ""); 
+            var data = this.form.get("value");
+            
+            var auth = this.controller.login(data);
+            
+            Deferred.when(auth, lang.hitch(this, function(loginSuccess) {
+              if (loginSuccess === true) {
+                this.onLoginSuccess();
+                return;                    
+              }
+              this.onLoginError();
+            }));
+          },
+            
+          onLoginSuccess: function() {
+            this.set("readyState", this.READY);
+            this.set("message", "Login sucessful.");             
+            this.emit("success");
+          },
+        
+          onLoginError: function() {
+            this.set("readyState", this.READY);
+            this.set("message", "Please try again."); 
+            this.emit("error");         
+          },
+        
+          onCancel: function() {
+           this.emit("cancel");     
+          },
+
+          _onValidStateChange: function() {
+            this.submitButton.set("disabled", !!this.form.get("state").length);
+          },
+
+          _onReadyStateChange: function() {
+            var isBusy = this.get("readyState") == this.BUSY;
+            this.submitButton.set("label", isBusy ? this.busyLabel : this.okLabel);
+            this.submitButton.set("disabled", isBusy);
+          }            
+        });
+    
+        var LoginController = declare(null, {
+          login: function(data) {
+            var def = new Deferred();
+            loginAction(data, def);
+            return def;
+          }
+        });
+
+        // provide username & password in constructor
+        // since we do not have web service here to authenticate against    
+        var loginController = new LoginController();
+    
+        var loginDialog = new LoginDialog({ controller: loginController });
+        loginDialog.startup();      
+        loginDialog.show();
+    
+        loginDialog.on("cancel", function() {
+          console.log("Login cancelled.");        
+        });
+    
+        loginDialog.on("error", function() { 
+          console.log("Login error.");
+        });
+    
+        loginDialog.on("success", function() { 
+          console.log("Login success.");
+          console.log(JSON.stringify(this.form.get("value")));
+        });
+        
         reloadSessions = function() {
           sessionsMenu.destroyDescendants();
           sessionsMenu.addChild(new dijit.MenuItem({
@@ -441,6 +628,45 @@
   </head>
 
   <body class='claro'>
+  
+    <script type="text/template" id="dialog-template">
+      <div style="width:300px;">
+        <div class="dijitDialogPaneContentArea">
+          <div data-dojo-attach-point="contentNode">
+            {form}              
+          </div>
+        </div>
+    
+        <div class="dijitDialogPaneActionBar">
+          <div class="message" data-dojo-attach-point="messageNode"></div>      
+          <button data-dojo-type="dijit.form.Button" data-dojo-props="" data-dojo-attach-point="submitButton">OK</button>
+            
+          <button data-dojo-type="dijit.form.Button" data-dojo-attach-point="cancelButton">Cancel</button>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/template" id="login-form-template">
+      <form data-dojo-type="dijit.form.Form" data-dojo-attach-point="form">
+        <table class="form">
+          <tr>
+            <td>Username</td>
+            <td>
+              <input data-dojo-type="dijit.form.ValidationTextBox" data-dojo-props='name: "username", required: true, maxLength: 64, trim: true, style: "width: 200px;"'/>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Password</td>
+            <td>
+              <input data-dojo-type="dijit.form.ValidationTextBox" type="password" data-dojo-props='name: "password", required: true, style: "width: 200px;"'/>
+            </td>
+          </tr>
+
+        </table>
+      </form>
+    </script>
+
     <div id='loader'>
       <div class='loaderVPad'></div>
       <div id='loaderInner'>Loading...</div>
@@ -520,24 +746,5 @@
       </form>
     </div>
     
-    <div data-dojo-type='dijit/Dialog' data-dojo-id='loginDialog' title='Broadcast message' style='display: none'>
-      <form data-dojo-type='dijit/form/Form' data-dojo-id='loginForm'>
-        <script type='dojo/on' data-dojo-event='submit' data-dojo-args='e'>
-          e.preventDefault();
-          if (!loginForm.isValid()) { return; }
-          loginAction(loginForm.value);
-          loginDialog.hide();
-        </script>
-        <div class='dijitDialogPaneContentArea'>
-          <label for='username'>Username: </label>
-          <input type='text' name='username' id='username' required='true' data-dojo-type='dijit/form/ValidationTextBox' />
-          <label for='password'>Password: </label>
-          <input type='password' name='password' id='password' required='true' data-dojo-type='dijit/form/ValidationTextBox' />
-        </div>
-        <div class='dijitDialogPaneActionBar'>
-          <button data-dojo-type='dijit/form/Button' type='submit'>Login</button>
-        </div>
-      </form>
-    </div>
   </body>
 </html>

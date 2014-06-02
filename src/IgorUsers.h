@@ -48,7 +48,7 @@ class SRP {
       friend class SRP;
       public:
           Hash(const Hash &);
-        static const int DIGEST_SIZE = 32;
+        static const int DIGEST_SIZE = 20;
         Balau::BigInt operator()() const { return toBigInt(); }
         Balau::BigInt toBigInt() const;
       private:

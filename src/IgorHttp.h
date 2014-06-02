@@ -35,7 +35,8 @@ class IgorHttpSession {
       IgorHttpSession();
     const Balau::String & getUUID() const { return m_uuid; }
     SRP * getSRP() { return &m_srp; }
-    bool authenticated();
+    bool authenticated() { return m_authenticated; }
+    void setAuthenticated() { m_authenticated = true; }
 private:
     bool isExpired(time_t now) { return now > m_expiration; }
     void bumpExpiration();

@@ -366,9 +366,9 @@ bool AuthClientPacketAAction::Do(HttpServer * server, Http::Request & req, HttpS
 
     std::shared_ptr<IgorHttpSession> session = g_igorHttpSessionsManager->createSession();
 
-    SRP * srp = session->getSRP();
+    SRP * srp = session ? session->getSRP() : NULL;
 
-    if (!srp->serverRecvPacketA(req.variables["msg"])) {
+    if (!session || !srp || !srp->serverRecvPacketA(req.variables["msg"])) {
         response->writeString("{}");
         response.SetContentType("application/json");
         response.Flush();
@@ -393,16 +393,24 @@ private:
 };
 
 bool AuthClientProofAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
-    Json::Value reply;
-    Json::UInt idx = 0;
     HttpServer::Response response(server, req, out);
-    Json::StyledWriter writer;
 
+    std::shared_ptr<IgorHttpSession> session = g_igorHttpSessionsManager->findSession(req.cookies["session"]);
 
-    String jsonMsg = writer.write(reply);
-    response->writeString(jsonMsg);
+    SRP * srp = session ? session->getSRP() : NULL;
+
+    if (!session || !srp || !srp->serverRecvProof(req.variables["msg"])) {
+        response->writeString("{}");
+        response.SetContentType("application/json");
+        response.Flush();
+        return true;
+    }
+
+    response->writeString(srp->serverSendProof());
     response.SetContentType("application/json");
     response.Flush();
+
+    session->setAuthenticated();
 
     return true;
 }
@@ -442,6 +450,7 @@ void IgorHttpSessionsManager::Do() {
         m_state = 1;
         m_clock.set(3600);
         waitFor(&m_clock);
+        yield();
     }
 
     if (m_clock.gotSignal()) {
@@ -449,7 +458,7 @@ void IgorHttpSessionsManager::Do() {
         m_clock.set(3600);
         waitFor(&m_clock);
     } else {
-        return;
+        yield();
     }
 
     ScopeLockW lock(m_lock);
@@ -459,6 +468,8 @@ void IgorHttpSessionsManager::Do() {
     for (auto session = m_sessions.begin(); session != m_sessions.end(); session++)
         if (session->second->isExpired(now))
             session = m_sessions.erase(session);
+
+    yield();
 }
 
 std::shared_ptr<IgorHttpSession> IgorHttpSessionsManager::findSession(const String & uuid) const {
@@ -466,7 +477,7 @@ std::shared_ptr<IgorHttpSession> IgorHttpSessionsManager::findSession(const Stri
 
     auto session = m_sessions.find(uuid);
 
-    if (session != m_sessions.end())
+    if (session == m_sessions.end())
         return NULL;
 
     session->second->bumpExpiration();

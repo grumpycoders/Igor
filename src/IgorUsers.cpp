@@ -130,17 +130,24 @@ class SRPBigNums : public AtStart {
         m_g = &g;
 
         static BigInt k = SRP::H(N, g)();
-        String str = k.toString(16);
         m_k = &k;
+
+        static BigInt cNg;
+        cNg.set("95CBBA26F8E9B1415C71417A4D63D1F7D7CDED7B", 16);        
+        m_cNg = &cNg;
+
+        IAssert(cNg == (SRP::H(N)() ^ SRP::H(g)()), "Pre-computed H(N) ^ H(g) didn't come out as expected");
     }
     const BigInt & N() const { return *m_N; }
     const BigInt & g() const { return *m_g; }
     const BigInt & k() const { return *m_k; }
+    const BigInt & cNg() const { return *m_cNg; }
 
   private:
     BigInt * m_N = NULL;
     BigInt * m_g = NULL;
     BigInt * m_k = NULL;
+    BigInt * m_cNg = NULL;
 };
 
 static SRPBigNums srpBigNums;
@@ -152,23 +159,23 @@ SRP::Hash::Hash(const Hash & h) {
 }
 
 SRP::Hash::Hash() {
-    sha256_init(&m_state);
+    sha1_init(&m_state);
 }
 
 void SRP::Hash::updateString(const char * str) {
     IAssert(!m_finalized, "Can't update a finalized hash.");
     while (*str)
-        sha256_process(&m_state, (unsigned char *) str++, 1);
+        sha1_process(&m_state, (unsigned char *) str++, 1);
 }
 
 void SRP::Hash::update(const unsigned char * data, size_t l) {
     IAssert(!m_finalized, "Can't update a finalized hash.");
-    sha256_process(&m_state, data, l);
+    sha1_process(&m_state, data, l);
 }
 
 void SRP::Hash::updateBString(const String & str) {
     IAssert(!m_finalized, "Can't update a finalized hash.");
-    sha256_process(&m_state, (const unsigned char *)str.to_charp(), str.strlen());
+    sha1_process(&m_state, (const unsigned char *)str.to_charp(), str.strlen());
 }
 
 void SRP::Hash::updateBigInt(const BigInt & v) {
@@ -188,7 +195,7 @@ void SRP::Hash::updateHash(const Hash & v) {
 
 void SRP::Hash::final() {
     IAssert(!m_finalized, "Can't finalize a finalized hash.");
-    sha256_done(&m_state, m_digest);
+    sha1_done(&m_state, m_digest);
     m_finalized = true;
 }
 
@@ -246,7 +253,7 @@ bool SRP::loadPassword(const Balau::String & password) {
 
 bool SRP::selfTest() {
     IAssert(srpBigNums.N().isPrime(), "N isn't prime ?!");
-    IAssert(sha256_desc.hashsize == Hash::DIGEST_SIZE, "Hash::DIGEST_SIZE needs to be 32 for SHA-256");
+    IAssert(sha1_desc.hashsize == Hash::DIGEST_SIZE, "Hash::DIGEST_SIZE needs to be 32 for SHA-256");
 
     String I = "testUsername";
     String p = "testPassword";
@@ -299,7 +306,8 @@ String SRP::clientSendPacketA() {
     const BigInt & g = srpBigNums.g();
 
     // g ^ a
-    A = g.modpow(a = rand(), N);
+    a = rand();
+    A = g.modpow(a, N);
 
     Json::Value packet;
     packet["clientPacketA"]["I"] = I.to_charp();
@@ -346,7 +354,8 @@ String SRP::serverSendPacketB() {
     const BigInt & k = srpBigNums.k();
 
     // k * v + g ^ b
-    B = k.modmul(v, N).modadd(g.modpow(b = rand(), N), N);
+    b = rand();
+    B = k.modmul(v, N).modadd(g.modpow(b, N), N);
 
     Json::Value packet;
     packet["serverPacketB"]["s"] = s.toString(16).to_charp();
@@ -397,8 +406,9 @@ BigInt SRP::generateX(const BigInt & s, const String & I, const String & p) {
 String SRP::clientSendProof() {
     const BigInt & N = srpBigNums.N();
     const BigInt & g = srpBigNums.g();
+    const BigInt & cNg = srpBigNums.cNg();
 
-    M = H(H(N)() ^ H(g)(), H(I), s, A, B, K)();
+    M = H(cNg, H(I), s, A, B, K)();
 
     Json::Value packet;
     packet["clientProof"]["M"] = M.toString(16).to_charp();
@@ -416,11 +426,12 @@ bool SRP::serverRecvProof(const String & packetStr) {
     const BigInt & N = srpBigNums.N();
     const BigInt & g = srpBigNums.g();
     const BigInt & k = srpBigNums.k();
+    const BigInt & cNg = srpBigNums.cNg();
 
     if (!reader.parse(pcharp, pcharp + len, values))
         return false;
 
-    M = H(H(N)() ^ H(g)(), H(I), s, A, B, K)();
+    M = H(cNg, H(I), s, A, B, K)();
 
     BigInt Mc;
     Mc.set(values["clientProof"]["M"].asString(), 16);
@@ -461,7 +472,7 @@ Balau::String SRP::generateProof(const BigInt & seq, int rlen) const {
     Json::Value values;
     values["rnd"] = rnd.toString(16).to_charp();
     values["seq"] = seq.toString(16).to_charp();
-    values["prf"] = H(K, H(seq, rnd))().toString(16).to_charp();
+    values["prf"] = H(H(seq, rnd), K)().toString(16).to_charp();
 
     Json::FastWriter writer;
     return writer.write(values);
@@ -481,5 +492,5 @@ bool SRP::verifyProof(const Balau::String & proof) const {
     seq.set(values["snd"].asString(), 16);
     prf.set(values["prf"].asString(), 16);
 
-    return H(K, H(seq, rnd))() == prf;
+    return H(H(seq, rnd), K)() == prf;
 }

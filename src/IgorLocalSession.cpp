@@ -133,7 +133,7 @@ std::pair<bool, String> IgorLocalSession::serialize(const char * name) {
 
         stmt = db.safeStmt("INSERT INTO main.properties (name, value) VALUES(?1, ?2);");
         db.safeBind(stmt, 1, "CPU");
-        db.safeBind(stmt, 2, "x86");
+        db.safeBind(stmt, 2, m_pDatabase->m_cpu_modules[0]->getTag());
         db.safeWriteStep(stmt);
         db.safeFinalize(stmt);
 

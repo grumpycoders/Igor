@@ -14,6 +14,8 @@ public:
     c_cpu_x86_capstone(cs_mode mode);
     virtual ~c_cpu_x86_capstone();
 
+    virtual Balau::String getTag() const override;
+
     igor_result analyze(s_analyzeState* pState);
     igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false);
     c_cpu_analyse_result* allocateCpuSpecificAnalyseResult(){ return new c_x86_capstone_analyse_result; }
@@ -28,4 +30,5 @@ public:
     void generateReferences(s_analyzeState* pState);
 
     csh m_csHandle;
+    cs_mode m_csMode;
 };

@@ -47,6 +47,7 @@ struct s_analyzeState
 class c_cpu_module
 {
 public:
+    virtual Balau::String getTag() const = 0;
     virtual igor_result analyze(s_analyzeState* pState) = 0;
     virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
 
@@ -68,4 +69,15 @@ public:
 
     static const char* startColor(e_colors, bool bUseColor = true);
     static const char* finishColor(e_colors, bool bUseColor = true);
+};
+
+class c_cpu_factory
+{
+public:
+    static c_cpu_module* createCpuFromString(const Balau::String &);
+protected:
+    c_cpu_factory() { m_list.push_back(this); }
+    virtual c_cpu_module* maybeCreateCpu(const Balau::String &) = 0;
+private:
+    static std::vector<c_cpu_factory*> m_list;
 };

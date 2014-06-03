@@ -467,7 +467,7 @@ public:
 class c_cpu_x86 : public c_cpu_module
 {
 public:
-
+    virtual Balau::String getTag() const override;
     igor_result analyze(s_analyzeState* pState);
     igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false);
     c_cpu_analyse_result* allocateCpuSpecificAnalyseResult(){ return new c_x86_analyse_result; }

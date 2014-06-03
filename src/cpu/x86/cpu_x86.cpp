@@ -38,6 +38,11 @@ const char* registerName64bitsREXMode[6][16] =
     {   "XMM0", "XMM1", "XMM2", "XMM3", "XMM4", "XMM5", "XMM6", "XMM7", "XMM8", "XMM9", "XMM10","XMM11","XMM12","XMM13","XMM14","XMM15"}, // xmm
 };
 
+Balau::String c_cpu_x86::getTag() const
+{
+    return "igor_x86";
+}
+
 igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 {
     c_cpu_x86_state* pX86State = (c_cpu_x86_state*)pState->pCpuState;
@@ -752,3 +757,22 @@ void s_x86_operand::setAsImmediate(s_analyzeState* pState, operandDefinition siz
     m_immediate.m_immediateSize = immediateSize;
     m_immediate.m_immediateValue = immediateValue;
 }
+
+namespace {
+
+class c_cpu_x86_factory : public c_cpu_factory
+{
+    virtual c_cpu_module* maybeCreateCpu(const Balau::String & cpuString) override
+    {
+        if (cpuString == "igor_x86")
+        {
+            return new c_cpu_x86();
+        }
+
+        return NULL;
+    }
+};
+
+};
+
+static c_cpu_x86_factory s_cpu_x86_factory;

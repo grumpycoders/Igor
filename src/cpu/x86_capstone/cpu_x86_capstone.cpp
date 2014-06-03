@@ -5,6 +5,7 @@
 
 c_cpu_x86_capstone::c_cpu_x86_capstone(cs_mode mode)
 {
+    m_csMode = mode;
     cs_open(CS_ARCH_X86, mode, &m_csHandle);
     cs_option(m_csHandle, CS_OPT_DETAIL, 1);
 }
@@ -12,6 +13,21 @@ c_cpu_x86_capstone::c_cpu_x86_capstone(cs_mode mode)
 c_cpu_x86_capstone::~c_cpu_x86_capstone()
 {
 
+}
+
+Balau::String c_cpu_x86_capstone::getTag() const
+{
+    switch (m_csMode)
+    {
+    case CS_MODE_32:
+        return "capstone_i386";
+        break;
+    case CS_MODE_64:
+        return "capstone_x86_64";
+        break;
+    }
+
+    Failure("unknown cpu");
 }
 
 igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
@@ -188,3 +204,26 @@ void c_cpu_x86_capstone::generateReferences(s_analyzeState* pState)
 {
 
 }
+
+namespace {
+
+class c_cpu_x86_capstone_factory : public c_cpu_factory
+{
+    virtual c_cpu_module* maybeCreateCpu(const Balau::String & cpuString) override
+    {
+        if (cpuString == "capstone_i386")
+        {
+            return new c_cpu_x86_capstone(CS_MODE_32);
+        }
+        else if (cpuString == "capstone_x86_64")
+        {
+            return new c_cpu_x86_capstone(CS_MODE_64);
+        }
+
+        return NULL;
+    }
+};
+
+};
+
+static c_cpu_x86_capstone_factory s_cpu_x86_capstone_factory;

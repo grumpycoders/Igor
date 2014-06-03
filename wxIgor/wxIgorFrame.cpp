@@ -13,6 +13,7 @@
 #include "IgorLocalSession.h"
 #include "IgorUtils.h"
 #include "Loaders/PE/PELoader.h"
+#include "Loaders/Dmp/dmpLoader.h"
 #include "Loaders/Elf/elfLoader.h"
 
 #include "IgorUsers.h"
@@ -147,8 +148,13 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
             // but for all the possible hints the file might have for us.
             r = PELoader.loadPE(reader, m_session);
             // Note: destroying the object from the stack would do the same, but
-            // as this might trigger a context switch, it's better to do it explicitely
+            // as this might trigger a context switch, it's better to do it explicitly
             // than from a destructor, as a general good practice.
+        }
+        else if (fileName.find(".dmp") != -1)
+        {
+            c_dmpLoader dmpLoader;
+            r = dmpLoader.load(reader, m_session);
         }
         else if (fileName.find(".elf") != -1)
         {
@@ -170,6 +176,7 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
 
 const char* supportedFormats =
 "PE executables(*.exe)|*.exe"
+"|Mini dump(*.dmp)|*.dmp"
 "|Elf executalbes(*.elf)|*.elf"
 "|Anything|*.*"
 ;

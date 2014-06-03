@@ -27,23 +27,6 @@ using namespace Balau;
 
 #define new DEBUG_NEW
 
-static void fileOperationSafe(std::function<void()> lambda) {
-    Task::SimpleContext simpleContext;
-
-    try {
-        lambda();
-    }
-    catch (GeneralException & e) {
-        wxString errorMsg = "File error:\n" + wxString(e.getMsg());
-        wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, "Error", wxOK | wxICON_ERROR);
-        dial->ShowModal();
-    }
-    catch (...) {
-        wxMessageDialog * dial = new wxMessageDialog(NULL, "Unknown file error.", "Error", wxOK | wxICON_ERROR);
-        dial->ShowModal();
-    }
-}
-
 c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent) : wxPanel(parent)
 {
     m_session = pSession;
@@ -126,7 +109,8 @@ c_wxIgorFrame::~c_wxIgorFrame()
 
 void c_wxIgorFrame::OpenFile(const wxString& fileName)
 {
-    igor_result r = IGOR_FAILURE;
+    igor_result r;
+    String errorMsg1, errorMsg2;
 
     // add to history
     {
@@ -135,44 +119,16 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
         pApp->m_fileHistory->Save(*pApp->m_config);
     }
 
-    IgorLocalSession * session = new IgorLocalSession();
-    m_session = session;
+    std::tie(r, m_session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(fileName.c_str());
 
-    fileOperationSafe([&]() {
-        IO<Input> reader(new Input(fileName.c_str()));
-        reader->open();
-
-        if (fileName.find(".exe") != -1)
-        {
-            c_PELoader PELoader;
-            // Note: having the session here is actually useful not just for the entry point,
-            // but for all the possible hints the file might have for us.
-            r = PELoader.loadPE(reader, session);
-            // Note: destroying the object from the stack would do the same, but
-            // as this might trigger a context switch, it's better to do it explicitly
-            // than from a destructor, as a general good practice.
-        }
-        else if (fileName.find(".dmp") != -1)
-        {
-            c_dmpLoader dmpLoader;
-            r = dmpLoader.load(reader, session);
-        }
-        else if (fileName.find(".elf") != -1)
-        {
-            c_elfLoader elfLoader;
-            r = elfLoader.load(reader, session);
-        }
-        reader->close();
-
-        session->loaded(fileName.c_str());
-    });
-
-    // Add the task even in case of failure, so it can properly clean itself out.
-    TaskMan::registerTask(session);
-
-    m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
-
-    SendSizeEvent();
+    if (r != IGOR_SUCCESS) {
+        wxString errorMsg = "File error:\n" + wxString(errorMsg1.to_charp()) + "\n" + wxString(errorMsg2.to_charp());
+        wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, "Error", wxOK | wxICON_ERROR);
+        dial->ShowModal();
+    } else {
+        m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
+        SendSizeEvent();
+    }
 }
 
 const char* supportedFormats =
@@ -257,10 +213,13 @@ void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK && m_session)
     {
         wxString fileName = fileDialog.GetPath();
-        auto result = m_session->serialize(fileName.c_str().AsChar());
-        if (result.first)
+        igor_result r;
+        String errorMsg1, errorMsg2;
+        std::tie(r, errorMsg1, errorMsg2) = m_session->serialize(fileName.c_str().AsChar());
+        if (r == IGOR_FAILURE)
         {
-            wxMessageBox(result.second.to_charp(), "Error", wxICON_ERROR | wxOK);
+            String errorMsg = errorMsg1 + " - " + errorMsg2;
+            wxMessageBox(errorMsg.to_charp(), "Error", wxICON_ERROR | wxOK);
         }
     }
 }
@@ -271,13 +230,14 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK)
     {
         wxString fileName = fileDialog.GetPath();
-        bool success;
+        igor_result success;
         IgorLocalSession * session;
-        String errorMsg;
-        std::tie(success, session, errorMsg) = IgorLocalSession::deserialize(fileName.c_str().AsChar());
+        String errorMsg1, errorMsg2;
+        std::tie(success, session, errorMsg1, errorMsg2) = IgorLocalSession::deserialize(fileName.c_str().AsChar());
 
         if (!success)
         {
+            String errorMsg = errorMsg1 + " - " + errorMsg2;
             wxMessageBox(errorMsg.to_charp(), "Error", wxICON_ERROR | wxOK);
         }
     }

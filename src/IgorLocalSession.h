@@ -20,8 +20,9 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
 
     void loaded(const char * filename);
 
-    virtual std::pair<bool, Balau::String> serialize(const char * name) override;
-    static std::tuple<bool, IgorLocalSession *, Balau::String> deserialize(const char * name);
+    virtual std::tuple<igor_result, Balau::String, Balau::String> serialize(const char * name) override;
+    static std::tuple<igor_result, IgorLocalSession *, Balau::String, Balau::String> deserialize(const char * name);
+    static std::tuple<igor_result, IgorLocalSession *, Balau::String, Balau::String> loadBinary(const char * name);
 
     void add_code_analysis_task(igorAddress PC);
     virtual void Do() override;

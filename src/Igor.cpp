@@ -103,31 +103,17 @@ void MainTask::Do() {
     strLuaHello.exec(g_luaTask);
 
     if (argc == 2) {
-        IO<Input> reader(new Input(argv[1]));
-        reader->open();
+        IgorLocalSession * session;
+        igor_result r;
+        String errorMsg1, errorMsg2;
+        
+        std::tie(r, session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(argv[1]);
 
-        IgorLocalSession * session = new IgorLocalSession();
-
-        if (strstr(argv[1], ".exe"))
-        {
-            c_PELoader PELoader;
-            PELoader.loadPE(reader, session);
+        if (r != IGOR_SUCCESS) {
+            Printer::log(M_WARNING, "Unable to load %s:", argv[1]);
+            Printer::log(M_WARNING, "%s", errorMsg1.to_charp());
+            Printer::log(M_WARNING, "%s", errorMsg2.to_charp());
         }
-        else if (strstr(argv[1], ".dmp"))
-        {
-            c_dmpLoader DmpLoader;
-            DmpLoader.load(reader, session);
-        }
-        else if (strstr(argv[1], ".elf"))
-        {
-            c_elfLoader elfLoader;
-            elfLoader.load(reader, session);
-        }
-
-        reader->close();
-        session->loaded(argv[1]);
-
-        TaskMan::registerTask(session);
     }
 
     startWX(argc, argv);

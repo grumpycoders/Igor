@@ -22,7 +22,7 @@ class IgorSession
     static void enumerate(std::function<bool(IgorSession *)>);
     static Balau::String generateUUID();
 
-    virtual std::pair<bool, Balau::String> serialize(const char * name) { return std::pair<bool, Balau::String>(false, "Can't serialize this"); }
+    virtual std::tuple<igor_result, Balau::String, Balau::String> serialize(const char * name) { igor_result r = IGOR_FAILURE; Balau::String m1 = "Can't serialize this", m2; return std::tie(r, m1, m2); }
 
     virtual const char * getStatusString() { return "Unknown"; }
 

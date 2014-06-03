@@ -8,6 +8,10 @@
 #include <Printer.h>
 #include <BString.h>
 #include <TaskMan.h>
+#include <MMap.h>
+#include "Loaders/PE/PELoader.h"
+#include "Loaders/Dmp/dmpLoader.h"
+#include "Loaders/Elf/elfLoader.h"
 
 #include "IgorMemory.h"
 
@@ -113,12 +117,15 @@ int IgorSessionSqlite::upgradeDB(int version) {
     return version;
 }
 
-std::pair<bool, String> IgorLocalSession::serialize(const char * name) {
-    if (!m_pDatabase)
-        return std::pair<bool, String>(true, "No database loaded");
+std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char * name) {
+    igor_result result = IGOR_SUCCESS;
+    String errorMsg1, errorMsg2;
 
-    bool failure = false;
-    String errorMsg;
+    if (!m_pDatabase) {
+        result = IGOR_FAILURE;
+        errorMsg1 = "No database";
+        return std::tie(result, errorMsg1, errorMsg2);
+    }
 
     try {
         IgorSessionSqlite db;
@@ -179,23 +186,73 @@ std::pair<bool, String> IgorLocalSession::serialize(const char * name) {
         db.closeDB();
     }
     catch (GeneralException & e) {
-        failure = true;
-        errorMsg = String(e.getMsg()) + " - " + e.getDetails();
+        result = IGOR_FAILURE;
+        errorMsg1 = e.getMsg();
+        errorMsg2 = e.getDetails();
     }
     catch (...) {
-        failure = true;
-        errorMsg = "An unknown error has occured";
+        result = IGOR_FAILURE;
+        errorMsg1 = "Unknown error";
+        errorMsg2 = "Uncatched exception";
     }
 
-    return std::pair<bool, String>(failure, errorMsg);
+    return std::tie(result, errorMsg1, errorMsg2);
 }
 
-std::tuple<bool, IgorLocalSession *, Balau::String> IgorLocalSession::deserialize(const char * name) {
-    bool result;
-    IgorLocalSession * session;
-    String errorMsg;
+std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::deserialize(const char * name) {
+    igor_result result = IGOR_FAILURE;
+    IgorLocalSession * session = NULL;
+    String errorMsg1 = "Not yet implemented";
+    String errorMsg2;
 
-    return std::tie(result, session, errorMsg);
+    return std::tie(result, session, errorMsg1, errorMsg2);
+}
+
+std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::loadBinary(const char * name) {
+    IgorLocalSession * session = new IgorLocalSession();
+    igor_result r = IGOR_SUCCESS;
+    String errorMsg1, errorMsg2;
+
+    String fileName = name;
+
+    try {
+        IO<MMap> reader(new MMap(name));
+        reader->open();
+
+        if (fileName.strstr(".exe") != -1) {
+            c_PELoader PELoader;
+            // Note: having the session here is actually useful not just for the entry point,
+            // but for all the possible hints the file might have for us.
+            r = PELoader.loadPE(reader, session);
+            // Note: destroying the object from the stack would do the same, but
+            // as this might trigger a context switch, it's better to do it explicitly
+            // than from a destructor, as a general good practice.
+        } else if (fileName.strstr(".dmp") != -1) {
+            c_dmpLoader dmpLoader;
+            r = dmpLoader.load(reader, session);
+        } else if (fileName.strstr(".elf") != -1) {
+            c_elfLoader elfLoader;
+            r = elfLoader.load(reader, session);
+        }
+        reader->close();
+
+        session->loaded(name);
+    }
+    catch (GeneralException & e) {
+        r = IGOR_FAILURE;
+        errorMsg1 = e.getMsg();
+        errorMsg2 = e.getDetails();
+    }
+    catch (...) {
+        r = IGOR_FAILURE;
+        errorMsg1 = "Unknown error";
+        errorMsg2 = "Uncatched exception";
+    }
+
+    // Add the task even in case of failure, so it can properly clean itself out.
+    TaskMan::registerTask(session);
+
+    return std::tie(r, session, errorMsg1, errorMsg2);
 }
 
 const char * IgorLocalSession::getStatusString() {

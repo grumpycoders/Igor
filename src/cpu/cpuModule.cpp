@@ -33,3 +33,19 @@ const char* c_cpu_module::finishColor(e_colors color, bool bUseColor)
 
     return ";C=DEFAULT;";
 }
+
+std::vector<c_cpu_factory*> c_cpu_factory::m_list;
+
+c_cpu_module * c_cpu_factory::createCpuFromString(const Balau::String & desc)
+{
+    c_cpu_module * cpu = NULL;
+
+    for (auto & factory : m_list)
+    {
+        cpu = factory->maybeCreateCpu(desc);
+        if (cpu)
+            return cpu;
+    }
+
+    return cpu;
+}

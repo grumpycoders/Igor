@@ -204,3 +204,26 @@ void c_cpu_x86_capstone::generateReferences(s_analyzeState* pState)
 {
 
 }
+
+namespace {
+
+class c_cpu_x86_capstone_factory : public c_cpu_factory
+{
+    virtual c_cpu_module* maybeCreateCpu(const Balau::String & cpuString) override
+    {
+        if (cpuString == "capstone_i386")
+        {
+            return new c_cpu_x86_capstone(CS_MODE_32);
+        }
+        else if (cpuString == "capstone_x86_64")
+        {
+            return new c_cpu_x86_capstone(CS_MODE_64);
+        }
+
+        return NULL;
+    }
+};
+
+};
+
+static c_cpu_x86_capstone_factory s_cpu_x86_capstone_factory;

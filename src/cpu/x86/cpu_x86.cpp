@@ -757,3 +757,22 @@ void s_x86_operand::setAsImmediate(s_analyzeState* pState, operandDefinition siz
     m_immediate.m_immediateSize = immediateSize;
     m_immediate.m_immediateValue = immediateValue;
 }
+
+namespace {
+
+class c_cpu_x86_factory : public c_cpu_factory
+{
+    virtual c_cpu_module* maybeCreateCpu(const Balau::String & cpuString) override
+    {
+        if (cpuString == "igor_x86")
+        {
+            return new c_cpu_x86();
+        }
+
+        return NULL;
+    }
+};
+
+};
+
+static c_cpu_x86_factory s_cpu_x86_factory;

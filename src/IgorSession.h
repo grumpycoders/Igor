@@ -22,6 +22,10 @@ class IgorSession
     static void enumerate(std::function<bool(IgorSession *)>);
     static Balau::String generateUUID();
 
+    virtual std::pair<bool, Balau::String> serialize(const char * name) { return std::pair<bool, Balau::String>(false, "Can't serialize this"); }
+
+    virtual const char * getStatusString() { return "Unknown"; }
+
     virtual igor_result readS64(igorAddress address, s64& output) = 0;
     virtual igor_result readU64(igorAddress address, u64& output) = 0;
     virtual igor_result readS32(igorAddress address, s32& output) = 0;

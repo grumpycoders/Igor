@@ -52,7 +52,7 @@ public:
     void OnRunSelfTests(wxCommandEvent& event);
 
     c_wxIgorSessionPanel* m_sessionPanel;
-    IgorLocalSession * m_session;
+    IgorSession * m_session;
 
     DECLARE_EVENT_TABLE()
 };

@@ -135,7 +135,8 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
         pApp->m_fileHistory->Save(*pApp->m_config);
     }
 
-    m_session = new IgorLocalSession();
+    IgorLocalSession * session = new IgorLocalSession();
+    m_session = session;
 
     fileOperationSafe([&]() {
         IO<Input> reader(new Input(fileName.c_str()));
@@ -146,7 +147,7 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
             c_PELoader PELoader;
             // Note: having the session here is actually useful not just for the entry point,
             // but for all the possible hints the file might have for us.
-            r = PELoader.loadPE(reader, m_session);
+            r = PELoader.loadPE(reader, session);
             // Note: destroying the object from the stack would do the same, but
             // as this might trigger a context switch, it's better to do it explicitly
             // than from a destructor, as a general good practice.
@@ -154,20 +155,20 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
         else if (fileName.find(".dmp") != -1)
         {
             c_dmpLoader dmpLoader;
-            r = dmpLoader.load(reader, m_session);
+            r = dmpLoader.load(reader, session);
         }
         else if (fileName.find(".elf") != -1)
         {
             c_elfLoader elfLoader;
-            r = elfLoader.load(reader, m_session);
+            r = elfLoader.load(reader, session);
         }
         reader->close();
 
-        m_session->loaded(fileName.c_str());
+        session->loaded(fileName.c_str());
     });
 
     // Add the task even in case of failure, so it can properly clean itself out.
-    TaskMan::registerTask(m_session);
+    TaskMan::registerTask(session);
 
     m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
 

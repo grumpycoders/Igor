@@ -20,7 +20,7 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
 
     void loaded(const char * filename);
 
-    std::pair<bool, Balau::String> serialize(const char * name);
+    virtual std::pair<bool, Balau::String> serialize(const char * name) override;
     static std::tuple<bool, IgorLocalSession *, Balau::String> deserialize(const char * name);
 
     void add_code_analysis_task(igorAddress PC);
@@ -30,7 +30,7 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
     bool isRunning() { return m_status == RUNNING; }
     void setDB(s_igorDatabase * db) { AAssert(m_pDatabase == NULL, "Can only set database once"); m_pDatabase = db; }
     s_igorDatabase * getDB() { return m_pDatabase; }
-    const char * getStatusString();
+    virtual const char * getStatusString() override;
     void add_instruction() { m_instructions++; }
 
     void freeze();

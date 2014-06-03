@@ -336,8 +336,8 @@ VOID  TPIDisplayFieldList(PHDR pHdr, PlfFieldList plfl,
                              pbName = TPIRecordValue(plsr->Enumerate.value,
                                  &dValue);
 
-                             // 				printf (_T(" const  %08lX [%hs]\n"),
-                             // 					dValue, pbName);
+                             //                 printf (_T(" const  %08lX [%hs]\n"),
+                             //                     dValue, pbName);
                              printf("  %hs = %d, // 0x%lx\n", pbName, dValue, dValue);
 
                              n = ((DWORD_PTR)pbName - (DWORD_PTR)plsr) +
@@ -351,12 +351,12 @@ VOID  TPIDisplayFieldList(PHDR pHdr, PlfFieldList plfl,
 
                           char *type = TPILookupTypeName(pHdr, plsr->Member.index);
 
-                          // 				if (type)
-                          // 					printf (_T(" field  %08lX (%s) [%hs]\n"),
-                          // 						dOffset, type, pbName);
-                          // 				else
-                          // 					printf (_T(" field  %08lX (%08lX) [%hs]\n"),
-                          // 					dOffset, plsr->Member.index, pbName);
+                          //                if (type)
+                          //                    printf (_T(" field  %08lX (%s) [%hs]\n"),
+                          //                        dOffset, type, pbName);
+                          //                else
+                          //                    printf (_T(" field  %08lX (%08lX) [%hs]\n"),
+                          //                    dOffset, plsr->Member.index, pbName);
 
                           if (type)
                           {
@@ -458,9 +458,9 @@ VOID  TPIDisplayStructure(PHDR pHdr, PlfStructure pls,
     DWORD dBytes;
     PBYTE pbName = TPIRecordValue(pls->data, &dBytes);
 
-    // 	printf (_T(" struct  %08lX %08lX %04hX %08lX %08lX [%hs]\n"),
-    // 		pls->field, dBytes, pls->count,
-    // 		pls->derived, pls->vshape, pbName);
+    //  printf (_T(" struct  %08lX %08lX %04hX %08lX %08lX [%hs]\n"),
+    //      pls->field, dBytes, pls->count,
+    //      pls->derived, pls->vshape, pbName);
 
     if (pls->field == 0)
     {
@@ -492,8 +492,8 @@ VOID  TPIDisplayUnion(PHDR pHdr, PlfUnion plu,
     DWORD dBytes;
     PBYTE pbName = TPIRecordValue(plu->data, &dBytes);
 
-    // 	printf (_T("// union   %08lX %08lX %04hX [%hs]\n"),
-    // 		plu->field, dBytes, plu->count, pbName);
+    //  printf (_T("// union   %08lX %08lX %04hX [%hs]\n"),
+    //      plu->field, dBytes, plu->count, pbName);
 
     if (plu->field == 0)
     {
@@ -521,8 +521,8 @@ VOID  TPIDisplayEnum(PHDR pHdr, PlfEnum ple,
     DWORD   dBase,
     DWORD   dSize)
 {
-    // 	printf (_T("// enum    %08lX %08lX %04hX [%hs]\n"),
-    // 		ple->field, ple->utype, ple->count, ple->Name);
+    //  printf (_T("// enum    %08lX %08lX %04hX [%hs]\n"),
+    //      ple->field, ple->utype, ple->count, ple->Name);
     if (ple->field == 0)
     {
         printf("enum %hs; // field %08lX utype %08lX count %04hX\n", ple->Name, ple->field, ple->utype, ple->count);
@@ -800,8 +800,8 @@ VOID TPIDumpTypes(PHDR pHdr)
         }
         case LF_PROCEDURE:
         {
-                             // 				TPIDisplayProc (&plr->Proc,
-                             // 					dBase, dSize);
+                             //                 TPIDisplayProc (&plr->Proc,
+                             //                     dBase, dSize);
                              char *type = TPILookupTypeName(pHdr, pHdr->tiMin + i);
                              char funcName[256];
                              char typeName[256];
@@ -830,8 +830,8 @@ VOID TPIDumpTypes(PHDR pHdr)
         }
         case LF_FIELDLIST:
         {
-                             // 					TPIDisplayFieldList (&plr->FieldList,
-                             // 						dBase, dSize);
+                             //                     TPIDisplayFieldList (&plr->FieldList,
+                             //                         dBase, dSize);
                              break;
         }
         default:

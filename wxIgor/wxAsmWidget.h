@@ -14,54 +14,54 @@ class c_wxAsmWidget;
 class c_wxAsmWidgetScrollbar : public wxScrollBar
 {
 public:
-	c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id);
+    c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id);
 
     virtual bool AcceptsFocus() const { return false; }
     virtual bool AcceptsFocusFromKeyboard() const { return false; }
 
 private:
-	c_wxAsmWidget* m_AsmWidget;
+    c_wxAsmWidget* m_AsmWidget;
 
-	void OnScroll(wxScrollEvent& event);
+    void OnScroll(wxScrollEvent& event);
 
 
-	int m_previousThumPosition;
+    int m_previousThumPosition;
 
-	DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 class c_wxAsmWidget : public wxScrolledWindow
 {
 public:
-	enum
-	{
-		EVT_RefreshDatabase = wxID_HIGHEST,
-	};
+    enum
+    {
+        EVT_RefreshDatabase = wxID_HIGHEST,
+    };
 
     c_wxAsmWidget(IgorSession* pAnalysis, wxWindow *parent, wxWindowID id,
-		const wxString& value = wxEmptyString,
-		const wxPoint& pos = wxDefaultPosition,
-		const wxSize& size = wxDefaultSize,
-		long style = wxWANTS_CHARS,
-		const wxString& name = "");
-	~c_wxAsmWidget();
+        const wxString& value = wxEmptyString,
+        const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxDefaultSize,
+        long style = wxWANTS_CHARS,
+        const wxString& name = "");
+    ~c_wxAsmWidget();
 
-	void seekPC(int amount);
+    void seekPC(int amount);
 //private:
 
-	void OnMouseEvent(wxMouseEvent& event);
-	void OnScroll(wxScrollWinEvent &event);
-	//void OnIdle(wxIdleEvent &event);
-	void OnTimer(wxTimerEvent &event);
-	void OnPaint(wxPaintEvent& event);
-	void OnSize(wxSizeEvent& event);
+    void OnMouseEvent(wxMouseEvent& event);
+    void OnScroll(wxScrollWinEvent &event);
+    //void OnIdle(wxIdleEvent &event);
+    void OnTimer(wxTimerEvent &event);
+    void OnPaint(wxPaintEvent& event);
+    void OnSize(wxSizeEvent& event);
 
     void OnMouseMotion(wxMouseEvent& event);
     void OnMouseLeftDown(wxMouseEvent& event);
     void OnMouseLeftDClick(wxMouseEvent& event);
     
     void OnKeyDown(wxKeyEvent& event);
-	void OnDraw(wxDC& dc);
+    void OnDraw(wxDC& dc);
 
     void updateTextCache();
     void updateSelectedText();
@@ -88,14 +88,14 @@ public:
 
     IgorSession* m_pSession;
 
-	wxTimer* m_timer;
+    wxTimer* m_timer;
 
-	igorAddress m_currentPosition;
+    igorAddress m_currentPosition;
 
     wxPoint m_mousePosition;
 
     wxFont m_currentFont;
     wxSize m_fontSize;
 
-	DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };

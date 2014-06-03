@@ -15,41 +15,41 @@ using namespace Balau;
 
 c_wxAsmWidgetScrollbar::c_wxAsmWidgetScrollbar(c_wxAsmWidget* pAsmWidget, wxWindow *parent, wxWindowID id) : wxScrollBar(parent, id, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL)
 {
-	m_AsmWidget = pAsmWidget;
+    m_AsmWidget = pAsmWidget;
 
-	SetScrollbar(250, 16, 500, 15);
-	m_previousThumPosition = 250;
+    SetScrollbar(250, 16, 500, 15);
+    m_previousThumPosition = 250;
 }
 
 void c_wxAsmWidgetScrollbar::OnScroll(wxScrollEvent& event)
 {
-	//int position = event.GetPosition();
+    //int position = event.GetPosition();
 
-	if (event.GetEventType() == wxEVT_SCROLL_LINEUP)
-	{
-		m_AsmWidget->seekPC(-1);
-	}
+    if (event.GetEventType() == wxEVT_SCROLL_LINEUP)
+    {
+        m_AsmWidget->seekPC(-1);
+    }
 
-	if (event.GetEventType() == wxEVT_SCROLL_LINEDOWN)
-	{
-		m_AsmWidget->seekPC(+1);
-	}
+    if (event.GetEventType() == wxEVT_SCROLL_LINEDOWN)
+    {
+        m_AsmWidget->seekPC(+1);
+    }
 
-	if (event.GetEventType() == wxEVT_SCROLL_THUMBTRACK)
-	{
-		int diff = event.GetPosition() - m_previousThumPosition;
+    if (event.GetEventType() == wxEVT_SCROLL_THUMBTRACK)
+    {
+        int diff = event.GetPosition() - m_previousThumPosition;
 
-		m_AsmWidget->seekPC(diff);
-		m_previousThumPosition = event.GetPosition();
-	}
+        m_AsmWidget->seekPC(diff);
+        m_previousThumPosition = event.GetPosition();
+    }
 
-	if (event.GetEventType() == wxEVT_SCROLL_THUMBRELEASE)
-	{
-		SetScrollbar(250, 16, 500, 15);
-		m_previousThumPosition = 250;
+    if (event.GetEventType() == wxEVT_SCROLL_THUMBRELEASE)
+    {
+        SetScrollbar(250, 16, 500, 15);
+        m_previousThumPosition = 250;
 
         m_AsmWidget->SetFocus();
-	}
+    }
 }
 
 BEGIN_EVENT_TABLE(c_wxAsmWidgetScrollbar, wxScrollBar)
@@ -57,19 +57,19 @@ EVT_SCROLL(c_wxAsmWidgetScrollbar::OnScroll)
 END_EVENT_TABLE()
 
 c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID id,
-	const wxString& value,
-	const wxPoint& pos,
-	const wxSize& size,
-	long style,
+    const wxString& value,
+    const wxPoint& pos,
+    const wxSize& size,
+    long style,
     const wxString& name) : wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize)
 {
     // First let's set everything in our object...
     m_pSession = pSession;
 
-	m_timer = new wxTimer(this, EVT_RefreshDatabase);
+    m_timer = new wxTimer(this, EVT_RefreshDatabase);
     m_currentPosition = m_pSession->getEntryPoint();
 
-	SetBackgroundStyle(wxBG_STYLE_PAINT);
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
 
     m_currentFont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
     m_currentFont.MakeBold();
@@ -93,16 +93,16 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 
 c_wxAsmWidget::~c_wxAsmWidget()
 {
-	delete m_timer;
+    delete m_timer;
 }
 
 void c_wxAsmWidget::OnSize(wxSizeEvent& event)
 {
     m_numLinesInWindow = (GetSize().GetY() / m_fontSize.GetHeight());
 
-	Refresh();
-	//skip the event.
-	event.Skip();
+    Refresh();
+    //skip the event.
+    event.Skip();
 }
 
 igorAddress c_wxAsmWidget::GetAddressOfCursor()
@@ -131,11 +131,11 @@ void c_wxAsmWidget::updateTextCache()
         analyzeState.pCpu = pCpu;
         analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
         analyzeState.pSession = m_pSession;
-		analyzeState.m_cpu_analyse_result = NULL;
-		if (pCpu)
-		{
-			analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
-		}
+        analyzeState.m_cpu_analyse_result = NULL;
+        if (pCpu)
+        {
+            analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+        }
 
         while (m_textCache.size() < numLinesToDraw + 1)
         {
@@ -229,20 +229,20 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
     m_textCacheIsDirty = true;
     updateTextCache();
 
-	wxColour BGColor = GetBackgroundColour();
-	wxBrush MyBrush(BGColor, wxSOLID);
-	dc.SetBackground(MyBrush);
-	dc.Clear();
+    wxColour BGColor = GetBackgroundColour();
+    wxBrush MyBrush(BGColor, wxSOLID);
+    dc.SetBackground(MyBrush);
+    dc.Clear();
 
     dc.SetFont(m_currentFont);
-	wxSize size = GetSize();
-	int width = size.GetWidth();
+    wxSize size = GetSize();
+    int width = size.GetWidth();
 
-	int numDrawnLines = 0;
+    int numDrawnLines = 0;
     
-	int drawY = 0;
+    int drawY = 0;
 
-	igorAddress currentPC = m_currentPosition;
+    igorAddress currentPC = m_currentPosition;
 
     int currentLine = 0;
 
@@ -259,22 +259,22 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
         {
             if (strstr(stringList[i].to_charp(), "C="))
             {
-				if (strstr(c_cpu_module::startColor(c_cpu_module::RESET_COLOR), stringList[i].to_charp()))
-				{
-					dc.SetTextForeground(*wxBLACK);
-				}
+                if (strstr(c_cpu_module::startColor(c_cpu_module::RESET_COLOR), stringList[i].to_charp()))
+                {
+                    dc.SetTextForeground(*wxBLACK);
+                }
                 if (strstr(c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), stringList[i].to_charp()))
                 {
                     dc.SetTextForeground(*wxBLUE);
                 }
-				if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_DEFAULT), stringList[i].to_charp()))
-				{
-					dc.SetTextForeground(wxColour(0xFF775577));
-				}
-				if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL), stringList[i].to_charp()))
-				{
-					dc.SetTextForeground(*wxRED);
-				}
+                if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_DEFAULT), stringList[i].to_charp()))
+                {
+                    dc.SetTextForeground(wxColour(0xFF775577));
+                }
+                if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL), stringList[i].to_charp()))
+                {
+                    dc.SetTextForeground(*wxRED);
+                }
 
             }
             else
@@ -301,13 +301,13 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
 
 void c_wxAsmWidget::OnPaint(wxPaintEvent& event)
 {
-	wxAutoBufferedPaintDC dc(this);
-	OnDraw(dc);
+    wxAutoBufferedPaintDC dc(this);
+    OnDraw(dc);
 }
 
 void c_wxAsmWidget::OnTimer(wxTimerEvent &event)
 {
-	Refresh();
+    Refresh();
 }
 
 void c_wxAsmWidget::OnMouseMotion(wxMouseEvent& event)
@@ -345,14 +345,14 @@ void c_wxAsmWidget::goToSelectedSymbol()
     {
         goToAddress(address);
     }
-	else
-	{
-		u64 offset;
-		if (m_selectedText.scanf("0x%016llX", &offset))
-		{
-			goToAddress(igorAddress(offset));
-		}
-	}
+    else
+    {
+        u64 offset;
+        if (m_selectedText.scanf("0x%016llX", &offset))
+        {
+            goToAddress(igorAddress(offset));
+        }
+    }
 }
 
 void c_wxAsmWidget::OnMouseLeftDClick(wxMouseEvent& event)
@@ -383,20 +383,20 @@ void c_wxAsmWidget::moveCaret(int x, int y)
 
 bool IsValidCharForSymbol(char character)
 {
-	if (character >= 'a' && character <= 'z')
-		return true;
+    if (character >= 'a' && character <= 'z')
+        return true;
 
-	if (character >= 'A' && character <= 'Z')
-		return true;
+    if (character >= 'A' && character <= 'Z')
+        return true;
 
-	if (character >= '0' && character <= '9')
-		return true;
+    if (character >= '0' && character <= '9')
+        return true;
 
-	if (character == '_')
-		return true;
+    if (character == '_')
+        return true;
 
-	if (character == '?')
-		return true;
+    if (character == '?')
+        return true;
 
     if (character == '@')
         return true;
@@ -404,7 +404,7 @@ bool IsValidCharForSymbol(char character)
     if (character == ':')
         return true;
 
-	return false;
+    return false;
 }
 
 void c_wxAsmWidget::updateSelectedText()
@@ -426,16 +426,16 @@ void c_wxAsmWidget::updateSelectedText()
             if (finishX > caretCollumn)
             {
                 int startOfString = caretCollumn;
-				while (startOfString && (startOfString >= 1 && IsValidCharForSymbol(stringList[i][startOfString-1])))
+                while (startOfString && (startOfString >= 1 && IsValidCharForSymbol(stringList[i][startOfString-1])))
                 {
                     startOfString--;
                 }
                 int endOfString = caretCollumn;
-				while (IsValidCharForSymbol(stringList[i][endOfString]) && (endOfString + 1 < stringList[i].strlen()))
+                while (IsValidCharForSymbol(stringList[i][endOfString]) && (endOfString + 1 < stringList[i].strlen()))
                 {
                     endOfString++;
                 }
-				m_selectedText = stringList[i].to_charp(startOfString);
+                m_selectedText = stringList[i].to_charp(startOfString);
                 return;
             }
 
@@ -471,16 +471,16 @@ void c_wxAsmWidget::OnKeyDown(wxKeyEvent& event)
 
 void c_wxAsmWidget::seekPC(int amount)
 {
-	if (amount > 0)
-	{
+    if (amount > 0)
+    {
         m_currentPosition = m_pSession->get_next_valid_address_after(m_currentPosition + amount);
-	}
-	if (amount < 0)
-	{
+    }
+    if (amount < 0)
+    {
         m_currentPosition = m_pSession->get_next_valid_address_before(m_currentPosition + amount);
-	}
+    }
 
-	//case amount == 0 is intentionally left doing nothing
+    //case amount == 0 is intentionally left doing nothing
 
     Refresh();
 }

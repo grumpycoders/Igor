@@ -8,50 +8,50 @@ class IgorSession;
 class c_wxIgorSessionPanel : public wxPanel
 {
 public:
-	c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent);
+    c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent);
 
-	IgorSession * m_session;
-	c_wxAsmWidget* m_pAsmWidget;
+    IgorSession * m_session;
+    c_wxAsmWidget* m_pAsmWidget;
 
-	DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 class c_wxIgorFrame : public wxFrame
 {
 public:
 
-	enum
-	{
-		ID_GO_TO_ADDRESS = wxID_HIGHEST,
-		ID_EXPORT_DISASSEMBLY,
+    enum
+    {
+        ID_GO_TO_ADDRESS = wxID_HIGHEST,
+        ID_EXPORT_DISASSEMBLY,
         ID_SAVE_DATABASE,
         ID_LOAD_DATABASE,
-		ID_MANAGE_USERS,
+        ID_MANAGE_USERS,
         ID_RUN_SELF_TESTS,
     };
 
-	c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
-	virtual ~c_wxIgorFrame();
+    c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
+    virtual ~c_wxIgorFrame();
 
-	void OpenFile(const wxString& fileName);
+    void OpenFile(const wxString& fileName);
 
-	void OnOpen(wxCommandEvent& event);
-	void OnExit(wxCommandEvent& event);
-	void OnHistory(wxCommandEvent& event);
-	void OnClose(wxCloseEvent& event);
-	void OnIdle(wxIdleEvent& event);
+    void OnOpen(wxCommandEvent& event);
+    void OnExit(wxCommandEvent& event);
+    void OnHistory(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event);
+    void OnIdle(wxIdleEvent& event);
 
-	void OnGoToAddress(wxCommandEvent& event);
-	void OnExportDisassembly(wxCommandEvent& event);
+    void OnGoToAddress(wxCommandEvent& event);
+    void OnExportDisassembly(wxCommandEvent& event);
 
     void OnSaveDatabase(wxCommandEvent& event);
     void OnLoadDatabase(wxCommandEvent& event);
 
-	void OnManageUsers(wxCommandEvent& event);
+    void OnManageUsers(wxCommandEvent& event);
     void OnRunSelfTests(wxCommandEvent& event);
 
-	c_wxIgorSessionPanel* m_sessionPanel;
-	IgorLocalSession * m_session;
+    c_wxIgorSessionPanel* m_sessionPanel;
+    IgorLocalSession * m_session;
 
-	DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };

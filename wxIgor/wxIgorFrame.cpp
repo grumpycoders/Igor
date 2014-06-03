@@ -45,35 +45,35 @@ static void fileOperationSafe(std::function<void()> lambda) {
 
 c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent) : wxPanel(parent)
 {
-	m_session = pSession;
+    m_session = pSession;
 
-	wxNotebook* pNoteBook = new wxNotebook(this, -1);
-	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+    wxNotebook* pNoteBook = new wxNotebook(this, -1);
+    wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
-	hbox->Add(pNoteBook, 1, wxALIGN_RIGHT | wxEXPAND);
-	vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
-	SetSizerAndFit(hbox, true);
+    hbox->Add(pNoteBook, 1, wxALIGN_RIGHT | wxEXPAND);
+    vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
+    SetSizerAndFit(hbox, true);
 
-	{
-		wxPanel* pAsmPagePanel = new wxPanel(pNoteBook);
-		wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-		wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+    {
+        wxPanel* pAsmPagePanel = new wxPanel(pNoteBook);
+        wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
-		m_pAsmWidget = new c_wxAsmWidget(m_session, pAsmPagePanel, -1, "ASM view");
-		c_wxAsmWidgetScrollbar* pAsmWidgetScrollbar = new c_wxAsmWidgetScrollbar(m_pAsmWidget, pAsmPagePanel, -1);
+        m_pAsmWidget = new c_wxAsmWidget(m_session, pAsmPagePanel, -1, "ASM view");
+        c_wxAsmWidgetScrollbar* pAsmWidgetScrollbar = new c_wxAsmWidgetScrollbar(m_pAsmWidget, pAsmPagePanel, -1);
 
-		m_pAsmWidget->SetSize(GetSize());
+        m_pAsmWidget->SetSize(GetSize());
 
-		hbox->Add(m_pAsmWidget, 1, wxALIGN_RIGHT | wxEXPAND);
-		hbox->Add(pAsmWidgetScrollbar, 0, wxALIGN_RIGHT | wxEXPAND);
+        hbox->Add(m_pAsmWidget, 1, wxALIGN_RIGHT | wxEXPAND);
+        hbox->Add(pAsmWidgetScrollbar, 0, wxALIGN_RIGHT | wxEXPAND);
 
-		vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
+        vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
 
-		pAsmPagePanel->SetSizerAndFit(hbox, true);
+        pAsmPagePanel->SetSizerAndFit(hbox, true);
 
-		pNoteBook->AddPage(pAsmPagePanel, "ASM");
-	}
+        pNoteBook->AddPage(pAsmPagePanel, "ASM");
+    }
 }
 
 BEGIN_EVENT_TABLE(c_wxIgorSessionPanel, wxPanel)
@@ -81,40 +81,40 @@ END_EVENT_TABLE()
 
 c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size) : wxFrame((wxFrame *)NULL, -1, title, pos, size)
 {
-	m_session = NULL;
+    m_session = NULL;
 
-	c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
+    c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
 
-	wxMenu *menuFile = new wxMenu;
+    wxMenu *menuFile = new wxMenu;
     menuFile->Append(new wxMenuItem(menuFile, wxID_OPEN, wxT("&Open\tCtrl+O")));
-	menuFile->Append(ID_EXPORT_DISASSEMBLY, "Export disassembly");
+    menuFile->Append(ID_EXPORT_DISASSEMBLY, "Export disassembly");
     menuFile->AppendSeparator();
-	menuFile->Append(ID_MANAGE_USERS, "Manage users");
-	menuFile->AppendSeparator();
+    menuFile->Append(ID_MANAGE_USERS, "Manage users");
+    menuFile->AppendSeparator();
     menuFile->Append(ID_SAVE_DATABASE, "Save database");
     menuFile->Append(ID_LOAD_DATABASE, "Load database");
     menuFile->AppendSeparator();
     menuFile->Append(new wxMenuItem(menuFile, wxID_EXIT, wxT("&Quit\tCtrl+W")));
 
-	pApp->m_fileHistory->UseMenu(menuFile);
-	pApp->m_fileHistory->AddFilesToMenu();
+    pApp->m_fileHistory->UseMenu(menuFile);
+    pApp->m_fileHistory->AddFilesToMenu();
 
-	wxMenu *menuNavigation = new wxMenu;
-	menuNavigation->Append(ID_GO_TO_ADDRESS, "&Go to address");
+    wxMenu *menuNavigation = new wxMenu;
+    menuNavigation->Append(ID_GO_TO_ADDRESS, "&Go to address");
 
     wxMenu *menuMisc = new wxMenu;
     menuMisc->Append(ID_RUN_SELF_TESTS, "Run self &tests");
 
     wxMenuBar *menuBar = new wxMenuBar;
-	menuBar->Append(menuFile, "&File");
-	menuBar->Append(menuNavigation, "&Navigation");
+    menuBar->Append(menuFile, "&File");
+    menuBar->Append(menuNavigation, "&Navigation");
     menuBar->Append(menuMisc, "&Misc");
 
-	SetMenuBar(menuBar);
+    SetMenuBar(menuBar);
 
     SetIcon(wxICON(appicon)); // loads resource under win32, or appicon.xpm elsewhere
 
-	CreateStatusBar();
+    CreateStatusBar();
 }
 
 c_wxIgorFrame::~c_wxIgorFrame()
@@ -139,21 +139,21 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
         IO<Input> reader(new Input(fileName.c_str()));
         reader->open();
 
-		if (fileName.find(".exe") != -1)
-		{
-			c_PELoader PELoader;
-			// Note: having the session here is actually useful not just for the entry point,
-			// but for all the possible hints the file might have for us.
-			r = PELoader.loadPE(reader, m_session);
-			// Note: destroying the object from the stack would do the same, but
-			// as this might trigger a context switch, it's better to do it explicitely
-			// than from a destructor, as a general good practice.
-		}
-		else if (fileName.find(".elf") != -1)
-		{
-			c_elfLoader elfLoader;
-			r = elfLoader.load(reader, m_session);
-		}
+        if (fileName.find(".exe") != -1)
+        {
+            c_PELoader PELoader;
+            // Note: having the session here is actually useful not just for the entry point,
+            // but for all the possible hints the file might have for us.
+            r = PELoader.loadPE(reader, m_session);
+            // Note: destroying the object from the stack would do the same, but
+            // as this might trigger a context switch, it's better to do it explicitely
+            // than from a destructor, as a general good practice.
+        }
+        else if (fileName.find(".elf") != -1)
+        {
+            c_elfLoader elfLoader;
+            r = elfLoader.load(reader, m_session);
+        }
         reader->close();
 
         m_session->loaded(fileName.c_str());
@@ -175,64 +175,64 @@ const char* supportedFormats =
 
 void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 {
-	wxFileDialog fileDialog(this, "Choose a file", "", "", supportedFormats, wxFD_OPEN | wxFD_MULTIPLE);
-	if (fileDialog.ShowModal() == wxID_OK)
-	{
-		wxArrayString stringArray;
+    wxFileDialog fileDialog(this, "Choose a file", "", "", supportedFormats, wxFD_OPEN | wxFD_MULTIPLE);
+    if (fileDialog.ShowModal() == wxID_OK)
+    {
+        wxArrayString stringArray;
 
-		fileDialog.GetPaths(stringArray);
+        fileDialog.GetPaths(stringArray);
 
-		for (unsigned int i = 0; i < stringArray.size(); i++)
-		{
-			OpenFile(stringArray[i]);
-		}
-	}
+        for (unsigned int i = 0; i < stringArray.size(); i++)
+        {
+            OpenFile(stringArray[i]);
+        }
+    }
 }
 
 void c_wxIgorFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
-	Close(true);
+    Close(true);
 }
 
 void c_wxIgorFrame::OnHistory(wxCommandEvent& event)
 {
-	c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
+    c_wxIgorApp* pApp = (c_wxIgorApp*)wxApp::GetInstance();
 
-	int fileId = event.GetId() - wxID_FILE1;
+    int fileId = event.GetId() - wxID_FILE1;
 
-	OpenFile(pApp->m_fileHistory->GetHistoryFile(fileId));
+    OpenFile(pApp->m_fileHistory->GetHistoryFile(fileId));
 }
 
 void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
 {
-	wxTextEntryDialog* pAddressEntryDialog = new wxTextEntryDialog(this, "Go to address");
+    wxTextEntryDialog* pAddressEntryDialog = new wxTextEntryDialog(this, "Go to address");
 
-	if (pAddressEntryDialog->ShowModal() == wxID_OK)
-	{
-		wxString wxEnteredString = pAddressEntryDialog->GetValue();
+    if (pAddressEntryDialog->ShowModal() == wxID_OK)
+    {
+        wxString wxEnteredString = pAddressEntryDialog->GetValue();
 
-		String enteredString(wxEnteredString.c_str());
-		u64 address = enteredString.to_int(16);
+        String enteredString(wxEnteredString.c_str());
+        u64 address = enteredString.to_int(16);
 
-		if (m_sessionPanel->m_pAsmWidget && address)
-		{
-			m_sessionPanel->m_pAsmWidget->m_currentPosition = igorAddress(address);
+        if (m_sessionPanel->m_pAsmWidget && address)
+        {
+            m_sessionPanel->m_pAsmWidget->m_currentPosition = igorAddress(address);
             m_sessionPanel->m_pAsmWidget->Refresh();
-		}
-	}
+        }
+    }
 
-	delete pAddressEntryDialog;
+    delete pAddressEntryDialog;
 }
 
 void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 {
-	wxFileDialog fileDialog(this, "Export disassembly", "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	if (fileDialog.ShowModal() == wxID_OK)
-	{
-		wxString exportPath = fileDialog.GetPath();
+    wxFileDialog fileDialog(this, "Export disassembly", "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (fileDialog.ShowModal() == wxID_OK)
+    {
+        wxString exportPath = fileDialog.GetPath();
 
-		igor_export_to_file(exportPath, m_session);
-	}
+        igor_export_to_file(exportPath, m_session);
+    }
 }
 
 void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
@@ -261,31 +261,31 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
 
 void c_wxIgorFrame::OnClose(wxCloseEvent& event)
 {
-	if (event.CanVeto())
-	{
-		if (wxMessageBox("Do you really want to exit ?", "Exit", wxICON_QUESTION | wxYES_NO) != wxYES)
-		{
-			event.Veto();
-			return;
-		}
-	}
+    if (event.CanVeto())
+    {
+        if (wxMessageBox("Do you really want to exit ?", "Exit", wxICON_QUESTION | wxYES_NO) != wxYES)
+        {
+            event.Veto();
+            return;
+        }
+    }
 
-	event.Skip();
+    event.Skip();
 }
 
 void c_wxIgorFrame::OnIdle(wxIdleEvent& event)
 {
-	if (m_session)
-	{
-		SetStatusText(m_session->getStatusString());
-	}
+    if (m_session)
+    {
+        SetStatusText(m_session->getStatusString());
+    }
 }
 
 void c_wxIgorFrame::OnManageUsers(wxCommandEvent& event)
 {
-	wxManageUsersDialog* pManageUserDialog = new wxManageUsersDialog(this);
+    wxManageUsersDialog* pManageUserDialog = new wxManageUsersDialog(this);
 
-	pManageUserDialog->ShowModal();
+    pManageUserDialog->ShowModal();
 }
 
 void c_wxIgorFrame::OnRunSelfTests(wxCommandEvent& event)

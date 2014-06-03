@@ -9,5 +9,5 @@ class IgorSession;
 class c_elfLoader
 {
 public:
-	igor_result load(BFile reader, IgorLocalSession *);
+    igor_result load(BFile reader, IgorLocalSession *);
 };

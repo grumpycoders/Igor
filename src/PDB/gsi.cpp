@@ -142,18 +142,18 @@ VOID SYMDumpSymbols(PSYMD Symd, WORD SymbolMask)
 
 // VOID GSIDumpSymbols (MSF* msf, PNewDBIHdr dbi, WORD SymbolMask)
 // {
-// 	printf("GSI dump\n");
+//  printf("GSI dump\n");
 // 
-// 	ULONG GsiSize;
-// 	PGSIHashHdr gsi = (PGSIHashHdr) MsfReferenceStream (msf, dbi->snGSSyms, &GsiSize);
+//  ULONG GsiSize;
+//  PGSIHashHdr gsi = (PGSIHashHdr) MsfReferenceStream (msf, dbi->snGSSyms, &GsiSize);
 // 
-// 	if (gsi != NULL && (LONG)GsiSize > gsi->cbHr)
-// 	{
-// 		printf("GSI Signature: %08x\n", gsi->verSignature);
-// 		printf("    Version:   %08x\n", gsi->verHdr);
-// 		printf("    cbBuckets: %d\n", gsi->cbBuckets);
-// 		printf("    cbHdr:     %d\n", gsi->cbHr);
-// 	}
+//  if (gsi != NULL && (LONG)GsiSize > gsi->cbHr)
+//  {
+//      printf("GSI Signature: %08x\n", gsi->verSignature);
+//      printf("    Version:   %08x\n", gsi->verHdr);
+//      printf("    cbBuckets: %d\n", gsi->cbBuckets);
+//      printf("    cbHdr:     %d\n", gsi->cbHr);
+//  }
 // }
 
 static PSYMBOL SYMpConvertSymbol(PSYMD Symd, PSYM Sym, ULONG Displacement)
@@ -230,7 +230,7 @@ PSYMBOL SYMGetSymFromAddr(PSYMD Symd, USHORT Segment, ULONG Rva)
     PSYM SymBestMatch = NULL;
     LONG Diff = -1;
 
-    // 	printf(__FUNCTION__ ": Rva = %p\n", Rva);
+    //  printf(__FUNCTION__ ": Rva = %p\n", Rva);
 
     Sym = Symd->SymRecs;
     while (Sym < Symd->SymMac)
@@ -239,7 +239,7 @@ PSYMBOL SYMGetSymFromAddr(PSYMD Symd, USHORT Segment, ULONG Rva)
         {
             if (Sym->Pub32.seg == Segment)
             {
-                //  				SYMpDumpSymbol (Symd, Sym);
+                //                  SYMpDumpSymbol (Symd, Sym);
                 LONG LocalDiff = (LONG)(Rva - Sym->Pub32.off);
                 if (LocalDiff >= 0 && (LocalDiff < Diff || Diff == -1))
                 {
@@ -298,33 +298,33 @@ struct HR {
 };
 
 // struct SC {
-// 	ULONG   isect;
-// 	ULONG   off;
-// 	ULONG   cb;
-// 	DWORD   dwCharacteristics;
-// 	ULONG   imod;
+//  ULONG   isect;
+//  ULONG   off;
+//  ULONG   cb;
+//  DWORD   dwCharacteristics;
+//  ULONG   imod;
 // };
 // 
 // 
 // struct SC20 {
-// 	ULONG   isect;
-// 	ULONG   off;
-// 	ULONG   cb;
-// 	ULONG   imod;
+//  ULONG   isect;
+//  ULONG   off;
+//  ULONG   cb;
+//  ULONG   imod;
 // };
 //
 // struct MODI {
-// 	PVOID pmod;                                     // currently open mod
-// 	SC sc;                                          // this module's first section contribution
-// 	USHORT fWritten :  1;                           // TRUE if mod has been written since DBI opened
-// 	USHORT unused   : 15;                           // spare
-// 	LONG sn;                                        // SN of module debug info (syms, lines, fpo), or snNil
-// 	LONG cbSyms;                                    // size of local symbols debug info in stream sn
-// 	LONG cbLines;                                   // size of line number debug info in stream sn
-// 	LONG cbFpo;                                     // size of frame pointer opt debug info in stream sn
-// 	USHORT ifileMac;                                // number of files contributing to this module
-// 	LONG* mpifileichFile;                           // array [0..ifileMac) of offsets into dbi.bufFilenames
-// 	char rgch[];                                    // szModule followed by szObjFile
+//  PVOID pmod;                                     // currently open mod
+//  SC sc;                                          // this module's first section contribution
+//  USHORT fWritten :  1;                           // TRUE if mod has been written since DBI opened
+//  USHORT unused   : 15;                           // spare
+//  LONG sn;                                        // SN of module debug info (syms, lines, fpo), or snNil
+//  LONG cbSyms;                                    // size of local symbols debug info in stream sn
+//  LONG cbLines;                                   // size of line number debug info in stream sn
+//  LONG cbFpo;                                     // size of frame pointer opt debug info in stream sn
+//  USHORT ifileMac;                                // number of files contributing to this module
+//  LONG* mpifileichFile;                           // array [0..ifileMac) of offsets into dbi.bufFilenames
+//  char rgch[];                                    // szModule followed by szObjFile
 // };
 
 

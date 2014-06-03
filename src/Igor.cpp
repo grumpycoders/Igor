@@ -64,7 +64,7 @@ bool s_wxStarted = false;
 
 class wxExit : public AtExit {
 public:
-	wxExit() : AtExit(12) { }
+    wxExit() : AtExit(12) { }
     void doExit() { if (s_wxStarted) wxIgorExit(); }
 };
 
@@ -107,16 +107,16 @@ void MainTask::Do() {
 
         IgorLocalSession * session = new IgorLocalSession();
 
-		if (strstr(argv[1], ".exe"))
-		{
-			c_PELoader PELoader;
-			PELoader.loadPE(reader, session);
-		}
-		else if (strstr(argv[1], ".elf"))
-		{
-			c_elfLoader elfLoader;
-			elfLoader.load(reader, session);
-		}
+        if (strstr(argv[1], ".exe"))
+        {
+            c_PELoader PELoader;
+            PELoader.loadPE(reader, session);
+        }
+        else if (strstr(argv[1], ".elf"))
+        {
+            c_elfLoader elfLoader;
+            elfLoader.load(reader, session);
+        }
 
         reader->close();
         session->loaded(argv[1]);

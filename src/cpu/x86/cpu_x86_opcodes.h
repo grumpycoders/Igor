@@ -9,9 +9,9 @@ s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState);
 
 #if defined(DEBUG) && defined(_MSC_VER) && 0
 #define X86_DECODER_FAILURE(errorString) \
-	__debugbreak(); \
-	throw X86AnalysisException(errorString);
+    __debugbreak(); \
+    throw X86AnalysisException(errorString);
 #else
 #define X86_DECODER_FAILURE(errorString) \
-	throw X86AnalysisException(errorString);
+    throw X86AnalysisException(errorString);
 #endif

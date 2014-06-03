@@ -44,7 +44,7 @@ private:
     bool balauStart();
 
 public:
-	wxConfig* m_config;
-	wxFileHistory* m_fileHistory;
-	c_wxIgorFrame* m_mainFrame;
+    wxConfig* m_config;
+    wxFileHistory* m_fileHistory;
+    c_wxIgorFrame* m_mainFrame;
 };

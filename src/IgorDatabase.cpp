@@ -5,288 +5,288 @@
 
 igor_result s_igorDatabase::igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle)
 {
-	outputCpuHandle = m_cpu_modules.size();
-	m_cpu_modules.push_back(pCpuModule);
+    outputCpuHandle = m_cpu_modules.size();
+    m_cpu_modules.push_back(pCpuModule);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 c_cpu_module* s_igorDatabase::getCpuForAddress(igorAddress PC)
 {
-	if (m_cpu_modules.size())
-	{
-		return m_cpu_modules[0];
-	}
-	
-	return NULL;
+    if (m_cpu_modules.size())
+    {
+        return m_cpu_modules[0];
+    }
+    
+    return NULL;
 }
 
 c_cpu_state* s_igorDatabase::getCpuStateForAddress(igorAddress PC)
 {
-	return NULL;
+    return NULL;
 }
 
 s_igorSection* s_igorDatabase::findSectionFromAddress(igorAddress address)
 {
-	for(auto & i : m_sections)
-	{
-		s_igorSection* pSection = i;
+    for(auto & i : m_sections)
+    {
+        s_igorSection* pSection = i;
 
-		if((pSection->m_virtualAddress <= address.offset) && (pSection->m_virtualAddress + pSection->m_size > address.offset))
-		{
-			return pSection;
-		}
-	}
+        if((pSection->m_virtualAddress <= address.offset) && (pSection->m_virtualAddress + pSection->m_size > address.offset))
+        {
+            return pSection;
+        }
+    }
 
-	return NULL;
+    return NULL;
 }
 
 igor_result s_igorDatabase::readS64(igorAddress address, s64& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
-	igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(s64*)(pSection->m_rawData + rawOffset);
+    output = *(s64*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 igor_result s_igorDatabase::readU64(igorAddress address, u64& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
-	igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(u64*)(pSection->m_rawData + rawOffset);
+    output = *(u64*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 
 }
 
 igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
-	igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(s32*)(pSection->m_rawData + rawOffset);
+    output = *(s32*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 igor_result s_igorDatabase::readU32(igorAddress address, u32& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
     igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(u32*)(pSection->m_rawData + rawOffset);
+    output = *(u32*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 
 }
 
 igor_result s_igorDatabase::readS16(igorAddress address, s16& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
     igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(s16*)(pSection->m_rawData + rawOffset);
+    output = *(s16*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 
 }
 
 igor_result s_igorDatabase::readU16(igorAddress address, u16& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
     igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(u16*)(pSection->m_rawData + rawOffset);
+    output = *(u16*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 
 }
 
 igor_result s_igorDatabase::readS8(igorAddress address, s8& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
     igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(s8*)(pSection->m_rawData + rawOffset);
+    output = *(s8*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 
 }
 
 igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 {
-	s_igorSection* pSection = findSectionFromAddress(address);
+    s_igorSection* pSection = findSectionFromAddress(address);
 
-	if (pSection == NULL)
-	{
-		return IGOR_FAILURE;
-	}
+    if (pSection == NULL)
+    {
+        return IGOR_FAILURE;
+    }
 
     igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
 
-	if (rawOffset > pSection->m_rawDataSize)
-	{
-		return IGOR_FAILURE;
-	}
+    if (rawOffset > pSection->m_rawDataSize)
+    {
+        return IGOR_FAILURE;
+    }
 
-	output = *(u8*)(pSection->m_rawData + rawOffset);
+    output = *(u8*)(pSection->m_rawData + rawOffset);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 
 }
 
 igor_result s_igorDatabase::create_section(igorLinearAddress virtualAddress, u64 size, igor_section_handle& sectionHandle)
 {
-	sectionHandle = m_sections.size();
-	s_igorSection* pNewSection = new s_igorSection;
-	m_sections.push_back(pNewSection);
+    sectionHandle = m_sections.size();
+    s_igorSection* pNewSection = new s_igorSection;
+    m_sections.push_back(pNewSection);
 
-	pNewSection->m_virtualAddress = virtualAddress;
-	pNewSection->m_size = size;
+    pNewSection->m_virtualAddress = virtualAddress;
+    pNewSection->m_size = size;
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 igor_result s_igorDatabase::set_section_option(igor_section_handle sectionHandle, e_igor_section_option option)
 {
-	s_igorSection* pSection = m_sections[sectionHandle];
+    s_igorSection* pSection = m_sections[sectionHandle];
 
-	pSection->m_option |= option;
+    pSection->m_option |= option;
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size)
 {
-	s_igorSection* pSection = m_sections[sectionHandle];
+    s_igorSection* pSection = m_sections[sectionHandle];
 
-	pSection->m_rawData = new u8[size];
-	reader->read(pSection->m_rawData, size);
-	pSection->m_rawDataSize = size;
+    pSection->m_rawData = new u8[size];
+    reader->read(pSection->m_rawData, size);
+    pSection->m_rawDataSize = size;
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 int s_igorDatabase::readString(igorAddress address, Balau::String& outputString)
 {
-	int length = 0;
-	s8 currentChar;
+    int length = 0;
+    s8 currentChar;
     for (;;)
-	{
-		currentChar = readS8(address++);
+    {
+        currentChar = readS8(address++);
 
         if (!currentChar)
             break;
         length++;
         outputString.append("%c", currentChar);
 
-	} while (currentChar);
+    } while (currentChar);
 
-	return length;
+    return length;
 }
 
 igor_result s_igorDatabase::declare_symbolType(igorAddress virtualAddress, e_symbolType type)
 {
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 igor_result s_igorDatabase::declare_variable(igorAddress virtualAddress, e_baseTypes type)
 {
-	s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
+    s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
 
-	symbol.m_type = SYMBOL_VARIABLE;
-	symbol.m_variable.initAs(type);
+    symbol.m_type = SYMBOL_VARIABLE;
+    symbol.m_variable.initAs(type);
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 igor_result s_igorDatabase::declare_name(igorAddress virtualAddress, Balau::String name)
 {
-	s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
+    s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
 
-	symbol.m_name = name;
+    symbol.m_name = name;
 
-	return IGOR_SUCCESS;
+    return IGOR_SUCCESS;
 }
 
 bool s_igorDatabase::getSymbolName(igorAddress address, Balau::String& name)
@@ -303,25 +303,25 @@ bool s_igorDatabase::getSymbolName(igorAddress address, Balau::String& name)
 
 s_igorDatabase::s_symbolDefinition* s_igorDatabase::get_Symbol(igorAddress virtualAddress)
 {
-	auto t = m_symbolMap.find(virtualAddress);
-	if (t == m_symbolMap.end())
-		return NULL;
-	return &t->second;
+    auto t = m_symbolMap.find(virtualAddress);
+    if (t == m_symbolMap.end())
+        return NULL;
+    return &t->second;
 }
 
 igorAddress s_igorDatabase::findSymbol(const char* symbolName)
 {
-	// this is going to be very slow...
+    // this is going to be very slow...
 
-	for (auto & i : m_symbolMap)
-	{
-		if (i.second.m_name.compare(symbolName) == 0)
-		{
-			return i.first;
-		}
-	}
+    for (auto & i : m_symbolMap)
+    {
+        if (i.second.m_name.compare(symbolName) == 0)
+        {
+            return i.first;
+        }
+    }
 
-	return IGOR_INVALID_ADDRESS;
+    return IGOR_INVALID_ADDRESS;
 }
 
 igor_result s_igorDatabase::flag_address_as_u32(igorAddress virtualAddress)
@@ -435,38 +435,38 @@ igorAddress s_igorDatabase::get_next_valid_address_after(igorAddress virtualAddr
 
 igorAddress s_igorDatabase::getEntryPoint()
 {
-	return m_entryPoint;
+    return m_entryPoint;
 }
 
 igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAddress)
 {
-	for (int i = 0; i<m_sections.size(); i++)
-	{
-		s_igorSection* pSection = m_sections[i];
+    for (int i = 0; i<m_sections.size(); i++)
+    {
+        s_igorSection* pSection = m_sections[i];
 
         if ((pSection->m_virtualAddress <= virtualAddress.offset) && (pSection->m_virtualAddress + pSection->m_size > virtualAddress.offset))
-		{
-			return i;
-		}
-	}
+        {
+            return i;
+        }
+    }
 
-	return -1;
+    return -1;
 }
 
 igorAddress s_igorDatabase::getSectionStartVirtualAddress(igor_section_handle sectionHandle)
 {
-	s_igorSection* pSection = m_sections[sectionHandle];
+    s_igorSection* pSection = m_sections[sectionHandle];
 
     igorAddress r(pSection->m_virtualAddress);
 
-	return r;
+    return r;
 }
 
 u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
 {
-	s_igorSection* pSection = m_sections[sectionHandle];
+    s_igorSection* pSection = m_sections[sectionHandle];
 
-	return pSection->m_size;
+    return pSection->m_size;
 }
 
 std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()

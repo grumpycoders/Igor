@@ -9,31 +9,31 @@ class IgorSession;
 class c_PELoader
 {
 public:
-	igor_result loadPE(BFile reader, IgorLocalSession *);
-	int loadOptionalHeader386(BFile reader);
-	int loadOptionalHeader64(BFile reader);
+    igor_result loadPE(BFile reader, IgorLocalSession *);
+    int loadOptionalHeader386(BFile reader);
+    int loadOptionalHeader64(BFile reader);
 
-	void loadDebug(s_igorDatabase * db, BFile reader);
-	void loadImports(s_igorDatabase * db, BFile reader);
+    void loadDebug(s_igorDatabase * db, BFile reader);
+    void loadImports(s_igorDatabase * db, BFile reader);
 
-	// IMAGE_FILE_HEADER
-	u16 m_Machine;
-	u16 m_NumberOfSegments;
-	u32 m_TimeDateStamp;
-	u32 m_PointerToSymbolTable;
-	u32 m_NumberOfSymbols;
-	u16 m_SizeOfOptionalHeader;
-	u16 m_Characteristics;
+    // IMAGE_FILE_HEADER
+    u16 m_Machine;
+    u16 m_NumberOfSegments;
+    u32 m_TimeDateStamp;
+    u32 m_PointerToSymbolTable;
+    u32 m_NumberOfSymbols;
+    u16 m_SizeOfOptionalHeader;
+    u16 m_Characteristics;
 
-	// IMAGE_OPTIONAL_HEADER64
-	igorLinearAddress m_ImageBase;
-	u64 m_EntryPointVA;
+    // IMAGE_OPTIONAL_HEADER64
+    igorLinearAddress m_ImageBase;
+    u64 m_EntryPointVA;
 
-	struct IMAGE_DATA_DIRECTORY
-	{
-		u32     VirtualAddress;
-		u32     Size;
-	} m_imageDirectory[16];
+    struct IMAGE_DATA_DIRECTORY
+    {
+        u32     VirtualAddress;
+        u32     Size;
+    } m_imageDirectory[16];
 
     struct s_segmentData
     {

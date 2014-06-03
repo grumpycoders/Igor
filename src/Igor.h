@@ -21,8 +21,8 @@ struct igorAddress {
     igorAddress operator++(int) { igorAddress t(*this); operator++(); return t; }
     igorAddress operator--(int) { igorAddress t(*this); operator--(); return t; }
 
-	igorAddress & operator+=(igorAddress d) { offset += d.offset; return *this; }
-	igorAddress & operator-=(igorAddress d) { offset -= d.offset; return *this; }
+    igorAddress & operator+=(igorAddress d) { offset += d.offset; return *this; }
+    igorAddress & operator-=(igorAddress d) { offset -= d.offset; return *this; }
 
     igorAddress & operator+=(igorLinearAddress d) { offset += d; return *this; }
     igorAddress & operator-=(igorLinearAddress d) { offset -= d; return *this; }

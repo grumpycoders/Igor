@@ -190,8 +190,12 @@ std::pair<bool, String> IgorLocalSession::serialize(const char * name) {
     return std::pair<bool, String>(failure, errorMsg);
 }
 
-IgorLocalSession * IgorLocalSession::deserialize(const char * name) {
-    return NULL;
+std::tuple<bool, IgorLocalSession *, Balau::String> IgorLocalSession::deserialize(const char * name) {
+    bool result;
+    IgorLocalSession * session;
+    String errorMsg;
+
+    return std::tie(result, session, errorMsg);
 }
 
 const char * IgorLocalSession::getStatusString() {

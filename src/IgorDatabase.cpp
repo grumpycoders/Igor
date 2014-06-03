@@ -524,3 +524,11 @@ void s_igorDatabase::getReferences(igorAddress referencedAddress, std::vector<ig
         referencedFrom.push_back(it->second);
     }
 }
+
+s_igorDatabase::~s_igorDatabase()
+{
+    for (auto & cpu : m_cpu_modules)
+        delete cpu;
+    for (auto & section : m_sections)
+        delete section;
+}

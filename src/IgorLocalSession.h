@@ -21,7 +21,7 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
     void loaded(const char * filename);
 
     std::pair<bool, Balau::String> serialize(const char * name);
-    static IgorLocalSession * deserialize(const char * name);
+    static std::tuple<bool, IgorLocalSession *, Balau::String> deserialize(const char * name);
 
     void add_code_analysis_task(igorAddress PC);
     virtual void Do() override;

@@ -21,6 +21,7 @@ struct s_analysisRequest
 
 struct s_igorDatabase
 {
+    ~s_igorDatabase();
     // Not sure about that stuff yet. Kind of making it up as I go
     enum e_baseTypes
     {

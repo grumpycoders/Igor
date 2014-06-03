@@ -36,6 +36,7 @@ public:
     void OpenFile(const wxString& fileName);
 
     void OnOpen(wxCommandEvent& event);
+    void OnClose(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnHistory(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);

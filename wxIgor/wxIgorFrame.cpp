@@ -87,6 +87,7 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
 
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(new wxMenuItem(menuFile, wxID_OPEN, wxT("&Open\tCtrl+O")));
+    menuFile->Append(new wxMenuItem(menuFile, wxID_CLOSE, wxT("&Close")));
     menuFile->Append(ID_EXPORT_DISASSEMBLY, "Export disassembly");
     menuFile->AppendSeparator();
     menuFile->Append(ID_MANAGE_USERS, "Manage users");
@@ -189,6 +190,13 @@ void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
     }
 }
 
+void c_wxIgorFrame::OnClose(wxCommandEvent& WXUNUSED(event))
+{
+    if (m_session)
+        delete m_session;
+    m_session = NULL;
+}
+
 void c_wxIgorFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
     Close(true);
@@ -255,7 +263,15 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK)
     {
         wxString fileName = fileDialog.GetPath();
-        m_session = IgorLocalSession::deserialize(fileName.c_str().AsChar());
+        bool success;
+        IgorLocalSession * session;
+        String errorMsg;
+        std::tie(success, session, errorMsg) = IgorLocalSession::deserialize(fileName.c_str().AsChar());
+
+        if (!success)
+        {
+            wxMessageBox(errorMsg.to_charp(), "Error", wxICON_ERROR | wxOK);
+        }
     }
 }
 
@@ -308,6 +324,7 @@ void c_wxIgorFrame::OnRunSelfTests(wxCommandEvent& event)
 
 BEGIN_EVENT_TABLE(c_wxIgorFrame, wxFrame)
 EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
+EVT_MENU(wxID_CLOSE, c_wxIgorFrame::OnClose)
 EVT_MENU(wxID_EXIT, c_wxIgorFrame::OnExit)
 EVT_MENU(ID_GO_TO_ADDRESS, c_wxIgorFrame::OnGoToAddress)
 EVT_MENU(ID_EXPORT_DISASSEMBLY, c_wxIgorFrame::OnExportDisassembly)

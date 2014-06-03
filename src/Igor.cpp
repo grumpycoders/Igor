@@ -12,6 +12,7 @@
 #include "google/protobuf/stubs/common.h"
 
 #include "Loaders/PE/PELoader.h"
+#include "Loaders/Dmp/dmpLoader.h"
 #include "Loaders/Elf/elfLoader.h"
 
 #include "IgorDatabase.h"
@@ -111,6 +112,11 @@ void MainTask::Do() {
         {
             c_PELoader PELoader;
             PELoader.loadPE(reader, session);
+        }
+        else if (strstr(argv[1], ".dmp"))
+        {
+            c_dmpLoader DmpLoader;
+            DmpLoader.load(reader, session);
         }
         else if (strstr(argv[1], ".elf"))
         {

@@ -48,6 +48,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Igor\Loaders\Dmp">
+      <UniqueIdentifier>{c413d817-f1d5-4ee7-a4dc-78f463f8c6be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Igor.cpp">
@@ -139,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="src\IgorHttpSession.cpp">
       <Filter>Igor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loaders\Dmp\dmpLoader.cpp">
+      <Filter>Igor\Loaders\Dmp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1410,6 +1416,9 @@
     </ClInclude>
     <ClInclude Include="src\IgorHttpSession.h">
       <Filter>Igor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loaders\Dmp\dmpLoader.h">
+      <Filter>Igor\Loaders\Dmp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

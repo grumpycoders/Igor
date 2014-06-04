@@ -3,6 +3,11 @@
 
 #include "cpu_x86_capstone.h"
 
+extern "C" {
+    const char *X86_reg_name(csh handle, unsigned int reg);
+}
+
+
 c_cpu_x86_capstone::c_cpu_x86_capstone(cs_mode mode)
 {
     m_csMode = mode;
@@ -42,9 +47,11 @@ igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
 
     if (count)
     {
-        pState->m_cpu_analyse_result->m_startOfInstruction.offset = insn[0].address;
-        pState->m_cpu_analyse_result->m_instructionSize = insn[0].size;
-        pState->m_PC += insn[0].size;
+        cs_insn* pCurrentInstruction = &insn[0];
+
+        pState->m_cpu_analyse_result->m_startOfInstruction.offset = pCurrentInstruction->address;
+        pState->m_cpu_analyse_result->m_instructionSize = pCurrentInstruction->size;
+        pState->m_PC += pCurrentInstruction->size;
 
         // follow flow      
         {
@@ -61,22 +68,22 @@ igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
 
             for (int i = 0; i < sizeof(flowFollow) / sizeof(flowFollow[0]); i++)
             {
-                if (strcmp(insn[0].mnemonic, flowFollow[i]) == 0)
+                if (strcmp(pCurrentInstruction->mnemonic, flowFollow[i]) == 0)
                 {
-                    if (insn[0].detail->x86.op_count == 1)
+                    if (pCurrentInstruction->detail->x86.op_count == 1)
                     {
-                        if (insn[0].detail->x86.operands[0].type == X86_OP_IMM)
+                        if (pCurrentInstruction->detail->x86.operands[0].type == X86_OP_IMM)
                         {
-                            pState->pSession->add_code_analysis_task(igorAddress(insn[0].detail->x86.operands[0].imm));
+                            pState->pSession->add_code_analysis_task(igorAddress(pCurrentInstruction->detail->x86.operands[0].imm));
                         }
-                        /*else if (insn[0].detail->x86.operands[0].type == X86_OP_MEM)
+                        /*else if (pCurrentInstruction->detail->x86.operands[0].type == X86_OP_MEM)
                         {
-                            if (insn[0].detail->x86.operands[0].mem.base == X86_REG_RIP)
+                            if (pCurrentInstruction->detail->x86.operands[0].mem.base == X86_REG_RIP)
                             {
-                                EAssert(insn[0].detail->x86.operands[0].mem.index == 0);
-                                EAssert(insn[0].detail->x86.operands[0].mem.scale == 1);
+                                EAssert(pCurrentInstruction->detail->x86.operands[0].mem.index == 0);
+                                EAssert(pCurrentInstruction->detail->x86.operands[0].mem.scale == 1);
 
-                                pState->pSession->add_code_analysis_task(igorAddress(insn[0].address + insn[0].detail->x86.operands[0].mem.disp));
+                                pState->pSession->add_code_analysis_task(igorAddress(pCurrentInstruction->address + pCurrentInstruction->detail->x86.operands[0].mem.disp));
                             }
                         }*/
                     }
@@ -94,7 +101,7 @@ igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
 
             for (int i = 0; i < sizeof(endOfFlow) / sizeof(endOfFlow[0]); i++)
             {
-                if (strcmp(insn[0].mnemonic, endOfFlow[i]) == 0)
+                if (strcmp(pCurrentInstruction->mnemonic, endOfFlow[i]) == 0)
                 {
                     pState->m_analyzeResult = stop_analysis;
                 }
@@ -136,22 +143,24 @@ igor_result c_cpu_x86_capstone::printInstruction(s_analyzeState* pState, Balau::
             "ret",
         };
 
+        cs_insn* pCurrentInstruction = &insn[0];
+        /*
         for (int i = 0; i < sizeof(flowControl) / sizeof(flowControl[0]); i++)
         {
-            if (strcmp(insn[0].mnemonic, flowControl[i]) == 0)
+            if (strcmp(pCurrentInstruction->mnemonic, flowControl[i]) == 0)
             {
                 mnemonicColor = c_cpu_module::MNEMONIC_FLOW_CONTROL;
 
-                if (insn[0].detail->x86.op_count == 1)
+                if (pCurrentInstruction->detail->x86.op_count == 1)
                 {
-                    if (insn[0].detail->x86.operands[0].type == X86_OP_MEM)
+                    if (pCurrentInstruction->detail->x86.operands[0].type == X86_OP_MEM)
                     {
-                        if (insn[0].detail->x86.operands[0].mem.base == X86_REG_RIP)
+                        if (pCurrentInstruction->detail->x86.operands[0].mem.base == X86_REG_RIP)
                         {
-                            EAssert(insn[0].detail->x86.operands[0].mem.index == 0, "Wrong index");
-                            EAssert(insn[0].detail->x86.operands[0].mem.scale == 1, "Wrong scale");
+                            EAssert(pCurrentInstruction->detail->x86.operands[0].mem.index == 0, "Wrong index");
+                            EAssert(pCurrentInstruction->detail->x86.operands[0].mem.scale == 1, "Wrong scale");
 
-                            igorAddress effectiveAddress(insn[0].address + insn[0].size + insn[0].detail->x86.operands[0].mem.disp);
+                            igorAddress effectiveAddress(pCurrentInstruction->address + pCurrentInstruction->size + pCurrentInstruction->detail->x86.operands[0].mem.disp);
 
                             Balau::String symbolName;
                             if (pState->pSession->getSymbolName(effectiveAddress, symbolName))
@@ -166,11 +175,51 @@ igor_result c_cpu_x86_capstone::printInstruction(s_analyzeState* pState, Balau::
                     }
                 }
             }
+        }*/
+
+        outputString.append("%s%s%s ", startColor(mnemonicColor), pCurrentInstruction->mnemonic, finishColor(mnemonicColor));
+        /*
+        for (int operandIndex = 0; operandIndex < pCurrentInstruction->detail->x86.op_count; operandIndex++)
+        {
+            if (operandIndex != 0)
+            {
+                outputString.append(", ");
+            }
+            cs_x86_op* pOperand = &pCurrentInstruction->detail->x86.operands[operandIndex];
+
+            switch (pOperand->type)
+            {
+                case X86_OP_REG:
+                {
+                    const char* regName = X86_reg_name(m_csHandle, pOperand->reg);
+
+                    outputString.append("%s%s%s", startColor(c_cpu_module::OPERAND_REGISTER), regName, finishColor(c_cpu_module::OPERAND_REGISTER));
+
+                    break;
+                }
+
+                case X86_OP_IMM:
+                {
+                    outputString.append("%s0x%llX%s", startColor(c_cpu_module::OPERAND_IMMEDIATE), pOperand->imm, finishColor(c_cpu_module::OPERAND_IMMEDIATE));
+
+                    break;
+                }
+
+                case X86_OP_MEM:
+                {
+                    break;
+                }
+
+                default:
+                    Failure("Unimplemented operand type");
+            }
         }
+        
 
-        outputString.append("%s%s%s %s", startColor(mnemonicColor), insn[0].mnemonic, finishColor(mnemonicColor), insn[0].op_str);
-
-        outputString.append(commentString);
+        outputString.append("       ");
+        */
+        outputString.append(pCurrentInstruction->op_str);
+        //outputString.append(commentString);
 
         cs_free(insn, count);
 

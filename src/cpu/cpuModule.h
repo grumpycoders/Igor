@@ -65,6 +65,9 @@ public:
         KNOWN_SYMBOL,
         MNEMONIC_DEFAULT,
         MNEMONIC_FLOW_CONTROL,
+
+        OPERAND_REGISTER,
+        OPERAND_IMMEDIATE,
     };
 
     static const char* startColor(e_colors, bool bUseColor = true);

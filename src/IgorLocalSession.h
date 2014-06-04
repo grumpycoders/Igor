@@ -28,6 +28,7 @@ class IgorLocalSession : public IgorSession {
     friend class IgorAnalysisManagerLocal;
   public:
       IgorLocalSession() : m_pDatabase(new s_igorDatabase) { }
+      IgorLocalSession(const IgorLocalSession &) = delete;
       ~IgorLocalSession() { delete m_pDatabase; }
 
     void loaded(const char * filename);

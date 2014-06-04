@@ -14,15 +14,15 @@ void IgorSqlite3::createVersionnedDB(std::function<int(int)> upgradeFunc, int de
     safeWriteStmt(stmtStr.to_charp());
     stmtStr.set("SELECT version, ROWID FROM %s.version;", db);
     sqlite3_stmt * stmt = safeStmt(stmtStr);
-    do {
+    while (true) {
         r = safeStep(stmt);
-        if (r == SQLITE_ROW) {
-            IAssert(version == 0, "Table %s.version contains multiple rows, db");
-            version = sqlite3_column_int(stmt, 0);
-            rowid = sqlite3_column_int64(stmt, 1);
-            hasToInsert = false;
-        }
-    } while (r != SQLITE_DONE);
+        if (r == SQLITE_DONE)
+            break;
+        IAssert(version == 0, "Table %s.version contains multiple rows, db");
+        version = sqlite3_column_int(stmt, 0);
+        rowid = sqlite3_column_int64(stmt, 1);
+        hasToInsert = false;
+    }
     safeFinalize(stmt);
     IAssert(version <= desiredVersion, "Database's %s.version is too high.", db);
     if (version == desiredVersion)

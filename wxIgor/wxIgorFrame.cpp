@@ -132,13 +132,19 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
         pApp->m_fileHistory->Save(*pApp->m_config);
     }
 
-    std::tie(result, m_session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(fileName.c_str());
+    IgorSession * session = NULL;
+
+    std::tie(result, session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(fileName.c_str());
 
     if (result != IGOR_SUCCESS) {
         wxString errorMsg = "File error:\n" + wxString(errorMsg1.to_charp()) + "\n" + wxString(errorMsg2.to_charp());
         wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, "Error", wxOK | wxICON_ERROR);
         dial->ShowModal();
     } else {
+        if (m_session)
+            m_session->release();
+        delete m_sessionPanel;
+        m_session = session;
         m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
         SendSizeEvent();
     }

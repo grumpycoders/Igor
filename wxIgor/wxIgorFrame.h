@@ -38,6 +38,8 @@ public:
 
     void OpenFile(const wxString& fileName);
 
+    void OnMenuOpen(wxMenuEvent& event);
+
     void OnOpen(wxCommandEvent& event);
     void OnCloseFile(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
@@ -56,6 +58,8 @@ public:
 
     c_wxIgorSessionPanel* m_sessionPanel = NULL;
     IgorSession * m_session = NULL;
+
+    wxMenu * m_sessionsMenu = NULL;
 
     DECLARE_EVENT_TABLE()
 };

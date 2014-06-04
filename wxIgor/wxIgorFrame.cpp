@@ -97,12 +97,15 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
     wxMenu *menuNavigation = new wxMenu;
     menuNavigation->Append(ID_GO_TO_ADDRESS, "&Go to address");
 
+    m_sessionsMenu = new wxMenu;
+
     wxMenu *menuMisc = new wxMenu;
     menuMisc->Append(ID_RUN_SELF_TESTS, "Run self &tests");
 
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append(menuFile, "&File");
     menuBar->Append(menuNavigation, "&Navigation");
+    menuBar->Append(m_sessionsMenu, "&Sessions");
     menuBar->Append(menuMisc, "&Misc");
 
     SetMenuBar(menuBar);
@@ -139,6 +142,40 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
         m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
         SendSizeEvent();
     }
+}
+
+void c_wxIgorFrame::OnMenuOpen(wxMenuEvent& event)
+{
+    if (event.GetMenu() != m_sessionsMenu)
+        return;
+
+    const wxMenuItemList list = m_sessionsMenu->GetMenuItems();
+
+    for (auto & item : list)
+        m_sessionsMenu->Destroy(item);
+
+    IgorSession::enumerate([&](IgorSession * session)
+    {
+        wxWindowID id = NewControlId();
+        String uuid = session->getUUID();
+        wxMenuItem * menuItem = new wxMenuItem(m_sessionsMenu, id, session->getSessionName().to_charp());
+        m_sessionsMenu->Append(menuItem);
+        Bind(wxEVT_COMMAND_MENU_SELECTED, [this, uuid](wxCommandEvent& WXUNUSED(event))
+        {
+            delete m_sessionPanel;
+            if (m_session)
+                m_session->release();
+            m_sessionPanel = NULL;
+
+            m_session = IgorSession::find(uuid);
+
+            if (m_session)
+            {
+                m_sessionPanel = new c_wxIgorSessionPanel(m_session, this);
+                SendSizeEvent();
+            }
+        }, id);
+    });
 }
 
 const char* supportedFormats =
@@ -317,6 +354,8 @@ void c_wxIgorFrame::OnRunSelfTests(wxCommandEvent& event)
 }
 
 BEGIN_EVENT_TABLE(c_wxIgorFrame, wxFrame)
+EVT_MENU_OPEN(c_wxIgorFrame::OnMenuOpen)
+
 EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
 EVT_MENU(wxID_CLOSE, c_wxIgorFrame::OnCloseFile)
 EVT_MENU(wxID_EXIT, c_wxIgorFrame::OnExit)

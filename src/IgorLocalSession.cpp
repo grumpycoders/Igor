@@ -203,7 +203,8 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
     catch (GeneralException & e) {
         result = IGOR_FAILURE;
         errorMsg1 = e.getMsg();
-        errorMsg2 = e.getDetails();
+        const char * details = e.getDetails();
+        errorMsg2 = details ? details : "";
     }
     catch (...) {
         result = IGOR_FAILURE;
@@ -250,13 +251,12 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::lo
             r = elfLoader.load(reader, session);
         }
         reader->close();
-
-        session->loaded(name);
     }
     catch (GeneralException & e) {
         r = IGOR_FAILURE;
         errorMsg1 = e.getMsg();
-        errorMsg2 = e.getDetails();
+        const char * details = e.getDetails();
+        errorMsg2 = details ? details : "";
     }
     catch (...) {
         r = IGOR_FAILURE;
@@ -264,8 +264,13 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::lo
         errorMsg2 = "Uncatched exception";
     }
 
-    if (r == IGOR_SUCCESS)
+    if (r == IGOR_SUCCESS) {
+        session->loaded(name);
         TaskMan::registerTask(new IgorAnalysisManagerLocal(session));
+    } else {
+        session->release();
+        session = NULL;
+    }
 
     return std::tie(r, session, errorMsg1, errorMsg2);
 }

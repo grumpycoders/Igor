@@ -164,7 +164,7 @@ void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-void c_wxIgorFrame::OnCloseFile(wxCommandEvent& WXUNUSED(event))
+void c_wxIgorFrame::closeFile()
 {
     delete m_sessionPanel;
     if (m_session) {
@@ -176,8 +176,14 @@ void c_wxIgorFrame::OnCloseFile(wxCommandEvent& WXUNUSED(event))
     m_session = NULL;
 }
 
+void c_wxIgorFrame::OnCloseFile(wxCommandEvent& WXUNUSED(event))
+{
+    closeFile();
+}
+
 void c_wxIgorFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
+    closeFile();
     Close(true);
 }
 
@@ -271,6 +277,8 @@ void c_wxIgorFrame::OnClose(wxCloseEvent& event)
             return;
         }
     }
+
+    closeFile();
 
     event.Skip();
 }

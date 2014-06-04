@@ -34,6 +34,8 @@ public:
     c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
     virtual ~c_wxIgorFrame();
 
+    void closeFile();
+
     void OpenFile(const wxString& fileName);
 
     void OnOpen(wxCommandEvent& event);

@@ -61,3 +61,14 @@ void IgorAnalysis::Do()
 
     StacklessEnd();
 }
+
+IgorAnalysis::IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent) : m_pDatabase(db), m_PC(PC), m_session(parent)
+{
+    m_name.set("IgorAnalysis for %016llx", PC.offset);
+    m_session->addRef();
+}
+
+IgorAnalysis::~IgorAnalysis()
+{
+    m_session->release();
+}

@@ -133,13 +133,7 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
 
     IgorSession * session = NULL;
 
-    IgorSession::enumerate([&](IgorSession * crawl) -> bool {
-        if (sessionUUID == crawl->getUUID()) {
-            session = crawl;
-            return false;
-        }
-        return true;
-    });
+    session = IgorSession::find(sessionUUID);
 
     if (!session) {
         response.SetResponseCode(404);
@@ -148,6 +142,8 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
         response.Flush();
         return true;
     }
+
+    ScopedLambda release([&]() { session->release(); });
 
     igorAddress first, last;
     u64 linear, linearFirst, linearLast;
@@ -330,7 +326,7 @@ bool ListSessionsAction::safeDo(HttpServer * server, Http::Request & req, HttpSe
 
     reply["status"] = "ok";
 
-    IgorSession::enumerate([&](IgorSession * session) -> bool {
+    IgorSession::enumerate([&](IgorSession * session) -> void {
         Json::Value & entry = reply["list"][idx];
         String name = session->getSessionName();
         if (name == "")
@@ -342,7 +338,6 @@ bool ListSessionsAction::safeDo(HttpServer * server, Http::Request & req, HttpSe
         address.set("%016llx", entryPoint.offset);
         if (entryPoint != IGOR_INVALID_ADDRESS)
             entry["entryPoint"] = address.to_charp();
-        return true;
         idx++;
     });
 

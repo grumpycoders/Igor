@@ -19,7 +19,15 @@ class IgorSession
     const Balau::String & getSessionName() { return m_name; }
     const Balau::String & getUUID() { return m_uuid; }
 
-    static void enumerate(std::function<bool(IgorSession *)>);
+    void addRef() { m_refs++; }
+    void release() {
+        Balau::ScopeLockW sl(m_listLock);
+        if (--m_refs == 0)
+            delete this;
+    }
+
+    static void enumerate(std::function<void(IgorSession *)>);
+    static IgorSession * find(const Balau::String &);
     static Balau::String generateUUID();
 
     virtual std::tuple<igor_result, Balau::String, Balau::String> serialize(const char * name) { igor_result r = IGOR_FAILURE; Balau::String m1 = "Can't serialize this", m2; return std::tie(r, m1, m2); }
@@ -127,4 +135,5 @@ class IgorSession
     static Balau::RWLock m_listLock;
     static IgorSession * m_head;
     IgorSession * m_next, * m_prev;
+    std::atomic<int> m_refs = 1;
 };

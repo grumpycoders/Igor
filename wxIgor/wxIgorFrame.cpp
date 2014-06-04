@@ -30,6 +30,7 @@ using namespace Balau;
 c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent) : wxPanel(parent)
 {
     m_session = pSession;
+    pSession->addRef();
 
     wxNotebook* pNoteBook = new wxNotebook(this, -1);
     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
@@ -58,6 +59,15 @@ c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *pare
 
         pNoteBook->AddPage(pAsmPagePanel, "ASM");
     }
+}
+
+c_wxIgorSessionPanel::~c_wxIgorSessionPanel()
+{
+    delete m_pAsmWidget;
+    if (m_session)
+        m_session->release();
+    m_pAsmWidget = NULL;
+    m_session = NULL;
 }
 
 BEGIN_EVENT_TABLE(c_wxIgorSessionPanel, wxPanel)
@@ -154,10 +164,12 @@ void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-void c_wxIgorFrame::OnClose(wxCommandEvent& WXUNUSED(event))
+void c_wxIgorFrame::OnCloseFile(wxCommandEvent& WXUNUSED(event))
 {
+    delete m_sessionPanel;
     if (m_session)
-        delete m_session;
+        m_session->release();
+    m_sessionPanel = NULL;
     m_session = NULL;
 }
 
@@ -177,6 +189,9 @@ void c_wxIgorFrame::OnHistory(wxCommandEvent& event)
 
 void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
 {
+    if (!m_sessionPanel || m_session)
+        return;
+
     wxTextEntryDialog* pAddressEntryDialog = new wxTextEntryDialog(this, "Go to address");
 
     if (pAddressEntryDialog->ShowModal() == wxID_OK)
@@ -292,7 +307,7 @@ void c_wxIgorFrame::OnRunSelfTests(wxCommandEvent& event)
 
 BEGIN_EVENT_TABLE(c_wxIgorFrame, wxFrame)
 EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
-EVT_MENU(wxID_CLOSE, c_wxIgorFrame::OnClose)
+EVT_MENU(wxID_CLOSE, c_wxIgorFrame::OnCloseFile)
 EVT_MENU(wxID_EXIT, c_wxIgorFrame::OnExit)
 EVT_MENU(ID_GO_TO_ADDRESS, c_wxIgorFrame::OnGoToAddress)
 EVT_MENU(ID_EXPORT_DISASSEMBLY, c_wxIgorFrame::OnExportDisassembly)

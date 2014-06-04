@@ -14,7 +14,8 @@ class IgorLocalSession;
 
 class IgorAnalysis : public Balau::StacklessTask {
 public:
-    IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent) : m_pDatabase(db), m_PC(PC), m_session(parent) { m_name.set("IgorAnalysis for %016llx", PC.offset); }
+    IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent);
+    ~IgorAnalysis();
     void Do();
     const char * getName() const { return m_name.to_charp(); }
 private:

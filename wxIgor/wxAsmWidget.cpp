@@ -65,6 +65,7 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 {
     // First let's set everything in our object...
     m_pSession = pSession;
+    m_pSession->addRef();
 
     m_timer = new wxTimer(this, EVT_RefreshDatabase);
     m_currentPosition = m_pSession->getEntryPoint();
@@ -93,6 +94,7 @@ c_wxAsmWidget::c_wxAsmWidget(IgorSession* pSession, wxWindow *parent, wxWindowID
 
 c_wxAsmWidget::~c_wxAsmWidget()
 {
+    m_pSession->release();
     delete m_timer;
 }
 

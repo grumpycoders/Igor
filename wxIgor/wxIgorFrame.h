@@ -9,6 +9,7 @@ class c_wxIgorSessionPanel : public wxPanel
 {
 public:
     c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *parent);
+    ~c_wxIgorSessionPanel();
 
     IgorSession * m_session;
     c_wxAsmWidget* m_pAsmWidget;
@@ -36,7 +37,7 @@ public:
     void OpenFile(const wxString& fileName);
 
     void OnOpen(wxCommandEvent& event);
-    void OnClose(wxCommandEvent& event);
+    void OnCloseFile(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnHistory(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
@@ -51,8 +52,8 @@ public:
     void OnManageUsers(wxCommandEvent& event);
     void OnRunSelfTests(wxCommandEvent& event);
 
-    c_wxIgorSessionPanel* m_sessionPanel;
-    IgorSession * m_session;
+    c_wxIgorSessionPanel* m_sessionPanel = NULL;
+    IgorSession * m_session = NULL;
 
     DECLARE_EVENT_TABLE()
 };

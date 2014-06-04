@@ -79,10 +79,22 @@ IgorSession::~IgorSession() {
         m_prev->m_next = m_next;
 }
 
-void IgorSession::enumerate(std::function<bool(IgorSession *)> cb) {
+void IgorSession::enumerate(std::function<void(IgorSession *)> cb) {
     ScopeLockR sl(m_listLock);
 
     for (IgorSession * ptr = m_head; ptr; ptr = ptr->m_next)
-        if (!cb(ptr))
-            break;
+        cb(ptr);
+}
+
+IgorSession * IgorSession::find(const Balau::String & uuid) {
+    ScopeLockR sl(m_listLock);
+
+    for (IgorSession * ptr = m_head; ptr; ptr = ptr->m_next) {
+        if (ptr->getUUID() == uuid) {
+            ptr->addRef();
+            return ptr;
+        }
+    }
+
+    return NULL;
 }

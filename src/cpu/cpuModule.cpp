@@ -19,6 +19,12 @@ const char* c_cpu_module::startColor(e_colors color, bool bUseColor)
         return ";C=MNEMONIC_DEFAULT;";
     case MNEMONIC_FLOW_CONTROL:
         return ";C=MNEMONIC_FLOW_CONTROL;";
+    case OPERAND_REGISTER:
+        return ";C=OPERAND_REGISTER;";
+    case OPERAND_IMMEDIATE:
+        return ";C=OPERAND_IMMEDIATE;";
+    default:
+        Failure("Unimplemented color");
     }
 
     return "";

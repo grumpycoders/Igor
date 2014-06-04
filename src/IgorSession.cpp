@@ -59,6 +59,8 @@ void IgorSession::linkMe() {
     m_next = m_head;
     m_prev = NULL;
     m_head = this;
+
+    addRef();
 }
 
 void IgorSession::assignNewUUID() {
@@ -67,6 +69,11 @@ void IgorSession::assignNewUUID() {
 }
 
 IgorSession::~IgorSession() {
+    ScopeLockR sl(m_listLock);
+    IAssert((m_head != this) && !m_next && !m_prev, "Session still linked while being deleted.");
+}
+
+void IgorSession::unlinkMe() {
     ScopeLockW sl(m_listLock);
 
     if (m_head == this)
@@ -77,6 +84,10 @@ IgorSession::~IgorSession() {
 
     if (m_prev)
         m_prev->m_next = m_next;
+
+    m_next = m_prev = NULL;
+
+    release();
 }
 
 void IgorSession::enumerate(std::function<void(IgorSession *)> cb) {

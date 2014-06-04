@@ -167,8 +167,11 @@ void c_wxIgorFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
 void c_wxIgorFrame::OnCloseFile(wxCommandEvent& WXUNUSED(event))
 {
     delete m_sessionPanel;
-    if (m_session)
+    if (m_session) {
+        m_session->stop();
+        m_session->unlinkMe();
         m_session->release();
+    }
     m_sessionPanel = NULL;
     m_session = NULL;
 }

@@ -12,8 +12,20 @@
 
 class c_cpu_module;
 class c_cpu_state;
+class IgorLocalSession;
 
-class IgorLocalSession : public Balau::Task, public IgorSession {
+class IgorAnalysisManagerLocal : public Balau::Task {
+  public:
+      IgorAnalysisManagerLocal(IgorLocalSession * session);
+      ~IgorAnalysisManagerLocal();
+    virtual void Do() override;
+    virtual const char * getName() const override { return "IgorAnalysisManagerLocal"; }
+  private:
+    IgorLocalSession * m_session;
+};
+
+class IgorLocalSession : public IgorSession {
+    friend class IgorAnalysisManagerLocal;
   public:
       IgorLocalSession() : m_pDatabase(new s_igorDatabase) { }
       ~IgorLocalSession() { delete m_pDatabase; }
@@ -25,9 +37,7 @@ class IgorLocalSession : public Balau::Task, public IgorSession {
     static std::tuple<igor_result, IgorLocalSession *, Balau::String, Balau::String> loadBinary(const char * name);
 
     void add_code_analysis_task(igorAddress PC);
-    virtual void Do() override;
-    void stop() { add_code_analysis_task(IGOR_INVALID_ADDRESS); }
-    virtual const char * getName() const override { return "IgorAnalysisManagerLocal"; }
+    virtual void stop() override { add_code_analysis_task(IGOR_INVALID_ADDRESS); }
     bool isRunning() { return m_status == RUNNING; }
     void setDB(s_igorDatabase * db) { AAssert(m_pDatabase == NULL, "Can only set database once"); m_pDatabase = db; }
     s_igorDatabase * getDB() { return m_pDatabase; }

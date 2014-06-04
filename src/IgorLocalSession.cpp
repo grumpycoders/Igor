@@ -30,57 +30,66 @@ static bool safeOperationLambda(std::function<bool()> lambda) {
     return success;
 }
 
-void IgorLocalSession::Do() {
-    if (!m_pDatabase)
+IgorAnalysisManagerLocal::IgorAnalysisManagerLocal(IgorLocalSession * session) {
+    m_session = session;
+    m_session->addRef();
+}
+
+IgorAnalysisManagerLocal::~IgorAnalysisManagerLocal() {
+    m_session->release();
+}
+
+void IgorAnalysisManagerLocal::Do() {
+    if (!m_session->m_pDatabase)
         return;
 
-    waitFor(m_pDatabase->m_analysisRequests.getEvent());
+    waitFor(m_session->m_pDatabase->m_analysisRequests.getEvent());
 
     Printer::log(M_INFO, "AnalysisManager starting...");
-    m_instructions = 0;
+    m_session->m_instructions = 0;
 
     for (;;) {
-        for (auto i = m_evts.begin(); i != m_evts.end(); i++) {
+        for (auto i = m_session->m_evts.begin(); i != m_session->m_evts.end(); i++) {
             Events::TaskEvent * evt = i->first;
             if (evt->gotSignal()) {
                 evt->ack();
                 delete evt;
-                m_evts.erase(i);
-                i = m_evts.begin();
-                if (m_evts.empty())
+                m_session->m_evts.erase(i);
+                i = m_session->m_evts.begin();
+                if (m_session->m_evts.empty())
                     break;
             }
         }
-        if (m_evts.size() == 0) {
-            if (m_status == STOPPING)
+        if (m_session->m_evts.size() == 0) {
+            if (m_session->m_status == IgorLocalSession::STOPPING)
                 return;
-            else if (m_pDatabase->m_analysisRequests.isEmpty())
-                m_status = IDLE;
+            else if (m_session->m_pDatabase->m_analysisRequests.isEmpty())
+                m_session->m_status = IgorLocalSession::IDLE;
         }
 
-        if (m_status == IDLE)
-            Printer::log(M_INFO, "AnalysisManager going idle; analyzed %lli instructions...", m_instructions.load());
+        if (m_session->m_status == IgorLocalSession::IDLE)
+            Printer::log(M_INFO, "AnalysisManager going idle; analyzed %lli instructions...", m_session->m_instructions.load());
 
-        m_pDatabase->m_analysisRequests.getEvent()->resetMaybe();
-        if (m_pDatabase->m_analysisRequests.isEmpty()) {
+        m_session->m_pDatabase->m_analysisRequests.getEvent()->resetMaybe();
+        if (m_session->m_pDatabase->m_analysisRequests.isEmpty()) {
             yield();
             continue;
         }
-        while (!m_pDatabase->m_analysisRequests.isEmpty()) {
-            s_analysisRequest* pRequest = m_pDatabase->m_analysisRequests.pop();
+        while (!m_session->m_pDatabase->m_analysisRequests.isEmpty()) {
+            s_analysisRequest* pRequest = m_session->m_pDatabase->m_analysisRequests.pop();
             igorAddress currentPC = pRequest->m_pc;
             delete pRequest;
 
-            if (m_status == STOPPING || currentPC == IGOR_INVALID_ADDRESS) {
-                m_status = STOPPING;
+            if (m_session->m_status == IgorLocalSession::STOPPING || currentPC == IGOR_INVALID_ADDRESS) {
+                m_session->m_status = IgorLocalSession::STOPPING;
                 continue;
             }
 
-            m_status = RUNNING;
+            m_session->m_status = IgorLocalSession::RUNNING;
 
             Events::TaskEvent * evt = new Events::TaskEvent;
-            m_evts.push_back(std::pair<Events::TaskEvent *, igorAddress>(evt, currentPC));
-            TaskMan::registerTask(new IgorAnalysis(m_pDatabase, currentPC, this), evt);
+            m_session->m_evts.push_back(std::pair<Events::TaskEvent *, igorAddress>(evt, currentPC));
+            TaskMan::registerTask(new IgorAnalysis(m_session->m_pDatabase, currentPC, m_session), evt);
             waitFor(evt);
             //Printer::log(M_INFO, "AnalysisManager spawned a task for %016llx", currentPC);
         }
@@ -143,6 +152,12 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
         db.safeBind(stmt, 2, m_pDatabase->m_cpu_modules[0]->getTag());
         db.safeWriteStep(stmt);
         db.safeFinalize(stmt);
+        db.safeReset(stmt);
+        db.safeBind(stmt, 1, "Name");
+        db.safeBind(stmt, 2, getSessionName());
+        db.safeWriteStep(stmt);
+        db.safeFinalize(stmt);
+        db.safeReset(stmt);
 
         stmt = db.safeStmt("INSERT INTO main.symbols (address, name, type) VALUES(?1, ?2, ?3);");
         for (auto & symbol : m_pDatabase->m_symbolMap) {
@@ -249,8 +264,8 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::lo
         errorMsg2 = "Uncatched exception";
     }
 
-    // Add the task even in case of failure, so it can properly clean itself out.
-    TaskMan::registerTask(session);
+    if (r == IGOR_SUCCESS)
+        TaskMan::registerTask(new IgorAnalysisManagerLocal(session));
 
     return std::tie(r, session, errorMsg1, errorMsg2);
 }

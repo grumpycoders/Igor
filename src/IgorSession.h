@@ -19,9 +19,10 @@ class IgorSession
     const Balau::String & getSessionName() { return m_name; }
     const Balau::String & getUUID() { return m_uuid; }
 
-    void addRef() { m_refs++; }
+    void addRef() {
+        m_refs++;
+    }
     void release() {
-        Balau::ScopeLockW sl(m_listLock);
         if (--m_refs == 0)
             delete this;
     }
@@ -33,6 +34,7 @@ class IgorSession
     virtual std::tuple<igor_result, Balau::String, Balau::String> serialize(const char * name) { igor_result r = IGOR_FAILURE; Balau::String m1 = "Can't serialize this", m2; return std::tie(r, m1, m2); }
 
     virtual const char * getStatusString() { return "Unknown"; }
+    virtual void stop() { }
 
     virtual igor_result readS64(igorAddress address, s64& output) = 0;
     virtual igor_result readU64(igorAddress address, u64& output) = 0;
@@ -126,6 +128,7 @@ class IgorSession
     virtual void addReference(igorAddress referencedAddress, igorAddress referencedFrom) = 0;
     virtual void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom) = 0;
 
+    void unlinkMe();
   protected:
     void assignNewUUID();
     void linkMe();

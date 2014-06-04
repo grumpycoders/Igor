@@ -119,7 +119,7 @@ c_wxIgorFrame::~c_wxIgorFrame()
 
 void c_wxIgorFrame::OpenFile(const wxString& fileName)
 {
-    igor_result r;
+    igor_result result;
     String errorMsg1, errorMsg2;
 
     // add to history
@@ -129,9 +129,9 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
         pApp->m_fileHistory->Save(*pApp->m_config);
     }
 
-    std::tie(r, m_session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(fileName.c_str());
+    std::tie(result, m_session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(fileName.c_str());
 
-    if (r != IGOR_SUCCESS) {
+    if (result != IGOR_SUCCESS) {
         wxString errorMsg = "File error:\n" + wxString(errorMsg1.to_charp()) + "\n" + wxString(errorMsg2.to_charp());
         wxMessageDialog * dial = new wxMessageDialog(NULL, errorMsg, "Error", wxOK | wxICON_ERROR);
         dial->ShowModal();
@@ -228,10 +228,10 @@ void c_wxIgorFrame::OnSaveDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK && m_session)
     {
         wxString fileName = fileDialog.GetPath();
-        igor_result r;
+        igor_result result;
         String errorMsg1, errorMsg2;
-        std::tie(r, errorMsg1, errorMsg2) = m_session->serialize(fileName.c_str().AsChar());
-        if (r == IGOR_FAILURE)
+        std::tie(result, errorMsg1, errorMsg2) = m_session->serialize(fileName.c_str().AsChar());
+        if (result == IGOR_FAILURE)
         {
             String errorMsg = errorMsg1 + " - " + errorMsg2;
             wxMessageBox(errorMsg.to_charp(), "Error", wxICON_ERROR | wxOK);
@@ -245,12 +245,12 @@ void c_wxIgorFrame::OnLoadDatabase(wxCommandEvent& event)
     if (fileDialog.ShowModal() == wxID_OK)
     {
         wxString fileName = fileDialog.GetPath();
-        igor_result success;
+        igor_result result;
         IgorLocalSession * session;
         String errorMsg1, errorMsg2;
-        std::tie(success, session, errorMsg1, errorMsg2) = IgorLocalSession::deserialize(fileName.c_str().AsChar());
+        std::tie(result, session, errorMsg1, errorMsg2) = IgorLocalSession::deserialize(fileName.c_str().AsChar());
 
-        if (!success)
+        if (result == IGOR_FAILURE)
         {
             String errorMsg = errorMsg1 + " - " + errorMsg2;
             wxMessageBox(errorMsg.to_charp(), "Error", wxICON_ERROR | wxOK);

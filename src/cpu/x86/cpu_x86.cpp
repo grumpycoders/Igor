@@ -281,13 +281,13 @@ void c_cpu_x86::generateReferences(s_analyzeState* pState, int operandIndex)
                     u8 SIB_INDEX = pOperand->m_registerRM.m_mod_reg_rm.getSIBIndex();
                     u8 multiplier = 1 << SIB_SCALE;
 
-                    pState->pSession->addReference(igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset), pState->m_cpu_analyse_result->m_startOfInstruction);
+                    pState->pSession->addReference(igorAddress(pState->pSession, pOperand->m_registerRM.m_mod_reg_rm.offset), pState->m_cpu_analyse_result->m_startOfInstruction);
                 }
             }
             else
             if ((RMIndex == 5) && pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_INDIRECT)
             {
-                pState->pSession->addReference(igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset), pState->m_cpu_analyse_result->m_startOfInstruction);
+                pState->pSession->addReference(igorAddress(pState->pSession, pOperand->m_registerRM.m_mod_reg_rm.offset), pState->m_cpu_analyse_result->m_startOfInstruction);
             }
             else
             {
@@ -305,7 +305,7 @@ void c_cpu_x86::generateReferences(s_analyzeState* pState, int operandIndex)
     }
     case s_x86_operand::type_address:
     {
-        pState->pSession->addReference(igorAddress(pOperand->m_address.m_addressValue), pState->m_cpu_analyse_result->m_startOfInstruction);
+        pState->pSession->addReference(igorAddress(pState->pSession, pOperand->m_address.m_addressValue), pState->m_cpu_analyse_result->m_startOfInstruction);
         break;
     }
     default:
@@ -385,11 +385,13 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
             else
             if ((RMIndex == 5) && pOperand->m_registerRM.m_mod_reg_rm.getMod() == MOD_INDIRECT)
             {
-                igorAddress effectiveAddress = igorAddress(pOperand->m_registerRM.m_mod_reg_rm.offset);
+                igorAddress effectiveAddress = igorAddress(pState->pSession, pOperand->m_registerRM.m_mod_reg_rm.offset);
 
                 if (pX86State->m_executionMode == c_cpu_x86_state::_64bits)
                 {
-                    effectiveAddress += x86_analyse_result->m_startOfInstruction + x86_analyse_result->m_instructionSize;
+                    // **FIXME** **BROKEN**
+                    // Adding two absolute addresses doesn't make sense!
+                    // effectiveAddress += x86_analyse_result->m_startOfInstruction + x86_analyse_result->m_instructionSize;
                 }
 
                 Balau::String symbolName;
@@ -422,7 +424,7 @@ igor_result c_cpu_x86::getOperand(s_analyzeState* pState, int operandIndex, Bala
         Balau::String addressString;
 
         Balau::String symbolName;
-        if (pState->pSession->getSymbolName(igorAddress(pOperand->m_address.m_addressValue), symbolName))
+        if (pState->pSession->getSymbolName(igorAddress(pState->pSession, pOperand->m_address.m_addressValue), symbolName))
         {
             if (pOperand->m_address.m_dereference)
             {

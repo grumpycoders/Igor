@@ -67,6 +67,8 @@ igor_result c_elfLoader::load(BFile reader, IgorLocalSession * pSession)
     u64 entryPoint;
     u64 phoff;
     u64 shoff;
+    bool foundEntryPointSection = false;
+    uint16_t entryPointSection;
     if (elfClass == 1)
     {
         entryPoint = reader->readU32().get();
@@ -169,9 +171,20 @@ igor_result c_elfLoader::load(BFile reader, IgorLocalSession * pSession)
         reader->seek(pSectionHeader->m_offset);
         pDataBase->load_section_data(sectionHandle, reader, pSectionHeader->m_size);
 
+        igorAddress start(pSession, pSectionHeader->m_addr, sectionHandle);
+        igorAddress end = start + pSectionHeader->m_size;
+        igorAddress supposedEntry(pSession, entryPoint, sectionHandle);
+
+        if ((start <= supposedEntry) && (supposedEntry < end))
+        {
+            entryPointSection = sectionHandle;
+            foundEntryPointSection = true;
+        }
     }
 
-    pDataBase->m_entryPoint.offset = entryPoint;
+    EAssert(foundEntryPointSection, "Couldn't find entry point's section");
+    igorAddress entryPointAddress(pSession, entryPoint, entryPointSection);
+    pDataBase->m_entryPoint = entryPointAddress;
 
     return IGOR_SUCCESS;
 }

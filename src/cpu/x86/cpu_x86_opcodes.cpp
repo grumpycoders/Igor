@@ -603,8 +603,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
             if (pState->pSession->readU32(pState->m_PC, target) != IGOR_SUCCESS)
                 return IGOR_FAILURE;
             pState->m_PC += 4;
-            igorAddress targetAddress;
-            targetAddress.offset = target;
+            igorAddress targetAddress(pState->pSession, target);
 
             x86_analyse_result->m_numOperands = 2;
             x86_analyse_result->m_operands[0].setAsRegister(pState, REG_EAX, OPERAND_16_32);
@@ -618,8 +617,7 @@ igor_result x86_opcode_mov(s_analyzeState* pState, c_cpu_x86_state* pX86State, u
             if (pState->pSession->readU32(pState->m_PC, target) != IGOR_SUCCESS)
                 return IGOR_FAILURE;
             pState->m_PC += 4;
-            igorAddress targetAddress;
-            targetAddress.offset = target;
+            igorAddress targetAddress(pState->pSession, target);
 
             x86_analyse_result->m_numOperands = 2;
             x86_analyse_result->m_operands[0].setAsAddress(targetAddress.offset, true);

@@ -165,6 +165,10 @@ igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
         }
     }
 
+    igorLinearAddress entryPoint = m_ImageBase + m_EntryPointVA;
+    bool foundEntryPointSection = false;
+    uint16_t entryPointSection;
+
     //IMAGE_SECTION_HEADER
     for (int i = 0; i<m_NumberOfSegments; i++)
     {
@@ -206,16 +210,29 @@ igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
         reader->seek(segmentData.PointerToRawData);
         db->load_section_data(sectionHandle, reader, segmentData.SizeOfRawData);
 
+        segmentData.sectionId = sectionHandle;
+
         m_segments.push_back(segmentData);
+
+        igorAddress start(session, m_ImageBase + segmentData.VirtualAddress, sectionHandle);
+        igorAddress end = start + segmentData.Misc;
+        igorAddress supposedEntry(session, entryPoint, sectionHandle);
+
+        if ((start <= supposedEntry) && (supposedEntry < end))
+        {
+            entryPointSection = sectionHandle;
+            foundEntryPointSection = true;
+        }
     }
 
     loadDebug(db, reader);
     loadImports(db, reader);
 
-    igorLinearAddress entryPoint = m_ImageBase + m_EntryPointVA;
-    db->m_entryPoint.offset = entryPoint;
+    EAssert(foundEntryPointSection, "Couldn't find entry point's section");
+    igorAddress entryPointAddress(session, entryPoint, entryPointSection);
+    db->m_entryPoint = entryPointAddress;
 
-    igorAddress base(m_ImageBase);
+    igorAddress base(session, m_ImageBase);
     base += m_EntryPointVA;
     session->add_code_analysis_task(base);
 
@@ -322,9 +339,9 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
 {
     IMAGE_DATA_DIRECTORY* pDebugDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
 
-    igorAddress debugTableVA = igorAddress(m_ImageBase + pDebugDirectory->VirtualAddress);
+    igorAddress debugTableVA = igorAddress(db, m_ImageBase + pDebugDirectory->VirtualAddress);
 
-    while (debugTableVA < igorAddress(m_ImageBase + pDebugDirectory->VirtualAddress + pDebugDirectory->Size))
+    while (debugTableVA < igorAddress(db, m_ImageBase + pDebugDirectory->VirtualAddress + pDebugDirectory->Size))
     {
         u32 characteristics = db->readU32(debugTableVA); debugTableVA += 4;
         u32 timeDateStamp = db->readU32(debugTableVA); debugTableVA += 4;
@@ -338,7 +355,7 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
         if (type == 2) // IMAGE_DEBUG_TYPE_CODEVIEW
         {
             igorLinearAddress codeViewData = m_ImageBase + addressOfRawData;
-            igorAddress codeViewDataAddr(codeViewData);
+            igorAddress codeViewDataAddr(db, codeViewData);
 
             u32 signature = db->readU32(codeViewDataAddr); codeViewDataAddr += 4;
             u8 guid[16];
@@ -376,7 +393,8 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
 
                                     if (Sym->Pub32.pubsymflags.fFunction)
                                     {
-                                        igorAddress symbolAddress(m_ImageBase + m_segments[Sym->Pub32.seg - 1].VirtualAddress + Sym->Pub32.off);
+                                        // TODO: which section ?
+                                        igorAddress symbolAddress(db, m_ImageBase + m_segments[Sym->Pub32.seg - 1].VirtualAddress + Sym->Pub32.off);
                                         db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
                                     }
 
@@ -393,7 +411,8 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
                                     */
                                     if (Sym->Data32.seg == 0)
                                     {
-                                        igorAddress symbolAddress(m_ImageBase + Sym->Data32.off);
+                                        // TODO: which section ?
+                                        igorAddress symbolAddress(db, m_ImageBase + Sym->Data32.off);
                                         db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
                                     }
                                     else
@@ -401,7 +420,8 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
                                         int segmentIndex = Sym->Data32.seg - 1;
                                         if (segmentIndex < m_segments.size())
                                         {
-                                            igorAddress symbolAddress(m_ImageBase + m_segments[Sym->Data32.seg - 1].VirtualAddress + Sym->Data32.off);
+                                            // TODO: which section ?
+                                            igorAddress symbolAddress(db, m_ImageBase + m_segments[Sym->Data32.seg - 1].VirtualAddress + Sym->Data32.off);
                                             db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
                                         }
                                     }
@@ -428,9 +448,9 @@ void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
 {
     IMAGE_DATA_DIRECTORY* pImportDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
 
-    igorAddress importTableAddressVirtual(m_ImageBase + pImportDirectory->VirtualAddress);
+    igorAddress importTableAddressVirtual(db, m_ImageBase + pImportDirectory->VirtualAddress);
 
-    while (importTableAddressVirtual < igorAddress(m_ImageBase + pImportDirectory->VirtualAddress + pImportDirectory->Size))
+    while (importTableAddressVirtual < igorAddress(db, m_ImageBase + pImportDirectory->VirtualAddress + pImportDirectory->Size))
     {
         u32 originalFirstThunkRVA = db->readU32(importTableAddressVirtual); importTableAddressVirtual += 4;
 
@@ -443,7 +463,7 @@ void c_PELoader::loadImports(s_igorDatabase * db, BFile reader)
         u32 firstThunkRVA = db->readU32(importTableAddressVirtual); importTableAddressVirtual += 4;
 
         Balau::String name;
-        igorAddress imageBase(m_ImageBase);
+        igorAddress imageBase(db->m_sessionId, m_ImageBase);
         db->readString(imageBase + nameRVA, name);
 
         u32 importFunctionIndex = 0;

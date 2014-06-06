@@ -1,3 +1,5 @@
+#include <set>
+
 #include "IgorAnalysis.h"
 #include "IgorSession.h"
 
@@ -13,6 +15,40 @@
 #include "IgorMemory.h"
 
 using namespace Balau;
+
+namespace {
+
+    class IdList : public Balau::AtStart {
+    public:
+        IdList() : AtStart(500) { }
+        virtual void doStart() override {
+            for (int i = 1; i < static_cast<uint16_t>(-1); i++)
+                m_set.insert(i);
+        }
+        uint16_t getId() {
+            Balau::ScopeLock sl(m_lock);
+            auto iter = m_set.begin();
+            IAssert(iter != m_set.end(), "Too many open databases");
+            uint16_t ret = *iter;
+            m_set.erase(iter);
+
+            return ret;
+        }
+        void returnId(uint16_t id) {
+            Balau::ScopeLock sl(m_lock);
+            auto iter = m_set.find(id);
+            IAssert(iter != m_set.end(), "Database %u has already been released", id);
+            m_set.insert(id);
+        }
+
+    private:
+        Balau::Lock m_lock;
+        std::set<uint16_t> m_set;
+    };
+
+}
+
+static IdList s_ids;
 
 String IgorSession::generateUUID() {
 #ifdef _WIN32
@@ -53,14 +89,19 @@ String IgorSession::generateUUID() {
 RWLock IgorSession::m_listLock;
 IgorSession * IgorSession::m_head = NULL;
 
-void IgorSession::linkMe() {
+void IgorSession::activate() {
     ScopeLockW sl(m_listLock);
-
-    m_next = m_head;
-    m_prev = NULL;
-    m_head = this;
+    m_active = true;
 
     addRef();
+}
+
+void IgorSession::deactivate() {
+    ScopeLockW sl(m_listLock);
+
+    m_active = false;
+
+    release();
 }
 
 void IgorSession::assignNewUUID() {
@@ -68,13 +109,19 @@ void IgorSession::assignNewUUID() {
     m_uuid = generateUUID();
 }
 
-IgorSession::~IgorSession() {
-    ScopeLockR sl(m_listLock);
-    IAssert((m_head != this) && !m_next && !m_prev, "Session still linked while being deleted.");
+IgorSession::IgorSession() {
+    m_id = s_ids.getId();
+    ScopeLockW sl(m_listLock);
+
+    m_next = m_head;
+    m_prev = NULL;
+    m_head = this;
 }
 
-void IgorSession::unlinkMe() {
-    ScopeLockW sl(m_listLock);
+IgorSession::~IgorSession() {
+    s_ids.returnId(m_id);
+    ScopeLockR sl(m_listLock);
+    IAssert(!m_active, "Session still actively linked while being deleted.");
 
     if (m_head == this)
         m_head = m_next;
@@ -86,22 +133,34 @@ void IgorSession::unlinkMe() {
         m_prev->m_next = m_next;
 
     m_next = m_prev = NULL;
-
-    release();
 }
 
 void IgorSession::enumerate(std::function<void(IgorSession *)> cb) {
     ScopeLockR sl(m_listLock);
 
     for (IgorSession * ptr = m_head; ptr; ptr = ptr->m_next)
-        cb(ptr);
+        if (ptr->m_active)
+            cb(ptr);
 }
 
 IgorSession * IgorSession::find(const Balau::String & uuid) {
     ScopeLockR sl(m_listLock);
 
     for (IgorSession * ptr = m_head; ptr; ptr = ptr->m_next) {
-        if (ptr->getUUID() == uuid) {
+        if (ptr->m_active && ptr->getUUID() == uuid) {
+            ptr->addRef();
+            return ptr;
+        }
+    }
+
+    return NULL;
+}
+
+IgorSession * IgorSession::find(uint16_t id) {
+    ScopeLockR sl(m_listLock);
+
+    for (IgorSession * ptr = m_head; ptr; ptr = ptr->m_next) {
+        if (ptr->m_id == id) {
             ptr->addRef();
             return ptr;
         }

@@ -364,7 +364,8 @@ void c_wxAsmWidget::goToSelectedSymbol()
         u64 offset;
         if (m_selectedText.scanf("0x%016llX", &offset))
         {
-            goToAddress(igorAddress(offset));
+            // TODO: need to find a section here
+            goToAddress(igorAddress(m_pSession, offset));
         }
     }
 }

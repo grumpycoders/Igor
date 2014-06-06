@@ -11,6 +11,7 @@ class c_cpu_state;
 class IgorSession
 {
   public:
+      IgorSession();
       virtual ~IgorSession();
 
     void setSessionName(const Balau::String & name) { m_name = name; }
@@ -18,6 +19,7 @@ class IgorSession
 
     const Balau::String & getSessionName() { return m_name; }
     const Balau::String & getUUID() { return m_uuid; }
+    uint16_t getId() { return m_id; }
 
     void addRef() {
         m_refs++;
@@ -29,9 +31,31 @@ class IgorSession
 
     static void enumerate(std::function<void(IgorSession *)>);
     static IgorSession * find(const Balau::String &);
+    static IgorSession * find(uint16_t id);
     static Balau::String generateUUID();
 
     virtual std::tuple<igor_result, Balau::String, Balau::String> serialize(const char * name) { igor_result r = IGOR_FAILURE; Balau::String m1 = "Can't serialize this", m2; return std::tie(r, m1, m2); }
+
+    // temporary; this needs to take care of the section limits, and switch section if necessary.
+    igorAddress incrementAddress(const igorAddress & a, igorLinearAddress offset) {
+        igorAddress r = a;
+        r.m_offset += offset;
+        return r;
+    }
+
+    igorAddress decrementAddress(const igorAddress & a, igorLinearAddress offset) {
+        igorAddress r = a;
+        r.m_offset -= offset;
+        return r;
+    }
+
+    void do_incrementAddress(igorAddress & a, igorLinearAddress offset) {
+        a.m_offset += offset;
+    }
+
+    void do_decrementAddress(igorAddress & a, igorLinearAddress offset) {
+        a.m_offset -= offset;
+    }
 
     virtual const char * getStatusString() { return "Unknown"; }
     virtual void stop() { }
@@ -128,15 +152,18 @@ class IgorSession
     virtual void addReference(igorAddress referencedAddress, igorAddress referencedFrom) = 0;
     virtual void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom) = 0;
 
-    void unlinkMe();
+    void deactivate();
   protected:
     void assignNewUUID();
-    void linkMe();
+    void activate();
 
   private:
+    uint16_t m_id; // this is local to the process, don't save it
+
     Balau::String m_uuid, m_name;
     static Balau::RWLock m_listLock;
     static IgorSession * m_head;
     IgorSession * m_next, * m_prev;
+    bool m_active = false;
     std::atomic<int> m_refs = 1;
 };

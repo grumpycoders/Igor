@@ -21,13 +21,73 @@
 
 #include "IgorMemory.h"
 
-const igorAddress IGOR_MIN_ADDRESS(0);
-const igorAddress IGOR_MAX_ADDRESS((u64) -1);
-const igorAddress IGOR_INVALID_ADDRESS((u64) -1);
+const igorAddress IGOR_INVALID_ADDRESS;
 
 using namespace Balau;
 
 LuaMainTask * g_luaTask = NULL;
+
+igorAddress::igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_section_handle sectionId)
+    : m_sectionId(sectionId)
+    , m_offset(offset)
+    , m_sessionId(sessionId)
+{ }
+
+igorAddress::igorAddress(s_igorDatabase * db, igorLinearAddress offset, igor_section_handle sectionId)
+: igorAddress(db ? db->m_sessionId : 0, offset, sectionId)
+{ }
+
+igorAddress::igorAddress(IgorSession * session, igorLinearAddress offset, igor_section_handle sectionId)
+    : igorAddress(session ? session->getId() : 0, offset, sectionId)
+{ }
+
+IgorSession * igorAddress::getSession() const {
+    IgorSession * session = IgorSession::find(m_sessionId);
+    IAssert(session, "No session associated with id %u", m_sessionId);
+    return session;
+}
+
+igorAddress & igorAddress::operator++() {
+    IgorSession * session = getSession();
+    session->do_incrementAddress(*this, 1);
+    session->release();
+    return *this;
+}
+
+igorAddress & igorAddress::operator--() {
+    IgorSession * session = getSession();
+    session->do_decrementAddress(*this, 1);
+    session->release();
+    return *this;
+}
+
+igorAddress & igorAddress::operator+=(igorLinearAddress d) {
+    IgorSession * session = getSession();
+    session->do_incrementAddress(*this, d);
+    session->release();
+    return *this;
+}
+
+igorAddress & igorAddress::operator-=(igorLinearAddress d) {
+    IgorSession * session = getSession();
+    session->do_decrementAddress(*this, d);
+    session->release();
+    return *this;
+}
+
+igorAddress igorAddress::operator+(igorLinearAddress d) const {
+    IgorSession * session = getSession();
+    igorAddress ret = session->incrementAddress(*this, d);
+    session->release();
+    return ret;
+}
+
+igorAddress igorAddress::operator-(igorLinearAddress d) const {
+    IgorSession * session = getSession();
+    igorAddress ret = session->decrementAddress(*this, d);
+    session->release();
+    return ret;
+}
 
 class GoogleProtoBufs : public AtStart, public AtExit {
 public:

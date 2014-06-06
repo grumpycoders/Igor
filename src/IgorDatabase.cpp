@@ -1,7 +1,20 @@
 #include <set>
+#include <AtStartExit.h>
 #include "IgorDatabase.h"
 
 #include "IgorMemory.h"
+
+s_igorDatabase::s_igorDatabase()
+{
+}
+
+s_igorDatabase::~s_igorDatabase()
+{
+    for (auto & cpu : m_cpu_modules)
+        delete cpu;
+    for (auto & section : m_sections)
+        delete section;
+}
 
 igor_result s_igorDatabase::igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle)
 {
@@ -50,7 +63,7 @@ igor_result s_igorDatabase::readS64(igorAddress address, s64& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -71,7 +84,7 @@ igor_result s_igorDatabase::readU64(igorAddress address, u64& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -93,7 +106,7 @@ igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -114,7 +127,7 @@ igor_result s_igorDatabase::readU32(igorAddress address, u32& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -136,7 +149,7 @@ igor_result s_igorDatabase::readS16(igorAddress address, s16& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -158,7 +171,7 @@ igor_result s_igorDatabase::readU16(igorAddress address, u16& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -180,7 +193,7 @@ igor_result s_igorDatabase::readS8(igorAddress address, s8& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -202,7 +215,7 @@ igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
         return IGOR_FAILURE;
     }
 
-    igorLinearAddress rawOffset = address - igorAddress(pSection->m_virtualAddress);
+    igorLinearAddress rawOffset = address - igorAddress(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     if (rawOffset > pSection->m_rawDataSize)
     {
@@ -223,6 +236,7 @@ igor_result s_igorDatabase::create_section(igorLinearAddress virtualAddress, u64
 
     pNewSection->m_virtualAddress = virtualAddress;
     pNewSection->m_size = size;
+    pNewSection->m_id = sectionHandle;
 
     return IGOR_SUCCESS;
 }
@@ -440,6 +454,12 @@ igorAddress s_igorDatabase::getEntryPoint()
 
 igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAddress)
 {
+    if (virtualAddress.m_sectionId != static_cast<igor_section_handle>(-1))
+    {
+        return virtualAddress.m_sectionId;
+    }
+
+    // sectionId was -1, let's search for it
     for (int i = 0; i<m_sections.size(); i++)
     {
         s_igorSection* pSection = m_sections[i];
@@ -457,7 +477,7 @@ igorAddress s_igorDatabase::getSectionStartVirtualAddress(igor_section_handle se
 {
     s_igorSection* pSection = m_sections[sectionHandle];
 
-    igorAddress r(pSection->m_virtualAddress);
+    igorAddress r(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
 
     return r;
 }
@@ -471,14 +491,15 @@ u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
 
 std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()
 {
-    igorAddress start = IGOR_MAX_ADDRESS, end = IGOR_MIN_ADDRESS;
+    igorAddress start(m_sessionId, 0, 0);
+    igorAddress end(m_sessionId, static_cast<igorLinearAddress>(-1), m_sections.size() - 1);
     size_t total = 0;
 
     for (auto & i : m_sections)
     {
         s_igorSection* pSection = i;
-        igorAddress sectionStart(pSection->m_virtualAddress);
-        igorAddress sectionEnd(pSection->m_virtualAddress + pSection->m_size);
+        igorAddress sectionStart(m_sessionId, pSection->m_virtualAddress, i->m_id);
+        igorAddress sectionEnd(m_sessionId, pSection->m_virtualAddress + pSection->m_size, i->m_id);
 
         total += pSection->m_size;
 
@@ -500,13 +521,12 @@ igorAddress s_igorDatabase::linearToVirtual(u64 linear) {
     u64 linearStart(0), linearEnd;
     for (auto & i : sections) {
         linearEnd = linearStart + i->m_size;
-        if (linear < linearEnd) {
-            return igorAddress(i->m_virtualAddress + linear - linearStart);
-        }
+        if (linear < linearEnd)
+            return igorAddress(m_sessionId, i->m_virtualAddress + linear - linearStart, i->m_id);
         linearStart = linearEnd;
     }
 
-    return IGOR_MAX_ADDRESS;
+    return IGOR_INVALID_ADDRESS;
 }
 
 void s_igorDatabase::addReference(igorAddress referencedAddress, igorAddress referencedFrom)
@@ -523,12 +543,4 @@ void s_igorDatabase::getReferences(igorAddress referencedAddress, std::vector<ig
     {
         referencedFrom.push_back(it->second);
     }
-}
-
-s_igorDatabase::~s_igorDatabase()
-{
-    for (auto & cpu : m_cpu_modules)
-        delete cpu;
-    for (auto & section : m_sections)
-        delete section;
 }

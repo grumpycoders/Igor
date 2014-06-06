@@ -15,12 +15,13 @@ typedef int igor_cpu_handle;
 
 struct s_analysisRequest
 {
-    s_analysisRequest(igorAddress PC) : m_pc(PC) { }
+    s_analysisRequest(const igorAddress & PC) : m_pc(PC) { }
     igorAddress m_pc;
 };
 
 struct s_igorDatabase
 {
+    s_igorDatabase();
     ~s_igorDatabase();
     // Not sure about that stuff yet. Kind of making it up as I go
     enum e_baseTypes
@@ -108,6 +109,8 @@ struct s_igorDatabase
     std::vector<c_cpu_module*> m_cpu_modules;
     Balau::TQueue<s_analysisRequest> m_analysisRequests;
     std::vector<s_igorSection*> m_sections;
+
+    uint16_t m_sessionId;
 
     igor_result igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle);
     

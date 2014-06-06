@@ -212,7 +212,7 @@ void c_wxIgorFrame::closeFile()
     delete m_sessionPanel;
     if (m_session) {
         m_session->stop();
-        m_session->unlinkMe();
+        m_session->deactivate();
         m_session->release();
     }
     m_sessionPanel = NULL;
@@ -255,7 +255,8 @@ void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
 
         if (m_sessionPanel->m_pAsmWidget && address)
         {
-            m_sessionPanel->m_pAsmWidget->m_currentPosition = igorAddress(address);
+            // TODO: needs to figure out a section here
+            m_sessionPanel->m_pAsmWidget->m_currentPosition = igorAddress(m_session, address);
             m_sessionPanel->m_pAsmWidget->Refresh();
         }
     }

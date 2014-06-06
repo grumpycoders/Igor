@@ -50,6 +50,8 @@ struct s_igorSection
     u64 m_option;
 
     u8* m_instructionSize;// Temporary. Size of instructions. 0 means unknown if it's an instruction or not.
+
+    uint16_t m_id = 0;
 };
 
 class SectionCompare {

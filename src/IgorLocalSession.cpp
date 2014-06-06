@@ -80,7 +80,7 @@ void IgorAnalysisManagerLocal::Do() {
             igorAddress currentPC = pRequest->m_pc;
             delete pRequest;
 
-            if (m_session->m_status == IgorLocalSession::STOPPING || currentPC == IGOR_INVALID_ADDRESS) {
+            if (m_session->m_status == IgorLocalSession::STOPPING || currentPC.isNotValid()) {
                 m_session->m_status = IgorLocalSession::STOPPING;
                 continue;
             }
@@ -216,10 +216,95 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
 }
 
 std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::deserialize(const char * name) {
-    igor_result result = IGOR_FAILURE;
-    IgorLocalSession * session = NULL;
-    String errorMsg1 = "Not yet implemented";
-    String errorMsg2;
+    igor_result result = IGOR_SUCCESS;
+    IgorLocalSession * session = new IgorLocalSession();
+    String errorMsg1, errorMsg2;
+    s_igorDatabase * igorDatabase = session->m_pDatabase;
+    int r;
+
+    try {
+        IgorSessionSqlite db;
+        db.openDB(name);
+        db.safeWriteStmt("BEGIN EXCLUSIVE TRANSACTION;");
+        db.createVersionnedDB([&](int version) { return db.upgradeDB(version); }, IgorSessionSqlite::CURRENT_VERSION);
+        sqlite3_stmt * stmt = NULL;
+
+        stmt = db.safeStmt("SELECT name, value FROM main.properties;");
+        while (true) {
+            r = db.safeStep(stmt);
+            if (r == SQLITE_DONE)
+                break;
+            String name = (char *) sqlite3_column_text(stmt, 0);
+            String value = (char *) sqlite3_column_text(stmt, 1);
+            if (name == "CPU") {
+                c_cpu_module * cpu = c_cpu_factory::createCpuFromString(value);
+                if (!cpu)
+                    throw GeneralException(String("Unknown CPU:") + value);
+                igorDatabase->m_cpu_modules.push_back(cpu);
+            } else if (name == "Name") {
+                session->setSessionName(value);
+            }
+        }
+        db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("SELECT address, name, type FROM main.symbols;");
+        while (true) {
+            r = db.safeStep(stmt);
+            if (r == SQLITE_DONE)
+                break;
+
+        }
+        for (auto & symbol : igorDatabase->m_symbolMap) {
+            db.safeBind(stmt, 1, (sqlite3_int64)symbol.first.offset);
+            db.safeBind(stmt, 2, symbol.second.m_name);
+            db.safeBind(stmt, 3, symbol.second.m_type);
+            db.safeWriteStep(stmt);
+            db.safeReset(stmt);
+        }
+        db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("INSERT INTO main.'references' (addressSrc, addressDst) VALUES(?1, ?2);");
+        for (auto & ref : igorDatabase->m_references) {
+            db.safeBind(stmt, 1, (sqlite3_int64)ref.first.offset);
+            db.safeBind(stmt, 2, (sqlite3_int64)ref.second.offset);
+            db.safeWriteStep(stmt);
+            db.safeReset(stmt);
+        }
+        db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("INSERT INTO main.sections (virtualAddress, option, rawData, instructionSize) VALUES(?1, ?2, ?3, ?4);");
+        for (auto & section : igorDatabase->m_sections) {
+            db.safeBind(stmt, 1, (sqlite3_int64)section->m_virtualAddress);
+            db.safeBind(stmt, 2, (sqlite3_int64)section->m_option);
+            if (section->m_rawData)
+                db.safeBindBlob(stmt, 3, section->m_rawDataSize);
+            if (section->m_instructionSize)
+                db.safeBindBlob(stmt, 4, section->m_size);
+            db.safeWriteStep(stmt);
+            sqlite3_int64 rowid = db.lastInsertRowID();
+            if (section->m_rawData)
+                db.safeWriteWholeBlob("main", "sections", "rawData", rowid, section->m_rawData, section->m_rawDataSize);
+            if (section->m_instructionSize)
+                db.safeWriteWholeBlob("main", "sections", "instructionSize", rowid, section->m_instructionSize, section->m_size);
+            db.safeReset(stmt);
+        }
+        db.safeFinalize(stmt);
+
+        db.safeWriteStmt("COMMIT TRANSACTION;");
+
+        db.closeDB();
+    }
+    catch (GeneralException & e) {
+        result = IGOR_FAILURE;
+        errorMsg1 = e.getMsg();
+        const char * details = e.getDetails();
+        errorMsg2 = details ? details : "";
+    }
+    catch (...) {
+        result = IGOR_FAILURE;
+        errorMsg1 = "Unknown error";
+        errorMsg2 = "Uncatched exception";
+    }
 
     return std::tie(result, session, errorMsg1, errorMsg2);
 }
@@ -287,7 +372,7 @@ const char * IgorLocalSession::getStatusString() {
 void IgorLocalSession::loaded(const char * filename) {
     assignNewUUID();
     setSessionName(filename);
-    linkMe();
+    activate();
 }
 
 void IgorLocalSession::add_code_analysis_task(igorAddress PC)

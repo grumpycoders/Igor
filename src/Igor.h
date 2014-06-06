@@ -49,19 +49,19 @@ struct igorAddress {
     bool operator!=(const igorAddress & b) const { return compareTo(b) != EQ; }
 
     explicit igorAddress() : igorAddress((uint16_t) 0, 0, -1) { }
-    explicit igorAddress(struct s_igorDatabase * session, igorLinearAddress offset, igor_section_handle sectionId = static_cast<uint16_t>(-1));
-    explicit igorAddress(class IgorSession * session, igorLinearAddress offset, igor_section_handle sectionId = static_cast<uint16_t>(-1));
-    explicit igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_section_handle sectionId = static_cast<uint16_t>(-1));
+    explicit igorAddress(struct s_igorDatabase * session, igorLinearAddress offset, igor_section_handle sectionId);
+    explicit igorAddress(class IgorSession * session, igorLinearAddress offset, igor_section_handle sectionId);
+    explicit igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_section_handle sectionId);
 
     igorAddress(const igorAddress & a)
         : m_offset(a.m_offset)
-        , m_sectionId(a.m_sectionId)
+        , m_segmentId(a.m_segmentId)
         , m_sessionId(a.m_sessionId)
     { }
     igorAddress & operator=(const igorAddress & a)
     {
         m_offset = a.m_offset;
-        m_sectionId = a.m_sectionId;
+        m_segmentId = a.m_segmentId;
         m_sessionId = a.m_sessionId;
 
         return *this;
@@ -75,7 +75,7 @@ struct igorAddress {
 
 private:
     igorLinearAddress m_offset;
-    igor_section_handle m_sectionId;
+    igor_section_handle m_segmentId;
     uint16_t m_sessionId;
 
     enum {
@@ -88,9 +88,9 @@ private:
             return LT;
         else if (m_offset > b.m_offset)
             return GT;
-        else if (m_sectionId < b.m_sectionId)
+        else if (m_segmentId < b.m_segmentId)
             return LT;
-        else if (m_sectionId > b.m_sectionId)
+        else if (m_segmentId > b.m_segmentId)
             return GT;
         return EQ;
     }

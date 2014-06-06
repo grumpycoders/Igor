@@ -50,7 +50,7 @@ igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
     {
         cs_insn* pCurrentInstruction = &insn[0];
 
-        pState->m_cpu_analyse_result->m_startOfInstruction = igorAddress(pState->pSession, pCurrentInstruction->address);
+        pState->m_cpu_analyse_result->m_startOfInstruction = pState->m_PC;
         pState->m_cpu_analyse_result->m_instructionSize = pCurrentInstruction->size;
         pState->m_PC += pCurrentInstruction->size;
 
@@ -75,7 +75,8 @@ igor_result c_cpu_x86_capstone::analyze(s_analyzeState* pState)
                     {
                         if (pCurrentInstruction->detail->x86.operands[0].type == X86_OP_IMM)
                         {
-                            pState->pSession->add_code_analysis_task(igorAddress(pState->pSession, pCurrentInstruction->detail->x86.operands[0].imm));
+                            igorAddress targetAddress(pState->pSession, pCurrentInstruction->detail->x86.operands[0].imm, -1);
+                            pState->pSession->add_code_analysis_task(targetAddress);
                         }
                         /*else if (pCurrentInstruction->detail->x86.operands[0].type == X86_OP_MEM)
                         {

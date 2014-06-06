@@ -454,9 +454,9 @@ igorAddress s_igorDatabase::getEntryPoint()
 
 igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAddress)
 {
-    if (virtualAddress.m_sectionId != static_cast<igor_section_handle>(-1))
+    if (virtualAddress.m_segmentId != static_cast<igor_section_handle>(-1))
     {
-        return virtualAddress.m_sectionId;
+        return virtualAddress.m_segmentId;
     }
 
     // sectionId was -1, let's search for it

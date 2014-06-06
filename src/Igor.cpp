@@ -28,7 +28,7 @@ using namespace Balau;
 LuaMainTask * g_luaTask = NULL;
 
 igorAddress::igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_section_handle sectionId)
-    : m_sectionId(sectionId)
+    : m_segmentId(sectionId)
     , m_offset(offset)
     , m_sessionId(sessionId)
 { }

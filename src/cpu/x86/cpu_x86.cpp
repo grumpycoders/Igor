@@ -114,7 +114,7 @@ igor_result c_cpu_x86::analyze(s_analyzeState* pState)
 
     if (x86_opcode_table[currentByte] == NULL)
     {
-        Printer::log(M_INFO, "Unknown instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction);
+        Printer::log(M_INFO, "Unknown instruction byte %02x at %08llX", currentByte, result.m_startOfInstruction.offset);
         pState->m_PC = result.m_startOfInstruction;
         return IGOR_FAILURE;
     }

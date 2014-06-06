@@ -87,7 +87,7 @@ void wxManageUsersDialog::OnAddUser(wxCommandEvent& event)
     if (pTextEntryDialog->ShowModal() == wxID_OK)
     {
         wxString wxNewUserName = pTextEntryDialog->GetValue();
-        Balau::String newUsername = wxNewUserName.char_str();
+        Balau::String newUsername = wxNewUserName.c_str().AsChar();
         bool success = IgorUsers::addUser(newUsername, SRP::generateVerifier(newUsername, "default"));
 
         // TODO: display message
@@ -136,13 +136,13 @@ void wxManageUsersDialog::OnChangePassword(wxCommandEvent& event)
     }
 
     long itemIndex = m_userList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-    String username = m_userList->GetItemText(itemIndex).char_str();
+    String username = m_userList->GetItemText(itemIndex).c_str().AsChar();
 
     wxPasswordEntryDialog* pNewPasswordEntryDialog = new wxPasswordEntryDialog(this, "Enter new password");
 
     if (pNewPasswordEntryDialog->ShowModal() == wxID_OK)
     {
-        String newPassword = pNewPasswordEntryDialog->GetValue().char_str();
+        String newPassword = pNewPasswordEntryDialog->GetValue().c_str().AsChar();
         bool success = IgorUsers::changePassword(username, SRP::generateVerifier(username, newPassword));
 
         // TODO: display message

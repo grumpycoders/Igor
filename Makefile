@@ -21,7 +21,7 @@ ifeq ($(SYSTEM),Linux)
     CONFIG_H = Balau/linux-config.h
 endif
 
-vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_capstone:src/Loaders/PE:src/Loaders/Elf:src/PDB:wxIgor
+vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_capstone:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor
 vpath %.cc src/protobufs
 vpath %.proto src/protobufs
 
@@ -36,12 +36,14 @@ IgorDatabase.cpp \
 IgorSection.cpp \
 IgorAnalysis.cpp \
 IgorHttp.cpp \
+IgorHttpSession.cpp \
 IgorWS.cpp \
 \
 IgorProtoFile.pb.cc \
 \
 Loaders/PE/PELoader.cpp \
 Loaders/Elf/elfLoader.cpp \
+Loaders/Dmp/dmpLoader.cpp \
 \
 cpu/cpuModule.cpp \
 cpu/x86/cpu_x86.cpp \
@@ -60,6 +62,7 @@ wxIgor/stdafx.cpp \
 wxIgor/wxAsmWidget.cpp \
 wxIgor/wxIgorApp.cpp \
 wxIgor/wxIgorFrame.cpp \
+wxIgor/wxManageUsers.cpp \
 
 ifneq (,$(wildcard /usr/include/wx-3.0/wx/wx.h))
     IGOR_SOURCES += $(WXIGOR_SOURCES)

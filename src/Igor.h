@@ -78,11 +78,12 @@ private:
     igor_section_handle m_segmentId;
     uint16_t m_sessionId;
 
-    enum {
+    enum compareType {
         LT = -1,
         EQ = 0,
         GT = 1,
-    } compareTo(const igorAddress & b) const {
+    };
+    compareType compareTo(const igorAddress & b) const {
         IAssert(m_sessionId == b.m_sessionId, "Can't compare pointers from two different sessions");
         if (m_offset < b.m_offset)
             return LT;

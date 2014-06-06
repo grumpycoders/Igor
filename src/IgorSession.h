@@ -165,5 +165,5 @@ class IgorSession
     static IgorSession * m_head;
     IgorSession * m_next, * m_prev;
     bool m_active = false;
-    std::atomic<int> m_refs = 1;
+    std::atomic<int> m_refs;
 };

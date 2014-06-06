@@ -110,6 +110,7 @@ void IgorSession::assignNewUUID() {
 }
 
 IgorSession::IgorSession() {
+    m_refs = 1;
     m_id = s_ids.getId();
     ScopeLockW sl(m_listLock);
 

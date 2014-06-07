@@ -7,3 +7,6 @@
 [submodule "capstone"]
 	path = capstone
 	url = https://github.com/yaz0r/capstone
+[submodule "llvm"]
+	path = llvm
+	url = https://github.com/pixelxeno/llvm.git

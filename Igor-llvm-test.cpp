@@ -64,7 +64,7 @@ void test_llvm() {
     std::string tripleName;
 
     Triple triple;
-    triple.setTriple(Triple::normalize("i686-pc-win32"));
+    triple.setTriple(Triple::normalize("i686-pc-windows-msvc"));
     const Target * target = TargetRegistry::lookupTarget("", triple, error);
     tripleName = triple.getTriple();
 

@@ -41,10 +41,19 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/system_error.h"
 
+#include "Target/X86/InstPrinter/X86ATTInstPrinter.h"
+#include "Target/X86/InstPrinter/X86IntelInstPrinter.h"
+
+#include "Target/X86/MCTargetDesc/X86MCTargetDesc.h"
+#include "Target/X86/MCTargetDesc/X86BaseInfo.h"
+
+
 #include <Printer.h>
+#include <Exceptions.h>
 
 using namespace llvm;
 using namespace Balau;
+using namespace X86;
 
 class LLVMTestMemoryObject : public MemoryObject {
     virtual uint64_t getBase() const override { return 0; }
@@ -53,13 +62,47 @@ class LLVMTestMemoryObject : public MemoryObject {
     virtual int readBytes(uint64_t address, uint64_t size, uint8_t *buf) const override { memset(buf, 0x90, size); return 0; }
 };
 
-void test_llvm() {
-    // Initialize targets and assembly printers/parsers.
-    llvm::InitializeAllTargetInfos();
-    llvm::InitializeAllTargetMCs();
-    llvm::InitializeAllAsmParsers();
-    llvm::InitializeAllDisassemblers();
+class IgorLLVMX86InstPrinter : public X86IntelInstPrinter {
+public:
+    IgorLLVMX86InstPrinter(const MCAsmInfo &MAI, const MCInstrInfo &MII, const MCRegisterInfo &MRI)
+        : X86IntelInstPrinter(MAI, MII, MRI)
+    { }
+    virtual void printInst(const MCInst *MI, raw_ostream &OS, StringRef Annot) {
+        X86IntelInstPrinter::printInst(MI, OS, Annot);
+    }
+    virtual void printRegName(raw_ostream &OS, unsigned RegNo) const {
+        X86IntelInstPrinter::printRegName(OS, RegNo);
+    }
+    virtual void printOperand(const MCInst *MI, unsigned OpNo, raw_ostream &O) {
+        X86IntelInstPrinter::printOperand(MI, OpNo, O);
+    }
+    virtual void printMemReference(const MCInst *MI, unsigned Op, raw_ostream &O) {
+        X86IntelInstPrinter::printMemReference(MI, Op, O);
+    }
+    virtual void printSSECC(const MCInst *MI, unsigned Op, raw_ostream &O) {
+        X86IntelInstPrinter::printSSECC(MI, Op, O);
+    }
+    virtual void printAVXCC(const MCInst *MI, unsigned Op, raw_ostream &O) {
+        X86IntelInstPrinter::printAVXCC(MI, Op, O);
+    }
+    virtual void printPCRelImm(const MCInst *MI, unsigned OpNo, raw_ostream &O) {
+        X86IntelInstPrinter::printPCRelImm(MI, OpNo, O);
+    }
+    virtual void printMemOffset(const MCInst *MI, unsigned OpNo, raw_ostream &O) {
+        X86IntelInstPrinter::printMemOffset(MI, OpNo, O);
+    }
+    virtual void printInstructionText(const char * text, raw_ostream &OS) {
+        X86IntelInstPrinter::printInstructionText(text, OS);
+    }
+    virtual void printLiteralText(const char * text, raw_ostream &OS) {
+        X86IntelInstPrinter::printLiteralText(text, OS);
+    }
+    virtual void printLiteralChar(char c, raw_ostream &OS) {
+        X86IntelInstPrinter::printLiteralChar(c, OS);
+    }
+};
 
+void test_x86_llvm() {
     std::string error;
     std::string tripleName;
 
@@ -68,14 +111,15 @@ void test_llvm() {
     const Target * target = TargetRegistry::lookupTarget("", triple, error);
     tripleName = triple.getTriple();
 
-    OwningPtr<const MCRegisterInfo> MRI(target->createMCRegInfo(tripleName));
-    OwningPtr<const MCAsmInfo> AsmInfo(target->createMCAsmInfo(*MRI, tripleName));
-    OwningPtr<const MCSubtargetInfo> STI(target->createMCSubtargetInfo(tripleName, "", ""));
-    OwningPtr<const MCInstrInfo> MII(target->createMCInstrInfo());
-    OwningPtr<MCDisassembler> DisAsm(target->createMCDisassembler(*STI));
+    IAssert(target == &TheX86_32Target, "We didn't get the proper target for x86 32");
 
-    int AsmPrinterVariant = AsmInfo->getAssemblerDialect();
-    OwningPtr<MCInstPrinter> IP(target->createMCInstPrinter(AsmPrinterVariant, *AsmInfo, *MII, *MRI, *STI));
+    OwningPtr<const MCRegisterInfo>  MRI(target->createMCRegInfo(tripleName));
+    OwningPtr<const MCAsmInfo>       MAI(target->createMCAsmInfo(*MRI, tripleName));
+    OwningPtr<const MCSubtargetInfo> STI(target->createMCSubtargetInfo(tripleName, "", ""));
+    OwningPtr<const MCInstrInfo>     MII(target->createMCInstrInfo());
+
+    OwningPtr<MCDisassembler> DisAsm(target->createMCDisassembler(*STI));
+    OwningPtr<MCInstPrinter>  IP(new IgorLLVMX86InstPrinter(*MAI, *MII, *MRI));
 
     MCInst inst;
     uint64_t size;
@@ -89,6 +133,20 @@ void test_llvm() {
     cmt1.flush();
     Printer::log(M_STATUS, "get inst - out: %s", outStr1.c_str());
     Printer::log(M_STATUS, "get inst - cmt: %s", cmtStr1.c_str());
+
+    const MCInstrDesc & desc = MII->get(inst.getOpcode());
+    uint64_t tsflags = desc.TSFlags;
+
+    Printer::log(M_STATUS, "Instruction flags: %" PRIX64, tsflags);
+
+    if (tsflags & X86II::FS)
+        Printer::log(M_STATUS, "Has FS: prefix");
+
+    if (tsflags & X86II::GS)
+        Printer::log(M_STATUS, "Has GS: prefix");
+
+    if (desc.isCall())
+        Printer::log(M_STATUS, "Is a call");
 
     std::string outStr2, cmtStr2;
     raw_string_ostream out2(outStr2), cmt2(cmtStr2);

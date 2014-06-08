@@ -7,7 +7,6 @@
 #include <TaskMan.h>
 #include <HttpServer.h>
 #include <LuaTask.h>
-#include <IgorUsers.h>
 
 #include "google/protobuf/stubs/common.h"
 
@@ -18,9 +17,9 @@
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
 #include "IgorHttp.h"
-
 #include "IgorMemory.h"
-
+#include "IgorLLVM.h"
+#include "IgorUsers.h"
 
 const igorAddress IGOR_INVALID_ADDRESS;
 
@@ -144,15 +143,14 @@ static void startWX(...) { }
 
 #endif
 
-void test_llvm();
+void test_x86_llvm();
 
 void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
 
     Printer::enable(M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT);
 
-    test_llvm();
-
+    igor_register_llvm();
     g_luaTask = new LuaMainTask();
     TaskMan::registerTask(g_luaTask);
     LuaExecString strLuaHello(
@@ -166,6 +164,8 @@ void MainTask::Do() {
         "print('Lua engine up and running, JIT compiler is ' .. (jitstatus[1] and 'enabled' or 'disabled') .. '.') "
     );
     strLuaHello.exec(g_luaTask);
+
+    test_x86_llvm();
 
     if (argc == 2) {
         IgorLocalSession * session;

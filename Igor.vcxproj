@@ -182,6 +182,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Igor-llvm-test.cpp" />
     <ClCompile Include="src\cpu\cpuModule.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86.cpp" />
     <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp" />

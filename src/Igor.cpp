@@ -21,6 +21,7 @@
 
 #include "IgorMemory.h"
 
+
 const igorAddress IGOR_INVALID_ADDRESS;
 
 using namespace Balau;
@@ -143,10 +144,14 @@ static void startWX(...) { }
 
 #endif
 
+void test_llvm();
+
 void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
-    
+
     Printer::enable(M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT);
+
+    test_llvm();
 
     g_luaTask = new LuaMainTask();
     TaskMan::registerTask(g_luaTask);

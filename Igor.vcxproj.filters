@@ -146,6 +146,9 @@
     <ClCompile Include="src\Loaders\Dmp\dmpLoader.cpp">
       <Filter>Igor\Loaders\Dmp</Filter>
     </ClCompile>
+    <ClCompile Include="Igor-llvm-test.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Igor.h">

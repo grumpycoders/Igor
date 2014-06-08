@@ -7,7 +7,7 @@ extern const t_x86_opcode x86_opcode_table_0xf[0x100];
 //e_operandSize getOperandSize(s_analyzeState* pState);
 s_mod_reg_rm GET_MOD_REG_RM(s_analyzeState* pState);
 
-#if defined(DEBUG) && defined(_MSC_VER) && 0
+#if defined(_DEBUG) && defined(_MSC_VER) && 0
 #define X86_DECODER_FAILURE(errorString) \
     __debugbreak(); \
     throw X86AnalysisException(errorString);

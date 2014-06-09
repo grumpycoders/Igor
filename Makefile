@@ -104,9 +104,8 @@ CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
 LDFLAGS += $(ARCH_FLAGS)
-LDLIBS += $(addprefix -l, $(LIBS))
-
 LDLIBS += $(addsuffix .a, $(addprefix llvm-build/lib/lib, $(LLVM_LIBS)))
+LDLIBS += $(addprefix -l, $(LIBS))
 
 TARGET=Igor.$(BINEXT)
 
@@ -120,7 +119,7 @@ Balau:
 
 llvm:
 	mkdir -p llvm-build
-	(cd llvm-build ; cmake -DLLVM_REQUIRES_RTTI:BOOL=true ../llvm)
+	(cd llvm-build ; cmake -DLLVM_REQUIRES_RTTI:BOOL=true -DCMAKE_BUILD_TYPE:STRING=Debug ../llvm)
 	REQUIRES_RTTI=1 $(MAKE) -C llvm-build
 
 tests: all

@@ -42,11 +42,27 @@
 #include "llvm/Support/system_error.h"
 
 #include "IgorLLVM.h"
+#include <AtStartExit.h>
 
 void igor_register_llvm() {
     // Initialize targets and assembly printers/parsers.
+    llvm::llvm_start_multithreaded();
     llvm::InitializeAllTargetInfos();
     llvm::InitializeAllTargetMCs();
     llvm::InitializeAllAsmParsers();
     llvm::InitializeAllDisassemblers();
 }
+
+namespace {
+
+class ShutdownLLVM : public Balau::AtExit {
+  public:
+      ShutdownLLVM() : AtExit(5) { }
+    void doExit() {
+        llvm::llvm_shutdown();
+    }
+};
+
+}
+
+static ShutdownLLVM shutdownLLVM;

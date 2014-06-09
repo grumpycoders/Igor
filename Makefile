@@ -8,8 +8,18 @@ CPPFLAGS += -g3 -gdwarf-2 -D_DEBUG
 LDFLAGS += -g3 -gdwarf-2
 endif
 
-INCLUDES = . src src/cpu/x86 src/Loaders Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include Balau/libtomcrypt/src/headers
-LIBS = z uuid protobuf sqlite3
+INCLUDES = \
+. \
+src src/cpu/x86 src/cpu/x86_capstone src/cpu/x86_llvm src/Loaders \
+Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include Balau/libtomcrypt/src/headers \
+llvm/include \
+llvm/lib \
+llvm-build/include \
+llvm-build/lib/Target/X86 \
+
+CPPFLAGS += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
+
+LIBS = z uuid protobuf sqlite3 curses
 
 ifeq ($(SYSTEM),Darwin)
     LIBS += pthread iconv
@@ -21,7 +31,7 @@ ifeq ($(SYSTEM),Linux)
     CONFIG_H = Balau/linux-config.h
 endif
 
-vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_capstone:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor
+vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_capstone:src/cpu/x86_llvm:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor
 vpath %.cc src/protobufs
 vpath %.proto src/protobufs
 
@@ -39,30 +49,46 @@ IgorHttp.cpp \
 IgorHttpSession.cpp \
 IgorWS.cpp \
 \
+IgorLLVM.cpp \
+\
 IgorProtoFile.pb.cc \
 \
-Loaders/PE/PELoader.cpp \
-Loaders/Elf/elfLoader.cpp \
-Loaders/Dmp/dmpLoader.cpp \
+PELoader.cpp \
+elfLoader.cpp \
+dmpLoader.cpp \
 \
-cpu/cpuModule.cpp \
-cpu/x86/cpu_x86.cpp \
-cpu/x86/cpu_x86_opcodes.cpp \
-cpu/x86/cpu_x86_opcodes_F.cpp \
-cpu/x86/cpu_x86_capstone.cpp \
+cpuModule.cpp \
+cpu_x86.cpp \
+cpu_x86_opcodes.cpp \
+cpu_x86_opcodes_F.cpp \
+cpu_x86_capstone.cpp \
+cpu_x86_llvm.cpp \
 \
-PDB/gsi.cpp \
-PDB/msf.cpp \
-PDB/pdb.cpp \
-PDB/sym.cpp \
-PDB/tpi.cpp \
+gsi.cpp \
+msf.cpp \
+pdb.cpp \
+sym.cpp \
+tpi.cpp \
 
 WXIGOR_SOURCES = \
-wxIgor/stdafx.cpp \
-wxIgor/wxAsmWidget.cpp \
-wxIgor/wxIgorApp.cpp \
-wxIgor/wxIgorFrame.cpp \
-wxIgor/wxManageUsers.cpp \
+stdafx.cpp \
+wxAsmWidget.cpp \
+wxIgorApp.cpp \
+wxIgorFrame.cpp \
+wxManageUsers.cpp \
+
+LLVM_LIBS += \
+LLVMAArch64AsmParser LLVMAArch64Disassembler LLVMARMCodeGen LLVMARMAsmParser LLVMARMDisassembler LLVMCppBackendCodeGen \
+LLVMHexagonCodeGen LLVMMipsCodeGen LLVMMipsAsmParser LLVMMipsDisassembler LLVMMSP430CodeGen LLVMNVPTXCodeGen LLVMPowerPCCodeGen \
+LLVMPowerPCAsmParser LLVMR600CodeGen LLVMSparcCodeGen LLVMSystemZCodeGen LLVMSystemZAsmParser LLVMSystemZDisassembler \
+LLVMX86CodeGen LLVMX86AsmParser LLVMX86Disassembler LLVMXCoreCodeGen LLVMXCoreDisassembler LLVMDebugInfo LLVMMCDisassembler \
+LLVMAArch64CodeGen LLVMARMDesc LLVMCppBackendInfo LLVMHexagonAsmPrinter LLVMMipsDesc LLVMMSP430Desc LLVMNVPTXDesc \
+LLVMPowerPCDesc LLVMR600Desc LLVMSparcDesc LLVMSystemZDesc LLVMX86Desc LLVMXCoreDesc LLVMAArch64Desc LLVMAsmPrinter \
+LLVMSelectionDAG LLVMARMAsmPrinter LLVMARMInfo LLVMHexagonDesc LLVMMipsAsmPrinter LLVMMipsInfo LLVMMSP430AsmPrinter \
+LLVMMSP430Info LLVMNVPTXAsmPrinter LLVMNVPTXInfo LLVMPowerPCAsmPrinter LLVMPowerPCInfo LLVMR600AsmPrinter LLVMR600Info \
+LLVMSparcInfo LLVMSystemZAsmPrinter LLVMSystemZInfo LLVMX86AsmPrinter LLVMX86Info LLVMXCoreAsmPrinter LLVMXCoreInfo \
+LLVMAArch64AsmPrinter LLVMAArch64Info LLVMMCParser LLVMCodeGen LLVMHexagonInfo LLVMX86Utils LLVMAArch64Utils LLVMObjCARCOpts \
+LLVMScalarOpts LLVMInstCombine LLVMTransformUtils LLVMipa LLVMAnalysis LLVMTarget LLVMCore LLVMMC LLVMObject LLVMSupport \
 
 ifneq (,$(wildcard /usr/include/wx-3.0/wx/wx.h))
     IGOR_SOURCES += $(WXIGOR_SOURCES)
@@ -80,15 +106,22 @@ CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 LDFLAGS += $(ARCH_FLAGS)
 LDLIBS += $(addprefix -l, $(LIBS))
 
+LDLIBS += $(addsuffix .a, $(addprefix llvm-build/lib/lib, $(LLVM_LIBS)))
+
 TARGET=Igor.$(BINEXT)
 
-all: dep Balau $(TARGET)
+all: dep Balau llvm $(TARGET)
 
 strip: $(TARGET)
 	$(STRIP) $(TARGET)
 
 Balau:
 	$(MAKE) -C Balau
+
+llvm:
+	mkdir -p llvm-build
+	(cd llvm-build ; cmake -DLLVM_REQUIRES_RTTI:BOOL=true ../llvm)
+	REQUIRES_RTTI=1 $(MAKE) -C llvm-build
 
 tests: all
 	$(MAKE) -C Balau tests
@@ -137,4 +170,4 @@ deepclean:
 	git submodule foreach git reset --hard HEAD
 	git submodule foreach git submodule foreach git reset --hard HEAD
 
-.PHONY: clean deepclean strip Balau tests all
+.PHONY: clean deepclean strip Balau llvm tests all

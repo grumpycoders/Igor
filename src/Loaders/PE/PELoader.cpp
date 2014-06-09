@@ -5,7 +5,6 @@
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
 #include "cpu/x86/cpu_x86.h"
-#include "cpu/x86_capstone/cpu_x86_capstone.h"
 #include "PDB/pdb.h"
 
 #include "IgorMemory.h"
@@ -129,40 +128,21 @@ igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
     igor_cpu_handle cpuHandle;
     s_igorDatabase * db = session->getDB();
 
-    if (0)
-    {
-        c_cpu_x86* pCpu = new c_cpu_x86();
-        db->igor_add_cpu(pCpu, cpuHandle);
+    c_cpu_x86* pCpu = new c_cpu_x86();
+    db->igor_add_cpu(pCpu, cpuHandle);
 
-        switch (m_Machine)
-        {
-            case IMAGE_FILE_MACHINE_I386:
-                pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_32bits;
-                loadOptionalHeader386(reader);
-                break;
-            case IMAGE_FILE_MACHINE_AMD64:
-                pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_64bits;
-                loadOptionalHeader64(reader);
-                break;
-            default:
-                Failure("Unknown machine type");
-        }
-    }
-    else
+    switch (m_Machine)
     {
-        switch (m_Machine)
-        {
-            case IMAGE_FILE_MACHINE_I386:
-                db->igor_add_cpu(new c_cpu_x86_capstone(CS_MODE_32), cpuHandle);
-                loadOptionalHeader386(reader);
-                break;
-            case IMAGE_FILE_MACHINE_AMD64:
-                db->igor_add_cpu(new c_cpu_x86_capstone(CS_MODE_64), cpuHandle);
-                loadOptionalHeader64(reader);
-                break;
-            default:
-                Failure("Unknown machine type");
-        }
+        case IMAGE_FILE_MACHINE_I386:
+            pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_32bits;
+            loadOptionalHeader386(reader);
+            break;
+        case IMAGE_FILE_MACHINE_AMD64:
+            pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_64bits;
+            loadOptionalHeader64(reader);
+            break;
+        default:
+            Failure("Unknown machine type");
     }
 
     igorLinearAddress entryPoint = m_ImageBase + m_EntryPointVA;

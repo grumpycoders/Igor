@@ -10,7 +10,7 @@ endif
 
 INCLUDES = \
 . \
-src src/cpu/x86 src/cpu/x86_capstone src/cpu/x86_llvm src/Loaders \
+src src/cpu/x86 src/cpu/x86_llvm src/Loaders \
 Balau/includes Balau/libcoro Balau/libeio Balau/libev Balau/LuaJIT/src Balau/src/jsoncpp/include Balau/libtomcrypt/src/headers \
 llvm/include \
 llvm/lib \
@@ -31,7 +31,7 @@ ifeq ($(SYSTEM),Linux)
     CONFIG_H = Balau/linux-config.h
 endif
 
-vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_capstone:src/cpu/x86_llvm:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor
+vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_llvm:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor
 vpath %.cc src/protobufs
 vpath %.proto src/protobufs
 
@@ -61,7 +61,6 @@ cpuModule.cpp \
 cpu_x86.cpp \
 cpu_x86_opcodes.cpp \
 cpu_x86_opcodes_F.cpp \
-cpu_x86_capstone.cpp \
 cpu_x86_llvm.cpp \
 \
 gsi.cpp \
@@ -128,15 +127,12 @@ tests: all
 Balau/libBalau.a:
 	$(MAKE) -C Balau
 
-capstone/libcapstone.a:
-	$(MAKE) -C capstone
-
 wxIgor/appicon.xpm: wxIgor/igor.ico
 	convert wxIgor/igor.ico[0] wxIgor/appicon.xpm
 	sed -i 's/static char/static const char/' wxIgor/appicon.xpm
 
-$(TARGET): Balau/libBalau.a capstone/libcapstone.a $(ALL_OBJECTS)
-	$(LD) $(LDFLAGS) -o $@ $(ALL_OBJECTS) ./Balau/libBalau.a ./capstone/libcapstone.a ./Balau/LuaJIT/src/libluajit.a ./Balau/libtomcrypt/libtomcrypt.a ./Balau/libtommath/libtommath.a $(LDLIBS)
+$(TARGET): Balau/libBalau.a $(ALL_OBJECTS)
+	$(LD) $(LDFLAGS) -o $@ $(ALL_OBJECTS) ./Balau/libBalau.a ./Balau/LuaJIT/src/libluajit.a ./Balau/libtomcrypt/libtomcrypt.a ./Balau/libtommath/libtommath.a $(LDLIBS)
 
 wxIgorFrame.dep: wxIgor/appicon.xpm
 
@@ -159,7 +155,7 @@ dep: $(ALL_DEPS)
 clean:
 	rm -f $(ALL_OBJECTS) $(ALL_DEPS) $(TARGET)
 	$(MAKE) -C Balau clean
-	$(MAKE) -C capstone clean
+	$(MAKE) -C llvm-build clean
 
 deepclean:
 	git clean -f -d -x

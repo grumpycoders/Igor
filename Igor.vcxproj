@@ -703,9 +703,6 @@
     <ProjectReference Include="Balau\win32\project\zlib.vcxproj">
       <Project>{c98a6524-5aa7-4ffd-8dda-679a1016d185}</Project>
     </ProjectReference>
-    <ProjectReference Include="capstone.vcxproj">
-      <Project>{1188eaab-3a8d-40ba-8043-9a053a01be43}</Project>
-    </ProjectReference>
     <ProjectReference Include="msvc\google\libprotobuf.vcxproj">
       <Project>{3e283f37-a4ed-41b7-a3e6-a2d89d131a30}</Project>
     </ProjectReference>

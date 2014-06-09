@@ -107,7 +107,8 @@ void test_x86_llvm() {
     std::string tripleName;
 
     Triple triple;
-    triple.setTriple(Triple::normalize("i686-pc-windows-msvc"));
+    triple.setArch(Triple::x86);
+    triple.setVendor(Triple::PC);
     const Target * target = TargetRegistry::lookupTarget("", triple, error);
     tripleName = triple.getTriple();
 

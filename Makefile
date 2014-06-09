@@ -17,7 +17,7 @@ llvm/lib \
 llvm-build/include \
 llvm-build/lib/Target/X86 \
 
-CPPFLAGS += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
+CPPFLAGS_NO_ARCH += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
 
 LIBS = z uuid protobuf sqlite3 curses
 

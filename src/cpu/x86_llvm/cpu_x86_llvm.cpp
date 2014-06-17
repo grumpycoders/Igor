@@ -175,9 +175,9 @@ public:
         while (*text) {
             char c = *text++;
             if (c == '\t') {
-                for (int i = 0; i < ns; i++) {
+                for (int i = 0; i < ns; i++)
                     OS << ' ';
-                }
+                ns = 8;
             } else {
                 if (--ns == 0)
                     ns = 8;

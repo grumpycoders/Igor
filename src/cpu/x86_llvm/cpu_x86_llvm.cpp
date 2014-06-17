@@ -41,12 +41,15 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/system_error.h"
 
+#include "cpu_x86_llvm.h"
+
 #include "Target/X86/InstPrinter/X86ATTInstPrinter.h"
 #include "Target/X86/InstPrinter/X86IntelInstPrinter.h"
 
 #include "Target/X86/MCTargetDesc/X86MCTargetDesc.h"
 #include "Target/X86/MCTargetDesc/X86BaseInfo.h"
 
+#include "IgorSession.h"
 
 #include <Printer.h>
 #include <Exceptions.h>
@@ -55,11 +58,37 @@ using namespace llvm;
 using namespace Balau;
 using namespace X86;
 
-class LLVMTestMemoryObject : public MemoryObject {
-    virtual uint64_t getBase() const override { return 0; }
-    virtual uint64_t getExtent() const override { return static_cast<uint64_t>(-1); }
-    virtual int readByte(uint64_t address, uint8_t * ptr) const override { *ptr = 0x90; return 0; }
-    virtual int readBytes(uint64_t address, uint64_t size, uint8_t *buf) const override { memset(buf, 0x90, size); return 0; }
+class LLVMTestMemoryObject : public MemoryObject
+{
+public:
+    LLVMTestMemoryObject(s_analyzeState* pState)
+    {
+        m_state = pState;
+    }
+
+    virtual uint64_t getBase() const override
+    {
+        return 0;
+    }
+
+    virtual uint64_t getExtent() const override
+    {
+        return static_cast<uint64_t>(-1);
+    }
+
+    virtual int readByte(uint64_t address, uint8_t * ptr) const override
+    {
+        *ptr = m_state->pSession->readU8(igorAddress(m_state->pSession, address, -1));
+        return 0;
+    }
+
+    virtual int readBytes(uint64_t address, uint64_t size, uint8_t *buf) const override
+    {
+        memset(buf, 0x90, size);
+        return 0;
+    }
+
+    s_analyzeState* m_state;
 };
 
 class IgorLLVMX86InstPrinter : public X86IntelInstPrinter {
@@ -103,6 +132,7 @@ public:
 };
 
 void test_x86_llvm() {
+    /*
     std::string error;
     std::string tripleName;
 
@@ -158,4 +188,180 @@ void test_x86_llvm() {
     cmt2.flush();
     Printer::log(M_STATUS, "print inst - out: %s", outStr2.c_str());
     Printer::log(M_STATUS, "print inst - cmt: %s", cmtStr2.c_str());
+    */
+}
+
+Balau::String c_cpu_x86_llvm::getTag() const
+{
+    return "igor_x86_llvm";
+}
+
+c_cpu_x86_llvm::c_cpu_x86_llvm(e_cpu_type cpuType)
+{
+    std::string error;
+    std::string tripleName;
+
+    Triple triple;
+
+    switch (cpuType)
+    {
+        case c_cpu_x86_llvm::X86:
+            triple.setArch(Triple::x86);
+            break;
+        case c_cpu_x86_llvm::X64:
+            triple.setArch(Triple::x86_64);
+            break;
+        default:
+            break;
+    }
+
+    triple.setVendor(Triple::PC);
+    m_pTarget = TargetRegistry::lookupTarget("", triple, error);
+    tripleName = triple.getTriple();
+
+    //IAssert(target == &TheX86_32Target, "We didn't get the proper target for x86 32");
+
+    m_pMRI = m_pTarget->createMCRegInfo(tripleName);
+    m_pMAI = m_pTarget->createMCAsmInfo(*m_pMRI, tripleName);
+    m_pSTI = m_pTarget->createMCSubtargetInfo(tripleName, "", "");
+    m_pMII = m_pTarget->createMCInstrInfo();
+
+    m_pDisassembler = m_pTarget->createMCDisassembler(*m_pSTI);
+    m_pPrinter = new IgorLLVMX86InstPrinter(*m_pMAI, *m_pMII, *m_pMRI);
+}
+
+c_cpu_x86_llvm::~c_cpu_x86_llvm()
+{
+
+}
+
+igor_result c_cpu_x86_llvm::analyze(s_analyzeState* pState)
+{
+    pState->m_cpu_analyse_result->m_startOfInstruction = pState->m_PC;
+    pState->m_cpu_analyse_result->m_instructionSize = 0;
+
+    MCInst inst;
+    uint64_t size;
+
+    LLVMTestMemoryObject memoryObject(pState);
+    std::string outStr1, cmtStr1;
+    raw_string_ostream out1(outStr1), cmt1(cmtStr1);
+
+    MCDisassembler::DecodeStatus result = m_pDisassembler->getInstruction(inst, size, memoryObject, pState->m_PC.offset, out1, cmt1);
+
+    if (result != MCDisassembler::Success)
+    {
+        return IGOR_FAILURE;
+    }
+
+    pState->m_cpu_analyse_result->m_instructionSize = size;
+
+    out1.flush();
+    cmt1.flush();
+    //Printer::log(M_STATUS, "get inst - out: %s", outStr1.c_str());
+    //Printer::log(M_STATUS, "get inst - cmt: %s", cmtStr1.c_str());
+
+    const MCInstrDesc & desc = m_pMII->get(inst.getOpcode());
+    uint64_t tsflags = desc.TSFlags;
+
+    //Printer::log(M_STATUS, "Instruction flags: %" PRIX64, tsflags);
+
+    if (tsflags & X86II::FS)
+        Printer::log(M_STATUS, "Has FS: prefix");
+
+    if (tsflags & X86II::GS)
+        Printer::log(M_STATUS, "Has GS: prefix");
+
+    if (desc.isCall())
+        Printer::log(M_STATUS, "Is a call");
+
+    /*
+    std::string outStr2, cmtStr2;
+    raw_string_ostream out2(outStr2), cmt2(cmtStr2);
+   
+    m_pPrinter->setCommentStream(cmt2);
+    m_pPrinter->printInst(&inst, out2, "");
+    out2.flush();
+    cmt2.flush();
+    Printer::log(M_STATUS, "print inst - out: %s", outStr2.c_str());
+    Printer::log(M_STATUS, "print inst - cmt: %s", cmtStr2.c_str());
+    */
+    pState->m_PC += pState->m_cpu_analyse_result->m_instructionSize;
+
+    return IGOR_SUCCESS;
+}
+
+igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor)
+{
+    MCInst inst;
+    uint64_t size;
+
+    LLVMTestMemoryObject memoryObject(pState);
+    std::string outStr1, cmtStr1;
+    raw_string_ostream out1(outStr1), cmt1(cmtStr1);
+
+    MCDisassembler::DecodeStatus result = m_pDisassembler->getInstruction(inst, size, memoryObject, pState->m_cpu_analyse_result->m_startOfInstruction.offset, out1, cmt1);
+
+    if (result != MCDisassembler::Success)
+    {
+        return IGOR_FAILURE;
+    }
+
+    out1.flush();
+    cmt1.flush();
+    //Printer::log(M_STATUS, "get inst - out: %s", outStr1.c_str());
+    //Printer::log(M_STATUS, "get inst - cmt: %s", cmtStr1.c_str());
+
+    const MCInstrDesc & desc = m_pMII->get(inst.getOpcode());
+    uint64_t tsflags = desc.TSFlags;
+
+    //Printer::log(M_STATUS, "Instruction flags: %" PRIX64, tsflags);
+
+    if (tsflags & X86II::FS)
+        Printer::log(M_STATUS, "Has FS: prefix");
+
+    if (tsflags & X86II::GS)
+        Printer::log(M_STATUS, "Has GS: prefix");
+
+    if (desc.isCall())
+        Printer::log(M_STATUS, "Is a call");
+
+    std::string outStr2, cmtStr2;
+    raw_string_ostream out2(outStr2), cmt2(cmtStr2);
+
+    m_pPrinter->setCommentStream(cmt2);
+    m_pPrinter->printInst(&inst, out2, "");
+    out2.flush();
+    cmt2.flush();
+    //Printer::log(M_STATUS, "print inst - out: %s", outStr2.c_str());
+    //Printer::log(M_STATUS, "print inst - cmt: %s", cmtStr2.c_str());
+
+    outputString.append("%s", outStr2.c_str());
+
+    while (outputString.strchr('\t') != -1)
+    {
+        outputString[outputString.strchr('\t')] = ' ';
+    }
+
+    return IGOR_SUCCESS;
+}
+
+igor_result c_cpu_x86_llvm::getMnemonic(s_analyzeState* pState, Balau::String& outputString)
+{
+    return IGOR_FAILURE;
+}
+
+int c_cpu_x86_llvm::getNumOperands(s_analyzeState* pState)
+{
+    return 0;
+}
+
+igor_result c_cpu_x86_llvm::getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor)
+{
+    return IGOR_FAILURE;
+}
+
+void c_cpu_x86_llvm::generateReferences(s_analyzeState* pState)
+{
+
 }

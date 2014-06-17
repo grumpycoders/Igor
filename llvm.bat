@@ -1,6 +1,6 @@
 @echo off
 
-PATH=%PATH%;%CD%\Tools\CMake-2.8\bin;%CD%\python27
+PATH=%PATH%;%CD%\Tools\CMake-2.8\bin;%CD%\Tools\python27
 
 call "%VS120COMNTOOLS%\..\..\vc\vcvarsall.bat" x86
 mkdir llvm-build32

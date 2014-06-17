@@ -5,6 +5,7 @@
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
 #include "cpu/x86/cpu_x86.h"
+#include "cpu/x86_llvm/cpu_x86_llvm.h"
 #include "PDB/pdb.h"
 
 #include "IgorMemory.h"
@@ -128,22 +129,25 @@ igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
     igor_cpu_handle cpuHandle;
     s_igorDatabase * db = session->getDB();
 
-    c_cpu_x86* pCpu = new c_cpu_x86();
-    db->igor_add_cpu(pCpu, cpuHandle);
+    c_cpu_x86_llvm* pCpu = NULL;
 
     switch (m_Machine)
     {
         case IMAGE_FILE_MACHINE_I386:
-            pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_32bits;
+            pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X86);
+            //pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_32bits;
             loadOptionalHeader386(reader);
             break;
         case IMAGE_FILE_MACHINE_AMD64:
-            pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_64bits;
+            pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X64);
+            //pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_64bits;
             loadOptionalHeader64(reader);
             break;
         default:
             Failure("Unknown machine type");
     }
+
+    db->igor_add_cpu(pCpu, cpuHandle);
 
     igorLinearAddress entryPoint = m_ImageBase + m_EntryPointVA;
     bool foundEntryPointSection = false;

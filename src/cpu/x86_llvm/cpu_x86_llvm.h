@@ -43,12 +43,12 @@ public:
 
     const llvm::Target* m_pTarget;
 
-    llvm::MCDisassembler* m_pDisassembler;
-    llvm::MCInstPrinter* m_pPrinter;
+    llvm::MCDisassembler* m_pDisassembler = NULL;
+    class IgorLLVMX86InstAnalyzer* m_pAnalyzer = NULL;
+    class IgorLLVMX86InstPrinter* m_pPrinter = NULL;
 
-    const llvm::MCRegisterInfo* m_pMRI;
-    const llvm::MCAsmInfo* m_pMAI;
-    const llvm::MCSubtargetInfo* m_pSTI;
-    const llvm::MCInstrInfo* m_pMII;
+    const llvm::MCRegisterInfo* m_pMRI = NULL;
+    const llvm::MCAsmInfo* m_pMAI = NULL;
+    const llvm::MCSubtargetInfo* m_pSTI = NULL;
+    const llvm::MCInstrInfo* m_pMII = NULL;
 };
-

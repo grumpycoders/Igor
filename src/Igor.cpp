@@ -143,8 +143,6 @@ static void startWX(...) { }
 
 #endif
 
-void test_x86_llvm();
-
 void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
 
@@ -164,8 +162,6 @@ void MainTask::Do() {
         "print('Lua engine up and running, JIT compiler is ' .. (jitstatus[1] and 'enabled' or 'disabled') .. '.') "
     );
     strLuaHello.exec(g_luaTask);
-
-    test_x86_llvm();
 
     if (argc == 2) {
         IgorLocalSession * session;

@@ -72,6 +72,8 @@ struct igorAddress {
     bool isNotValid() { return !isValid(); }
 
     const igorLinearAddress & offset = m_offset;
+    const igor_section_handle & segmentId = m_segmentId;
+    const uint16_t & sessionId = m_sessionId;
 
 private:
     igorLinearAddress m_offset;

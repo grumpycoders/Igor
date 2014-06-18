@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tomcrypt", "Balau\win32\pro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite", "sqlite.vcxproj", "{70EB01D2-EE71-4F7E-9D87-A91249F5E4AC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcurl", "Balau\win32\project\libcurl.vcxproj", "{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -157,6 +159,18 @@ Global
 		{70EB01D2-EE71-4F7E-9D87-A91249F5E4AC}.Release|Win32.Build.0 = Release|Win32
 		{70EB01D2-EE71-4F7E-9D87-A91249F5E4AC}.Release|x64.ActiveCfg = Release|x64
 		{70EB01D2-EE71-4F7E-9D87-A91249F5E4AC}.Release|x64.Build.0 = Release|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|Win32.Build.0 = Debug|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|x64.ActiveCfg = Debug|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|x64.Build.0 = Debug|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|Win32.ActiveCfg = Release|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|Win32.Build.0 = Release|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|x64.ActiveCfg = Release|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,5 +184,6 @@ Global
 		{E5B79C22-07B5-4830-8E28-224457C0FDB8} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
 		{0C334D26-6F19-4959-BB14-B4FB81099E99} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
 		{A3AA0747-B12F-45BA-A1F5-0E0E6B45F3C3} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB} = {1F771FD4-C1C7-4220-89F8-1E0D5069E205}
 	EndGlobalSection
 EndGlobal

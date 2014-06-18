@@ -1420,9 +1420,11 @@
     <ClInclude Include="src\Loaders\Dmp\dmpLoader.h">
       <Filter>Igor\Loaders\Dmp</Filter>
     </ClInclude>
-    <ClInclude Include="src\IgorLLVM.h" />
     <ClInclude Include="src\cpu\x86_llvm\cpu_x86_llvm.h">
       <Filter>Igor\cpu\x86_llvm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorLLVM.h">
+      <Filter>Igor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

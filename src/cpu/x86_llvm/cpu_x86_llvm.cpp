@@ -196,6 +196,17 @@ private:
     struct LLVMStatus * m_pStatus;
 };
 
+class c_x86_llvm_analyse_result : public c_cpu_analyse_result
+{
+public:
+    MCInst m_inst;
+};
+
+c_cpu_analyse_result* c_cpu_x86_llvm::allocateCpuSpecificAnalyseResult()
+{
+    return new c_x86_llvm_analyse_result;
+}
+
 Balau::String c_cpu_x86_llvm::getTag() const
 {
     return "igor_x86_llvm";
@@ -228,7 +239,7 @@ c_cpu_x86_llvm::c_cpu_x86_llvm(e_cpu_type cpuType)
         IAssert(m_pTarget == &TheX86_32Target, "We didn't get the proper target for x86 32");
         break;
     case c_cpu_x86_llvm::X64:
-        IAssert(m_pTarget == &TheX86_32Target, "We didn't get the proper target for x86 32");
+        IAssert(m_pTarget == &TheX86_64Target, "We didn't get the proper target for x86 64");
         break;
     }
 
@@ -258,19 +269,21 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
     pState->m_cpu_analyse_result->m_startOfInstruction = pState->m_PC;
     pState->m_cpu_analyse_result->m_instructionSize = 0;
 
-    MCInst inst;
-    uint64_t size;
+    c_x86_llvm_analyse_result* pAnalyseResult = (c_x86_llvm_analyse_result*)pState->m_cpu_analyse_result;
+    pAnalyseResult->m_inst.clear();
 
     LLVMMemoryObject memoryObject(pState);
     raw_null_ostream ns1, ns2;
 
-    MCDisassembler::DecodeStatus result = m_pDisassembler->getInstruction(inst, size, memoryObject, pState->m_PC.offset, ns1, ns2);
+    uint64_t size;
+    MCDisassembler::DecodeStatus result = m_pDisassembler->getInstruction(pAnalyseResult->m_inst, size, memoryObject, pState->m_PC.offset, ns1, ns2);
 
     if (result != MCDisassembler::Success)
         return IGOR_FAILURE;
 
     pState->m_cpu_analyse_result->m_instructionSize = size;
 
+    MCInst& inst = pAnalyseResult->m_inst;
     const MCInstrDesc & desc = m_pMII->get(inst.getOpcode());
     uint64_t tsflags = desc.TSFlags;
 
@@ -308,16 +321,8 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
 
 igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::String& outputString, bool bUseColor)
 {
-    MCInst inst;
-    uint64_t size;
-
-    LLVMMemoryObject memoryObject(pState);
-    raw_null_ostream ns1, ns2;
-
-    MCDisassembler::DecodeStatus result = m_pDisassembler->getInstruction(inst, size, memoryObject, pState->m_cpu_analyse_result->m_startOfInstruction.offset, ns1, ns2);
-
-    if (result != MCDisassembler::Success)
-        return IGOR_FAILURE;
+    c_x86_llvm_analyse_result* pAnalyseResult = (c_x86_llvm_analyse_result*)pState->m_cpu_analyse_result;
+    MCInst& inst = pAnalyseResult->m_inst;
 
     const MCInstrDesc & desc = m_pMII->get(inst.getOpcode());
     uint64_t tsflags = desc.TSFlags;
@@ -327,7 +332,7 @@ igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::Str
 
     LLVMStatus llvmStatus;
     llvmStatus.PCBefore = pState->m_cpu_analyse_result->m_startOfInstruction;
-    llvmStatus.PCAfter = llvmStatus.PCBefore + size;
+    llvmStatus.PCAfter = llvmStatus.PCBefore + pState->m_cpu_analyse_result->m_instructionSize;
 
     m_pPrinter->setStatus(&llvmStatus);
     m_pPrinter->printInst(&inst, out, "");

@@ -14,11 +14,6 @@ namespace llvm{
 }
 
 
-class c_x86_llvm_analyse_result : public c_cpu_analyse_result
-{
-
-};
-
 class c_cpu_x86_llvm : public c_cpu_module
 {
 public:
@@ -34,7 +29,7 @@ public:
     virtual Balau::String getTag() const override;
     igor_result analyze(s_analyzeState* pState);
     igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false);
-    c_cpu_analyse_result* allocateCpuSpecificAnalyseResult(){ return new c_x86_llvm_analyse_result; }
+    c_cpu_analyse_result* allocateCpuSpecificAnalyseResult();
 
     igor_result getMnemonic(s_analyzeState* pState, Balau::String& outputString);
     int getNumOperands(s_analyzeState* pState);

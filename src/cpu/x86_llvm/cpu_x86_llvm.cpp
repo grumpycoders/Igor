@@ -214,46 +214,56 @@ Balau::String c_cpu_x86_llvm::getTag() const
 
 c_cpu_x86_llvm::c_cpu_x86_llvm(e_cpu_type cpuType)
 {
-    std::string error;
-    std::string tripleName;
+    m_tls.setConstructor([cpuType]() -> TLS * {
+        TLS * tls = new TLS;
+        std::string error;
+        std::string tripleName;
 
-    Triple triple;
+        Triple triple;
 
-    switch (cpuType) {
-    case c_cpu_x86_llvm::X86:
-        triple.setArch(Triple::x86);
-        break;
-    case c_cpu_x86_llvm::X64:
-        triple.setArch(Triple::x86_64);
-        break;
-    default:
-        break;
-    }
+        switch (cpuType) {
+        case c_cpu_x86_llvm::X86:
+            triple.setArch(Triple::x86);
+            break;
+        case c_cpu_x86_llvm::X64:
+            triple.setArch(Triple::x86_64);
+            break;
+        default:
+            break;
+        }
 
-    triple.setVendor(Triple::PC);
-    m_pTarget = TargetRegistry::lookupTarget("", triple, error);
-    tripleName = triple.getTriple();
+        triple.setVendor(Triple::PC);
 
-    switch (cpuType) {
-    case c_cpu_x86_llvm::X86:
-        IAssert(m_pTarget == &TheX86_32Target, "We didn't get the proper target for x86 32");
-        break;
-    case c_cpu_x86_llvm::X64:
-        IAssert(m_pTarget == &TheX86_64Target, "We didn't get the proper target for x86 64");
-        break;
-    }
+        tls->m_pTarget = TargetRegistry::lookupTarget("", triple, error);
+        tripleName = triple.getTriple();
 
-    m_pMRI = m_pTarget->createMCRegInfo(tripleName);
-    m_pMAI = m_pTarget->createMCAsmInfo(*m_pMRI, tripleName);
-    m_pSTI = m_pTarget->createMCSubtargetInfo(tripleName, "", "");
-    m_pMII = m_pTarget->createMCInstrInfo();
+        switch (cpuType) {
+        case c_cpu_x86_llvm::X86:
+            IAssert(tls->m_pTarget == &TheX86_32Target, "We didn't get the proper target for x86 32");
+            break;
+        case c_cpu_x86_llvm::X64:
+            IAssert(tls->m_pTarget == &TheX86_64Target, "We didn't get the proper target for x86 64");
+            break;
+        }
 
-    m_pDisassembler = m_pTarget->createMCDisassembler(*m_pSTI);
-    m_pAnalyzer = new IgorLLVMX86InstAnalyzer(*m_pMAI, *m_pMII, *m_pMRI);
-    m_pPrinter = new IgorLLVMX86InstPrinter(*m_pMAI, *m_pMII, *m_pMRI);
+        tls->m_pMRI = tls->m_pTarget->createMCRegInfo(tripleName);
+        tls->m_pMAI = tls->m_pTarget->createMCAsmInfo(*tls->m_pMRI, tripleName);
+        tls->m_pSTI = tls->m_pTarget->createMCSubtargetInfo(tripleName, "", "");
+        tls->m_pMII = tls->m_pTarget->createMCInstrInfo();
+
+        tls->m_pDisassembler = tls->m_pTarget->createMCDisassembler(*tls->m_pSTI);
+        tls->m_pAnalyzer = new IgorLLVMX86InstAnalyzer(*tls->m_pMAI, *tls->m_pMII, *tls->m_pMRI);
+        tls->m_pPrinter = new IgorLLVMX86InstPrinter(*tls->m_pMAI, *tls->m_pMII, *tls->m_pMRI);
+
+        return tls;
+    });
 }
 
 c_cpu_x86_llvm::~c_cpu_x86_llvm()
+{
+}
+
+c_cpu_x86_llvm::TLS::~TLS()
 {
     delete m_pMRI;
     delete m_pMAI;
@@ -276,7 +286,7 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
     raw_null_ostream ns1, ns2;
 
     uint64_t size;
-    MCDisassembler::DecodeStatus result = m_pDisassembler->getInstruction(pAnalyseResult->m_inst, size, memoryObject, pState->m_PC.offset, ns1, ns2);
+    MCDisassembler::DecodeStatus result = m_tls.get()->m_pDisassembler->getInstruction(pAnalyseResult->m_inst, size, memoryObject, pState->m_PC.offset, ns1, ns2);
 
     if (result != MCDisassembler::Success)
         return IGOR_FAILURE;
@@ -284,7 +294,7 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
     pState->m_cpu_analyse_result->m_instructionSize = size;
 
     MCInst& inst = pAnalyseResult->m_inst;
-    const MCInstrDesc & desc = m_pMII->get(inst.getOpcode());
+    const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());
     uint64_t tsflags = desc.TSFlags;
 
     if (desc.isUnconditionalBranch())
@@ -292,8 +302,8 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
 
     LLVMStatus llvmStatus;
 
-    m_pAnalyzer->setStatus(&llvmStatus);
-    m_pAnalyzer->printInst(&inst, ns1, "");
+    m_tls.get()->m_pAnalyzer->setStatus(&llvmStatus);
+    m_tls.get()->m_pAnalyzer->printInst(&inst, ns1, "");
     pState->m_PC += pState->m_cpu_analyse_result->m_instructionSize;
 
     if (llvmStatus.gotPCRelImm) {
@@ -324,7 +334,7 @@ igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::Str
     c_x86_llvm_analyse_result* pAnalyseResult = (c_x86_llvm_analyse_result*)pState->m_cpu_analyse_result;
     MCInst& inst = pAnalyseResult->m_inst;
 
-    const MCInstrDesc & desc = m_pMII->get(inst.getOpcode());
+    const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());
     uint64_t tsflags = desc.TSFlags;
 
     std::string outStr;
@@ -334,8 +344,8 @@ igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::Str
     llvmStatus.PCBefore = pState->m_cpu_analyse_result->m_startOfInstruction;
     llvmStatus.PCAfter = llvmStatus.PCBefore + pState->m_cpu_analyse_result->m_instructionSize;
 
-    m_pPrinter->setStatus(&llvmStatus);
-    m_pPrinter->printInst(&inst, out, "");
+    m_tls.get()->m_pPrinter->setStatus(&llvmStatus);
+    m_tls.get()->m_pPrinter->printInst(&inst, out, "");
 
     out.flush();
     Balau::String instruction = outStr;

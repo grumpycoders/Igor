@@ -1,7 +1,9 @@
 #pragma once
 
+#include <Exceptions.h>
+#include <Local.h>
+
 #include "cpu/cpuModule.h"
-#include "Exceptions.h"
 
 namespace llvm{
     class Target;
@@ -36,14 +38,20 @@ public:
     igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor = false);
     void generateReferences(s_analyzeState* pState);
 
-    const llvm::Target* m_pTarget;
+    struct TLS {
+        const llvm::Target* m_pTarget = NULL;
 
-    llvm::MCDisassembler* m_pDisassembler = NULL;
-    class IgorLLVMX86InstAnalyzer* m_pAnalyzer = NULL;
-    class IgorLLVMX86InstPrinter* m_pPrinter = NULL;
+        llvm::MCDisassembler* m_pDisassembler = NULL;
+        class IgorLLVMX86InstAnalyzer* m_pAnalyzer = NULL;
+        class IgorLLVMX86InstPrinter* m_pPrinter = NULL;
 
-    const llvm::MCRegisterInfo* m_pMRI = NULL;
-    const llvm::MCAsmInfo* m_pMAI = NULL;
-    const llvm::MCSubtargetInfo* m_pSTI = NULL;
-    const llvm::MCInstrInfo* m_pMII = NULL;
+        const llvm::MCRegisterInfo* m_pMRI = NULL;
+        const llvm::MCAsmInfo* m_pMAI = NULL;
+        const llvm::MCSubtargetInfo* m_pSTI = NULL;
+        const llvm::MCInstrInfo* m_pMII = NULL;
+
+        ~TLS();
+    };
+
+    Balau::PThreadsTLSFactory<TLS> m_tls;
 };

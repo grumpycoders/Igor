@@ -13,19 +13,23 @@
 class c_cpu_module;
 class c_cpu_state;
 class IgorLocalSession;
+class IgorAnalysis;
 
 class IgorAnalysisManagerLocal : public Balau::Task {
   public:
+    friend class IgorAnalysis;
       IgorAnalysisManagerLocal(IgorLocalSession * session);
       ~IgorAnalysisManagerLocal();
     virtual void Do() override;
     virtual const char * getName() const override { return "IgorAnalysisManagerLocal"; }
   private:
     IgorLocalSession * m_session;
+    Balau::Events::Async m_gotOneStop;
 };
 
 class IgorLocalSession : public IgorSession {
     friend class IgorAnalysisManagerLocal;
+    friend class IgorAnalysis;
   public:
       IgorLocalSession() : m_pDatabase(new s_igorDatabase) { m_pDatabase->m_sessionId = getId(); }
       IgorLocalSession(const IgorLocalSession &) = delete;
@@ -86,6 +90,6 @@ class IgorLocalSession : public IgorSession {
         STOPPING,
     } m_status = IDLE;
     s_igorDatabase * m_pDatabase = NULL;
-    std::list<std::pair<Balau::Events::TaskEvent *, igorAddress>> m_evts;
     std::atomic<uint64_t> m_instructions;
+    std::atomic<uint64_t> m_nTasks;
 };

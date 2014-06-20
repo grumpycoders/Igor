@@ -44,23 +44,13 @@ void IgorAnalysisManagerLocal::Do() {
         return;
 
     waitFor(m_session->m_pDatabase->m_analysisRequests.getEvent());
+    waitFor(&m_gotOneStop);
 
     Printer::log(M_INFO, "AnalysisManager starting...");
     m_session->m_instructions = 0;
 
     for (;;) {
-        for (auto i = m_session->m_evts.begin(); i != m_session->m_evts.end(); i++) {
-            Events::TaskEvent * evt = i->first;
-            if (evt->gotSignal()) {
-                evt->ack();
-                delete evt;
-                m_session->m_evts.erase(i);
-                i = m_session->m_evts.begin();
-                if (m_session->m_evts.empty())
-                    break;
-            }
-        }
-        if (m_session->m_evts.size() == 0) {
+        if (m_session->m_nTasks.load() == 0) {
             if (m_session->m_status == IgorLocalSession::STOPPING)
                 return;
             else if (m_session->m_pDatabase->m_analysisRequests.isEmpty())
@@ -87,10 +77,8 @@ void IgorAnalysisManagerLocal::Do() {
 
             m_session->m_status = IgorLocalSession::RUNNING;
 
-            Events::TaskEvent * evt = new Events::TaskEvent;
-            m_session->m_evts.push_back(std::pair<Events::TaskEvent *, igorAddress>(evt, currentPC));
-            TaskMan::registerTask(new IgorAnalysis(m_session->m_pDatabase, currentPC, m_session), evt);
-            waitFor(evt);
+            m_session->m_nTasks++;
+            TaskMan::registerTask(new IgorAnalysis(m_session->m_pDatabase, currentPC, m_session, this));
             //Printer::log(M_INFO, "AnalysisManager spawned a task for %016llx", currentPC);
         }
         yieldNoWait();

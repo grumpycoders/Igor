@@ -60,9 +60,11 @@ void IgorAnalysis::Do()
     m_analyzeState.m_cpu_analyse_result = NULL;
 
     StacklessEnd();
+    m_session->m_nTasks--;
+    m_analysisManager->m_gotOneStop.trigger();
 }
 
-IgorAnalysis::IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent) : m_pDatabase(db), m_PC(PC), m_session(parent)
+IgorAnalysis::IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent, class IgorAnalysisManagerLocal * manager) : m_pDatabase(db), m_PC(PC), m_session(parent), m_analysisManager(manager)
 {
     m_name.set("IgorAnalysis for %016llx", PC.offset);
     m_session->addRef();

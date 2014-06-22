@@ -19,7 +19,7 @@ llvm-build/lib/Target/X86 \
 
 CPPFLAGS_NO_ARCH += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
 
-LIBS = z uuid protobuf sqlite3 curses
+LIBS = z uuid protobuf sqlite3 curses curl
 
 ifeq ($(SYSTEM),Darwin)
     LIBS += pthread iconv

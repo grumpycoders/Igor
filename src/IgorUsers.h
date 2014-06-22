@@ -4,7 +4,7 @@
 #include <set>
 #include <BString.h>
 #include <BigInt.h>
-#include <tomcrypt.h>
+#include <BHashes.h>
 
 class IgorUsers {
   public:
@@ -49,18 +49,18 @@ class SRP {
       friend class SRP;
       public:
           Hash(const Hash &);
-        static const int DIGEST_SIZE = 20;
+        static const int DIGEST_SIZE = 32;
         Balau::BigInt operator()() const { return toBigInt(); }
         Balau::BigInt toBigInt() const;
       private:
-          Hash();
+          Hash() { }
         void update(const unsigned char * data, size_t l);
         void updateString(const char * str);
         void updateBString(const Balau::String & str);
         void updateBigInt(const Balau::BigInt & v);
         void updateHash(const Hash & v);
         void final();
-        hash_state m_state;
+        Balau::SHA1 m_hash;
         bool m_finalized = false;
         unsigned char m_digest[DIGEST_SIZE];
     };

@@ -158,24 +158,20 @@ SRP::Hash::Hash(const Hash & h) {
     memcpy(m_digest, h.m_digest, DIGEST_SIZE);
 }
 
-SRP::Hash::Hash() {
-    sha1_init(&m_state);
-}
-
 void SRP::Hash::updateString(const char * str) {
     IAssert(!m_finalized, "Can't update a finalized hash.");
     while (*str)
-        sha1_process(&m_state, (unsigned char *) str++, 1);
+        m_hash.update((const uint8_t *)str++, 1);
 }
 
 void SRP::Hash::update(const unsigned char * data, size_t l) {
     IAssert(!m_finalized, "Can't update a finalized hash.");
-    sha1_process(&m_state, data, l);
+    m_hash.update(data, l);
 }
 
 void SRP::Hash::updateBString(const String & str) {
     IAssert(!m_finalized, "Can't update a finalized hash.");
-    sha1_process(&m_state, (const unsigned char *)str.to_charp(), str.strlen());
+    m_hash.update(str);
 }
 
 void SRP::Hash::updateBigInt(const BigInt & v) {
@@ -195,14 +191,14 @@ void SRP::Hash::updateHash(const Hash & v) {
 
 void SRP::Hash::final() {
     IAssert(!m_finalized, "Can't finalize a finalized hash.");
-    sha1_done(&m_state, m_digest);
+    m_hash.final(m_digest);
     m_finalized = true;
 }
 
 BigInt SRP::Hash::toBigInt() const {
     BigInt v;
     IAssert(m_finalized, "Can't export a non-finalized hash.");
-    v.importUBin(m_digest, DIGEST_SIZE);
+    v.importUBin(m_digest, m_hash.digestSize());
     return v;
 }
 

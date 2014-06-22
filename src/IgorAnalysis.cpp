@@ -59,9 +59,10 @@ void IgorAnalysis::Do()
     delete m_analyzeState.m_cpu_analyse_result;
     m_analyzeState.m_cpu_analyse_result = NULL;
 
-    StacklessEnd();
     m_session->m_nTasks--;
     m_analysisManager->m_gotOneStop.trigger();
+
+    StacklessEnd();
 }
 
 IgorAnalysis::IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent, class IgorAnalysisManagerLocal * manager) : m_pDatabase(db), m_PC(PC), m_session(parent), m_analysisManager(manager)

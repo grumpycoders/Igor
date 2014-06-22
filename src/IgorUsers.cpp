@@ -161,7 +161,7 @@ SRP::Hash::Hash(const Hash & h) {
 void SRP::Hash::updateString(const char * str) {
     IAssert(!m_finalized, "Can't update a finalized hash.");
     while (*str)
-        m_hash.update((const uint8_t *)str++, 1);
+        m_hash.update((const uint8_t *) str++, 1);
 }
 
 void SRP::Hash::update(const unsigned char * data, size_t l) {

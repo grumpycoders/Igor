@@ -1,13 +1,16 @@
-wxWidgets/lib/vc_x64_lib
-wxWidgets/lib/vc_lib
-wxWidgets/build/msw/vc_mswud_x64
-wxWidgets/build/msw/ipch
-wxWidgets/build/msw/vc_mswu
-wxWidgets/build/msw/vc_mswu_x64
-wxWidgets/build/msw/vc_mswud
+/wxWidgets/lib/vc_x64_lib
+/wxWidgets/lib/vc_lib
+/wxWidgets/build/msw/vc_mswud_x64
+/wxWidgets/build/msw/ipch
+/wxWidgets/build/msw/vc_mswu
+/wxWidgets/build/msw/vc_mswu_x64
+/wxWidgets/build/msw/vc_mswud
+
+/llvm-build32
+/llvm-build64
 
 /x64
-/Debug
+/Win32
 /ipch
 
 /*.sdf
@@ -18,5 +21,18 @@ wxWidgets/build/msw/vc_mswud
 /*.dep
 /*.bin
 
+/tools/python27/Lib/**/*.pyc
+
+/msvc/google/Win32
+/msvc/google/x64
+
 /src/protobufs/*.pb.cc
 /src/protobufs/*.pb.h
+
+/lua51_32d.lib
+/lua51_32r.lib
+/lua51_64d.lib
+/lua51_64r.lib
+
+/*.vcxproj.user
+/*.opensdf

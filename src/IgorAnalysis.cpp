@@ -48,13 +48,19 @@ void IgorAnalysis::Do()
 
             m_pCpu->generateReferences(&m_analyzeState);
         }
+
+        m_instructionsCounter++;
                 
         if (++counter == 0)
         {
+            Printer::log(M_INFO, "Analysis Task %p yields after %llu instructions at %016llx", this, m_instructionsCounter, m_analyzeState.m_PC.offset);
             StacklessYield();
         }
 
     } while (m_analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
+
+    if (m_instructionsCounter >= 1024)
+        Printer::log(M_INFO, "Analysis Task %p stops after %llu instructions at %016llx", this, m_instructionsCounter, m_analyzeState.m_PC.offset);
 
     delete m_analyzeState.m_cpu_analyse_result;
     m_analyzeState.m_cpu_analyse_result = NULL;

@@ -27,4 +27,5 @@ private:
     Balau::String m_name;
     c_cpu_module * m_pCpu;
     c_cpu_state * m_pCpuState;
+    uint64_t m_instructionsCounter = 0;
 };

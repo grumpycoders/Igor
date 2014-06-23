@@ -25,6 +25,7 @@ class IgorAnalysisManagerLocal : public Balau::Task {
   private:
     IgorLocalSession * m_session;
     Balau::Events::Async m_gotOneStop;
+    ev_tstamp m_lastUpdate;
 };
 
 class IgorLocalSession : public IgorSession {

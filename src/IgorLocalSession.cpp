@@ -46,6 +46,8 @@ void IgorAnalysisManagerLocal::Do() {
     waitFor(m_session->m_pDatabase->m_analysisRequests.getEvent());
     waitFor(&m_gotOneStop);
 
+    m_lastUpdate = ev_now(getTaskMan()->getLoop());
+
     Printer::log(M_INFO, "AnalysisManager starting...");
     m_session->m_instructions = 0;
 
@@ -57,8 +59,14 @@ void IgorAnalysisManagerLocal::Do() {
                 m_session->m_status = IgorLocalSession::IDLE;
         }
 
-        if (m_session->m_status == IgorLocalSession::IDLE)
+        ev_tstamp now = ev_now(getTaskMan()->getLoop());
+
+        if (m_session->m_status == IgorLocalSession::IDLE) {
             Printer::log(M_INFO, "AnalysisManager going idle; analyzed %lli instructions...", m_session->m_instructions.load());
+        } else if ((m_lastUpdate + 1.0) < now) {
+            m_lastUpdate = now;
+            Printer::log(M_INFO, "AnalysisManager running %llu tasks, analyzed %lli instructions...", m_session->m_nTasks.load(), m_session->m_instructions.load());
+        }
 
         m_session->m_pDatabase->m_analysisRequests.getEvent()->resetMaybe();
         if (m_session->m_pDatabase->m_analysisRequests.isEmpty()) {

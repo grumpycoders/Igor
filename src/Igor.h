@@ -103,7 +103,5 @@ private:
     class IgorSession * getSession() const;
 };
 
-extern const igorAddress IGOR_INVALID_ADDRESS;
-
 typedef Balau::IO<Balau::Handle> BFile;
 

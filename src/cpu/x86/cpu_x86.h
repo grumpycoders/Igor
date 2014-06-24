@@ -395,7 +395,7 @@ public:
     void reset()
     {
         m_instructionSize = 0;
-        m_startOfInstruction = IGOR_INVALID_ADDRESS;
+        m_startOfInstruction = igorAddress();
         m_mnemonic = INST_X86_UNDEF;
         m_numOperands = 0;
         m_segmentOverride = SEGMENT_OVERRIDE_NONE;

@@ -336,7 +336,7 @@ bool ListSessionsAction::safeDo(HttpServer * server, Http::Request & req, HttpSe
         igorAddress entryPoint = session->getEntryPoint();
         String address;
         address.set("%016llx", entryPoint.offset);
-        if (entryPoint != IGOR_INVALID_ADDRESS)
+        if (entryPoint.isValid())
             entry["entryPoint"] = address.to_charp();
         idx++;
     });

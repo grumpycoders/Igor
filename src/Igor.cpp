@@ -21,8 +21,6 @@
 #include "IgorLLVM.h"
 #include "IgorUsers.h"
 
-const igorAddress IGOR_INVALID_ADDRESS;
-
 using namespace Balau;
 
 LuaMainTask * g_luaTask = NULL;

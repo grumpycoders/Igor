@@ -355,7 +355,7 @@ void c_wxAsmWidget::goToSelectedSymbol()
 {
     igorAddress address = m_pSession->findSymbol(m_selectedText.to_charp());
 
-    if (address != IGOR_INVALID_ADDRESS)
+    if (address.isValid())
     {
         goToAddress(address);
     }

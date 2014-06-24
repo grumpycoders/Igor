@@ -335,7 +335,7 @@ igorAddress s_igorDatabase::findSymbol(const char* symbolName)
         }
     }
 
-    return IGOR_INVALID_ADDRESS;
+    return igorAddress();
 }
 
 igor_result s_igorDatabase::flag_address_as_u32(igorAddress virtualAddress)
@@ -526,7 +526,7 @@ igorAddress s_igorDatabase::linearToVirtual(u64 linear) {
         linearStart = linearEnd;
     }
 
-    return IGOR_INVALID_ADDRESS;
+    return igorAddress();
 }
 
 void s_igorDatabase::addReference(igorAddress referencedAddress, igorAddress referencedFrom)

@@ -377,7 +377,7 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
     const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());
     uint64_t tsflags = desc.TSFlags;
 
-    if (desc.isUnconditionalBranch() || desc.isReturn())
+    if (desc.isBarrier())
         pState->m_analyzeResult = stop_analysis;
 
     LLVMStatus llvmStatus;

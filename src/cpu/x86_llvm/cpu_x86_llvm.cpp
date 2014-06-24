@@ -138,8 +138,69 @@ public:
     virtual void printOperand(const MCInst *MI, unsigned OpNo, raw_ostream &O) {
         X86IntelInstPrinter::printOperand(MI, OpNo, O);
     }
+
+    // tweaked version to handle references relatives to program counter
     virtual void printMemReference(const MCInst *MI, unsigned Op, raw_ostream &O) {
-        X86IntelInstPrinter::printMemReference(MI, Op, O);
+        const MCOperand &BaseReg = MI->getOperand(Op);
+        unsigned ScaleVal = MI->getOperand(Op + 1).getImm();
+        const MCOperand &IndexReg = MI->getOperand(Op + 2);
+        const MCOperand &DispSpec = MI->getOperand(Op + 3);
+        const MCOperand &SegReg = MI->getOperand(Op + 4);
+
+        // If this has a segment register, print it.
+        if (SegReg.getReg()) {
+            printOperand(MI, Op + 4, O);
+            O << ':';
+        }
+
+        O << '[';
+
+        bool NeedPlus = false;
+
+        if (BaseReg.getReg() == X86::RIP)
+        {
+            assert(DispSpec.isImm());
+
+            igorAddress abs = m_pStatus->PCAfter + DispSpec.getImm();
+            O << formatHex(abs.offset);
+        }
+        else
+        {
+            if (BaseReg.getReg()) {
+                printOperand(MI, Op, O);
+                NeedPlus = true;
+            }
+
+            if (IndexReg.getReg()) {
+                if (NeedPlus) O << " + ";
+                if (ScaleVal != 1)
+                    O << ScaleVal << '*';
+                printOperand(MI, Op + 2, O);
+                NeedPlus = true;
+            }
+
+            if (!DispSpec.isImm()) {
+                if (NeedPlus) O << " + ";
+                assert(DispSpec.isExpr() && "non-immediate displacement for LEA?");
+                O << *DispSpec.getExpr();
+            }
+            else {
+                int64_t DispVal = DispSpec.getImm();
+                if (DispVal || (!IndexReg.getReg() && !BaseReg.getReg())) {
+                    if (NeedPlus) {
+                        if (DispVal > 0)
+                            O << " + ";
+                        else {
+                            O << " - ";
+                            DispVal = -DispVal;
+                        }
+                    }
+                    O << formatImm(DispVal);
+                }
+            }
+        }
+
+        O << ']';
     }
     virtual void printSSECC(const MCInst *MI, unsigned Op, raw_ostream &O) {
         X86IntelInstPrinter::printSSECC(MI, Op, O);

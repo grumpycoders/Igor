@@ -83,11 +83,13 @@ void IgorAnalysisManagerLocal::Do() {
                 continue;
             }
 
+            if (m_session->m_pDatabase->is_address_flagged_as_code(currentPC))
+                continue;
+
             m_session->m_status = IgorLocalSession::RUNNING;
 
             m_session->m_nTasks++;
             TaskMan::registerTask(new IgorAnalysis(m_session->m_pDatabase, currentPC, m_session, this));
-            //Printer::log(M_INFO, "AnalysisManager spawned a task for %016llx", currentPC);
         }
         yieldNoWait();
     }

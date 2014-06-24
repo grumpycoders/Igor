@@ -241,7 +241,7 @@ void c_wxIgorFrame::OnHistory(wxCommandEvent& event)
 
 void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
 {
-    if (!m_sessionPanel || m_session)
+    if (!m_sessionPanel || !m_session)
         return;
 
     wxTextEntryDialog* pAddressEntryDialog = new wxTextEntryDialog(this, "Go to address");
@@ -251,7 +251,7 @@ void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
         wxString wxEnteredString = pAddressEntryDialog->GetValue();
 
         String enteredString(wxEnteredString.c_str());
-        u64 address = enteredString.to_int(16);
+        u64 address = enteredString.to_uint64(16);
 
         if (m_sessionPanel->m_pAsmWidget && address)
         {

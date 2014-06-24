@@ -138,8 +138,81 @@ public:
     virtual void printOperand(const MCInst *MI, unsigned OpNo, raw_ostream &O) {
         X86IntelInstPrinter::printOperand(MI, OpNo, O);
     }
+
+    // tweaked version to handle references relatives to program counter
     virtual void printMemReference(const MCInst *MI, unsigned Op, raw_ostream &O) {
-        X86IntelInstPrinter::printMemReference(MI, Op, O);
+        const MCOperand &BaseReg = MI->getOperand(Op);
+        unsigned ScaleVal = MI->getOperand(Op + 1).getImm();
+        const MCOperand &IndexReg = MI->getOperand(Op + 2);
+        const MCOperand &DispSpec = MI->getOperand(Op + 3);
+        const MCOperand &SegReg = MI->getOperand(Op + 4);
+
+        // If this has a segment register, print it.
+        if (SegReg.getReg()) {
+            printOperand(MI, Op + 4, O);
+            O << ':';
+        }
+
+        O << '[';
+
+        bool NeedPlus = false;
+
+        if (BaseReg.getReg() == X86::RIP)
+        {
+            assert(!IndexReg.getReg());
+            assert(DispSpec.isImm());
+
+            igorAddress abs = m_pStatus->PCAfter + DispSpec.getImm();
+
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(abs, symbolName))
+            {
+                O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+                O << symbolName.to_charp();
+                O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+            }
+            else
+            {
+                O << formatHex(abs.offset);
+            }
+        }
+        else
+        {
+            if (BaseReg.getReg()) {
+                printOperand(MI, Op, O);
+                NeedPlus = true;
+            }
+
+            if (IndexReg.getReg()) {
+                if (NeedPlus) O << " + ";
+                if (ScaleVal != 1)
+                    O << ScaleVal << '*';
+                printOperand(MI, Op + 2, O);
+                NeedPlus = true;
+            }
+
+            if (!DispSpec.isImm()) {
+                if (NeedPlus) O << " + ";
+                assert(DispSpec.isExpr() && "non-immediate displacement for LEA?");
+                O << *DispSpec.getExpr();
+            }
+            else {
+                int64_t DispVal = DispSpec.getImm();
+                if (DispVal || (!IndexReg.getReg() && !BaseReg.getReg())) {
+                    if (NeedPlus) {
+                        if (DispVal > 0)
+                            O << " + ";
+                        else {
+                            O << " - ";
+                            DispVal = -DispVal;
+                        }
+                    }
+                    O << formatImm(DispVal);
+                }
+            }
+        }
+
+        O << ']';
     }
     virtual void printSSECC(const MCInst *MI, unsigned Op, raw_ostream &O) {
         X86IntelInstPrinter::printSSECC(MI, Op, O);
@@ -192,8 +265,15 @@ public:
     virtual void printLiteralChar(char c, raw_ostream &OS) {
         X86IntelInstPrinter::printLiteralChar(c, OS);
     }
+
+    void setSession(IgorSession* pSession)
+    {
+        m_pSession = pSession;
+    }
+
 private:
     struct LLVMStatus * m_pStatus;
+    IgorSession* m_pSession;
 };
 
 class c_x86_llvm_analyse_result : public c_cpu_analyse_result
@@ -297,7 +377,7 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
     const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());
     uint64_t tsflags = desc.TSFlags;
 
-    if (desc.isUnconditionalBranch())
+    if (desc.isUnconditionalBranch() || desc.isReturn())
         pState->m_analyzeResult = stop_analysis;
 
     LLVMStatus llvmStatus;
@@ -344,8 +424,10 @@ igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::Str
     llvmStatus.PCBefore = pState->m_cpu_analyse_result->m_startOfInstruction;
     llvmStatus.PCAfter = llvmStatus.PCBefore + pState->m_cpu_analyse_result->m_instructionSize;
 
+    m_tls.get()->m_pPrinter->setSession(pState->pSession);
     m_tls.get()->m_pPrinter->setStatus(&llvmStatus);
     m_tls.get()->m_pPrinter->printInst(&inst, out, "");
+    m_tls.get()->m_pPrinter->setSession(NULL);
 
     out.flush();
     Balau::String instruction = outStr;

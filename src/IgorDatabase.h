@@ -80,7 +80,16 @@ struct s_igorDatabase
         }
     };
 
-    std::map<igorAddress, s_symbolDefinition> m_symbolMap;
+    struct igorAddressCompare : public std::binary_function<const igorAddress, const igorAddress, bool>
+    {
+    public:
+        bool operator()(const igorAddress x, const igorAddress y) // returns x>y
+        {
+            return (x.m_offset > y.m_offset);
+        }
+    };
+
+    std::map<igorAddress, s_symbolDefinition, igorAddressCompare> m_symbolMap;
 
     // should the references be implicit instead of explicit?
     typedef std::multimap<igorAddress, igorAddress> t_references;

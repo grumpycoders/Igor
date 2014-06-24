@@ -3,7 +3,6 @@
 #include "IgorSqlite.h"
 
 #include "google/protobuf/io/zero_copy_stream.h"
-#include "protobufs/IgorProtoFile.pb.h"
 
 #include <Printer.h>
 #include <BString.h>

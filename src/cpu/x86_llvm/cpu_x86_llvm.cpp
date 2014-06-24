@@ -159,10 +159,22 @@ public:
 
         if (BaseReg.getReg() == X86::RIP)
         {
+            assert(!IndexReg.getReg());
             assert(DispSpec.isImm());
 
             igorAddress abs = m_pStatus->PCAfter + DispSpec.getImm();
-            O << formatHex(abs.offset);
+
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(abs, symbolName))
+            {
+                O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+                O << symbolName.to_charp();
+                O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+            }
+            else
+            {
+                O << formatHex(abs.offset);
+            }
         }
         else
         {
@@ -253,8 +265,15 @@ public:
     virtual void printLiteralChar(char c, raw_ostream &OS) {
         X86IntelInstPrinter::printLiteralChar(c, OS);
     }
+
+    void setSession(IgorSession* pSession)
+    {
+        m_pSession = pSession;
+    }
+
 private:
     struct LLVMStatus * m_pStatus;
+    IgorSession* m_pSession;
 };
 
 class c_x86_llvm_analyse_result : public c_cpu_analyse_result
@@ -405,8 +424,10 @@ igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::Str
     llvmStatus.PCBefore = pState->m_cpu_analyse_result->m_startOfInstruction;
     llvmStatus.PCAfter = llvmStatus.PCBefore + pState->m_cpu_analyse_result->m_instructionSize;
 
+    m_tls.get()->m_pPrinter->setSession(pState->pSession);
     m_tls.get()->m_pPrinter->setStatus(&llvmStatus);
     m_tls.get()->m_pPrinter->printInst(&inst, out, "");
+    m_tls.get()->m_pPrinter->setSession(NULL);
 
     out.flush();
     Balau::String instruction = outStr;

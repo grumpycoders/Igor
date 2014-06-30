@@ -5,13 +5,14 @@
 #include <TaskMan.h>
 
 #include "IgorSession.h"
+#include "IgorHttp.h"
 #include "IgorHttpSession.h"
 
 using namespace Balau;
 
 IgorHttpSessionsManager * g_igorHttpSessionsManager = NULL;
 
-static Regex authClientPacketAURL("^/dyn/auth/clientPacketA$");
+static Regex authClientPacketAURL("^" IGOR_DYN_ROOT "/auth/clientPacketA$");
 
 class AuthClientPacketAAction : public HttpServer::Action {
   public:
@@ -42,7 +43,7 @@ bool AuthClientPacketAAction::Do(HttpServer * server, Http::Request & req, HttpS
     return true;
 }
 
-static Regex authClientProofURL("^/dyn/auth/clientProof$");
+static Regex authClientProofURL("^" IGOR_DYN_ROOT "/auth/clientProof$");
 
 class AuthClientProofAction : public HttpServer::Action {
   public:

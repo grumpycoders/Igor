@@ -8,28 +8,28 @@
     <link rel='stylesheet' href='{{dojo_path}}/dijit/themes/claro/claro.css' />
     <link rel='stylesheet' href='{{dojo_path}}/dojox/grid/resources/Grid.css' />
     <link rel='stylesheet' href='{{dojo_path}}/dojox/grid/resources/claroGrid.css' />
-    <link rel='stylesheet' href='/static/js/dgrid/css/dgrid.css' />
-    <link rel='stylesheet' href='/static/js/dgrid/css/skins/claro.css' />
+    <link rel='stylesheet' href='{{static_root}}/js/dgrid/css/dgrid.css' />
+    <link rel='stylesheet' href='{{static_root}}/js/dgrid/css/skins/claro.css' />
 
-    <script type="text/javascript" src="/static/js/srp/jsbn.js"></script>
-    <script type="text/javascript" src="/static/js/srp/sha1.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/jsbn.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/sha1.js"></script>
 
-    <script type="text/javascript" src="/static/js/srp/sjcl.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/sjcl.js"></script>
 
-    <script type="text/javascript" src="/static/js/srp/aes.js"></script>
-    <script type="text/javascript" src="/static/js/srp/bitArray.js"></script>
-    <script type="text/javascript" src="/static/js/srp/codecHex.js"></script>
-    <script type="text/javascript" src="/static/js/srp/codecString.js"></script>
-    <script type="text/javascript" src="/static/js/srp/sha256.js"></script>
-    <script type="text/javascript" src="/static/js/srp/random.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/aes.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/bitArray.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/codecHex.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/codecString.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/sha256.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/random.js"></script>
 
-    <script type="text/javascript" src="/static/js/srp/srp-client.js"></script>
+    <script type="text/javascript" src="{{static_root}}/js/srp/srp-client.js"></script>
   
     <style type='text/css'>
       html, body {
         height: 100%; width: 100%;
         padding: 0; border: 0; margin: 0;
-        background: #CDDDE9 url("/static/img/bgBody.gif") repeat-x top left;
+        background: #CDDDE9 url("{{static_root}}/img/bgBody.gif") repeat-x top left;
       }
       .claro {
         font: 12px Myriad, Helvetica, Tahoma, Arial, clean, sans-serif; 
@@ -162,10 +162,10 @@
         has: { 'dojo-firebug': true },
         async: true,
         packages: [
-        { name: 'dgrid', location: location.pathname.replace(/\/[^/]+$/, '') + '/../static/js/dgrid' },
-        { name: 'LoginDialog', location: location.pathname.replace(/\/[^/]+$/, '') + '/../static/js/LoginDialog' },
-        { name: 'xstyle', location: location.pathname.replace(/\/[^/]+$/, '') + '/../static/js/xstyle' },
-        { name: 'put-selector', location: location.pathname.replace(/\/[^/]+$/, '') + '/../static/js/put-selector' },
+        { name: 'dgrid', location: '{{static_root}}/js/dgrid' },
+        { name: 'LoginDialog', location: '{{static_root}}/js/LoginDialog' },
+        { name: 'xstyle', location: '{{static_root}}/js/xstyle' },
+        { name: 'put-selector', location: '{{static_root}}/js/put-selector' },
         ]
       };
     </script>
@@ -254,7 +254,7 @@
         var setSession = function(session) {
           currentSession = session.uuid;
           sessionName.innerHTML = session.name;
-          disassemblyStore = new jsonRest({ target: '/dyn/rest/disasm/' + session.uuid });
+          disassemblyStore = new jsonRest({ target: '{{dyn_root}}/rest/disasm/' + session.uuid });
           entryPont = session.entryPoint;
         }
         
@@ -276,7 +276,7 @@
         }
 
         reloadUIAction = function() {
-          request.get('/dyn/reloadui').then(
+          request.get('{{dyn_root}}/reloadui').then(
             function(retStr) {
               var ret = json.parse(retStr);
               if (ret.success) {
@@ -305,7 +305,7 @@
             deferred.resolve(false);
             return;
           }
-          request.post('/dyn/auth/clientPacketA', {
+          request.post('{{dyn_root}}/auth/clientPacketA', {
             data: {
               msg: json.stringify(packetA),
             },
@@ -329,7 +329,7 @@
                 deferred.resolve(false);
                 return;
               }
-              request.post('/dyn/auth/clientProof', {
+              request.post('{{dyn_root}}/auth/clientProof', {
                 data: {
                   msg: json.stringify(proof),
                 },
@@ -389,7 +389,7 @@
             onClick: reloadSessions
           }));
           sessionsMenu.addChild(new dijit.MenuSeparator());
-          request.get('/dyn/listSessions', { headers: generateProof() }).then(
+          request.get('{{dyn_root}}/listSessions', { headers: generateProof() }).then(
             function(retStr) {
               var ret = json.parse(retStr);
               if (!ret || !ret.status)
@@ -499,7 +499,7 @@
         buildHexView(16);
         buildDgridHexView(16);
 
-        socket = dojox.socket({url:'/dyn/igorws'});
+        socket = dojox.socket({url:'{{dyn_root}}/igorws'});
         socket = dojox.socket.Reconnect(socket);
 
         dojo.connect(socket, 'onopen', function(event) {

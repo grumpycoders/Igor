@@ -74,7 +74,7 @@ void Listeners::receive(IgorWSWorker * worker, const std::string & destination, 
 static std::list<IgorWSWorker *> s_websockets;
 static Balau::RWLock s_websocketsLock;
 
-static Regex igorWSURL("^/dyn/igorws$");
+static Regex igorWSURL("^" IGOR_DYN_ROOT "/igorws$");
 
 class IgorWSWorker : public WebSocketWorker {
   public:

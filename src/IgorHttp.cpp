@@ -22,26 +22,28 @@ using namespace Balau;
 
 static std::atomic<SimpleMustache *> s_template;
 
-static Regex rootURL("^/$");
+static Regex AbsoluteRootURL("^/$");
+static Regex RootURL("^" IGOR_ROOT "/?$");
+static Regex DynRootURL("^" IGOR_DYN_ROOT "/?$");
 
-class RootAction : public HttpServer::Action {
+class RootRedirectAction : public HttpServer::Action {
   public:
-      RootAction() : Action(rootURL) { }
+      RootRedirectAction(const Regex & root) : Action(root) { }
   private:
     virtual bool Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException);
 };
 
-bool RootAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
+bool RootRedirectAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action::ActionMatch & match, IO<Handle> out) throw (GeneralException) {
     HttpServer::Response response(server, req, out);
 
     response.get()->writeString("Redirecting...");
     response.SetResponseCode(302);
-    response.AddHeader("Location: /dyn/main");
+    response.AddHeader("Location: " IGOR_DYN_ROOT "/main");
     response.Flush();
     return true;
 }
 
-static Regex mainURL("^/dyn/main$");
+static Regex mainURL("^" IGOR_DYN_ROOT "/main$");
 
 class MainAction : public HttpServer::Action {
   public:
@@ -54,7 +56,9 @@ bool MainAction::Do(HttpServer * server, Http::Request & req, HttpServer::Action
     SimpleMustache::Context ctx;
     HttpServer::Response response(server, req, out);
 
-    ctx["dojo_path"] = "//ajax.googleapis.com/ajax/libs/dojo/1.9.2";
+    ctx["dojo_path"] = IGOR_DOJO_PATH;
+    ctx["static_root"] = IGOR_STATIC_ROOT;
+    ctx["dyn_root"] = IGOR_DYN_ROOT;
 
     s_template.load()->render(response.get(), &ctx);
     response.Flush();
@@ -70,7 +74,7 @@ static void loadTemplate() {
     delete oldTpl;
 }
 
-static Regex igorReloadURL("^/dyn/reloadui$");
+static Regex igorReloadURL("^" IGOR_DYN_ROOT "/reloadui$");
 
 class ReloadAction : public HttpServer::Action {
   public:
@@ -103,7 +107,7 @@ bool ReloadAction::Do(HttpServer * server, Http::Request & req, HttpServer::Acti
     return true;
 }
 
-static Regex igorRestDisasmURL("^/dyn/rest/disasm/([a-fA-F0-9-]+)(/(.*))?$");
+static Regex igorRestDisasmURL("^" IGOR_DYN_ROOT "/rest/disasm/([a-fA-F0-9-]+)(/(.*))?$");
 
 class RestDisasmAction : public AuthenticatedAction {
   public:
@@ -309,7 +313,7 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
     return true;
 }
 
-static Regex listSessionsURL("^/dyn/listSessions$");
+static Regex listSessionsURL("^" IGOR_DYN_ROOT "/listSessions$");
 
 class ListSessionsAction : public AuthenticatedAction {
   public:
@@ -349,7 +353,7 @@ bool ListSessionsAction::safeDo(HttpServer * server, Http::Request & req, HttpSe
     return true;
 }
 
-static Regex igorStaticURL("^/static/(.+)");
+static Regex igorStaticURL("^" IGOR_STATIC_ROOT "/(.+)");
 
 void igor_setup_httpserver() {
     loadTemplate();
@@ -358,7 +362,9 @@ void igor_setup_httpserver() {
     igor_setup_websocket(s);
     igor_setup_auth(s);
 
-    s->registerAction(new RootAction());
+    s->registerAction(new RootRedirectAction(AbsoluteRootURL));
+    s->registerAction(new RootRedirectAction(RootURL));
+    s->registerAction(new RootRedirectAction(DynRootURL));
     s->registerAction(new MainAction());
     s->registerAction(new ReloadAction());
 

@@ -185,7 +185,7 @@ void c_wxAsmWidget::updateTextCache()
                 }
             }
 
-            currentEntry.m_text.append("        "); // alignment of code/data
+            currentEntry.m_text.append("         "); // alignment of code/data
 
             if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
             {
@@ -214,7 +214,7 @@ void c_wxAsmWidget::updateTextCache()
             }
             else
             {
-                currentEntry.m_text.append("db    0x%02X", m_pSession->readU8(analyzeState.m_PC));
+                currentEntry.m_text.append("db       0x%02X", m_pSession->readU8(analyzeState.m_PC));
 
                 m_textCache.push_back(currentEntry);
 

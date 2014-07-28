@@ -11,9 +11,6 @@
     <Filter Include="Igor\cpu">
       <UniqueIdentifier>{5ff300d1-7566-473f-99ec-e39d70c5e380}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Igor\cpu\x86">
-      <UniqueIdentifier>{a5800d68-f4f9-4529-9786-03d938764855}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Igor\PDB">
       <UniqueIdentifier>{474a74c8-3b96-4707-ae70-cb493080acc9}</UniqueIdentifier>
     </Filter>
@@ -65,17 +62,8 @@
     <ClCompile Include="src\IgorSection.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
-    <ClCompile Include="src\cpu\x86\cpu_x86.cpp">
-      <Filter>Igor\cpu\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp">
-      <Filter>Igor\cpu\x86</Filter>
-    </ClCompile>
     <ClCompile Include="src\IgorHttp.cpp">
       <Filter>Igor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp">
-      <Filter>Igor\cpu\x86</Filter>
     </ClCompile>
     <ClCompile Include="wxIgor\wxIgorApp.cpp">
       <Filter>wxIgor</Filter>
@@ -166,14 +154,8 @@
     <ClInclude Include="src\IgorSection.h">
       <Filter>Igor</Filter>
     </ClInclude>
-    <ClInclude Include="src\cpu\x86\cpu_x86.h">
-      <Filter>Igor\cpu\x86</Filter>
-    </ClInclude>
     <ClInclude Include="src\cpu\cpuModule.h">
       <Filter>Igor\cpu</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cpu\x86\cpu_x86_opcodes.h">
-      <Filter>Igor\cpu\x86</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorHttp.h">
       <Filter>Igor</Filter>

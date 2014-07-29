@@ -183,9 +183,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\cpu\cpuModule.cpp" />
-    <ClCompile Include="src\cpu\x86\cpu_x86.cpp" />
-    <ClCompile Include="src\cpu\x86\cpu_x86_opcodes_F.cpp" />
-    <ClCompile Include="src\cpu\x86\cpu_x86_opcodes.cpp" />
     <ClCompile Include="src\cpu\x86_llvm\cpu_x86_llvm.cpp" />
     <ClCompile Include="src\Igor.cpp" />
     <ClCompile Include="src\IgorAnalysis.cpp" />
@@ -237,8 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cpu\cpuModule.h" />
-    <ClInclude Include="src\cpu\x86\cpu_x86.h" />
-    <ClInclude Include="src\cpu\x86\cpu_x86_opcodes.h" />
     <ClInclude Include="src\cpu\x86_llvm\cpu_x86_llvm.h" />
     <ClInclude Include="src\Igor.h" />
     <ClInclude Include="src\IgorAnalysis.h" />

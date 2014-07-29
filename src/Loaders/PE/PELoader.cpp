@@ -4,7 +4,6 @@
 #include "IgorAPI.h"
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
-#include "cpu/x86/cpu_x86.h"
 #include "cpu/x86_llvm/cpu_x86_llvm.h"
 #include "PDB/pdb.h"
 

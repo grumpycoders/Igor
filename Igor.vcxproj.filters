@@ -48,6 +48,9 @@
     <Filter Include="Igor\cpu\x86_llvm">
       <UniqueIdentifier>{3167b557-1dc7-47a5-a32f-c49f646bc276}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Igor\Loaders\llvm">
+      <UniqueIdentifier>{10f1cc02-93f1-45b9-9d17-b61b2b2c51fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Igor.cpp">
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="src\cpu\x86_llvm\cpu_x86_llvm.cpp">
       <Filter>Igor\cpu\x86_llvm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loaders\llvm\llvmLoader.cpp">
+      <Filter>Igor\Loaders\llvm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1407,6 +1413,9 @@
     </ClInclude>
     <ClInclude Include="src\IgorLLVM.h">
       <Filter>Igor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loaders\llvm\llvmLoader.h">
+      <Filter>Igor\Loaders\llvm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

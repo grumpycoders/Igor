@@ -8,6 +8,7 @@
 #include <BString.h>
 #include <TaskMan.h>
 #include <MMap.h>
+#include "Loaders/llvm/llvmLoader.h"
 #include "Loaders/PE/PELoader.h"
 #include "Loaders/Dmp/dmpLoader.h"
 #include "Loaders/Elf/elfLoader.h"
@@ -317,20 +318,28 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::lo
         IO<MMap> reader(new MMap(name));
         reader->open();
 
-        if (fileName.strstr(".exe") != -1) {
-            c_PELoader PELoader;
-            // Note: having the session here is actually useful not just for the entry point,
-            // but for all the possible hints the file might have for us.
-            r = PELoader.loadPE(reader, session);
-            // Note: destroying the object from the stack would do the same, but
-            // as this might trigger a context switch, it's better to do it explicitly
-            // than from a destructor, as a general good practice.
-        } else if (fileName.strstr(".dmp") != -1) {
-            c_dmpLoader dmpLoader;
-            r = dmpLoader.load(reader, session);
-        } else if (fileName.strstr(".elf") != -1) {
-            c_elfLoader elfLoader;
-            r = elfLoader.load(reader, session);
+        // try to use llvm loader first
+
+        c_LLVMLoader llvmLoader;
+        if (llvmLoader.load(reader, session) != IGOR_SUCCESS)
+        {
+            if (fileName.strstr(".exe") != -1) {
+                c_PELoader PELoader;
+                // Note: having the session here is actually useful not just for the entry point,
+                // but for all the possible hints the file might have for us.
+                r = PELoader.loadPE(reader, session);
+                // Note: destroying the object from the stack would do the same, but
+                // as this might trigger a context switch, it's better to do it explicitly
+                // than from a destructor, as a general good practice.
+            }
+            else if (fileName.strstr(".dmp") != -1) {
+                c_dmpLoader dmpLoader;
+                r = dmpLoader.load(reader, session);
+            }
+            else if (fileName.strstr(".elf") != -1) {
+                c_elfLoader elfLoader;
+                r = elfLoader.load(reader, session);
+            }
         }
         reader->close();
     }

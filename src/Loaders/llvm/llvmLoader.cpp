@@ -1,5 +1,6 @@
 #include "llvmLoader.h"
 #include "IgorLocalSession.h"
+#include "cpu/x86_llvm/cpu_x86_llvm.h"
 
 #include "llvm/Object/Archive.h"
 #include "llvm/Object/COFF.h"
@@ -29,7 +30,7 @@ public:
 
     ~LLVMMemoryBuffer()
     {
-
+        delete[] m_buffer;
     }
 
     virtual BufferKind getBufferKind() const
@@ -54,6 +55,23 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
     const Target* objectTarget = TargetRegistry::lookupTarget("", targetTriple, outputError);
     if (objectTarget == NULL)
         return IGOR_FAILURE;
+
+    // Figure out the matching CPU module for Igor
+    c_cpu_x86_llvm* pCpu = NULL;
+    if (!strcmp(objectTarget->getName(), "x86-64"))
+    {
+        pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X64);
+    }
+    else if (!strcmp(objectTarget->getName(), "x86"))
+    {
+        pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X86);
+    }
+
+    igor_cpu_handle cpuHandle;
+    if (pCpu)
+    {
+        m_session->getDB()->igor_add_cpu(pCpu, cpuHandle);
+    }
 
     // iterate over sections
     error_code ec;
@@ -99,12 +117,57 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
         m_session->getDB()->declare_name(symbolAddress, name);
     }
 
+    for (symbol_iterator i = o->begin_dynamic_symbols(),
+        e = o->end_dynamic_symbols();
+        i != e; i.increment(ec))
+    {
+        if (ec)
+            break;
+
+        uint64_t symbolAddr;
+        i->getAddress(symbolAddr);
+
+        StringRef symbolName;
+        i->getName(symbolName);
+
+        SymbolRef::Type symbolType;
+        i->getType(symbolType);
+
+        igorAddress symbolAddress(m_session, symbolAddr, -1);
+        Balau::String name(symbolName.begin());
+        m_session->getDB()->declare_name(symbolAddress, name);
+
+        if (symbolType == SymbolRef::Type::ST_Function)
+        {
+            m_session->add_code_analysis_task(symbolAddress);
+        }
+    }
+
     if (o->isELF())
     {
-        if (const ELF64LEObjectFile *ELF64Obj = dyn_cast<ELF64LEObjectFile>(o))
+        igorAddress entryPointAddress;
+
+        if (const ELF64LEObjectFile *elf = dyn_cast<ELF64LEObjectFile>(o))
         {
-            igorAddress entryPointAddress(m_session, ELF64Obj->getELFFile()->getHeader()->e_entry, -1 );
+            entryPointAddress = igorAddress(m_session, elf->getELFFile()->getHeader()->e_entry, -1);
+        }
+        if (const ELF64BEObjectFile *elf = dyn_cast<ELF64BEObjectFile>(o))
+        {
+            entryPointAddress = igorAddress(m_session, elf->getELFFile()->getHeader()->e_entry, -1);
+        }
+        if (const ELF32LEObjectFile *elf = dyn_cast<ELF32LEObjectFile>(o))
+        {
+            entryPointAddress = igorAddress(m_session, elf->getELFFile()->getHeader()->e_entry, -1);
+        }
+        if (const ELF32BEObjectFile *elf = dyn_cast<ELF32BEObjectFile>(o))
+        {
+            entryPointAddress = igorAddress(m_session, elf->getELFFile()->getHeader()->e_entry, -1);
+        }
+
+        if (entryPointAddress.isValid())
+        {
             m_session->getDB()->m_entryPoint = entryPointAddress;
+            m_session->add_code_analysis_task(entryPointAddress);
         }
     }
 

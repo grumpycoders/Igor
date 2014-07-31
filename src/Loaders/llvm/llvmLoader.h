@@ -16,4 +16,6 @@ public:
 
 private:
     igor_result loadObject(llvm::object::ObjectFile* o);
+
+    IgorLocalSession* m_session;
 };

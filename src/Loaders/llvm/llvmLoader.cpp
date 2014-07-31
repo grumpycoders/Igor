@@ -1,10 +1,13 @@
 #include "llvmLoader.h"
+#include "IgorLocalSession.h"
 
 #include "llvm/Object/Archive.h"
 #include "llvm/Object/COFF.h"
 #include "llvm/Object/MachO.h"
 #include "llvm/Object/ObjectFile.h"
+#include "llvm/Object/ELFObjectFile.h"
 #include "llvm/Support/ErrorOr.h"
+#include "llvm/Support/TargetRegistry.h"
 
 #include <system_error>
 
@@ -24,6 +27,11 @@ public:
         init(m_buffer, m_buffer + size, false);
     }
 
+    ~LLVMMemoryBuffer()
+    {
+
+    }
+
     virtual BufferKind getBufferKind() const
     {
         return MemoryBuffer_Malloc;
@@ -35,15 +43,82 @@ private:
 
 igor_result c_LLVMLoader::loadObject(ObjectFile* o)
 {
-    return IGOR_FAILURE;
+    // get target
+    llvm::Triple targetTriple("unknown-unknown-unknown");
+    targetTriple.setArch(Triple::ArchType(o->getArch()));
+
+    if (o->isMachO())
+        targetTriple.setEnvironment(Triple::MachO);
+
+    std::string outputError;
+    const Target* objectTarget = TargetRegistry::lookupTarget("", targetTriple, outputError);
+    if (objectTarget == NULL)
+        return IGOR_FAILURE;
+
+    // iterate over sections
+    error_code ec;
+    for (section_iterator i = o->begin_sections(),
+        e = o->end_sections();
+        i != e; i.increment(ec))
+    {
+        if (ec)
+            break;
+
+        StringRef sectionName;
+        i->getName(sectionName);
+
+        uint64_t sectionAddr;
+        i->getAddress(sectionAddr);
+
+        uint64_t sectionSize;
+        i->getSize(sectionSize);
+
+        StringRef sectionContents;
+        i->getContents(sectionContents);
+
+        igor_section_handle sectionHandle;
+        m_session->getDB()->create_section(sectionAddr, sectionSize, sectionHandle);
+        m_session->getDB()->load_section_data(sectionHandle, sectionContents.data(), sectionContents.size());
+    }
+
+    for (symbol_iterator i = o->begin_symbols(),
+        e = o->end_symbols();
+        i != e; i.increment(ec))
+    {
+        if (ec)
+            break;
+
+        uint64_t symbolAddr;
+        i->getAddress(symbolAddr);
+
+        StringRef symbolName;
+        i->getName(symbolName);
+
+        igorAddress symbolAddress(m_session, symbolAddr, -1);
+        Balau::String name(symbolName.begin());
+        m_session->getDB()->declare_name(symbolAddress, name);
+    }
+
+    if (o->isELF())
+    {
+        if (const ELF64LEObjectFile *ELF64Obj = dyn_cast<ELF64LEObjectFile>(o))
+        {
+            igorAddress entryPointAddress(m_session, ELF64Obj->getELFFile()->getHeader()->e_entry, -1 );
+            m_session->getDB()->m_entryPoint = entryPointAddress;
+        }
+    }
+
+    return IGOR_SUCCESS;
 }
 
 igor_result c_LLVMLoader::load(BFile reader, IgorLocalSession *session)
 {
+    m_session = session;
+
     // Attempt to open the binary.
-    LLVMMemoryBuffer llvmMemoryBuffer(reader);
+    LLVMMemoryBuffer* pllvmMemoryBuffer = new LLVMMemoryBuffer(reader);
     OwningPtr<Binary> binary;
-    if (createBinary(&llvmMemoryBuffer, binary))
+    if (createBinary(pllvmMemoryBuffer, binary))
     {
         return IGOR_FAILURE;
     }
@@ -74,5 +149,5 @@ igor_result c_LLVMLoader::load(BFile reader, IgorLocalSession *session)
         loadObject(o);
     }
 
-    return IGOR_FAILURE;
+    return IGOR_SUCCESS;
 }

@@ -261,6 +261,17 @@ igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle,
     return IGOR_SUCCESS;
 }
 
+igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle, const void* data, u64 size)
+{
+    s_igorSection* pSection = m_sections[sectionHandle];
+
+    pSection->m_rawData = new u8[size];
+    memcpy(pSection->m_rawData, data, size);
+    pSection->m_rawDataSize = size;
+
+    return IGOR_SUCCESS;
+}
+
 int s_igorDatabase::readString(igorAddress address, Balau::String& outputString)
 {
     int length = 0;

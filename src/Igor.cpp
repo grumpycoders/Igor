@@ -8,6 +8,8 @@
 #include <HttpServer.h>
 #include <LuaTask.h>
 
+#include <getopt.h>
+
 #include "google/protobuf/stubs/common.h"
 
 #include "Loaders/PE/PELoader.h"
@@ -161,15 +163,25 @@ void MainTask::Do() {
     );
     strLuaHello.exec(g_luaTask);
 
-    if (argc == 2) {
+    int opt;
+    while ((opt = getopt(argc, argv, "h")) != EOF) {
+        switch (opt) {
+        case 'h':
+        default:
+            Printer::print("Usage: %s [-h] <file> <file> ...\n", argv[0]);
+            throw Exit(opt == 'h' ? 0 : -1);
+        }
+    }
+
+    for (; optind < argc; optind++) {
         IgorLocalSession * session;
         igor_result r;
         String errorMsg1, errorMsg2;
-        
-        std::tie(r, session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(argv[1]);
+
+        std::tie(r, session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(argv[optind]);
 
         if (r != IGOR_SUCCESS) {
-            Printer::log(M_WARNING, "Unable to load %s:", argv[1]);
+            Printer::log(M_WARNING, "Unable to load %s:", argv[optind]);
             Printer::log(M_WARNING, "%s", errorMsg1.to_charp());
             Printer::log(M_WARNING, "%s", errorMsg2.to_charp());
         }

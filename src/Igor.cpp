@@ -143,6 +143,75 @@ static void startWX(...) { }
 
 #endif
 
+enum IgorUsers_functions_t {
+    LUAIGOR_USERS_GETUSERS,
+    LUAIGOR_USERS_ADDUSER,
+    LUAIGOR_USERS_CHANGEPASSWORD,
+    LUAIGOR_USERS_DELUSER,
+};
+
+struct lua_functypes_t IgorUsers_functions[] = {
+    { LUAIGOR_USERS_GETUSERS,           "getUsers",             0, 0, { } },
+    { LUAIGOR_USERS_ADDUSER,            "addUser",              1, 2, { BLUA_STRING, BLUA_STRING } },
+    { LUAIGOR_USERS_CHANGEPASSWORD,     "changePassword",       2, 2, { BLUA_STRING, BLUA_STRING } },
+    { LUAIGOR_USERS_DELUSER,            "delUser",              1, 1, { BLUA_STRING } },
+    { -1, 0, 0, 0, 0 },
+};
+
+struct sLua_IgorUsers : public LuaExecCell {
+    static int IgorUsers_proceed_static(Lua & L, int n, int caller);
+    void registerMe(Lua & L);
+    virtual void run(Lua & L) override { registerMe(L); }
+};
+
+int sLua_IgorUsers::IgorUsers_proceed_static(Lua & L, int n, int caller) {
+    int r = 0;
+
+    switch (caller) {
+    case LUAIGOR_USERS_GETUSERS:
+        {
+            std::vector<String> users = IgorUsers::getUsers();
+            r = 1;
+            L.newtable();
+            int i = 1;
+            for (auto user = users.begin(); user != users.end(); user++) {
+                L.push((lua_Number) i++);
+                L.push(*user);
+                L.settable();
+            }
+        }
+        break;
+    case LUAIGOR_USERS_ADDUSER:
+        {
+            String user = L.tostring(1);
+            String password = n == 2 ? L.tostring(2) : "default";
+            r = 1;
+            L.push(IgorUsers::addUser(user, password));
+        }
+        break;
+    case LUAIGOR_USERS_CHANGEPASSWORD:
+        r = 1;
+        L.push(IgorUsers::changePassword(L.tostring(1), L.tostring(2)));
+        break;
+    case LUAIGOR_USERS_DELUSER:
+        r = 1;
+        L.push(IgorUsers::delUser(L.tostring()));
+        break;
+    }
+
+    return r;
+}
+
+void sLua_IgorUsers::registerMe(Lua & L) {
+    CHECK_FUNCTIONS(IgorUsers);
+    PUSH_CLASS(IgorUsers);
+    PUSH_STATIC(IgorUsers, LUAIGOR_USERS_GETUSERS);
+    PUSH_STATIC(IgorUsers, LUAIGOR_USERS_ADDUSER);
+    PUSH_STATIC(IgorUsers, LUAIGOR_USERS_CHANGEPASSWORD);
+    PUSH_STATIC(IgorUsers, LUAIGOR_USERS_DELUSER);
+    PUSH_CLASS_DONE();
+}
+
 void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
 
@@ -162,6 +231,8 @@ void MainTask::Do() {
         "print('Lua engine up and running, JIT compiler is ' .. (jitstatus[1] and 'enabled' or 'disabled') .. '.') "
     );
     strLuaHello.exec(g_luaTask);
+    sLua_IgorUsers luaIgorUsers;
+    luaIgorUsers.exec(g_luaTask);
 
     int opt;
     while ((opt = getopt(argc, argv, "hvl:e:")) != EOF) {

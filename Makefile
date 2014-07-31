@@ -31,7 +31,7 @@ ifeq ($(SYSTEM),Linux)
     CONFIG_H = Balau/linux-config.h
 endif
 
-vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_llvm:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor
+vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_llvm:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor:src/Loaders/llvm
 vpath %.cc src/protobufs
 vpath %.proto src/protobufs
 
@@ -51,16 +51,14 @@ IgorWS.cpp \
 \
 IgorLLVM.cpp \
 \
-IgorProtoFile.pb.cc \
+IgorProto.pb.cc \
 \
+llvmLoader.cpp\
 PELoader.cpp \
 elfLoader.cpp \
 dmpLoader.cpp \
 \
 cpuModule.cpp \
-cpu_x86.cpp \
-cpu_x86_opcodes.cpp \
-cpu_x86_opcodes_F.cpp \
 cpu_x86_llvm.cpp \
 \
 gsi.cpp \

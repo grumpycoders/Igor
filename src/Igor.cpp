@@ -164,11 +164,29 @@ void MainTask::Do() {
     strLuaHello.exec(g_luaTask);
 
     int opt;
-    while ((opt = getopt(argc, argv, "h")) != EOF) {
+    while ((opt = getopt(argc, argv, "hvl:e:")) != EOF) {
         switch (opt) {
+        case 'v':
+            Printer::enable(M_ALL);
+            break;
+        case 'l':
+            {
+                IO<Input> scriptFile(new Input(optarg));
+                LuaExecFile script(scriptFile);
+
+                scriptFile->open();
+                script.exec(g_luaTask);
+            }
+            break;
+        case 'e':
+            {
+                LuaExecString cmd(optarg);
+                cmd.exec(g_luaTask);
+            }
+            break;
         case 'h':
         default:
-            Printer::print("Usage: %s [-h] <file> <file> ...\n", argv[0]);
+            Printer::print("Usage: %s [-h] [-v] [-l script.lua] [-e \"lua command\"] <file> <file> ...\n", argv[0]);
             throw Exit(opt == 'h' ? 0 : -1);
         }
     }
@@ -188,7 +206,7 @@ void MainTask::Do() {
     }
 
     startWX(argc, argv);
-    
+
     stopTaskManOnExit(false);
 
     igor_setup_httpserver();

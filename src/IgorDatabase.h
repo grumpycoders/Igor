@@ -199,6 +199,7 @@ struct s_igorDatabase
     igor_result set_section_name(const Balau::String& sectionName);
     igor_result set_section_option(igor_section_handle sectionHandle, e_igor_section_option option);
     igor_result load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size);
+    igor_result load_section_data(igor_section_handle sectionHandle, const void* data, u64 size);
 
     igor_result declare_name(igorAddress virtualAddress, Balau::String name);
     igor_result declare_symbolType(igorAddress virtualAddress, e_symbolType type);

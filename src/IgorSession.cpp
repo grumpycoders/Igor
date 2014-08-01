@@ -18,32 +18,61 @@ using namespace Balau;
 
 namespace {
 
+    template<int NUM_ENTRIES, typename storage_t = uint16_t>
+    class FastSet {
+    public:
+        void clear() { m_n = 0; }
+        bool isInSet(storage_t val) {
+            AAssert((val < NUM_ENTRIES) && (val >= 0), "Invalid value");
+            storage_t sparse = m_sparse[val];
+            if ((sparse >= m_n) || (sparse < 0))
+                return false;
+            return m_dense[sparse] == val;
+        }
+        bool isEmpty() { return m_n == 0; }
+        storage_t pop() {
+            AAssert(!isEmpty(), "Can't pop an empty set");
+            return m_dense[--m_n];
+        }
+        void insert(storage_t val) {
+            if (isInSet(val))
+                return;
+            m_dense[m_n] = val;
+            m_sparse[val] = m_n++;
+        }
+        void remove(storage_t val) {
+            if (!isInSet(val))
+                return;
+            storage_t sparse = m_sparse[val];
+            m_dense[sparse] = m_dense[--m_n];
+        }
+    private:
+        int m_n = 0;
+        storage_t m_dense[NUM_ENTRIES];
+        storage_t m_sparse[NUM_ENTRIES];
+    };
+
     class IdList : public Balau::AtStart {
     public:
         IdList() : AtStart(500) { }
         virtual void doStart() override {
-            for (int i = 1; i < static_cast<uint16_t>(-1); i++)
+            for (int i = NUM_IDS - 1; i != 0; i--)
                 m_set.insert(i);
         }
         uint16_t getId() {
             Balau::ScopeLock sl(m_lock);
-            auto iter = m_set.begin();
-            IAssert(iter != m_set.end(), "Too many open databases");
-            uint16_t ret = *iter;
-            m_set.erase(iter);
-
-            return ret;
+            return m_set.pop();
         }
         void returnId(uint16_t id) {
             Balau::ScopeLock sl(m_lock);
-            auto iter = m_set.find(id);
-            IAssert(iter != m_set.end(), "Database %u has already been released", id);
+            IAssert(!m_set.isInSet(id), "Database %u has already been released", id);
             m_set.insert(id);
         }
 
     private:
         Balau::Lock m_lock;
-        std::set<uint16_t> m_set;
+        static const int NUM_IDS = 2048;
+        FastSet<NUM_IDS> m_set;
     };
 
 }

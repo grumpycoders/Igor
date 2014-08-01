@@ -43,9 +43,19 @@
 
 #include "IgorLLVM.h"
 #include <AtStartExit.h>
+#include <Exceptions.h>
+
+static void errorHandlerInternal(const std::string & reason) throw (Balau::GeneralException) {
+    throw Balau::GeneralException(reason);
+}
+
+static void errorHandler(void * user_data, const std::string & reason, bool gen_crash_diag) {
+    errorHandlerInternal(reason);
+}
 
 void igor_register_llvm() {
     // Initialize targets and assembly printers/parsers.
+    llvm::install_fatal_error_handler(errorHandler);
     llvm::llvm_start_multithreaded();
     llvm::InitializeAllTargetInfos();
     llvm::InitializeAllTargetMCs();

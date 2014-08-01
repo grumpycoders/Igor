@@ -133,6 +133,9 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
         SymbolRef::Type symbolType;
         i->getType(symbolType);
 
+        uint32_t symbolFlags;
+        i->getFlags(symbolFlags);
+
         igorAddress symbolAddress(m_session, symbolAddr, -1);
         Balau::String name(symbolName.begin());
         m_session->getDB()->declare_name(symbolAddress, name);
@@ -142,6 +145,16 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
             m_session->add_code_analysis_task(symbolAddress);
         }
     }
+
+    /*
+    for (library_iterator i = o->begin_libraries_needed(),
+        e = o->end_libraries_needed();
+        i != e; i.increment(ec))
+    {
+        if (ec)
+            break;
+    }
+    */
 
     if (o->isELF())
     {

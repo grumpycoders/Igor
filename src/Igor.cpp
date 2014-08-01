@@ -186,12 +186,12 @@ int sLua_IgorUsers::IgorUsers_proceed_static(Lua & L, int n, int caller) {
             String user = L.tostring(1);
             String password = n == 2 ? L.tostring(2) : "default";
             r = 1;
-            L.push(IgorUsers::addUser(user, password));
+            L.push(IgorUsers::addUser(user, SRP::generateVerifier(user, password)));
         }
         break;
     case LUAIGOR_USERS_CHANGEPASSWORD:
         r = 1;
-        L.push(IgorUsers::changePassword(L.tostring(1), L.tostring(2)));
+        L.push(IgorUsers::changePassword(L.tostring(1), SRP::generateVerifier(L.tostring(1), L.tostring(2))));
         break;
     case LUAIGOR_USERS_DELUSER:
         r = 1;

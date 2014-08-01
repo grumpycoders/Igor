@@ -97,6 +97,28 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
         igor_section_handle sectionHandle;
         m_session->getDB()->create_section(sectionAddr, sectionSize, sectionHandle);
         m_session->getDB()->load_section_data(sectionHandle, sectionContents.data(), sectionContents.size());
+
+        // relocation in this section
+#if 0
+        for (relocation_iterator relocation = i->begin_relocations(),
+            e = i->end_relocations();
+            relocation != e; relocation.increment(ec))
+        {
+            if (ec)
+                break;
+
+            SmallString<256> relocationTypeName;
+            relocation->getTypeName(relocationTypeName);
+
+            if (strstr(relocationTypeName.c_str(), "_JUMP_SLOT"))
+            {
+                symbol_iterator symbol = relocation->getSymbol();
+
+                StringRef symbolName;
+                i->getName(symbolName);
+            }
+        }
+#endif
     }
 
     for (symbol_iterator i = o->begin_symbols(),

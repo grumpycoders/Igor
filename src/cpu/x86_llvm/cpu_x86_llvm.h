@@ -13,6 +13,8 @@ namespace llvm{
     class MCAsmInfo;
     class MCSubtargetInfo;
     class MCInstrInfo;
+    class MCContext;
+    class MCObjectFileInfo;
 }
 
 
@@ -44,6 +46,8 @@ public:
         llvm::MCDisassembler* m_pDisassembler = NULL;
         class IgorLLVMX86InstAnalyzer* m_pAnalyzer = NULL;
         class IgorLLVMX86InstPrinter* m_pPrinter = NULL;
+        llvm::MCContext * m_pCtx = NULL;
+        llvm::MCObjectFileInfo * m_pMOFI = NULL;
 
         const llvm::MCRegisterInfo* m_pMRI = NULL;
         const llvm::MCAsmInfo* m_pMAI = NULL;

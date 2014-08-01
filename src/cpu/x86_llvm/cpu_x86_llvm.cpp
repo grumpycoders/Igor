@@ -1,19 +1,22 @@
-#include "llvm/ADT/OwningPtr.h"
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#define __STDC_FORMAT_MACROS
+#include <stdint.h>
+
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringExtras.h"
 #include "llvm/ADT/Triple.h"
+#include "llvm/MC/MCAnalysis/MCAtom.h"
+#include "llvm/MC/MCAnalysis/MCFunction.h"
+#include "llvm/MC/MCAnalysis/MCModule.h"
+#include "llvm/MC/MCAnalysis/MCModuleYAML.h"
 #include "llvm/MC/MCAsmInfo.h"
-#include "llvm/MC/MCAtom.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCDisassembler.h"
-#include "llvm/MC/MCExpr.h"
-#include "llvm/MC/MCFunction.h"
 #include "llvm/MC/MCInst.h"
 #include "llvm/MC/MCInstPrinter.h"
 #include "llvm/MC/MCInstrAnalysis.h"
 #include "llvm/MC/MCInstrInfo.h"
-#include "llvm/MC/MCModule.h"
-#include "llvm/MC/MCModuleYAML.h"
 #include "llvm/MC/MCObjectDisassembler.h"
 #include "llvm/MC/MCObjectFileInfo.h"
 #include "llvm/MC/MCObjectSymbolizer.h"
@@ -40,7 +43,6 @@
 #include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/Support/system_error.h"
 
 #include "cpu_x86_llvm.h"
 
@@ -330,8 +332,10 @@ c_cpu_x86_llvm::c_cpu_x86_llvm(e_cpu_type cpuType)
         tls->m_pMAI = tls->m_pTarget->createMCAsmInfo(*tls->m_pMRI, tripleName);
         tls->m_pSTI = tls->m_pTarget->createMCSubtargetInfo(tripleName, "", "");
         tls->m_pMII = tls->m_pTarget->createMCInstrInfo();
+        tls->m_pMOFI = new llvm::MCObjectFileInfo();
+        tls->m_pCtx = new llvm::MCContext(tls->m_pMAI, tls->m_pMRI, tls->m_pMOFI);
 
-        tls->m_pDisassembler = tls->m_pTarget->createMCDisassembler(*tls->m_pSTI);
+        tls->m_pDisassembler = tls->m_pTarget->createMCDisassembler(*tls->m_pSTI, *tls->m_pCtx);
         tls->m_pAnalyzer = new IgorLLVMX86InstAnalyzer(*tls->m_pMAI, *tls->m_pMII, *tls->m_pMRI);
         tls->m_pPrinter = new IgorLLVMX86InstPrinter(*tls->m_pMAI, *tls->m_pMII, *tls->m_pMRI);
 
@@ -352,6 +356,8 @@ c_cpu_x86_llvm::TLS::~TLS()
     delete m_pDisassembler;
     delete m_pAnalyzer;
     delete m_pPrinter;
+    delete m_pCtx;
+    delete m_pMOFI;
 }
 
 igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)

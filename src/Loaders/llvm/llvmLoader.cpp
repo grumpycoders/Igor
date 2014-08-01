@@ -1,3 +1,8 @@
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#define __STDC_FORMAT_MACROS
+#include <stdint.h>
+
 #include "llvmLoader.h"
 #include "IgorLocalSession.h"
 #include "cpu/x86_llvm/cpu_x86_llvm.h"
@@ -44,6 +49,7 @@ private:
 
 igor_result c_LLVMLoader::loadObject(ObjectFile* o)
 {
+#if 0
     // get target
     llvm::Triple targetTriple("unknown-unknown-unknown");
     targetTriple.setArch(Triple::ArchType(o->getArch()));
@@ -206,11 +212,13 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
         }
     }
 
+#endif
     return IGOR_SUCCESS;
 }
 
 igor_result c_LLVMLoader::load(BFile reader, IgorLocalSession *session)
 {
+#if 0
     m_session = session;
 
     // Attempt to open the binary.
@@ -246,6 +254,8 @@ igor_result c_LLVMLoader::load(BFile reader, IgorLocalSession *session)
         // Object
         loadObject(o);
     }
+
+#endif
 
     return IGOR_SUCCESS;
 }

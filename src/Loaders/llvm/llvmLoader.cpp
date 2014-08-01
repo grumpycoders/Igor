@@ -49,13 +49,12 @@ private:
 
 igor_result c_LLVMLoader::loadObject(ObjectFile* o)
 {
-#if 0
     // get target
     llvm::Triple targetTriple("unknown-unknown-unknown");
     targetTriple.setArch(Triple::ArchType(o->getArch()));
 
     if (o->isMachO())
-        targetTriple.setEnvironment(Triple::MachO);
+        targetTriple.setObjectFormat(Triple::MachO);
 
     std::string outputError;
     const Target* objectTarget = TargetRegistry::lookupTarget("", targetTriple, outputError);
@@ -80,25 +79,19 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
     }
 
     // iterate over sections
-    error_code ec;
-    for (section_iterator i = o->begin_sections(),
-        e = o->end_sections();
-        i != e; i.increment(ec))
+    for (const SectionRef &section : o->sections())
     {
-        if (ec)
-            break;
-
         StringRef sectionName;
-        i->getName(sectionName);
+        section.getName(sectionName);
 
         uint64_t sectionAddr;
-        i->getAddress(sectionAddr);
+        section.getAddress(sectionAddr);
 
         uint64_t sectionSize;
-        i->getSize(sectionSize);
+        section.getSize(sectionSize);
 
         StringRef sectionContents;
-        i->getContents(sectionContents);
+        section.getContents(sectionContents);
 
         igor_section_handle sectionHandle;
         m_session->getDB()->create_section(sectionAddr, sectionSize, sectionHandle);
@@ -127,24 +120,19 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
 #endif
     }
 
-    for (symbol_iterator i = o->begin_symbols(),
-        e = o->end_symbols();
-        i != e; i.increment(ec))
+    for (const SymbolRef &symbol : o->symbols())
     {
-        if (ec)
-            break;
-
         uint64_t symbolAddr;
-        i->getAddress(symbolAddr);
+        symbol.getAddress(symbolAddr);
 
         StringRef symbolName;
-        i->getName(symbolName);
+        symbol.getName(symbolName);
 
         igorAddress symbolAddress(m_session, symbolAddr, -1);
         Balau::String name(symbolName.begin());
         m_session->getDB()->declare_name(symbolAddress, name);
     }
-
+    /*
     for (symbol_iterator i = o->begin_dynamic_symbols(),
         e = o->end_dynamic_symbols();
         i != e; i.increment(ec))
@@ -173,7 +161,7 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
             m_session->add_code_analysis_task(symbolAddress);
         }
     }
-
+    */
     /*
     for (library_iterator i = o->begin_libraries_needed(),
         e = o->end_libraries_needed();
@@ -212,50 +200,29 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
         }
     }
 
-#endif
     return IGOR_SUCCESS;
 }
 
 igor_result c_LLVMLoader::load(BFile reader, IgorLocalSession *session)
 {
-#if 0
     m_session = session;
 
     // Attempt to open the binary.
-    LLVMMemoryBuffer* pllvmMemoryBuffer = new LLVMMemoryBuffer(reader);
-    OwningPtr<Binary> binary;
-    if (createBinary(pllvmMemoryBuffer, binary))
+    std::unique_ptr<MemoryBuffer> pllvmMemoryBuffer = std::make_unique<LLVMMemoryBuffer>(reader);
+    ErrorOr<Binary *> BinaryOrErr = createBinary(std::move(pllvmMemoryBuffer), NULL);
+    if (BinaryOrErr.getError())
     {
         return IGOR_FAILURE;
     }
 
-    if (Archive *a = dyn_cast<Archive>(binary.get()))
+    if (Archive *a = dyn_cast<Archive>(BinaryOrErr.get()))
     {
-        // Archive
-        for (Archive::child_iterator i = a->begin_children(),
-            e = a->end_children(); i != e; ++i) {
-            OwningPtr<Binary> child;
-            /*if (error_code ec = i->getAsBinary(child)) {
-                // Ignore non-object files.
-                if (ec != object_error::invalid_file_type)
-                    errs() << ToolName << ": '" << a->getFileName() << "': " << ec.message()
-                    << ".\n";
-                continue;
-            }
-            if (ObjectFile *o = dyn_cast<ObjectFile>(child.get()))
-                DumpObject(o);
-            else
-                errs() << ToolName << ": '" << a->getFileName() << "': "
-                << "Unrecognized file type.\n";*/
-        }
     }
-    else if (ObjectFile *o = dyn_cast<ObjectFile>(binary.get()))
+    else if (ObjectFile *o = dyn_cast<ObjectFile>(BinaryOrErr.get()))
     {
         // Object
         loadObject(o);
     }
-
-#endif
 
     return IGOR_SUCCESS;
 }

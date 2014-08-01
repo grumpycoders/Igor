@@ -45,8 +45,8 @@
 #include <AtStartExit.h>
 #include <Exceptions.h>
 
-static void errorHandlerInternal(const std::string & reason) throw (Balau::GeneralException) {
-    throw Balau::GeneralException(reason);
+static void errorHandlerInternal(const std::string & reason) throw (LLVMException) {
+    throw LLVMException(reason);
 }
 
 static void errorHandler(void * user_data, const std::string & reason, bool gen_crash_diag) {

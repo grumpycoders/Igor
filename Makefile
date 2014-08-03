@@ -75,17 +75,20 @@ wxIgorFrame.cpp \
 wxManageUsers.cpp \
 
 LLVM_LIBS += \
-LLVMAArch64AsmParser LLVMAArch64Disassembler LLVMARMCodeGen LLVMARMAsmParser LLVMARMDisassembler LLVMCppBackendCodeGen \
-LLVMHexagonCodeGen LLVMMipsCodeGen LLVMMipsAsmParser LLVMMipsDisassembler LLVMMSP430CodeGen LLVMNVPTXCodeGen LLVMPowerPCCodeGen \
-LLVMPowerPCAsmParser LLVMR600CodeGen LLVMSparcCodeGen LLVMSystemZCodeGen LLVMSystemZAsmParser LLVMSystemZDisassembler \
-LLVMX86CodeGen LLVMX86AsmParser LLVMX86Disassembler LLVMXCoreCodeGen LLVMXCoreDisassembler LLVMDebugInfo LLVMMCDisassembler \
-LLVMAArch64CodeGen LLVMARMDesc LLVMCppBackendInfo LLVMHexagonAsmPrinter LLVMMipsDesc LLVMMSP430Desc LLVMNVPTXDesc \
-LLVMPowerPCDesc LLVMR600Desc LLVMSparcDesc LLVMSystemZDesc LLVMX86Desc LLVMXCoreDesc LLVMAArch64Desc LLVMAsmPrinter \
-LLVMSelectionDAG LLVMARMAsmPrinter LLVMARMInfo LLVMHexagonDesc LLVMMipsAsmPrinter LLVMMipsInfo LLVMMSP430AsmPrinter \
-LLVMMSP430Info LLVMNVPTXAsmPrinter LLVMNVPTXInfo LLVMPowerPCAsmPrinter LLVMPowerPCInfo LLVMR600AsmPrinter LLVMR600Info \
-LLVMSparcInfo LLVMSystemZAsmPrinter LLVMSystemZInfo LLVMX86AsmPrinter LLVMX86Info LLVMXCoreAsmPrinter LLVMXCoreInfo \
-LLVMAArch64AsmPrinter LLVMAArch64Info LLVMMCParser LLVMCodeGen LLVMHexagonInfo LLVMX86Utils LLVMAArch64Utils LLVMObjCARCOpts \
-LLVMScalarOpts LLVMInstCombine LLVMTransformUtils LLVMipa LLVMAnalysis LLVMTarget LLVMCore LLVMMC LLVMObject LLVMSupport \
+LLVMAArch64AsmParser LLVMAArch64AsmPrinter LLVMAArch64CodeGen LLVMAArch64Desc LLVMAArch64Disassembler LLVMAArch64Info \
+LLVMAArch64Utils LLVMAnalysis LLVMARMAsmParser LLVMARMAsmPrinter LLVMARMCodeGen LLVMARMDesc LLVMARMDisassembler \
+LLVMARMInfo LLVMAsmParser LLVMAsmPrinter LLVMBitReader LLVMBitWriter LLVMCodeGen LLVMCore LLVMCppBackendCodeGen \
+LLVMCppBackendInfo LLVMDebugInfo LLVMExecutionEngine LLVMHexagonAsmPrinter LLVMHexagonCodeGen LLVMHexagonDesc \
+LLVMHexagonInfo LLVMInstCombine LLVMInstrumentation LLVMInterpreter LLVMipa LLVMipo LLVMIRReader LLVMJIT LLVMLineEditor \
+LLVMLinker LLVMLTO LLVMMC LLVMMCAnalysis LLVMMCDisassembler LLVMMCJIT LLVMMCParser LLVMMipsAsmParser LLVMMipsAsmPrinter \
+LLVMMipsCodeGen LLVMMipsDesc LLVMMipsDisassembler LLVMMipsInfo LLVMMSP430AsmPrinter LLVMMSP430CodeGen LLVMMSP430Desc \
+LLVMMSP430Info LLVMNVPTXAsmPrinter LLVMNVPTXCodeGen LLVMNVPTXDesc LLVMNVPTXInfo LLVMObjCARCOpts LLVMObject LLVMOption \
+LLVMPowerPCAsmParser LLVMPowerPCAsmPrinter LLVMPowerPCCodeGen LLVMPowerPCDesc LLVMPowerPCDisassembler LLVMPowerPCInfo \
+LLVMProfileData LLVMR600AsmPrinter LLVMR600CodeGen LLVMR600Desc LLVMR600Info LLVMRuntimeDyld LLVMScalarOpts LLVMSelectionDAG \
+LLVMSparcAsmParser LLVMSparcAsmPrinter LLVMSparcCodeGen LLVMSparcDesc LLVMSparcDisassembler LLVMSparcInfo LLVMSupport \
+LLVMSystemZAsmParser LLVMSystemZAsmPrinter LLVMSystemZCodeGen LLVMSystemZDesc LLVMSystemZDisassembler LLVMSystemZInfo \
+LLVMTableGen LLVMTarget LLVMTransformUtils LLVMVectorize LLVMX86AsmParser LLVMX86AsmPrinter LLVMX86CodeGen LLVMX86Desc \
+LLVMX86Disassembler LLVMX86Info LLVMX86Utils LLVMXCoreAsmPrinter LLVMXCoreCodeGen LLVMXCoreDesc LLVMXCoreDisassembler LLVMXCoreInfo
 
 ifneq (,$(wildcard /usr/include/wx-3.0/wx/wx.h))
     IGOR_SOURCES += $(WXIGOR_SOURCES)
@@ -101,7 +104,7 @@ CPPFLAGS_NO_ARCH += $(addprefix -I, $(INCLUDES)) -fexceptions -imacros $(CONFIG_
 CPPFLAGS += $(CPPFLAGS_NO_ARCH) $(ARCH_FLAGS)
 
 LDFLAGS += $(ARCH_FLAGS)
-LDLIBS += $(addsuffix .a, $(addprefix llvm-build/lib/lib, $(LLVM_LIBS)))
+LDLIBS +=  -Wl,--start-group $(addsuffix .a, $(addprefix llvm-build/lib/lib, $(LLVM_LIBS))) -Wl,--end-group
 LDLIBS += $(addprefix -l, $(LIBS))
 
 TARGET=Igor.$(BINEXT)

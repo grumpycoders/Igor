@@ -208,7 +208,7 @@ igor_result c_LLVMLoader::load(BFile reader, IgorLocalSession *session)
     m_session = session;
 
     // Attempt to open the binary.
-    std::unique_ptr<MemoryBuffer> pllvmMemoryBuffer = std::make_unique<LLVMMemoryBuffer>(reader);
+    std::unique_ptr<MemoryBuffer> pllvmMemoryBuffer(new LLVMMemoryBuffer(reader));
     ErrorOr<Binary *> BinaryOrErr = createBinary(std::move(pllvmMemoryBuffer), NULL);
     if (BinaryOrErr.getError())
     {

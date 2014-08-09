@@ -62,10 +62,10 @@ void IgorAnalysisManagerLocal::Do() {
         ev_tstamp now = ev_now(getTaskMan()->getLoop());
 
         if (m_session->m_status == IgorLocalSession::IDLE) {
-            Printer::log(M_INFO, "AnalysisManager going idle; analyzed %lli instructions...", m_session->m_instructions.load());
+            Printer::log(M_INFO, "AnalysisManager going idle; analyzed %" PRIu64 " instructions...", m_session->m_instructions.load());
         } else if ((m_lastUpdate + 1.0) < now) {
             m_lastUpdate = now;
-            Printer::log(M_INFO, "AnalysisManager running %llu tasks, analyzed %lli instructions...", m_session->m_nTasks.load(), m_session->m_instructions.load());
+            Printer::log(M_INFO, "AnalysisManager running %" PRIu64 " tasks, analyzed %" PRIu64 " instructions...", m_session->m_nTasks.load(), m_session->m_instructions.load());
         }
 
         m_session->m_pDatabase->m_analysisRequests.getEvent()->resetMaybe();

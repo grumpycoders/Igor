@@ -1,6 +1,3 @@
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#define __STDC_FORMAT_MACROS
 #include <stdint.h>
 
 #include "llvmLoader.h"
@@ -28,7 +25,8 @@ public:
         off64_t size = reader->getSize();
 
         m_buffer = new char[size];
-        reader->read(m_buffer, size);
+        ssize_t r = reader->read(m_buffer, size);
+        AAssert(r == size, "Asked for %" PRIu64 " bytes, but got %zi instead", size, r);
 
         init(m_buffer, m_buffer + size, false);
     }

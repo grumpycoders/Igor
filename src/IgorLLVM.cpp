@@ -1,6 +1,3 @@
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#define __STDC_FORMAT_MACROS
 #include <stdint.h>
 
 #include "llvm/ADT/STLExtras.h"

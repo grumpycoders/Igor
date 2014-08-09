@@ -208,7 +208,7 @@ BigInt SRP::Hash::toBigInt() const {
 BigInt SRP::rand(int s) {
     uint8_t * rnd = (uint8_t *) alloca(s);
     unsigned long r = rng_get_bytes(rnd, s, NULL);
-    RAssert(r == s, "Unable to generate enough random bytes; got only %i instead of %i.", r, s);
+    RAssert(r == s, "Unable to generate enough random bytes; got only %lu instead of %i.", r, s);
     BigInt ret;
     ret.importUBin(rnd, s);
     return ret % srpBigNums.N();

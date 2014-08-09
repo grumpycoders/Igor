@@ -255,7 +255,8 @@ igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle,
     s_igorSection* pSection = m_sections[sectionHandle];
 
     pSection->m_rawData = new u8[size];
-    reader->read(pSection->m_rawData, size);
+    ssize_t r = reader->read(pSection->m_rawData, size);
+    AAssert(r == size, "Couldn't read %" PRIu64 " bytes, got %zi instead", size, r);
     pSection->m_rawDataSize = size;
 
     return IGOR_SUCCESS;

@@ -53,14 +53,14 @@ void IgorAnalysis::Do()
                 
         if (++counter == 0)
         {
-            Printer::log(M_INFO, "Analysis Task %p yields after %llu instructions at %016llx", this, m_instructionsCounter, m_analyzeState.m_PC.offset);
+            Printer::log(M_INFO, "Analysis Task %p yields after %" PRIu64 " instructions at %016" PRIx64, this, m_instructionsCounter, m_analyzeState.m_PC.offset);
             StacklessYield();
         }
 
     } while (m_analyzeState.m_analyzeResult == e_analyzeResult::continue_analysis);
 
     if (m_instructionsCounter >= 1024)
-        Printer::log(M_INFO, "Analysis Task %p stops after %llu instructions at %016llx", this, m_instructionsCounter, m_analyzeState.m_PC.offset);
+        Printer::log(M_INFO, "Analysis Task %p stops after %" PRIu64 " instructions at %016" PRIx64, this, m_instructionsCounter, m_analyzeState.m_PC.offset);
 
     delete m_analyzeState.m_cpu_analyse_result;
     m_analyzeState.m_cpu_analyse_result = NULL;
@@ -73,7 +73,7 @@ void IgorAnalysis::Do()
 
 IgorAnalysis::IgorAnalysis(s_igorDatabase * db, igorAddress PC, IgorLocalSession * parent, class IgorAnalysisManagerLocal * manager) : m_pDatabase(db), m_PC(PC), m_session(parent), m_analysisManager(manager)
 {
-    m_name.set("IgorAnalysis for %016llx", PC.offset);
+    m_name.set("IgorAnalysis for %016" PRIx64, PC.offset);
     m_session->addRef();
 }
 

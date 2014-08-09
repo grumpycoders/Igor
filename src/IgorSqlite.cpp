@@ -18,7 +18,7 @@ void IgorSqlite3::createVersionnedDB(std::function<int(int)> upgradeFunc, int de
         r = safeStep(stmt);
         if (r == SQLITE_DONE)
             break;
-        IAssert(version == 0, "Table %s.version contains multiple rows, db");
+        IAssert(version == 0, "Table %s.version contains multiple rows", db);
         version = sqlite3_column_int(stmt, 0);
         rowid = sqlite3_column_int64(stmt, 1);
         hasToInsert = false;

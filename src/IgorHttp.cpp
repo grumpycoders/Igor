@@ -212,16 +212,16 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 Json::Value v;
                 v["type"] = "instcont";
                 v["disasm"] = disassembledString.to_charp();
-                address.set("%016llx", startPC.offset);
+                address.set("%016" PRIx64, startPC.offset);
                 v["start"] = address.to_charp();
                 analyzeState.m_PC = currentPC;
-                address.set("%016llx", analyzeState.m_PC.offset);
+                address.set("%016" PRIx64, analyzeState.m_PC.offset);
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();
                 v["address"] = address.to_charp();
-                address.set("%lli", linear);
+                address.set("%" PRIu64, linear);
                 v["id"] = address.to_charp();
-                address.set("%lli", nBytes);
+                address.set("%" PRIu64, nBytes);
                 v["instsize"] = address.to_charp();
                 reply[linear++ - linearFirst] = v;
 
@@ -232,9 +232,9 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                     v["type"] = "instcont";
                     val.set("%02X", session->readU8(analyzeState.m_PC + i));
                     v["byte"] = val.to_charp();
-                    address.set("%016llx", (analyzeState.m_PC + i).offset);
+                    address.set("%016" PRIx64, (analyzeState.m_PC + i).offset);
                     v["address"] = address.to_charp();
-                    address.set("%lli", linear);
+                    address.set("%" PRIu64, linear);
                     v["id"] = address.to_charp();
                     reply[linear++ - linearFirst] = v;
                 }
@@ -254,14 +254,14 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 Json::Value v;
                 v["type"] = "inst";
                 v["disasm"] = disassembledString.to_charp();
-                address.set("%016llx", analyzeState.m_PC.offset);
+                address.set("%016" PRIx64, analyzeState.m_PC.offset);
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();
                 v["address"] = address.to_charp();
                 v["start"] = address.to_charp();
-                address.set("%lli", linear);
+                address.set("%" PRIu64, linear);
                 v["id"] = address.to_charp();
-                address.set("%lli", nBytes);
+                address.set("%" PRIu64, nBytes);
                 v["instsize"] = address.to_charp();
                 reply[linear++ - linearFirst] = v;
 
@@ -272,9 +272,9 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                     v["type"] = "instcont";
                     val.set("%02X", session->readU8(analyzeState.m_PC + i));
                     v["byte"] = val.to_charp();
-                    address.set("%016llx", (analyzeState.m_PC + i).offset);
+                    address.set("%016" PRIx64, (analyzeState.m_PC + i).offset);
                     v["address"] = address.to_charp();
-                    address.set("%lli", linear);
+                    address.set("%" PRIu64, linear);
                     v["id"] = address.to_charp();
                     reply[linear++ - linearFirst] = v;
                 }
@@ -288,9 +288,9 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();
                 v["value"] = val.to_charp();
-                address.set("%016llx", analyzeState.m_PC.offset);
+                address.set("%016" PRIx64, analyzeState.m_PC.offset);
                 v["address"] = address.to_charp();
-                address.set("%lli", linear);
+                address.set("%" PRIu64, linear);
                 v["id"] = address.to_charp();
                 reply[linear++ - linearFirst] = v;
 
@@ -306,7 +306,7 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
     response->writeString(jsonMsg);
     response.SetContentType("application/json");
     String rangeHeaderResponse;
-    rangeHeaderResponse.set("Content-Range: items %lli-%lli/%lli", linearFirst, linearLast, totalSize);
+    rangeHeaderResponse.set("Content-Range: items %" PRIu64 "-%" PRIu64 "/%" PRIu64, linearFirst, linearLast, totalSize);
     if (rangeHeader != "")
         response.AddHeader(rangeHeaderResponse);
     response.Flush();
@@ -339,7 +339,7 @@ bool ListSessionsAction::safeDo(HttpServer * server, Http::Request & req, HttpSe
         entry["uuid"] = session->getUUID().to_charp();
         igorAddress entryPoint = session->getEntryPoint();
         String address;
-        address.set("%016llx", entryPoint.offset);
+        address.set("%016" PRIx64, entryPoint.offset);
         if (entryPoint.isValid())
             entry["entryPoint"] = address.to_charp();
         idx++;

@@ -96,7 +96,7 @@ String IgorSession::generateUUID() {
 
 #ifdef UNICODE
     String r((const char *) uuidstr, wcslen((const wchar_t *) uuidstr) * 2);
-    r.do_iconv("UNICODELITTLE", "UTF-8");
+    r.do_iconv("CP1200", "UTF-8");
 #else
     String r = *uuidstr;
 #endif

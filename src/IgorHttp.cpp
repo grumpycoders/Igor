@@ -223,7 +223,8 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 v["id"] = address.to_charp();
                 address.set("%" PRIu64, nBytes);
                 v["instsize"] = address.to_charp();
-                reply[linear++ - linearFirst] = v;
+                address = String(linear++ - linearFirst);
+                reply[address.to_charp()] = v;
 
                 for (int i = 1; i < nBytes; i++) {
                     if (linear > linearLast)
@@ -236,7 +237,8 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                     v["address"] = address.to_charp();
                     address.set("%" PRIu64, linear);
                     v["id"] = address.to_charp();
-                    reply[linear++ - linearFirst] = v;
+                    address = String(linear++ - linearFirst);
+                    reply[address.to_charp()] = v;
                 }
                 analyzeState.m_PC += nBytes;
                 EAssert(analyzeState.m_PC == analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize, "inconsistant state...");
@@ -263,7 +265,8 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 v["id"] = address.to_charp();
                 address.set("%" PRIu64, nBytes);
                 v["instsize"] = address.to_charp();
-                reply[linear++ - linearFirst] = v;
+                address = String(linear++ - linearFirst);
+                reply[address.to_charp()] = v;
 
                 for (int i = 1; i < nBytes; i++) {
                     if (linear > linearLast)
@@ -276,7 +279,8 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                     v["address"] = address.to_charp();
                     address.set("%" PRIu64, linear);
                     v["id"] = address.to_charp();
-                    reply[linear++ - linearFirst] = v;
+                    address = String(linear++ - linearFirst);
+                    reply[address.to_charp()] = v;
                 }
                 analyzeState.m_PC += nBytes;
                 EAssert(analyzeState.m_PC == analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize, "inconsistant state...");
@@ -292,7 +296,8 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 v["address"] = address.to_charp();
                 address.set("%" PRIu64, linear);
                 v["id"] = address.to_charp();
-                reply[linear++ - linearFirst] = v;
+                address = String(linear++ - linearFirst);
+                reply[address.to_charp()] = v;
 
                 analyzeState.m_PC++;
             }

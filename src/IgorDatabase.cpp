@@ -4,6 +4,8 @@
 
 #include "IgorMemory.h"
 
+#undef max
+
 s_igorDatabase::s_igorDatabase()
 {
 }
@@ -18,7 +20,9 @@ s_igorDatabase::~s_igorDatabase()
 
 igor_result s_igorDatabase::igor_add_cpu(c_cpu_module* pCpuModule, igor_cpu_handle& outputCpuHandle)
 {
-    outputCpuHandle = m_cpu_modules.size();
+    size_t current = m_cpu_modules.size();
+    AAssert(current < std::numeric_limits<igor_cpu_handle>::max(), "Too many CPUs!");
+    outputCpuHandle = (igor_cpu_handle) current;
     m_cpu_modules.push_back(pCpuModule);
 
     return IGOR_SUCCESS;
@@ -230,7 +234,9 @@ igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 
 igor_result s_igorDatabase::create_section(igorLinearAddress virtualAddress, u64 size, igor_section_handle& sectionHandle)
 {
-    sectionHandle = m_sections.size();
+    size_t current = m_sections.size();
+    AAssert(current < std::numeric_limits<igor_section_handle>::max(), "Too many sections!");
+    sectionHandle = (igor_section_handle) current;
     s_igorSection* pNewSection = new s_igorSection;
     m_sections.push_back(pNewSection);
 
@@ -504,7 +510,7 @@ u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
 std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()
 {
     igorAddress start(m_sessionId, 0, 0);
-    igorAddress end(m_sessionId, static_cast<igorLinearAddress>(-1), m_sections.size() - 1);
+    igorAddress end(m_sessionId, std::numeric_limits<igorLinearAddress>::max(), (igor_section_handle) m_sections.size() - 1);
     size_t total = 0;
 
     for (auto & i : m_sections)

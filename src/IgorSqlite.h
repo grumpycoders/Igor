@@ -2,6 +2,8 @@
 
 #include "sqlite/sqlite3.h"
 
+#undef max
+
 class IgorSqlite3 {
 public:
       IgorSqlite3() { }
@@ -13,9 +15,10 @@ public:
     void closeDB();
     void createVersionnedDB(std::function<int(int)> upgradeFunc, int desiredVersion, const char * db = "main");
     sqlite3_stmt * safeStmt(const char * stmtStr, ssize_t L = -1) {
+        AAssert(L < std::numeric_limits<int>::max(), "Query too long");
         int r;
         sqlite3_stmt * stmt = NULL;
-        r = sqlite3_prepare_v2(m_sqlite, stmtStr, L, &stmt, NULL);
+        r = sqlite3_prepare_v2(m_sqlite, stmtStr, (int) L, &stmt, NULL);
         RAssert(r == SQLITE_OK, "Unable to prepare statement: %s", getError(r).to_charp());
         return stmt;
     }
@@ -86,8 +89,9 @@ public:
         RAssert(r == SQLITE_OK, "Unable to bind value: %s", getError(r).to_charp());
     }
     void safeBind(sqlite3_stmt * stmt, int pt, const char * stmtStr, ssize_t L = -1) {
+        AAssert(L < std::numeric_limits<int>::max(), "Query too long");
         int sqlite3_bind_text(sqlite3_stmt*, int, const char*, int n, void(*)(void*));
-        int r = sqlite3_bind_text(stmt, pt, stmtStr, L, NULL);
+        int r = sqlite3_bind_text(stmt, pt, stmtStr, (int) L, NULL);
         RAssert(r == SQLITE_OK, "Unable to bind value: %s", getError(r).to_charp());
     }
     template<size_t L>

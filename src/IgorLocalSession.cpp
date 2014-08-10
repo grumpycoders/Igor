@@ -15,6 +15,8 @@
 
 #include "IgorMemory.h"
 
+#undef max
+
 using namespace Balau;
 
 static bool safeOperationLambda(std::function<bool()> lambda) {
@@ -159,7 +161,7 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
 
         stmt = db.safeStmt("INSERT INTO main.symbols (address, name, type) VALUES(?1, ?2, ?3);");
         for (auto & symbol : m_pDatabase->m_symbolMap) {
-            db.safeBind(stmt, 1, (sqlite3_int64)symbol.first.offset);
+            db.safeBind(stmt, 1, (sqlite3_int64) symbol.first.offset);
             db.safeBind(stmt, 2, symbol.second.m_name);
             db.safeBind(stmt, 3, symbol.second.m_type);
             db.safeWriteStep(stmt);
@@ -169,8 +171,8 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
 
         stmt = db.safeStmt("INSERT INTO main.'references' (addressSrc, addressDst) VALUES(?1, ?2);");
         for (auto & ref : m_pDatabase->m_references) {
-            db.safeBind(stmt, 1, (sqlite3_int64)ref.first.offset);
-            db.safeBind(stmt, 2, (sqlite3_int64)ref.second.offset);
+            db.safeBind(stmt, 1, (sqlite3_int64) ref.first.offset);
+            db.safeBind(stmt, 2, (sqlite3_int64) ref.second.offset);
             db.safeWriteStep(stmt);
             db.safeReset(stmt);
         }
@@ -178,18 +180,22 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
 
         stmt = db.safeStmt("INSERT INTO main.sections (virtualAddress, option, rawData, instructionSize) VALUES(?1, ?2, ?3, ?4);");
         for (auto & section : m_pDatabase->m_sections) {
-            db.safeBind(stmt, 1, (sqlite3_int64)section->m_virtualAddress);
-            db.safeBind(stmt, 2, (sqlite3_int64)section->m_option);
-            if (section->m_rawData)
-                db.safeBindBlob(stmt, 3, section->m_rawDataSize);
-            if (section->m_instructionSize)
-                db.safeBindBlob(stmt, 4, section->m_size);
+            db.safeBind(stmt, 1, (sqlite3_int64) section->m_virtualAddress);
+            db.safeBind(stmt, 2, (sqlite3_int64) section->m_option);
+            if (section->m_rawData) {
+                AAssert(section->m_rawDataSize < std::numeric_limits<int>::max(), "Section too big to serialize");
+                db.safeBindBlob(stmt, 3, (int) section->m_rawDataSize);
+            }
+            if (section->m_instructionSize) {
+                AAssert(section->m_size < std::numeric_limits<int>::max(), "Section too big to serialize");
+                db.safeBindBlob(stmt, 4, (int) section->m_size);
+            }
             db.safeWriteStep(stmt);
             sqlite3_int64 rowid = db.lastInsertRowID();
             if (section->m_rawData)
-                db.safeWriteWholeBlob("main", "sections", "rawData", rowid, section->m_rawData, section->m_rawDataSize);
+                db.safeWriteWholeBlob("main", "sections", "rawData", rowid, section->m_rawData, (int) section->m_rawDataSize);
             if (section->m_instructionSize)
-                db.safeWriteWholeBlob("main", "sections", "instructionSize", rowid, section->m_instructionSize, section->m_size);
+                db.safeWriteWholeBlob("main", "sections", "instructionSize", rowid, section->m_instructionSize, (int) section->m_size);
             db.safeReset(stmt);
         }
         db.safeFinalize(stmt);
@@ -261,32 +267,6 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::de
         }
         db.safeFinalize(stmt);
 
-        stmt = db.safeStmt("INSERT INTO main.'references' (addressSrc, addressDst) VALUES(?1, ?2);");
-        for (auto & ref : igorDatabase->m_references) {
-            db.safeBind(stmt, 1, (sqlite3_int64)ref.first.offset);
-            db.safeBind(stmt, 2, (sqlite3_int64)ref.second.offset);
-            db.safeWriteStep(stmt);
-            db.safeReset(stmt);
-        }
-        db.safeFinalize(stmt);
-
-        stmt = db.safeStmt("INSERT INTO main.sections (virtualAddress, option, rawData, instructionSize) VALUES(?1, ?2, ?3, ?4);");
-        for (auto & section : igorDatabase->m_sections) {
-            db.safeBind(stmt, 1, (sqlite3_int64)section->m_virtualAddress);
-            db.safeBind(stmt, 2, (sqlite3_int64)section->m_option);
-            if (section->m_rawData)
-                db.safeBindBlob(stmt, 3, section->m_rawDataSize);
-            if (section->m_instructionSize)
-                db.safeBindBlob(stmt, 4, section->m_size);
-            db.safeWriteStep(stmt);
-            sqlite3_int64 rowid = db.lastInsertRowID();
-            if (section->m_rawData)
-                db.safeWriteWholeBlob("main", "sections", "rawData", rowid, section->m_rawData, section->m_rawDataSize);
-            if (section->m_instructionSize)
-                db.safeWriteWholeBlob("main", "sections", "instructionSize", rowid, section->m_instructionSize, section->m_size);
-            db.safeReset(stmt);
-        }
-        db.safeFinalize(stmt);
 
         db.safeWriteStmt("COMMIT TRANSACTION;");
 

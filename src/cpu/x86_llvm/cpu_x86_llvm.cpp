@@ -141,7 +141,7 @@ public:
     // tweaked version to handle references relatives to program counter
     virtual void printMemReference(const MCInst *MI, unsigned Op, raw_ostream &O) {
         const MCOperand &BaseReg = MI->getOperand(Op);
-        unsigned ScaleVal = MI->getOperand(Op + 1).getImm();
+        int64_t ScaleVal = MI->getOperand(Op + 1).getImm();
         const MCOperand &IndexReg = MI->getOperand(Op + 2);
         const MCOperand &DispSpec = MI->getOperand(Op + 3);
         const MCOperand &SegReg = MI->getOperand(Op + 4);
@@ -374,7 +374,8 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
     if (result != MCDisassembler::Success)
         return IGOR_FAILURE;
 
-    pState->m_cpu_analyse_result->m_instructionSize = size;
+    IAssert(size < 256, "Instruction's too big! (%" PRIu64 " bytes)", size);
+    pState->m_cpu_analyse_result->m_instructionSize = (u8) size;
 
     MCInst& inst = pAnalyseResult->m_inst;
     const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());

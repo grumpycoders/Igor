@@ -13,6 +13,7 @@ class IgorUsers {
     static bool addUser(const Balau::String & user, const Balau::String & v);
     static bool changePassword(const Balau::String & user, const Balau::String & v);
     static bool delUser(const Balau::String & user);
+    void cleanup() { }
 };
 
 // Almost direct implementation from http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol

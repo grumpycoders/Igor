@@ -210,7 +210,7 @@ igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
         }
     }
 
-    loadDebug(db, reader);
+	loadDebug(db, reader, session);
     loadImports(db, reader);
 
     EAssert(foundEntryPointSection, "Couldn't find entry point's section");
@@ -320,7 +320,7 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
     return 0;
 }
 
-void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
+void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession * session)
 {
     IMAGE_DATA_DIRECTORY* pDebugDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
 
@@ -388,6 +388,7 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
                                         // TODO: which section ?
                                         igorAddress symbolAddress(db, m_ImageBase + m_segments[Sym->Pub32.seg - 1].VirtualAddress + Sym->Pub32.off, -1);
                                         db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
+										session->add_code_analysis_task(symbolAddress);
                                     }
 
                                     break;

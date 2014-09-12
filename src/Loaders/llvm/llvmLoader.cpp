@@ -51,6 +51,9 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
     llvm::Triple targetTriple("unknown-unknown-unknown");
     targetTriple.setArch(Triple::ArchType(o->getArch()));
 
+	if (o->isCOFF())
+		return IGOR_FAILURE;
+
     if (o->isMachO())
         targetTriple.setObjectFormat(Triple::MachO);
 
@@ -219,8 +222,8 @@ igor_result c_LLVMLoader::load(BFile reader, IgorLocalSession *session)
     else if (ObjectFile *o = dyn_cast<ObjectFile>(BinaryOrErr.get()))
     {
         // Object
-        loadObject(o);
+        return  loadObject(o);
     }
 
-    return IGOR_SUCCESS;
+    return IGOR_FAILURE;
 }

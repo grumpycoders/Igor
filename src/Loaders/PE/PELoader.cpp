@@ -75,6 +75,8 @@ using namespace Balau;
 
 igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
 {
+	reader->seek(0);
+
     bool success = false;
     // DOS .EXE header
     {

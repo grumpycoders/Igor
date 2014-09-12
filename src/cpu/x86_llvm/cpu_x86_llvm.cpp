@@ -224,7 +224,18 @@ public:
         if (Op.isImm()) {
             int64_t imm = Op.getImm();
             igorAddress abs = m_pStatus->PCAfter + imm;
-            O << formatHex(abs.offset);
+
+			Balau::String symbolName;
+			if (m_pSession->getSymbolName(abs, symbolName))
+			{
+				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+				O << symbolName.to_charp();
+				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+			}
+			else
+			{
+				O << formatHex(abs.offset);
+			}
         } else {
             assert(Op.isExpr() && "unknown pcrel immediate operand");
             // If a symbolic branch target was added as a constant expression then print

@@ -358,6 +358,12 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader)
             {
                 PPDB pPdb = PdbOpen(pdbName.to_charp());
 
+				if (pPdb == NULL)
+				{
+					// try in the current folder
+					pPdb = PdbOpen(pdbName.to_charp(pdbName.strrchr('\\')+1));
+				}
+
                 if (pPdb)
                 {
                     PSYM Sym = pPdb->Symd->SymRecs;

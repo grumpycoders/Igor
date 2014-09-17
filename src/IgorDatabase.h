@@ -89,7 +89,13 @@ struct s_igorDatabase
         }
     };
 
-    std::map<igorAddress, s_symbolDefinition, igorAddressCompare> m_symbolMap;
+    typedef std::map<igorAddress, s_symbolDefinition, igorAddressCompare> t_symbolMap;
+    t_symbolMap m_symbolMap;
+    void getSymbolsIterator(s_igorDatabase::t_symbolMap::iterator& start, s_igorDatabase::t_symbolMap::iterator& end)
+    {
+        start = m_symbolMap.begin();
+        end = m_symbolMap.end();
+    }
 
     // should the references be implicit instead of explicit?
     typedef std::multimap<igorAddress, igorAddress> t_references;

@@ -62,6 +62,7 @@ class IgorLocalSession : public IgorSession {
     virtual igor_result readS8(igorAddress address, s8& output) override;
     virtual igor_result readU8(igorAddress address, u8& output) override;
     virtual igorAddress findSymbol(const char* symbolName) override;
+    virtual void getSymbolsIterator(s_igorDatabase::t_symbolMap::iterator& start, s_igorDatabase::t_symbolMap::iterator& end) override;
     virtual int readString(igorAddress address, Balau::String& outputString) override;
     virtual c_cpu_module* getCpuForAddress(igorAddress PC) override;
     virtual c_cpu_state* getCpuStateForAddress(igorAddress PC) override;

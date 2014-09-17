@@ -70,6 +70,7 @@ class IgorSession
     virtual igor_result readU8(igorAddress address, u8& output) = 0;
 
     virtual igorAddress findSymbol(const char* symbolName) = 0;
+    virtual void getSymbolsIterator(s_igorDatabase::t_symbolMap::iterator& start, s_igorDatabase::t_symbolMap::iterator& end) = 0;
 
     s64 readS64(igorAddress address)
     {

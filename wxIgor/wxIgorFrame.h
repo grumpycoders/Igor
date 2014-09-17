@@ -24,6 +24,7 @@ public:
     enum
     {
         ID_GO_TO_ADDRESS = wxID_HIGHEST,
+        ID_GO_TO_SYMBOL,
         ID_EXPORT_DISASSEMBLY,
         ID_SAVE_DATABASE,
         ID_LOAD_DATABASE,
@@ -48,6 +49,7 @@ public:
     void OnIdle(wxIdleEvent& event);
 
     void OnGoToAddress(wxCommandEvent& event);
+    void OnGoToSymbol(wxCommandEvent& event);
     void OnExportDisassembly(wxCommandEvent& event);
 
     void OnSaveDatabase(wxCommandEvent& event);

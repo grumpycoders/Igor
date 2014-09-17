@@ -95,7 +95,8 @@ c_wxIgorFrame::c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wx
     pApp->m_fileHistory->AddFilesToMenu();
 
     wxMenu *menuNavigation = new wxMenu;
-    menuNavigation->Append(ID_GO_TO_ADDRESS, "&Go to address");
+    menuNavigation->Append(ID_GO_TO_ADDRESS, "Go to &address");
+    menuNavigation->Append(ID_GO_TO_SYMBOL, "Go to &symbol");
 
     m_sessionsMenu = new wxMenu;
 
@@ -264,6 +265,39 @@ void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
     delete pAddressEntryDialog;
 }
 
+void c_wxIgorFrame::OnGoToSymbol(wxCommandEvent& event)
+{
+    wxFrame* pSymbolListFrame = new wxFrame(this, 0, "Symbol list");
+    wxListView* pSymbolList = new wxListView(pSymbolListFrame);
+    pSymbolList->AppendColumn("Address");
+    pSymbolList->AppendColumn("Symbol type");
+    pSymbolList->AppendColumn("Symbol name");
+
+    s_igorDatabase::t_symbolMap::iterator start;
+    s_igorDatabase::t_symbolMap::iterator end;
+    m_session->getSymbolsIterator(start, end);
+
+    int itemId = 0;
+
+    while (start != end)
+    {
+        Balau::String addressString;
+        addressString.append("0x%08llX", start->first.offset);
+        wxListItem newItem;
+        newItem.SetId(itemId);
+        newItem.SetText(addressString.to_charp());
+        int itemIndex = pSymbolList->InsertItem(newItem);
+
+
+        pSymbolList->SetItem(itemIndex, 2, start->second.m_name.to_charp());
+        
+        itemId++;
+        start++;
+    }
+    pSymbolListFrame->Layout();
+    pSymbolListFrame->Show();
+}
+
 void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
 {
     wxFileDialog fileDialog(this, "Export disassembly", "", "", "Text file (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -367,6 +401,7 @@ EVT_MENU(wxID_OPEN, c_wxIgorFrame::OnOpen)
 EVT_MENU(wxID_CLOSE, c_wxIgorFrame::OnCloseFile)
 EVT_MENU(wxID_EXIT, c_wxIgorFrame::OnExit)
 EVT_MENU(ID_GO_TO_ADDRESS, c_wxIgorFrame::OnGoToAddress)
+EVT_MENU(ID_GO_TO_SYMBOL, c_wxIgorFrame::OnGoToSymbol)
 EVT_MENU(ID_EXPORT_DISASSEMBLY, c_wxIgorFrame::OnExportDisassembly)
 EVT_MENU(ID_SAVE_DATABASE, c_wxIgorFrame::OnSaveDatabase)
 EVT_MENU(ID_LOAD_DATABASE, c_wxIgorFrame::OnLoadDatabase)

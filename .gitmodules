@@ -1,6 +1,7 @@
 [submodule "Balau"]
 	path = Balau
 	url = ../repo.git/Balau
+	branch = master
 [submodule "wxwidget"]
 	path = wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets.git

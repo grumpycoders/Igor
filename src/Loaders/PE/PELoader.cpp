@@ -369,10 +369,14 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                     PSYM Sym = pPdb->Symd->SymRecs;
                     while (Sym < pPdb->Symd->SymMac)
                     {
+                        if (strstr((const char*)Sym->Pub32.name, "j_?strrchr@@YAPEADPEADH@Z"))
+                        {
+                            int test = 0;
+                        }
                         if (Sym->Sym.rectyp)
                         {
                             switch (Sym->Sym.rectyp)
-                            {
+                            {                                
                                 case S_PUB32:
                                     /*
                                     printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
@@ -383,7 +387,7 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                                     Sym->Data32.typind); // 0x04
                                     printf("\n");*/
 
-                                    if (Sym->Pub32.pubsymflags.fFunction)
+                                    //if (Sym->Pub32.pubsymflags.fFunction)
                                     {
                                         // TODO: which section ?
                                         igorAddress symbolAddress(db, m_ImageBase + m_segments[Sym->Pub32.seg - 1].VirtualAddress + Sym->Pub32.off, -1);
@@ -392,6 +396,14 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                                     }
 
                                     break;
+                                case S_LPROCREF:
+                                {
+                                    // TODO: which section ?
+                                    //igorAddress symbolAddress(db, m_ImageBase + Sym->Ref2.ibSym, -1);
+                                    //db->declare_name(symbolAddress, (const char*)Sym->Ref2.name);
+                                    //session->add_code_analysis_task(symbolAddress);
+                                    break;
+                                }
                                 case S_LDATA32:
                                 case S_GDATA32:
                                     /*

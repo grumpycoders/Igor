@@ -254,48 +254,29 @@ void c_wxIgorFrame::OnGoToAddress(wxCommandEvent& event)
         String enteredString(wxEnteredString.c_str());
         u64 address = enteredString.to_uint64(16);
 
-        if (m_sessionPanel->m_pAsmWidget && address)
+        if (address)
         {
             // TODO: needs to figure out a section here
-            m_sessionPanel->m_pAsmWidget->m_currentPosition = igorAddress(m_session, address, -1);
-            m_sessionPanel->m_pAsmWidget->Refresh();
+            GoToAddress(igorAddress(m_session, address, -1));
         }
     }
 
     delete pAddressEntryDialog;
 }
 
+void c_wxIgorFrame::GoToAddress(igorAddress& address)
+{
+    if (m_sessionPanel && m_sessionPanel->m_pAsmWidget)
+    {
+        m_sessionPanel->m_pAsmWidget->m_currentPosition = address;
+        m_sessionPanel->m_pAsmWidget->Refresh();
+    }
+}
+
 void c_wxIgorFrame::OnGoToSymbol(wxCommandEvent& event)
 {
-    wxFrame* pSymbolListFrame = new wxFrame(this, 0, "Symbol list");
-    wxListView* pSymbolList = new wxListView(pSymbolListFrame);
-    pSymbolList->AppendColumn("Address");
-    pSymbolList->AppendColumn("Symbol type");
-    pSymbolList->AppendColumn("Symbol name");
+    wxFrame* pSymbolListFrame = new c_wxIgorSymbolListFrame(this);
 
-    s_igorDatabase::t_symbolMap::iterator start;
-    s_igorDatabase::t_symbolMap::iterator end;
-    m_session->getSymbolsIterator(start, end);
-
-    int itemId = 0;
-
-    while (start != end)
-    {
-        Balau::String addressString;
-        addressString.append("0x%08llX", start->first.offset);
-        wxListItem newItem;
-        newItem.SetId(itemId);
-        newItem.SetText(addressString.to_charp());
-        int itemIndex = pSymbolList->InsertItem(newItem);
-
-
-        pSymbolList->SetItem(itemIndex, 2, start->second.m_name.to_charp());
-        
-        itemId++;
-        start++;
-    }
-    pSymbolListFrame->Layout();
-    pSymbolListFrame->Show();
 }
 
 void c_wxIgorFrame::OnExportDisassembly(wxCommandEvent& event)
@@ -422,4 +403,63 @@ EVT_MENU(wxID_FILE6, c_wxIgorFrame::OnHistory)
 EVT_MENU(wxID_FILE7, c_wxIgorFrame::OnHistory)
 EVT_MENU(wxID_FILE8, c_wxIgorFrame::OnHistory)
 EVT_MENU(wxID_FILE9, c_wxIgorFrame::OnHistory)
+END_EVENT_TABLE()
+
+
+c_wxIgorSymbolListFrame::c_wxIgorSymbolListFrame(c_wxIgorFrame* parent) : wxFrame(parent, 0, "Symbol list"),
+m_parent(parent)
+{
+    m_symbolList = new wxListView(this, ID_SYMBOL_LIST);
+    m_symbolList->AppendColumn("Address");
+    m_symbolList->AppendColumn("Symbol type");
+    m_symbolList->AppendColumn("Symbol name");
+
+    s_igorDatabase::t_symbolMap::iterator start;
+    s_igorDatabase::t_symbolMap::iterator end;
+    parent->m_session->getSymbolsIterator(start, end);
+
+    int itemId = 0;
+
+    while (start != end)
+    {
+        Balau::String addressString;
+        addressString.append("0x%08llX", start->first.offset);
+        wxListItem newItem;
+        newItem.SetId(itemId);
+        newItem.SetText(addressString.to_charp());
+        int itemIndex = m_symbolList->InsertItem(newItem);
+
+
+        m_symbolList->SetItem(itemIndex, 2, start->second.m_name.to_charp());
+
+        itemId++;
+        start++;
+    }
+
+    Layout();
+    Show();
+}
+
+c_wxIgorSymbolListFrame::~c_wxIgorSymbolListFrame()
+{
+
+}
+
+void c_wxIgorSymbolListFrame::OnSymbolActivated(wxListEvent& event)
+{
+    const wxListItem selectedItem = event.GetItem();
+
+    String enteredString(selectedItem.m_text.c_str());
+    u64 address = enteredString.to_uint64(16);
+
+    if (address)
+    {
+        m_parent->GoToAddress(igorAddress(m_parent->m_session, address, -1));
+    }
+}
+
+BEGIN_EVENT_TABLE(c_wxIgorSymbolListFrame, wxFrame)
+
+EVT_LIST_ITEM_ACTIVATED(ID_SYMBOL_LIST, c_wxIgorSymbolListFrame::OnSymbolActivated)
+
 END_EVENT_TABLE()

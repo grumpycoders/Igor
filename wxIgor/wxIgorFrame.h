@@ -1,9 +1,12 @@
 #include <wx/wx.h>
 #include <wx/notebook.h>
+#include <wx/listctrl.h>
 
+class wxListView;
 class c_wxAsmWidget;
 class IgorLocalSession;
 class IgorSession;
+struct igorAddress;
 
 class c_wxIgorSessionPanel : public wxPanel
 {
@@ -35,6 +38,8 @@ public:
     c_wxIgorFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
     virtual ~c_wxIgorFrame();
 
+    void GoToAddress(igorAddress& address);
+
     void closeFile();
 
     void OpenFile(const wxString& fileName);
@@ -62,6 +67,25 @@ public:
     IgorSession * m_session = NULL;
 
     wxMenu * m_sessionsMenu = NULL;
+
+    DECLARE_EVENT_TABLE()
+};
+
+class c_wxIgorSymbolListFrame : public wxFrame
+{
+public:
+    enum
+    {
+        ID_SYMBOL_LIST = wxID_HIGHEST,
+    };
+
+    c_wxIgorSymbolListFrame(c_wxIgorFrame* parent);
+    virtual ~c_wxIgorSymbolListFrame();
+
+    void OnSymbolActivated(wxListEvent& event);
+
+    c_wxIgorFrame* m_parent;
+    wxListView* m_symbolList;
 
     DECLARE_EVENT_TABLE()
 };

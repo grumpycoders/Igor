@@ -51,9 +51,9 @@ void IgorAnalysis::Do()
 
         m_instructionsCounter++;
                 
-        if (++counter == 20)
+        if (++counter == 50)
         {
-            Printer::log(M_INFO, "Analysis Task %p yields after %" PRIu64 " instructions at %016" PRIx64, this, m_instructionsCounter, m_analyzeState.m_PC.offset);
+            //Printer::log(M_INFO, "Analysis Task %p yields after %" PRIu64 " instructions at %016" PRIx64, this, m_instructionsCounter, m_analyzeState.m_PC.offset);
             StacklessYield();
         }
 

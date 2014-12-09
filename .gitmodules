@@ -7,4 +7,4 @@
 	url = https://github.com/wxWidgets/wxWidgets.git
 [submodule "llvm"]
 	path = llvm
-	url = https://github.com/pixelxeno/llvm.git
+	url = https://github.com/nicolasnoble/llvm.git

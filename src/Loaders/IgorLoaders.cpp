@@ -25,10 +25,21 @@ void c_IgorLoaders::initialize()
         m_loaders.push_back(PELoader);
     }
 
-    /*
-    m_loaders.push_back(new c_dmpLoader);
-    m_loaders.push_back(new c_elfLoader);
-    */
+    // Minidump
+    {
+        s_registeredLoader dmpLoader;
+        dmpLoader.m_isSupported = &c_dmpLoader::isSupported;
+        dmpLoader.m_createLoader = &c_dmpLoader::createLoader;
+        m_loaders.push_back(dmpLoader);
+    }
+
+    // elf
+    {
+        s_registeredLoader elfLoader;
+        elfLoader.m_isSupported = &c_elfLoader::isSupported;
+        elfLoader.m_createLoader = &c_elfLoader::createLoader;
+        m_loaders.push_back(elfLoader);
+    }
 }
 
 igor_result c_IgorLoaders::load(String fileName, BFile reader, IgorLocalSession *session)

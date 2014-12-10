@@ -8,10 +8,7 @@
 #include <BString.h>
 #include <TaskMan.h>
 #include <MMap.h>
-#include "Loaders/llvm/llvmLoader.h"
-#include "Loaders/PE/PELoader.h"
-#include "Loaders/Dmp/dmpLoader.h"
-#include "Loaders/Elf/elfLoader.h"
+#include "Loaders/IgorLoaders.h"
 
 #include "IgorMemory.h"
 
@@ -298,8 +295,9 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::lo
         IO<MMap> reader(new MMap(name));
         reader->open();
 
+        c_IgorLoaders::load(fileName, reader, session);
+        /*
         // try to use llvm loader first
-
         c_LLVMLoader llvmLoader;
         if (llvmLoader.load(reader, session) != IGOR_SUCCESS)
         {
@@ -321,6 +319,7 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::lo
                 r = elfLoader.load(reader, session);
             }
         }
+        */
         reader->close();
     }
     catch (GeneralException & e) {

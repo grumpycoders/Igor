@@ -12,9 +12,7 @@
 
 #include "google/protobuf/stubs/common.h"
 
-#include "Loaders/PE/PELoader.h"
-#include "Loaders/Dmp/dmpLoader.h"
-#include "Loaders/Elf/elfLoader.h"
+#include "Loaders/IgorLoaders.h"
 
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
@@ -217,7 +215,10 @@ void MainTask::Do() {
 
     Printer::enable(M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT);
 
+    c_IgorLoaders::initialize();
+
     igor_register_llvm();
+
     g_luaTask = new LuaMainTask();
     TaskMan::registerTask(g_luaTask);
     LuaExecString strLuaHello(

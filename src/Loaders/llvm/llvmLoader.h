@@ -15,6 +15,15 @@ class c_LLVMLoader : public c_IgorLoader
 public:
     igor_result load(BFile reader, IgorLocalSession *session);
 
+    static bool isSupported(String& filename)
+    {
+        return true;
+    }
+    static c_IgorLoader* createLoader()
+    {
+        return new c_LLVMLoader;
+    }
+
 private:
     igor_result loadObject(llvm::object::ObjectFile* o);
 

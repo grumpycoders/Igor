@@ -143,6 +143,9 @@
     <ClCompile Include="src\Loaders\llvm\llvmLoader.cpp">
       <Filter>Igor\Loaders\llvm</Filter>
     </ClCompile>
+    <ClCompile Include="src\Loaders\IgorLoaders.cpp">
+      <Filter>Igor\Loaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Igor.h">
@@ -1418,6 +1421,9 @@
       <Filter>Igor\Loaders\llvm</Filter>
     </ClInclude>
     <ClInclude Include="src\Loaders\IgorLoader.h">
+      <Filter>Igor\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loaders\IgorLoaders.h">
       <Filter>Igor\Loaders</Filter>
     </ClInclude>
   </ItemGroup>

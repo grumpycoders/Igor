@@ -199,6 +199,7 @@
     <ClCompile Include="src\IgorWS.cpp" />
     <ClCompile Include="src\Loaders\Dmp\dmpLoader.cpp" />
     <ClCompile Include="src\Loaders\Elf\elfLoader.cpp" />
+    <ClCompile Include="src\Loaders\IgorLoaders.cpp" />
     <ClCompile Include="src\Loaders\llvm\llvmLoader.cpp" />
     <ClCompile Include="src\Loaders\PE\PELoader.cpp" />
     <ClCompile Include="src\PDB\gsi.cpp" />
@@ -252,6 +253,7 @@
     <ClInclude Include="src\IgorUtils.h" />
     <ClInclude Include="src\Loaders\Dmp\dmpLoader.h" />
     <ClInclude Include="src\Loaders\Elf\elfLoader.h" />
+    <ClInclude Include="src\Loaders\IgorLoaders.h" />
     <ClInclude Include="src\Loaders\llvm\llvmLoader.h" />
     <ClInclude Include="src\Loaders\IgorLoader.h" />
     <ClInclude Include="src\Loaders\PE\PELoader.h" />

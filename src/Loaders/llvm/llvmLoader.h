@@ -2,6 +2,7 @@
 
 #include "Igor.h"
 #include "IgorAPI.h"
+#include "Loaders/IgorLoader.h"
 
 namespace llvm{
     namespace object{
@@ -9,7 +10,7 @@ namespace llvm{
     }
 }
 
-class c_LLVMLoader
+class c_LLVMLoader : public c_IgorLoader
 {
 public:
     igor_result load(BFile reader, IgorLocalSession *session);

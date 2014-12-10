@@ -73,7 +73,7 @@
 
 using namespace Balau;
 
-igor_result c_PELoader::loadPE(BFile reader, IgorLocalSession * session)
+igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
 {
 	reader->seek(0);
 

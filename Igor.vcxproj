@@ -253,6 +253,7 @@
     <ClInclude Include="src\Loaders\Dmp\dmpLoader.h" />
     <ClInclude Include="src\Loaders\Elf\elfLoader.h" />
     <ClInclude Include="src\Loaders\llvm\llvmLoader.h" />
+    <ClInclude Include="src\Loaders\IgorLoader.h" />
     <ClInclude Include="src\Loaders\PE\PELoader.h" />
     <ClInclude Include="src\PDB\gsi.h" />
     <ClInclude Include="src\PDB\msf.h" />

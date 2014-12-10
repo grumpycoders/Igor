@@ -2,14 +2,15 @@
 
 #include "Igor.h"
 #include "IgorAPI.h"
+#include "Loaders/IgorLoader.h"
 
 struct s_igorDatabase;
 class IgorSession;
 
-class c_PELoader
+class c_PELoader : public c_IgorLoader
 {
 public:
-    igor_result loadPE(BFile reader, IgorLocalSession *);
+    igor_result load(BFile reader, IgorLocalSession *session);
     int loadOptionalHeader386(BFile reader);
     int loadOptionalHeader64(BFile reader);
 

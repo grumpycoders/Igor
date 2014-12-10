@@ -1417,6 +1417,9 @@
     <ClInclude Include="src\Loaders\llvm\llvmLoader.h">
       <Filter>Igor\Loaders\llvm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Loaders\IgorLoader.h">
+      <Filter>Igor\Loaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="src\protobufs\IgorProto.proto">

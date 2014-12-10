@@ -307,7 +307,7 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::lo
                 c_PELoader PELoader;
                 // Note: having the session here is actually useful not just for the entry point,
                 // but for all the possible hints the file might have for us.
-                r = PELoader.loadPE(reader, session);
+                r = PELoader.load(reader, session);
                 // Note: destroying the object from the stack would do the same, but
                 // as this might trigger a context switch, it's better to do it explicitly
                 // than from a destructor, as a general good practice.

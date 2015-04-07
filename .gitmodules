@@ -1,10 +1,10 @@
 [submodule "Balau"]
 	path = Balau
-	url = https://github.com/grumpycoders/Balau.git
+	url = ../Balau.git
 	branch = master
 [submodule "wxwidget"]
 	path = wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets.git
 [submodule "llvm"]
 	path = llvm
-	url = https://github.com/nicolasnoble/llvm.git
+	url = ../llvm.git

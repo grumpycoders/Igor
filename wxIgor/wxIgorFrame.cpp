@@ -36,8 +36,8 @@ c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *pare
     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
-    hbox->Add(pNoteBook, 1, wxALIGN_RIGHT | wxEXPAND);
-    vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
+    hbox->Add(pNoteBook, 1, wxEXPAND);
+    vbox->Add(hbox, 1, wxEXPAND);
     SetSizerAndFit(hbox, true);
 
     {
@@ -50,10 +50,10 @@ c_wxIgorSessionPanel::c_wxIgorSessionPanel(IgorSession* pSession, wxWindow *pare
 
         m_pAsmWidget->SetSize(GetSize());
 
-        hbox->Add(m_pAsmWidget, 1, wxALIGN_RIGHT | wxEXPAND);
-        hbox->Add(pAsmWidgetScrollbar, 0, wxALIGN_RIGHT | wxEXPAND);
+        hbox->Add(m_pAsmWidget, 1, wxEXPAND);
+        hbox->Add(pAsmWidgetScrollbar, 0, wxEXPAND);
 
-        vbox->Add(hbox, 1, wxALIGN_RIGHT | wxEXPAND);
+        vbox->Add(hbox, 1, wxEXPAND);
 
         pAsmPagePanel->SetSizerAndFit(hbox, true);
 

@@ -9,6 +9,8 @@
 /llvm-build32
 /llvm-build64
 
+/llvm-vs2015_x64
+
 /x64
 /Win32
 /ipch

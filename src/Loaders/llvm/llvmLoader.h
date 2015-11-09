@@ -15,7 +15,7 @@ class c_LLVMLoader : public c_IgorLoader
 public:
     igor_result load(BFile reader, IgorLocalSession *session);
 
-    static bool isSupported(String& filename)
+    static bool isSupported(Balau::String& filename)
     {
         return true;
     }

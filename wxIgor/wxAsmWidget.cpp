@@ -232,7 +232,7 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
     updateTextCache();
 
     wxColour BGColor = GetBackgroundColour();
-    wxBrush MyBrush(BGColor, wxSOLID);
+    wxBrush MyBrush(BGColor, wxBRUSHSTYLE_SOLID);
     dc.SetBackground(MyBrush);
     dc.Clear();
 
@@ -346,9 +346,20 @@ void c_wxAsmWidget::OnMouseLeftDown(wxMouseEvent& event)
 
 void c_wxAsmWidget::goToAddress(igorAddress address)
 {
+	m_history.push(m_currentPosition);
     m_currentPosition = address;
 
     Refresh();
+}
+
+void c_wxAsmWidget::popAddress()
+{
+	if (!m_history.empty())
+	{
+		m_currentPosition = m_history.top();
+		m_history.pop();
+		Refresh();
+	}
 }
 
 void c_wxAsmWidget::goToSelectedSymbol()
@@ -467,6 +478,9 @@ void c_wxAsmWidget::OnKeyDown(wxKeyEvent& event)
     case 'C':
         m_pSession->add_code_analysis_task(GetAddressOfCursor());
         break;
+	case WXK_BACK:
+		popAddress();
+		break;
     case WXK_LEFT:
         moveCaret(-1, 0);
         break;

@@ -22,7 +22,7 @@ private:
     bool Dispatch(void) override { return m_proxyLoop->Dispatch(); }
     int DispatchTimeout(unsigned long t) override { return m_proxyLoop->DispatchTimeout(t); }
     void WakeUp(void) override { m_proxyLoop->WakeUp(); }
-    bool YieldFor(long t) override { return m_proxyLoop->YieldFor(t); }
+    void DoYieldFor(long t) override { m_proxyLoop->YieldFor(t); }
 
     wxEventLoopBase * m_proxyLoop;
 };

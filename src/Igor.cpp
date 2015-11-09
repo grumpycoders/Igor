@@ -21,6 +21,13 @@
 #include "IgorLLVM.h"
 #include "IgorUsers.h"
 
+FILE _iob[] = { *stdin, *stdout, *stderr };
+
+extern "C" FILE * __cdecl __iob_func(void)
+{
+	return _iob;
+}
+
 using namespace Balau;
 
 LuaMainTask * g_luaTask = NULL;

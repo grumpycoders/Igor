@@ -378,6 +378,7 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                             switch (Sym->Sym.rectyp)
                             {                                
                                 case S_PUB32:
+								{
                                     /*
                                     printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
                                     Sym->Pub32.seg, // 0x0c
@@ -388,14 +389,19 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                                     printf("\n");*/
 
                                     //if (Sym->Pub32.pubsymflags.fFunction)
+									int segmentIndex = Sym->Pub32.seg - 1;
+									if (segmentIndex < m_segments.size())
                                     {
                                         // TODO: which section ?
-                                        igorAddress symbolAddress(db, m_ImageBase + m_segments[Sym->Pub32.seg - 1].VirtualAddress + Sym->Pub32.off, -1);
+                                        igorAddress symbolAddress(db, m_ImageBase + m_segments[segmentIndex].VirtualAddress + Sym->Pub32.off, -1);
                                         db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
-										session->add_code_analysis_task(symbolAddress);
+
+										if (Sym->Pub32.pubsymflags.fFunction)
+											session->add_code_analysis_task(symbolAddress);
                                     }
 
                                     break;
+								}
                                 case S_LPROCREF:
                                 {
                                     // TODO: which section ?

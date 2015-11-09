@@ -553,7 +553,7 @@ VOID  TPIDisplayRecord(PlfRecord plr,
     return;
 }
 
-#ifdef _WIN32
+#if defined(_WIN32) && (_MSC_VER < 1900)
 static inline int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
     return _vsnprintf(str, size, format, ap);
 }

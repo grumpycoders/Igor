@@ -470,6 +470,11 @@ igorAddress s_igorDatabase::getEntryPoint()
     return m_entryPoint;
 }
 
+s_igorSection* s_igorDatabase::getSection(igor_section_handle sectionHandle)
+{
+	return m_sections[sectionHandle];
+}
+
 igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAddress)
 {
     if (virtualAddress.m_segmentId != static_cast<igor_section_handle>(-1))
@@ -505,6 +510,16 @@ u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
     s_igorSection* pSection = m_sections[sectionHandle];
 
     return pSection->m_size;
+}
+
+igor_result s_igorDatabase::getSectionName(igor_section_handle sectionHandle, Balau::String& name)
+{
+	if (s_igorSection* pSection = getSection(sectionHandle))
+	{
+		name = pSection->m_name;
+		return IGOR_SUCCESS;
+	}
+	return IGOR_FAILURE;
 }
 
 std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()

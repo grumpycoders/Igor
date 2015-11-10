@@ -394,6 +394,7 @@ igor_result IgorLocalSession::flag_address_as_instruction(igorAddress virtualAdd
 igorAddress IgorLocalSession::getEntryPoint() { return m_pDatabase->getEntryPoint(); }
 igor_section_handle IgorLocalSession::getSectionFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSectionFromAddress(virtualAddress); }
 igorAddress IgorLocalSession::getSectionStartVirtualAddress(igor_section_handle sectionHandle) { return m_pDatabase->getSectionStartVirtualAddress(sectionHandle); }
+igor_result IgorLocalSession::getSectionName(igor_section_handle sectionHandle, Balau::String& name) { return m_pDatabase->getSectionName(sectionHandle, name); }
 u64 IgorLocalSession::getSectionSize(igor_section_handle sectionHandle) { return m_pDatabase->getSectionSize(sectionHandle); }
 std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }
 igorAddress IgorLocalSession::linearToVirtual(u64 linear) { return m_pDatabase->linearToVirtual(linear); }

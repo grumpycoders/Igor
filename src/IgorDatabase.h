@@ -220,9 +220,15 @@ struct s_igorDatabase
     igorAddress get_next_valid_address_after(igorAddress virtualAddress);
 
     igorAddress getEntryPoint();
-    igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
+    
+private:
+	s_igorSection* getSection(igor_section_handle sectionHandle);
+
+public:
+	igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
     igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
     u64 getSectionSize(igor_section_handle sectionHandle);
+	igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name);
 
     igorAddress m_entryPoint;
 

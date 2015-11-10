@@ -145,6 +145,13 @@ void c_wxAsmWidget::updateTextCache()
 
             currentEntry.m_address = analyzeState.m_PC;
 
+			igor_section_handle hSection = m_pSession->getSectionFromAddress(analyzeState.m_PC);
+			if (hSection != -1)
+			{
+				String sectionName;
+				m_pSession->getSectionName(hSection, sectionName);
+			}
+
             currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
 
             Balau::String symbolName;

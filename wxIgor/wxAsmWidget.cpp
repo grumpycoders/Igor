@@ -149,7 +149,10 @@ void c_wxAsmWidget::updateTextCache()
 			if (hSection != -1)
 			{
 				String sectionName;
-				m_pSession->getSectionName(hSection, sectionName);
+				if (m_pSession->getSectionName(hSection, sectionName))
+				{
+					currentEntry.m_text.append("%s:", sectionName.to_charp());
+				}
 			}
 
             currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);

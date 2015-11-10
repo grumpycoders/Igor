@@ -94,6 +94,13 @@ void IgorAnalysisManagerLocal::Do() {
     }
 }
 
+IgorLocalSession::IgorLocalSession() : m_pDatabase(new s_igorDatabase)
+{
+	m_nTasks = 0;
+	m_instructions = 0;
+	m_pDatabase->m_sessionId = getId();
+}
+
 void IgorLocalSession::freeze() {
 
 }
@@ -394,6 +401,7 @@ igor_result IgorLocalSession::flag_address_as_instruction(igorAddress virtualAdd
 igorAddress IgorLocalSession::getEntryPoint() { return m_pDatabase->getEntryPoint(); }
 igor_section_handle IgorLocalSession::getSectionFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSectionFromAddress(virtualAddress); }
 igorAddress IgorLocalSession::getSectionStartVirtualAddress(igor_section_handle sectionHandle) { return m_pDatabase->getSectionStartVirtualAddress(sectionHandle); }
+igor_result IgorLocalSession::setSectionName(igor_section_handle sectionHandle, Balau::String& name) { return m_pDatabase->setSectionName(sectionHandle, name); }
 igor_result IgorLocalSession::getSectionName(igor_section_handle sectionHandle, Balau::String& name) { return m_pDatabase->getSectionName(sectionHandle, name); }
 u64 IgorLocalSession::getSectionSize(igor_section_handle sectionHandle) { return m_pDatabase->getSectionSize(sectionHandle); }
 std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }

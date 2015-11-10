@@ -128,8 +128,19 @@ public:
         : X86IntelInstPrinter(MAI, MII, MRI)
     { }
     void setStatus(LLVMStatus * pStatus) { m_pStatus = pStatus; }
-    virtual void printInst(const MCInst *MI, raw_ostream &OS, StringRef Annot) {
+    virtual void printInst(const MCInst *MI, raw_ostream &OS, StringRef Annot)
+	{
+		const MCInstrDesc &Desc = MII.get(MI->getOpcode());
+		bool isFlowControl = Desc.mayAffectControlFlow(*MI, MRI);
+
+		if(isFlowControl)
+			OS << c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true);
+
         X86IntelInstPrinter::printInst(MI, OS, Annot);
+
+		if (isFlowControl)
+			OS << c_cpu_module::finishColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true);
+
     }
     virtual void printRegName(raw_ostream &OS, unsigned RegNo) const {
         X86IntelInstPrinter::printRegName(OS, RegNo);

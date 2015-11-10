@@ -512,6 +512,16 @@ u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
     return pSection->m_size;
 }
 
+igor_result s_igorDatabase::setSectionName(igor_section_handle sectionHandle, Balau::String& name)
+{
+	if (s_igorSection* pSection = getSection(sectionHandle))
+	{
+		pSection->m_name = name;
+		return IGOR_SUCCESS;
+	}
+	return IGOR_FAILURE;
+}
+
 igor_result s_igorDatabase::getSectionName(igor_section_handle sectionHandle, Balau::String& name)
 {
 	if (s_igorSection* pSection = getSection(sectionHandle))

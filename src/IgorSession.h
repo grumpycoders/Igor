@@ -144,6 +144,8 @@ class IgorSession
     virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) = 0;
     virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) = 0;
     virtual u64 getSectionSize(igor_section_handle sectionHandle) = 0;
+	virtual igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name) = 0;
+	virtual igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name) = 0;
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() = 0;
     virtual igorAddress linearToVirtual(u64) = 0;

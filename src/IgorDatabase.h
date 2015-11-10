@@ -221,13 +221,11 @@ struct s_igorDatabase
 
     igorAddress getEntryPoint();
     
-private:
 	s_igorSection* getSection(igor_section_handle sectionHandle);
-
-public:
 	igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
     igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
     u64 getSectionSize(igor_section_handle sectionHandle);
+	igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name);
 	igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name);
 
     igorAddress m_entryPoint;

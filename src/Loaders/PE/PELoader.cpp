@@ -323,6 +323,72 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
     return 0;
 }
 
+void loadUDT(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSession * session)
+{
+	/*
+	TPIGetSymbolDeclaration(Symd->TpiHdr,
+	TPILookupTypeName(Symd->TpiHdr, Sym->Udt.typind),
+	(char*)Sym->Udt.name
+	));
+	*/
+}
+
+void loadPub32(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSession * session)
+{
+	/*
+	printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
+	Sym->Pub32.seg, // 0x0c
+	Sym->Pub32.pubsymflags.fCode ? " code" : "",
+	Sym->Pub32.pubsymflags.fFunction ? " function" : "",
+	Sym->Pub32.off, Sym->Pub32.name, // 0x08 0x0e
+	Sym->Data32.typind); // 0x04
+	printf("\n");*/
+
+	//if (Sym->Pub32.pubsymflags.fFunction)
+	int segmentIndex = Sym->Pub32.seg - 1;
+	if (segmentIndex < pLoader->m_segments.size())
+	{
+		// TODO: which section ?
+		igorAddress symbolAddress(db, pLoader->m_ImageBase + pLoader->m_segments[segmentIndex].VirtualAddress + Sym->Pub32.off, -1);
+		db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
+
+		if (Sym->Pub32.pubsymflags.fFunction)
+			session->add_code_analysis_task(symbolAddress);
+	}
+	else
+	{
+		// this happens for symbols in segment index 0
+	}
+}
+
+void loadData32(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSession * session)
+{
+	/*
+	char *type = TPILookupTypeName(Symd->TpiHdr, Sym->Data32.typind);
+	char *decl = TPIGetSymbolDeclaration(Symd->TpiHdr, type, (char*)Sym->Data32.name);
+	printf("S_%sDATA32| data [%s; type %04x] %p = %s",
+	Sym->Sym.rectyp == S_LDATA32 ? "L" : "G",
+	Sym->Sym.rectyp == S_LDATA32 ? "local" : "global",
+	Sym->Data32.typind, Sym->Data32.off, decl);
+	*/
+	if (Sym->Data32.seg == 0)
+	{
+		// TODO: which section ?
+		igorAddress symbolAddress(db, pLoader->m_ImageBase + Sym->Data32.off, -1);
+		db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
+	}
+	else
+	{
+		int segmentIndex = Sym->Data32.seg - 1;
+		if (segmentIndex < pLoader->m_segments.size())
+		{
+			// TODO: which section ?
+			igorAddress symbolAddress(db, pLoader->m_ImageBase + pLoader->m_segments[Sym->Data32.seg - 1].VirtualAddress + Sym->Data32.off, -1);
+			db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
+		}
+	}
+}
+
 void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession * session)
 {
     IMAGE_DATA_DIRECTORY* pDebugDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
@@ -369,90 +435,29 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
 
                 if (pPdb)
                 {
+					//SYMDumpSymbols(pPdb->Symd, 0xFFFF);
+
                     PSYM Sym = pPdb->Symd->SymRecs;
                     while (Sym < pPdb->Symd->SymMac)
                     {
-                        if (strstr((const char*)Sym->Pub32.name, "j_?strrchr@@YAPEADPEADH@Z"))
-                        {
-                            int test = 0;
-                        }
                         if (Sym->Sym.rectyp)
                         {
                             switch (Sym->Sym.rectyp)
                             {                                
-                                case S_PUB32:
-								{
-                                    /*
-                                    printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
-                                    Sym->Pub32.seg, // 0x0c
-                                    Sym->Pub32.pubsymflags.fCode ? " code" : "",
-                                    Sym->Pub32.pubsymflags.fFunction ? " function" : "",
-                                    Sym->Pub32.off, Sym->Pub32.name, // 0x08 0x0e
-                                    Sym->Data32.typind); // 0x04
-                                    printf("\n");*/
-
-                                    //if (Sym->Pub32.pubsymflags.fFunction)
-									int segmentIndex = Sym->Pub32.seg - 1;
-									if (segmentIndex < m_segments.size())
-                                    {
-                                        // TODO: which section ?
-                                        igorAddress symbolAddress(db, m_ImageBase + m_segments[segmentIndex].VirtualAddress + Sym->Pub32.off, -1);
-                                        db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
-
-										if (Sym->Pub32.pubsymflags.fFunction)
-											session->add_code_analysis_task(symbolAddress);
-                                    }
-
-                                    break;
-								}
-                                case S_LPROCREF:
-                                {
-                                    // TODO: which section ?
-                                    //igorAddress symbolAddress(db, m_ImageBase + Sym->Ref2.ibSym, -1);
-                                    //db->declare_name(symbolAddress, (const char*)Sym->Ref2.name);
-                                    //session->add_code_analysis_task(symbolAddress);
-                                    break;
-                                }
-                                case S_LDATA32:
-                                case S_GDATA32:
-                                    /*
-                                    char *type = TPILookupTypeName(Symd->TpiHdr, Sym->Data32.typind);
-                                    char *decl = TPIGetSymbolDeclaration(Symd->TpiHdr, type, (char*)Sym->Data32.name);
-                                    printf("S_%sDATA32| data [%s; type %04x] %p = %s",
-                                    Sym->Sym.rectyp == S_LDATA32 ? "L" : "G",
-                                    Sym->Sym.rectyp == S_LDATA32 ? "local" : "global",
-                                    Sym->Data32.typind, Sym->Data32.off, decl);
-                                    */
-                                    if (Sym->Data32.seg == 0)
-                                    {
-                                        // TODO: which section ?
-                                        igorAddress symbolAddress(db, m_ImageBase + Sym->Data32.off, -1);
-                                        db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
-                                    }
-                                    else
-                                    {
-                                        int segmentIndex = Sym->Data32.seg - 1;
-                                        if (segmentIndex < m_segments.size())
-                                        {
-                                            // TODO: which section ?
-                                            igorAddress symbolAddress(db, m_ImageBase + m_segments[Sym->Data32.seg - 1].VirtualAddress + Sym->Data32.off, -1);
-                                            db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
-                                        }
-                                    }
+								case S_UDT: loadUDT(this, Sym, db, session); break;
+								case S_PUB32: loadPub32(this, Sym, db, session); break;
+                                case S_LDATA32: loadData32(this, Sym, db, session); break;
+                                case S_GDATA32: loadData32(this, Sym, db, session); break;
                                 default:
-                                    break;
+									break;
                             }
-                            //VOID SYMpDumpSymbol(PSYMD Symd, PSYM Sym);
-                            //SYMpDumpSymbol(pPdb->Symd, Sym);
                         }
 
                         Sym = NextSym(Sym);
                     }
 
                     PdbClose(pPdb);
-                }
-
-                //SYMDumpSymbols(pPdb->Symd, 0xFFFF);
+                }                
             }
         }
     }

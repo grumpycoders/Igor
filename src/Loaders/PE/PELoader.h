@@ -27,6 +27,7 @@ public:
     int loadOptionalHeader64(BFile reader);
 
 	void loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession * session);
+
     void loadImports(s_igorDatabase * db, BFile reader);
 
     // IMAGE_FILE_HEADER

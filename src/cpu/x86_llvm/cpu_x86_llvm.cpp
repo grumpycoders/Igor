@@ -126,7 +126,9 @@ class IgorLLVMX86InstPrinter : public X86IntelInstPrinter {
 public:
     IgorLLVMX86InstPrinter(const MCAsmInfo &MAI, const MCInstrInfo &MII, const MCRegisterInfo &MRI)
         : X86IntelInstPrinter(MAI, MII, MRI)
-    { }
+    {
+		PrintImmHex = true;
+	}
     void setStatus(LLVMStatus * pStatus) { m_pStatus = pStatus; }
     virtual void printInst(const MCInst *MI, raw_ostream &OS, StringRef Annot)
 	{
@@ -217,7 +219,22 @@ public:
                             DispVal = -DispVal;
                         }
                     }
-                    O << formatImm(DispVal);
+
+					{
+						igorAddress abs(m_pSession, DispVal, -1);
+
+						Balau::String symbolName;
+						if (m_pSession->getSymbolName(abs, symbolName))
+						{
+							O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+							O << symbolName.to_charp();
+							O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+						}
+						else
+						{
+							O << formatImm(DispVal);
+						}
+					}
                 }
             }
         }
@@ -261,8 +278,41 @@ public:
             }
         }
     }
-    virtual void printMemOffset(const MCInst *MI, unsigned OpNo, raw_ostream &O) {
-        X86IntelInstPrinter::printMemOffset(MI, OpNo, O);
+    virtual void printMemOffset(const MCInst *MI, unsigned Op, raw_ostream &O) {
+ 		const MCOperand &DispSpec = MI->getOperand(Op);
+		const MCOperand &SegReg = MI->getOperand(Op + 1);
+
+		// If this has a segment register, print it.
+		if (SegReg.getReg()) {
+			printOperand(MI, Op + 1, O);
+			O << ':';
+		}
+
+		O << '[';
+
+		if (DispSpec.isImm())
+		{
+			int64_t imm = DispSpec.getImm();
+			igorAddress abs(m_pSession, imm, -1);
+
+			Balau::String symbolName;
+			if (m_pSession->getSymbolName(abs, symbolName))
+			{
+				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+				O << symbolName.to_charp();
+				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+			}
+			else
+			{
+				O << formatImm(DispSpec.getImm());
+			}
+		}
+		else {
+			assert(DispSpec.isExpr() && "non-immediate displacement?");
+			O << *DispSpec.getExpr();
+		}
+
+		O << ']';
     }
     virtual void printInstructionText(const char * text, raw_ostream &OS) {
         int ns = 8;

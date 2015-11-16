@@ -20,6 +20,22 @@ typedef int igor_result;
 
 typedef uint16_t igor_section_handle;
 
+/*
+class igor_section_handle
+{
+public:
+	uint16_t m_value;
+
+	bool isValid()
+	{
+		if (m_value != 0xFFFF)
+		{
+			return true;
+		}
+		return false;
+	}
+};
+*/
 typedef u64 igorLinearAddress;
 
 struct igorAddress {

@@ -574,6 +574,15 @@ igorAddress s_igorDatabase::linearToVirtual(u64 linear) {
 
 void s_igorDatabase::addReference(igorAddress referencedAddress, igorAddress referencedFrom)
 {
+	std::vector<igorAddress> crossReferences;
+	getReferences(referencedAddress, crossReferences);
+
+	for (int i = 0; i < crossReferences.size(); i++)
+	{
+		if (crossReferences[i] == referencedFrom)
+			return;
+	}
+
     m_references.insert( std::pair<igorAddress, igorAddress>(referencedAddress, referencedFrom));
 }
 

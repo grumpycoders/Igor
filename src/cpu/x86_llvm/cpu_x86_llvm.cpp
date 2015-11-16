@@ -129,6 +129,12 @@ public:
     {
 		PrintImmHex = true;
 	}
+
+	void generateReferences(igorAddress& address)
+	{
+		m_pSession->addReference(address, m_pStatus->PCBefore);
+	}
+
     void setStatus(LLVMStatus * pStatus) { m_pStatus = pStatus; }
     virtual void printInst(const MCInst *MI, raw_ostream &OS, StringRef Annot)
 	{
@@ -176,6 +182,8 @@ public:
 
             igorAddress abs = m_pStatus->PCAfter + DispSpec.getImm();
 
+			generateReferences(abs);
+
             Balau::String symbolName;
             if (m_pSession->getSymbolName(abs, symbolName))
             {
@@ -222,6 +230,7 @@ public:
 
 					{
 						igorAddress abs(m_pSession, DispVal, -1);
+						generateReferences(abs);
 
 						Balau::String symbolName;
 						if (m_pSession->getSymbolName(abs, symbolName))
@@ -252,6 +261,8 @@ public:
         if (Op.isImm()) {
             int64_t imm = Op.getImm();
             igorAddress abs = m_pStatus->PCAfter + imm;
+
+			generateReferences(abs);
 
 			Balau::String symbolName;
 			if (m_pSession->getSymbolName(abs, symbolName))
@@ -294,6 +305,8 @@ public:
 		{
 			int64_t imm = DispSpec.getImm();
 			igorAddress abs(m_pSession, imm, -1);
+
+			generateReferences(abs);
 
 			Balau::String symbolName;
 			if (m_pSession->getSymbolName(abs, symbolName))
@@ -531,5 +544,26 @@ igor_result c_cpu_x86_llvm::getOperand(s_analyzeState * pState, int operandIndex
 
 void c_cpu_x86_llvm::generateReferences(s_analyzeState * pState)
 {
+	c_x86_llvm_analyse_result* pAnalyseResult = (c_x86_llvm_analyse_result*)pState->m_cpu_analyse_result;
+	MCInst& inst = pAnalyseResult->m_inst;
 
+	const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());
+	uint64_t tsflags = desc.TSFlags;
+
+	std::string outStr;
+	raw_string_ostream out(outStr);
+
+	LLVMStatus llvmStatus;
+	llvmStatus.PCBefore = pState->m_cpu_analyse_result->m_startOfInstruction;
+	llvmStatus.PCAfter = llvmStatus.PCBefore + pState->m_cpu_analyse_result->m_instructionSize;
+
+	m_tls.get()->m_pPrinter->setSession(pState->pSession);
+	m_tls.get()->m_pPrinter->setStatus(&llvmStatus);
+	m_tls.get()->m_pPrinter->printInst(&inst, out, "");
+	m_tls.get()->m_pPrinter->setSession(NULL);
+
+	out.flush();
+	Balau::String instruction = outStr;
+	instruction.do_replace_all('\t', ' ');
+	instruction.do_trim();
 }

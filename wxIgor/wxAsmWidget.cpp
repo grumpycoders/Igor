@@ -146,7 +146,7 @@ void c_wxAsmWidget::updateTextCache()
             currentEntry.m_address = analyzeState.m_PC;
 
 			igor_section_handle hSection = m_pSession->getSectionFromAddress(analyzeState.m_PC);
-			if (hSection != -1)
+			if (hSection != 0xFFFF)
 			{
 				String sectionName;
 				if (m_pSession->getSectionName(hSection, sectionName))

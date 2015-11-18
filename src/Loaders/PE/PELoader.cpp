@@ -6,6 +6,7 @@
 #include "IgorLocalSession.h"
 #include "cpu/x86_llvm/cpu_x86_llvm.h"
 #include "PDB/pdb.h"
+#include "PDB/tpi.h"
 
 #include "IgorMemory.h"
 
@@ -323,8 +324,12 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
     return 0;
 }
 
-void loadUDT(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSession * session)
+void loadUDT(c_PELoader* pLoader, PSYM Sym, PSYMD Symd, s_igorDatabase * db, IgorLocalSession * session)
 {
+	char* typeName = TPILookupTypeName(Symd->TpiHdr, Sym->Udt.typind);
+	IAssert(typeName, "Failed to fine type name");
+
+	char* symbolDeclaration = TPIGetSymbolDeclaration(Symd->TpiHdr, typeName, (char*)Sym->Udt.name);
 	/*
 	TPIGetSymbolDeclaration(Symd->TpiHdr,
 	TPILookupTypeName(Symd->TpiHdr, Sym->Udt.typind),
@@ -333,7 +338,7 @@ void loadUDT(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSessio
 	*/
 }
 
-void loadPub32(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSession * session)
+void loadPub32(c_PELoader* pLoader, PSYM Sym, PSYMD Symd, s_igorDatabase * db, IgorLocalSession * session)
 {
 	/*
 	printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
@@ -361,7 +366,7 @@ void loadPub32(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSess
 	}
 }
 
-void loadData32(c_PELoader* pLoader, PSYM Sym, s_igorDatabase * db, IgorLocalSession * session)
+void loadData32(c_PELoader* pLoader, PSYM Sym, PSYMD Symd, s_igorDatabase * db, IgorLocalSession * session)
 {
 	/*
 	char *type = TPILookupTypeName(Symd->TpiHdr, Sym->Data32.typind);
@@ -437,6 +442,42 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                 {
 					//SYMDumpSymbols(pPdb->Symd, 0xFFFF);
 
+					// types
+					{
+						PHDR pHdr = pPdb->Symd->TpiHdr;
+						ULONG dTypes = pHdr->tiMac - pHdr->tiMin;
+						ULONG dBase = pHdr->cbHdr;
+						PVOID pData = ((PUCHAR)pHdr + dBase);
+						PlfRecord plr;
+
+						printf("TPI version: %lu\nIndex range: %lX..%lX\nType count: %lu\n",
+							pHdr->vers, pHdr->tiMin, pHdr->tiMac - 1, dTypes);
+
+						for (ULONG i = 0; i < dTypes; i++)
+						{
+							ULONG dSize = *(PWORD)pData;
+							dBase += sizeof(WORD);
+							plr = (PlfRecord)((PUCHAR)pHdr + dBase);
+
+							printf("// %6lX: %04hX %08lX\n", pHdr->tiMin + i, plr->leaf, dBase - sizeof(WORD));
+
+							LEAF_ENUM_e leafType = (LEAF_ENUM_e)plr->leaf;
+
+							switch (leafType)
+							{
+							case LF_FIELDLIST:
+								break;
+							case LF_ENUM:
+								break;
+							default:
+								break;
+							}
+
+							dBase += dSize;
+							pData = (char*)pHdr + dBase;
+						}
+					}
+
                     PSYM Sym = pPdb->Symd->SymRecs;
                     while (Sym < pPdb->Symd->SymMac)
                     {
@@ -444,10 +485,10 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                         {
                             switch (Sym->Sym.rectyp)
                             {                                
-								case S_UDT: loadUDT(this, Sym, db, session); break;
-								case S_PUB32: loadPub32(this, Sym, db, session); break;
-                                case S_LDATA32: loadData32(this, Sym, db, session); break;
-                                case S_GDATA32: loadData32(this, Sym, db, session); break;
+								case S_UDT: loadUDT(this, Sym, pPdb->Symd, db, session); break;
+								case S_PUB32: loadPub32(this, Sym, pPdb->Symd, db, session); break;
+                                case S_LDATA32: loadData32(this, Sym, pPdb->Symd, db, session); break;
+                                case S_GDATA32: loadData32(this, Sym, pPdb->Symd, db, session); break;
                                 default:
 									break;
                             }

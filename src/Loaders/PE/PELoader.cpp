@@ -394,6 +394,36 @@ void loadData32(c_PELoader* pLoader, PSYM Sym, PSYMD Symd, s_igorDatabase * db, 
 	}
 }
 
+void ProcessTypeRecord(PHDR pHdr, PlfRecord plr);
+
+void ProcessTypeRecordStructure(PHDR pHdr, PlfStructure pls)
+{
+	DWORD dBytes;
+	PBYTE pbName = TPIRecordValue(pls->data, &dBytes);
+
+	ULONG dBase = 0;
+	ULONG dSize = 0;
+	PlfRecord plr = TPILookupTypeRecord(pHdr, pls->field, &dBase, &dSize);
+	if(plr)
+	{
+		IAssert(plr->leaf == LF_FIELDLIST);
+	}
+}
+
+void ProcessTypeRecord(PHDR pHdr, PlfRecord plr)
+{
+	LEAF_ENUM_e leafType = (LEAF_ENUM_e)plr->leaf;
+
+	switch (leafType)
+	{
+	case LF_STRUCTURE:
+		ProcessTypeRecordStructure(pHdr, &plr->Structure);
+		break;
+	default:
+		break;
+	}
+}
+
 void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession * session)
 {
     IMAGE_DATA_DIRECTORY* pDebugDirectory = &m_imageDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
@@ -459,19 +489,9 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
 							dBase += sizeof(WORD);
 							plr = (PlfRecord)((PUCHAR)pHdr + dBase);
 
-							printf("// %6lX: %04hX %08lX\n", pHdr->tiMin + i, plr->leaf, dBase - sizeof(WORD));
+							//printf("// %6lX: %04hX %08lX\n", pHdr->tiMin + i, plr->leaf, dBase - sizeof(WORD));
 
-							LEAF_ENUM_e leafType = (LEAF_ENUM_e)plr->leaf;
-
-							switch (leafType)
-							{
-							case LF_FIELDLIST:
-								break;
-							case LF_ENUM:
-								break;
-							default:
-								break;
-							}
+							ProcessTypeRecord(pHdr, plr);
 
 							dBase += dSize;
 							pData = (char*)pHdr + dBase;

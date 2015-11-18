@@ -10,3 +10,4 @@ PHDR TPILoadTypeInfo(MSF *msf);
 char* TPIGetSymbolDeclaration(PHDR pHdr, char *szTypeName, char *szVarName);
 VOID TPIDumpTypes(PHDR pHdr);
 VOID TPIFreeTypeInfo(MSF* msf, PHDR hdr);
+PBYTE TPIRecordValue(PBYTE pbData, PDWORD pdValue);

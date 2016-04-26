@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="wxIgor">
-      <UniqueIdentifier>{592a8b91-cabc-44f3-81e6-ef2e2a2d7982}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Igor">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -38,10 +35,6 @@
     <Filter Include="Third Party\wxWidgets\includes">
       <UniqueIdentifier>{94a955cd-ec47-4b01-b3c2-0fe598f3853f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="wxIgor\Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Igor\Loaders\Dmp">
       <UniqueIdentifier>{c413d817-f1d5-4ee7-a4dc-78f463f8c6be}</UniqueIdentifier>
     </Filter>
@@ -68,23 +61,11 @@
     <ClCompile Include="src\IgorHttp.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
-    <ClCompile Include="wxIgor\wxIgorApp.cpp">
-      <Filter>wxIgor</Filter>
-    </ClCompile>
-    <ClCompile Include="wxIgor\wxAsmWidget.cpp">
-      <Filter>wxIgor</Filter>
-    </ClCompile>
-    <ClCompile Include="wxIgor\wxIgorFrame.cpp">
-      <Filter>wxIgor</Filter>
-    </ClCompile>
     <ClCompile Include="src\IgorWS.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
     <ClCompile Include="src\IgorUtils.cpp">
       <Filter>Igor</Filter>
-    </ClCompile>
-    <ClCompile Include="wxIgor\stdafx.cpp">
-      <Filter>wxIgor</Filter>
     </ClCompile>
     <ClCompile Include="src\PDB\msf.cpp">
       <Filter>Igor\PDB</Filter>
@@ -124,9 +105,6 @@
     </ClCompile>
     <ClCompile Include="src\IgorUsers.cpp">
       <Filter>Igor</Filter>
-    </ClCompile>
-    <ClCompile Include="wxIgor\wxManageUsers.cpp">
-      <Filter>wxIgor</Filter>
     </ClCompile>
     <ClCompile Include="src\IgorHttpSession.cpp">
       <Filter>Igor</Filter>
@@ -169,23 +147,8 @@
     <ClInclude Include="src\IgorHttp.h">
       <Filter>Igor</Filter>
     </ClInclude>
-    <ClInclude Include="wxIgor\wxIgorApp.h">
-      <Filter>wxIgor</Filter>
-    </ClInclude>
-    <ClInclude Include="wxIgor\wxIgorShared.h">
-      <Filter>wxIgor</Filter>
-    </ClInclude>
-    <ClInclude Include="wxIgor\wxAsmWidget.h">
-      <Filter>wxIgor</Filter>
-    </ClInclude>
-    <ClInclude Include="wxIgor\wxIgorFrame.h">
-      <Filter>wxIgor</Filter>
-    </ClInclude>
     <ClInclude Include="src\IgorUtils.h">
       <Filter>Igor</Filter>
-    </ClInclude>
-    <ClInclude Include="wxIgor\stdafx.h">
-      <Filter>wxIgor</Filter>
     </ClInclude>
     <ClInclude Include="src\PDB\msf.h">
       <Filter>Igor\PDB</Filter>
@@ -1402,9 +1365,6 @@
     <ClInclude Include="src\IgorUsers.h">
       <Filter>Igor</Filter>
     </ClInclude>
-    <ClInclude Include="wxIgor\wxManageUsers.h">
-      <Filter>wxIgor</Filter>
-    </ClInclude>
     <ClInclude Include="src\IgorHttpSession.h">
       <Filter>Igor</Filter>
     </ClInclude>
@@ -1431,10 +1391,5 @@
     <CustomBuild Include="src\protobufs\IgorProto.proto">
       <Filter>Igor\protobufs</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="wxIgor\wxIgor.rc">
-      <Filter>wxIgor\Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

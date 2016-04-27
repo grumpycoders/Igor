@@ -185,6 +185,7 @@
     <ClCompile Include="src\IgorAnalysis.cpp">
       <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ProgramDatabase</DebugInformationFormat>
     </ClCompile>
+    <ClCompile Include="src\IgorAsyncActions.cpp" />
     <ClCompile Include="src\IgorDatabase.cpp" />
     <ClCompile Include="src\IgorHttp.cpp" />
     <ClCompile Include="src\IgorHttpSession.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="src\Igor.h" />
     <ClInclude Include="src\IgorAnalysis.h" />
     <ClInclude Include="src\IgorAPI.h" />
+    <ClInclude Include="src\IgorAsyncActions.h" />
     <ClInclude Include="src\IgorDatabase.h" />
     <ClInclude Include="src\IgorHttp.h" />
     <ClInclude Include="src\IgorHttpSession.h" />

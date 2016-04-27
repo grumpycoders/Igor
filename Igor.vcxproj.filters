@@ -124,6 +124,9 @@
     <ClCompile Include="src\Loaders\IgorLoaders.cpp">
       <Filter>Igor\Loaders</Filter>
     </ClCompile>
+    <ClCompile Include="src\IgorAsyncActions.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Igor.h">
@@ -1385,6 +1388,9 @@
     </ClInclude>
     <ClInclude Include="src\Loaders\IgorLoaders.h">
       <Filter>Igor\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorAsyncActions.h">
+      <Filter>Igor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

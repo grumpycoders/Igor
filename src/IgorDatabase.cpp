@@ -45,6 +45,7 @@ c_cpu_state* s_igorDatabase::getCpuStateForAddress(igorAddress PC)
 
 s_igorSection* s_igorDatabase::findSectionFromAddress(igorAddress address)
 {
+    Balau::ScopeLock sl(m_lock);
     for(auto & i : m_sections)
     {
         s_igorSection* pSection = i;
@@ -60,6 +61,7 @@ s_igorSection* s_igorDatabase::findSectionFromAddress(igorAddress address)
 
 igor_result s_igorDatabase::readS64(igorAddress address, s64& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -81,6 +83,7 @@ igor_result s_igorDatabase::readS64(igorAddress address, s64& output)
 
 igor_result s_igorDatabase::readU64(igorAddress address, u64& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -103,6 +106,7 @@ igor_result s_igorDatabase::readU64(igorAddress address, u64& output)
 
 igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -124,6 +128,7 @@ igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
 
 igor_result s_igorDatabase::readU32(igorAddress address, u32& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -146,6 +151,7 @@ igor_result s_igorDatabase::readU32(igorAddress address, u32& output)
 
 igor_result s_igorDatabase::readS16(igorAddress address, s16& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -168,6 +174,7 @@ igor_result s_igorDatabase::readS16(igorAddress address, s16& output)
 
 igor_result s_igorDatabase::readU16(igorAddress address, u16& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -190,6 +197,7 @@ igor_result s_igorDatabase::readU16(igorAddress address, u16& output)
 
 igor_result s_igorDatabase::readS8(igorAddress address, s8& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -212,6 +220,7 @@ igor_result s_igorDatabase::readS8(igorAddress address, s8& output)
 
 igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(address);
 
     if (pSection == NULL)
@@ -234,6 +243,7 @@ igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 
 igor_result s_igorDatabase::create_section(igorLinearAddress virtualAddress, u64 size, igor_section_handle& sectionHandle)
 {
+    Balau::ScopeLock sl(m_lock);
     size_t current = m_sections.size();
     AAssert(current < std::numeric_limits<igor_section_handle>::max(), "Too many sections!");
     sectionHandle = (igor_section_handle) current;
@@ -249,6 +259,7 @@ igor_result s_igorDatabase::create_section(igorLinearAddress virtualAddress, u64
 
 igor_result s_igorDatabase::set_section_option(igor_section_handle sectionHandle, e_igor_section_option option)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = m_sections[sectionHandle];
 
     pSection->m_option |= option;
@@ -258,6 +269,7 @@ igor_result s_igorDatabase::set_section_option(igor_section_handle sectionHandle
 
 igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = m_sections[sectionHandle];
 
     pSection->m_rawData = new u8[size];
@@ -270,6 +282,7 @@ igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle,
 
 igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle, const void* data, u64 size)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = m_sections[sectionHandle];
 
     pSection->m_rawData = new u8[size];
@@ -281,6 +294,7 @@ igor_result s_igorDatabase::load_section_data(igor_section_handle sectionHandle,
 
 int s_igorDatabase::readString(igorAddress address, Balau::String& outputString)
 {
+    Balau::ScopeLock sl(m_lock);
     int length = 0;
     s8 currentChar;
     for (;;)
@@ -304,6 +318,7 @@ igor_result s_igorDatabase::declare_symbolType(igorAddress virtualAddress, e_sym
 
 igor_result s_igorDatabase::declare_variable(igorAddress virtualAddress, e_baseTypes type)
 {
+    Balau::ScopeLock sl(m_lock);
     s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
 
     symbol.m_type = SYMBOL_VARIABLE;
@@ -314,6 +329,7 @@ igor_result s_igorDatabase::declare_variable(igorAddress virtualAddress, e_baseT
 
 igor_result s_igorDatabase::declare_name(igorAddress virtualAddress, Balau::String name)
 {
+    Balau::ScopeLock sl(m_lock);
     s_symbolDefinition& symbol = m_symbolMap[virtualAddress];
 
     symbol.m_name = name;
@@ -323,6 +339,7 @@ igor_result s_igorDatabase::declare_name(igorAddress virtualAddress, Balau::Stri
 
 bool s_igorDatabase::getSymbolName(igorAddress address, Balau::String& name)
 {
+    Balau::ScopeLock sl(m_lock);
     s_symbolDefinition* pSymbolDef = get_Symbol(address);
 
     if (pSymbolDef == NULL)
@@ -335,6 +352,7 @@ bool s_igorDatabase::getSymbolName(igorAddress address, Balau::String& name)
 
 s_igorDatabase::s_symbolDefinition* s_igorDatabase::get_Symbol(igorAddress virtualAddress)
 {
+    Balau::ScopeLock sl(m_lock);
     auto t = m_symbolMap.find(virtualAddress);
     if (t == m_symbolMap.end())
         return NULL;
@@ -344,6 +362,7 @@ s_igorDatabase::s_symbolDefinition* s_igorDatabase::get_Symbol(igorAddress virtu
 igorAddress s_igorDatabase::findSymbol(const char* symbolName)
 {
     // this is going to be very slow...
+    Balau::ScopeLock sl(m_lock);
 
     for (auto & i : m_symbolMap)
     {
@@ -365,6 +384,7 @@ igor_result s_igorDatabase::flag_address_as_u32(igorAddress virtualAddress)
 
 igor_result s_igorDatabase::flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(virtualAddress);
 
     if (pSection == NULL)
@@ -397,6 +417,7 @@ igor_result s_igorDatabase::flag_address_as_instruction(igorAddress virtualAddre
 
 igor_result s_igorDatabase::is_address_flagged_as_code(igorAddress virtualAddress)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(virtualAddress);
 
     if (pSection == NULL)
@@ -423,6 +444,7 @@ igor_result s_igorDatabase::is_address_flagged_as_code(igorAddress virtualAddres
 
 igorAddress s_igorDatabase::get_next_valid_address_before(igorAddress virtualAddress)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(virtualAddress);
 
     if (pSection == NULL)
@@ -445,6 +467,7 @@ igorAddress s_igorDatabase::get_next_valid_address_before(igorAddress virtualAdd
 
 igorAddress s_igorDatabase::get_next_valid_address_after(igorAddress virtualAddress)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = findSectionFromAddress(virtualAddress);
 
     if (pSection == NULL)
@@ -467,16 +490,19 @@ igorAddress s_igorDatabase::get_next_valid_address_after(igorAddress virtualAddr
 
 igorAddress s_igorDatabase::getEntryPoint()
 {
+    Balau::ScopeLock sl(m_lock);
     return m_entryPoint;
 }
 
 s_igorSection* s_igorDatabase::getSection(igor_section_handle sectionHandle)
 {
-	return m_sections[sectionHandle];
+    Balau::ScopeLock sl(m_lock);
+    return m_sections[sectionHandle];
 }
 
 igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAddress)
 {
+    Balau::ScopeLock sl(m_lock);
     if (virtualAddress.m_segmentId != static_cast<igor_section_handle>(-1))
     {
         return virtualAddress.m_segmentId;
@@ -498,6 +524,7 @@ igor_section_handle s_igorDatabase::getSectionFromAddress(igorAddress virtualAdd
 
 igorAddress s_igorDatabase::getSectionStartVirtualAddress(igor_section_handle sectionHandle)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = m_sections[sectionHandle];
 
     igorAddress r(m_sessionId, pSection->m_virtualAddress, pSection->m_id);
@@ -507,6 +534,7 @@ igorAddress s_igorDatabase::getSectionStartVirtualAddress(igor_section_handle se
 
 u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
 {
+    Balau::ScopeLock sl(m_lock);
     s_igorSection* pSection = m_sections[sectionHandle];
 
     return pSection->m_size;
@@ -514,26 +542,29 @@ u64 s_igorDatabase::getSectionSize(igor_section_handle sectionHandle)
 
 igor_result s_igorDatabase::setSectionName(igor_section_handle sectionHandle, Balau::String& name)
 {
-	if (s_igorSection* pSection = getSection(sectionHandle))
-	{
-		pSection->m_name = name;
-		return IGOR_SUCCESS;
-	}
-	return IGOR_FAILURE;
+    Balau::ScopeLock sl(m_lock);
+    if (s_igorSection* pSection = getSection(sectionHandle))
+    {
+        pSection->m_name = name;
+        return IGOR_SUCCESS;
+    }
+    return IGOR_FAILURE;
 }
 
 igor_result s_igorDatabase::getSectionName(igor_section_handle sectionHandle, Balau::String& name)
 {
-	if (s_igorSection* pSection = getSection(sectionHandle))
-	{
-		name = pSection->m_name;
-		return IGOR_SUCCESS;
-	}
-	return IGOR_FAILURE;
+    Balau::ScopeLock sl(m_lock);
+    if (s_igorSection* pSection = getSection(sectionHandle))
+    {
+        name = pSection->m_name;
+        return IGOR_SUCCESS;
+    }
+    return IGOR_FAILURE;
 }
 
 std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()
 {
+    Balau::ScopeLock sl(m_lock);
     igorAddress start(m_sessionId, 0, 0);
     igorAddress end(m_sessionId, std::numeric_limits<igorLinearAddress>::max(), (igor_section_handle) m_sections.size() - 1);
     size_t total = 0;
@@ -557,6 +588,7 @@ std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()
 }
 
 igorAddress s_igorDatabase::linearToVirtual(u64 linear) {
+    Balau::ScopeLock sl(m_lock);
     std::set<s_igorSection *, SectionCompare> sections;
     for (auto & i : m_sections)
         sections.insert(i);
@@ -574,20 +606,22 @@ igorAddress s_igorDatabase::linearToVirtual(u64 linear) {
 
 void s_igorDatabase::addReference(igorAddress referencedAddress, igorAddress referencedFrom)
 {
-	std::vector<igorAddress> crossReferences;
-	getReferences(referencedAddress, crossReferences);
+    Balau::ScopeLock sl(m_lock);
+    std::vector<igorAddress> crossReferences;
+    getReferences(referencedAddress, crossReferences);
 
-	for (int i = 0; i < crossReferences.size(); i++)
-	{
-		if (crossReferences[i] == referencedFrom)
-			return;
-	}
+    for (int i = 0; i < crossReferences.size(); i++)
+    {
+        if (crossReferences[i] == referencedFrom)
+            return;
+    }
 
     m_references.insert( std::pair<igorAddress, igorAddress>(referencedAddress, referencedFrom));
 }
 
 void s_igorDatabase::getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom)
 {
+    Balau::ScopeLock sl(m_lock);
     std::pair<t_references::iterator, t_references::iterator> range;
     range = m_references.equal_range(referencedAddress);
 

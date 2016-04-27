@@ -5,6 +5,8 @@
 
 #include "wxIgorApp.h"
 #include "wxIgorFrame.h"
+#include "wxIgorShared.h"
+#include "IgorAsyncActions.h"
 #include "IgorDatabase.h"
 
 #ifdef _DEBUG
@@ -52,113 +54,60 @@ bool c_wxIgorApp::OnInit()
     return TRUE;
 }
 
-bool c_wxIgorApp::balauStart(int & argc, char ** argv) {
-    bool success = wxEntryStart(argc, argv);
-
-    if (!success)
-        return false;
-
-    return wxGetApp().balauStart();
+int c_wxIgorApp::OnExit() {
+    stopIgorAsyncWorker();
+    return 0;
 }
 
-static std::atomic<bool> s_exitting;
-
-bool c_wxIgorApp::balauStart() {
-    CallOnInit();
-
-    m_exitOnFrameDelete = Yes;
-
-    auto r = balauLoop();
-
-    return !r.first;
-}
-
-std::pair<bool, int> c_wxIgorApp::balauLoop() {
-    wxIgorEventLoop * loop = dynamic_cast<wxIgorEventLoop *>(m_mainLoop);
-    if (!loop) {
-        m_mainLoop = loop = new wxIgorEventLoop(CreateMainLoop());
-        wxEventLoopBase::SetActive(loop);
+class wxRunnerThread : public Balau::Thread {
+public:
+    wxRunnerThread(int & argc, char ** argv) : m_argc(argc), m_argv(argv) { }
+    bool waitUntilStarted() {
+        m_queue.pop();
+        return m_success;
     }
-    int r = 0;
-    bool exception = false;
-    try {
-        r = loop->run();
-    }
-    catch (GeneralException & e) {
-        exception = true;
-        Printer::log(M_WARNING, "wxWidgets caused an exception: %s", e.getMsg());
-        const char * details = e.getDetails();
-        if (details)
-            Printer::log(M_WARNING, "  %s", details);
-        auto trace = e.getTrace();
-        for (String & str : trace)
-            Printer::log(M_DEBUG, "%s", str.to_charp());
-    }
-    catch (...) {
-        exception = true;
-        Printer::log(M_WARNING, "wxWidgets caused an unknown exception - stopping.");
-    }
-    if (exception)
-        return std::pair<bool, int>(true, 0);
-    return std::pair<bool, int>(s_exitting.load(), r);
-}
-
-void c_wxIgorApp::balauExit() {
-    OnExit();
-
-    wxIgorEventLoop * loop = dynamic_cast<wxIgorEventLoop *>(m_mainLoop);
-    if (loop)
-        loop->run();
-
-    wxEventLoopBase::SetActive(NULL);
-    wxEntryCleanup();
-}
-
-int wxIgorEventLoop::run() {
-    OnNextIteration();
-    ProcessIdle();
-
-    for (;;) {
-        bool hasMoreEvents = false;
-        if (wxTheApp && wxTheApp->HasPendingEvents()) {
-            wxTheApp->ProcessPendingEvents();
-            hasMoreEvents = true;
+private:
+    void * proc() {
+        m_success = wxEntryStart(m_argc, m_argv);
+        if (!m_success) {
+            m_queue.push(NULL);
+            return NULL;
         }
-
-        if (Pending()) {
-            wxEventLoopBase::SetActive(m_proxyLoop);
-            Dispatch();
-            wxEventLoopBase::SetActive(this);
-            hasMoreEvents = true;
+        m_success = wxApp::GetInstance()->CallOnInit();
+        if (!m_success) {
+            m_queue.push(NULL);
+            return NULL;
         }
+        ScopedLambda sl([&]() { wxApp::GetInstance()->OnExit(); });
+        startIgorAsyncWorker();
+        m_queue.push(NULL);
+        wxApp::GetInstance()->OnRun();
 
-        if (!hasMoreEvents)
-            break;
+        return NULL;
     }
+    int & m_argc;
+    char ** m_argv;
+    Balau::Queue<void> m_queue;
+    bool m_success;
+};
 
-    if (m_shouldExit)
-        s_exitting.exchange(true);
-
-    return m_shouldExit ? m_exitcode : 0;
-}
-
-void wxIgorEventLoop::ScheduleExit(int rc) {
-    m_exitcode = rc;
-    m_shouldExit = true;
-    OnExit();
-    WakeUp();
-}
-
-#include "wxIgorShared.h"
+static wxRunnerThread * g_wxThread = NULL;
 
 bool wxIgorStartup(int & argc, char ** argv) {
-    return c_wxIgorApp::balauStart(argc, argv);
-}
-
-std::pair<bool, int> wxIgorLoop() {
-    return wxGetApp().balauLoop();
+    g_wxThread = new wxRunnerThread(argc, argv);
+    g_wxThread->threadStart();
+    bool success = g_wxThread->waitUntilStarted();
+    if (!success) {
+        g_wxThread->join();
+        delete g_wxThread;
+        g_wxThread = NULL;
+    }
+    return success;
 }
 
 void wxIgorExit() {
-    wxGetApp().balauExit();
+    wxApp::GetInstance()->ExitMainLoop();
+    g_wxThread->join();
+    delete g_wxThread;
+    g_wxThread = NULL;
 }

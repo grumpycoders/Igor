@@ -10,6 +10,7 @@
 #include "IgorAPI.h"
 #include "IgorSection.h"
 #include "cpu/cpuModule.h"
+#include "Threads.h"
 
 typedef int igor_cpu_handle;
 
@@ -221,12 +222,12 @@ struct s_igorDatabase
 
     igorAddress getEntryPoint();
     
-	s_igorSection* getSection(igor_section_handle sectionHandle);
-	igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
+    s_igorSection* getSection(igor_section_handle sectionHandle);
+    igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
     igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
     u64 getSectionSize(igor_section_handle sectionHandle);
-	igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name);
-	igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name);
+    igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name);
+    igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name);
 
     igorAddress m_entryPoint;
 
@@ -235,7 +236,11 @@ struct s_igorDatabase
 
     bool getSymbolName(igorAddress address, Balau::String& name);
 
+    void lock() { m_lock.enter(); }
+    void unlock() { m_lock.leave(); }
+
 private:
     s_igorSection* findSectionFromAddress(igorAddress address);
     s_symbolDefinition* get_Symbol(igorAddress virtualAddress);
+    Balau::Lock m_lock;
 };

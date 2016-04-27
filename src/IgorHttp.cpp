@@ -361,7 +361,7 @@ bool ListSessionsAction::safeDo(HttpServer * server, Http::Request & req, HttpSe
 static Regex igorStaticURL("^" IGOR_STATIC_ROOT "/(.+)");
 
 void igor_setup_httpserver() {
-    loadTemplate();
+    //loadTemplate();
 
     HttpServer * s = new HttpServer();
     igor_setup_websocket(s);

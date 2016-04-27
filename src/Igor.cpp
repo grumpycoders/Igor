@@ -25,7 +25,7 @@ FILE _iob[] = { *stdin, *stdout, *stderr };
 
 extern "C" FILE * __cdecl __iob_func(void)
 {
-	return _iob;
+    return _iob;
 }
 
 using namespace Balau;
@@ -110,22 +110,6 @@ static GoogleProtoBufs gprotobufs;
 #ifdef USE_WXWIDGETS
 #include "wxIgor/wxIgorShared.h"
 
-class wxIdler : public Task {
-    void Do() throw (GeneralException) {
-        for (;;) {
-            auto r = wxIgorLoop();
-            if (r.first)
-                throw Exit(r.second);
-            m_evt.resetMaybe();
-            m_evt.set(0.05);
-            waitFor(&m_evt);
-            yield();
-        }
-    }
-    const char * getName() const { return "wxIdler"; }
-    Events::Timeout m_evt;
-};
-
 bool s_wxStarted = false;
 
 class wxExit : public AtExit {
@@ -139,7 +123,6 @@ static wxExit wxexit;
 static void startWX(int argc, char ** argv) {
     s_wxStarted = wxIgorStartup(argc, argv);
     IAssert(s_wxStarted, "wxWidgets couldn't start...");
-    TaskMan::registerTask(new wxIdler());
 }
 
 #else

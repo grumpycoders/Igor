@@ -4,12 +4,8 @@
 #include "wxIgorApp.h"
 #include "wxManageUsers.h"
 
-#include <Input.h>
-#include <Output.h>
-#include <Buffer.h>
-#include <TaskMan.h>
-
 #include "IgorAnalysis.h"
+#include "IgorAsyncActions.h"
 #include "IgorLocalSession.h"
 #include "IgorUtils.h"
 #include "Loaders/PE/PELoader.h"
@@ -135,7 +131,7 @@ void c_wxIgorFrame::OpenFile(const wxString& fileName)
 
     IgorSession * session = NULL;
 
-    std::tie(result, session, errorMsg1, errorMsg2) = IgorLocalSession::loadBinary(fileName.c_str());
+    std::tie(result, session, errorMsg1, errorMsg2) = IgorAsyncLoadBinary(fileName.c_str());
 
     if (result != IGOR_SUCCESS) {
         wxString errorMsg = "File error:\n" + wxString(errorMsg1.to_charp()) + "\n" + wxString(errorMsg2.to_charp());
@@ -416,6 +412,7 @@ m_parent(parent)
 
     s_igorDatabase::t_symbolMap::iterator start;
     s_igorDatabase::t_symbolMap::iterator end;
+    parent->m_session->lock();
     parent->m_session->getSymbolsIterator(start, end);
 
     int itemId = 0;
@@ -435,6 +432,8 @@ m_parent(parent)
         itemId++;
         start++;
     }
+
+    parent->m_session->unlock();
 
     Layout();
     Show();

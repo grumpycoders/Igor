@@ -32,7 +32,7 @@ class IgorLocalSession : public IgorSession {
     friend class IgorAnalysisManagerLocal;
     friend class IgorAnalysis;
   public:
-	  IgorLocalSession();
+      IgorLocalSession();
       IgorLocalSession(const IgorLocalSession &) = delete;
       ~IgorLocalSession() { delete m_pDatabase; }
 
@@ -76,8 +76,8 @@ class IgorLocalSession : public IgorSession {
     virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) override;
     virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) override;
     virtual u64 getSectionSize(igor_section_handle sectionHandle) override;
-	virtual igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name) override;
-	virtual igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name) override;
+    virtual igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name) override;
+    virtual igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name) override;
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() override;
     virtual igorAddress linearToVirtual(u64) override;
@@ -86,6 +86,9 @@ class IgorLocalSession : public IgorSession {
 
     virtual void addReference(igorAddress referencedAddress, igorAddress referencedFrom);
     virtual void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom);
+
+    virtual void lock() { m_pDatabase->lock(); }
+    virtual void unlock() { m_pDatabase->unlock(); }
 
   private:
     enum {

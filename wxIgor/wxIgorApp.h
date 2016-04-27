@@ -6,42 +6,13 @@
 #include <wx/config.h>
 #include <wx/filehistory.h>
 
-class wxIgorEventLoop : public wxEventLoopManual {
-public:
-    wxIgorEventLoop(wxEventLoopBase * proxy) : m_proxyLoop(proxy) { m_shouldExit = false; }
-    ~wxIgorEventLoop() { delete m_proxyLoop; }
-
-    int run();
-
-private:
-    bool ProcessEvents();
-
-    int DoRun(void) override { return -1; }
-    void ScheduleExit(int) override;
-    bool Pending(void) const override { return m_proxyLoop->Pending(); }
-    bool Dispatch(void) override { return m_proxyLoop->Dispatch(); }
-    int DispatchTimeout(unsigned long t) override { return m_proxyLoop->DispatchTimeout(t); }
-    void WakeUp(void) override { m_proxyLoop->WakeUp(); }
-    void DoYieldFor(long t) override { m_proxyLoop->YieldFor(t); }
-
-    wxEventLoopBase * m_proxyLoop;
-};
-
 class c_wxIgorFrame;
 
 class c_wxIgorApp : public wxApp
 {
 public:
-    // Balau really doesn't want to know about wxWidgets...
-    static bool balauStart(int & argc, char ** argv);
-    std::pair<bool, int> balauLoop();
-    void balauExit();
-
-    virtual bool OnInit();
-
-private:
-    // trampoline from the static
-    bool balauStart();
+    virtual bool OnInit() override;
+    virtual int OnExit() override;
 
 public:
     wxConfig* m_config;

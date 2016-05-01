@@ -2,44 +2,6 @@
 #include "IgorSession.h"
 #include "cpuModule.h"
 
-const char* c_cpu_module::startColor(e_colors color, bool bUseColor)
-{
-    if (!bUseColor)
-    {
-        return "";
-    }
-
-    switch (color)
-    {
-    case RESET_COLOR:
-        return ";C=DEFAULT;";
-    case KNOWN_SYMBOL:
-        return ";C=KNOWN_SYMBOL;";
-    case MNEMONIC_DEFAULT:
-        return ";C=MNEMONIC_DEFAULT;";
-    case MNEMONIC_FLOW_CONTROL:
-        return ";C=MNEMONIC_FLOW_CONTROL;";
-    case OPERAND_REGISTER:
-        return ";C=OPERAND_REGISTER;";
-    case OPERAND_IMMEDIATE:
-        return ";C=OPERAND_IMMEDIATE;";
-    default:
-        Failure("Unimplemented color");
-    }
-
-    return "";
-}
-
-const char* c_cpu_module::finishColor(e_colors color, bool bUseColor)
-{
-    if (!bUseColor)
-    {
-        return "";
-    }
-
-    return ";C=DEFAULT;";
-}
-
 std::vector<c_cpu_factory*> c_cpu_factory::m_list;
 
 c_cpu_module * c_cpu_factory::createCpuFromString(const Balau::String & desc)
@@ -54,4 +16,26 @@ c_cpu_module * c_cpu_factory::createCpuFromString(const Balau::String & desc)
     }
 
     return cpu;
+}
+
+uint32_t c_cpu_module::getColorForType(c_cpu_module::e_colors blockType)
+{
+	switch (blockType)
+	{
+	case c_cpu_module::DEFAULT:
+	default:
+		return 0xFF000000;
+	case c_cpu_module::KNOWN_SYMBOL:
+		return 0xFFFF0000;
+	case c_cpu_module::MNEMONIC_DEFAULT:
+		return 0xFF775577;
+	case c_cpu_module::MNEMONIC_FLOW_CONTROL:
+		return 0xFF0000FF;
+	case c_cpu_module::OPERAND_REGISTER:
+		return 0xFF00FF00;
+	case c_cpu_module::OPERAND_IMMEDIATE:
+		return 0xFFFFFF00;
+	case c_cpu_module::MEMORY_ADDRESS:
+		return 0xFF770055;
+	}
 }

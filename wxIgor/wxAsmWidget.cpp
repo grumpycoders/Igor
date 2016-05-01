@@ -164,7 +164,7 @@ void c_wxAsmWidget::updateTextCache()
 
                 symbolNameEntry.m_address = analyzeState.m_PC;
                 symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
-                symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL));
+                symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
 
                 m_textCache.push_back(symbolNameEntry);
             }
@@ -184,11 +184,11 @@ void c_wxAsmWidget::updateTextCache()
                     Balau::String symbolName;
                     if (m_pSession->getSymbolName(crossReferences[i], symbolName))
                     {
-                        crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL));
+                        crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
                     }
                     else
                     {
-                        crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL));
+                        crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
                     }
 
                     m_textCache.push_back(crossRefEntry);
@@ -271,34 +271,15 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
         {
             if (strstr(stringList[i].to_charp(), "C="))
             {
-                if (strstr(c_cpu_module::startColor(c_cpu_module::RESET_COLOR), stringList[i].to_charp()))
-                {
-                    dc.SetTextForeground(*wxBLACK);
-                }
-                else if (strstr(c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL), stringList[i].to_charp()))
-                {
-                    dc.SetTextForeground(*wxBLUE);
-                }
-                else if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_DEFAULT), stringList[i].to_charp()))
-                {
-                    dc.SetTextForeground(wxColour(0xFF775577));
-                }
-                else if (strstr(c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL), stringList[i].to_charp()))
-                {
-                    dc.SetTextForeground(*wxRED);
-                }
-                else if (strstr(c_cpu_module::startColor(c_cpu_module::OPERAND_REGISTER), stringList[i].to_charp()))
-                {
-                    dc.SetTextForeground(*wxGREEN);
-                }
-                else if (strstr(c_cpu_module::startColor(c_cpu_module::OPERAND_IMMEDIATE), stringList[i].to_charp()))
-                {
-                    dc.SetTextForeground(*wxCYAN);
-                }
-                else
-                {
-                    Failure("Unimplemented color");
-                }
+				int blockType;
+				int numParsedElements = stringList[i].scanf("C=%d", &blockType);
+				assert(numParsedElements == 1);
+				assert(blockType >= 0);
+				assert(blockType < c_cpu_module::COLOR_MAX);
+
+				c_cpu_module::e_colors currentType = (c_cpu_module::e_colors)blockType;
+
+				dc.SetTextForeground(wxColour(c_cpu_module::getColorForType(currentType)));
 
             }
             else

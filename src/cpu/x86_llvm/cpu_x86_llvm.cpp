@@ -142,12 +142,12 @@ public:
 		bool isFlowControl = Desc.mayAffectControlFlow(*MI, MRI);
 
 		if(isFlowControl)
-			OS << c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true);
+			OS << c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true).to_charp();
 
         X86IntelInstPrinter::printInst(MI, OS, Annot);
 
 		if (isFlowControl)
-			OS << c_cpu_module::finishColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true);
+			OS << c_cpu_module::finishColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true).to_charp();
 
     }
     virtual void printRegName(raw_ostream &OS, unsigned RegNo) const {
@@ -187,9 +187,9 @@ public:
             Balau::String symbolName;
             if (m_pSession->getSymbolName(abs, symbolName))
             {
-                O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+                O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
                 O << symbolName.to_charp();
-                O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+                O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
             }
             else
             {
@@ -235,9 +235,9 @@ public:
 						Balau::String symbolName;
 						if (m_pSession->getSymbolName(abs, symbolName))
 						{
-							O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+							O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
 							O << symbolName.to_charp();
-							O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+							O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
 						}
 						else
 						{
@@ -267,13 +267,15 @@ public:
 			Balau::String symbolName;
 			if (m_pSession->getSymbolName(abs, symbolName))
 			{
-				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
 				O << symbolName.to_charp();
-				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
 			}
 			else
 			{
+				O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
 				O << formatHex(abs.offset);
+				O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
 			}
         } else {
             assert(Op.isExpr() && "unknown pcrel immediate operand");
@@ -311,9 +313,9 @@ public:
 			Balau::String symbolName;
 			if (m_pSession->getSymbolName(abs, symbolName))
 			{
-				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true);
+				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
 				O << symbolName.to_charp();
-				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true);
+				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
 			}
 			else
 			{

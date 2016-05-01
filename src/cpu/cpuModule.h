@@ -62,17 +62,37 @@ public:
 
     enum e_colors
     {
-        RESET_COLOR,
+        DEFAULT = 0,
         KNOWN_SYMBOL,
         MNEMONIC_DEFAULT,
         MNEMONIC_FLOW_CONTROL,
+		MEMORY_ADDRESS,
 
         OPERAND_REGISTER,
         OPERAND_IMMEDIATE,
+
+		COLOR_MAX
     };
 
-    static const char* startColor(e_colors, bool bUseColor = true);
-    static const char* finishColor(e_colors, bool bUseColor = true);
+	static Balau::String startColor(e_colors color, bool bUseColor = true)
+	{
+		if (!bUseColor)
+		{
+			return "";
+		}
+
+		Balau::String colorString;
+		colorString.append(";C=%d;", color);
+
+		return colorString;
+	}
+
+	static Balau::String finishColor(e_colors, bool bUseColor = true)
+	{
+		return startColor(DEFAULT, bUseColor);
+	}
+
+	static uint32_t getColorForType(c_cpu_module::e_colors blockType);
 };
 
 class c_cpu_factory

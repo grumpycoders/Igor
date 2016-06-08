@@ -161,6 +161,7 @@
     </ClCompile>
     <ClCompile Include="GL\gl3w.c" />
     <ClCompile Include="imIgor.cpp" />
+    <ClCompile Include="imIgorAsmView.cpp" />
     <ClCompile Include="imIgor_imgui.cpp" />
     <ClCompile Include="imgui_impl_sdl_gl3.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="..\imgui\stb_textedit.h" />
     <ClInclude Include="..\imgui\stb_truetype.h" />
     <ClInclude Include="imgui_impl_sdl_gl3.h" />
+    <ClInclude Include="imIgorAsmView.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Igor.vcxproj">

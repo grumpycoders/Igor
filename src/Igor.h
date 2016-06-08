@@ -84,6 +84,12 @@ struct igorAddress {
     }
 
     // may need more than that, like going to the session and check section limits.
+	void makeInvalid()
+	{
+		m_sessionId = 0;
+		m_offset = 0;
+		m_segmentId = -1;
+	}
     bool isValid() { return m_sessionId != 0; }
     bool isNotValid() { return !isValid(); }
 

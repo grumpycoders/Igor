@@ -32,17 +32,17 @@ using namespace Balau;
 
 LuaMainTask * g_luaTask = NULL;
 
-igorAddress::igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_section_handle sectionId)
+igorAddress::igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_segment_handle sectionId)
     : m_segmentId(sectionId)
     , m_offset(offset)
     , m_sessionId(sessionId)
 { }
 
-igorAddress::igorAddress(s_igorDatabase * db, igorLinearAddress offset, igor_section_handle sectionId)
+igorAddress::igorAddress(s_igorDatabase * db, igorLinearAddress offset, igor_segment_handle sectionId)
 : igorAddress(db ? db->m_sessionId : 0, offset, sectionId)
 { }
 
-igorAddress::igorAddress(IgorSession * session, igorLinearAddress offset, igor_section_handle sectionId)
+igorAddress::igorAddress(IgorSession * session, igorLinearAddress offset, igor_segment_handle sectionId)
     : igorAddress(session ? session->getId() : 0, offset, sectionId)
 { }
 

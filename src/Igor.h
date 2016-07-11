@@ -18,7 +18,7 @@ typedef int igor_result;
 #define IGOR_FAILURE 0
 #define IGOR_SUCCESS 1
 
-typedef uint16_t igor_section_handle;
+typedef uint16_t igor_segment_handle;
 
 /*
 class igor_section_handle
@@ -65,9 +65,9 @@ struct igorAddress {
     bool operator!=(const igorAddress & b) const { return compareTo(b) != EQ; }
 
     explicit igorAddress() : igorAddress((uint16_t) 0, 0, -1) { }
-    explicit igorAddress(struct s_igorDatabase * session, igorLinearAddress offset, igor_section_handle sectionId);
-    explicit igorAddress(class IgorSession * session, igorLinearAddress offset, igor_section_handle sectionId);
-    explicit igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_section_handle sectionId);
+    explicit igorAddress(struct s_igorDatabase * session, igorLinearAddress offset, igor_segment_handle sectionId);
+    explicit igorAddress(class IgorSession * session, igorLinearAddress offset, igor_segment_handle sectionId);
+    explicit igorAddress(uint16_t sessionId, igorLinearAddress offset, igor_segment_handle sectionId);
 
     igorAddress(const igorAddress & a)
         : m_offset(a.m_offset)
@@ -94,12 +94,12 @@ struct igorAddress {
     bool isNotValid() { return !isValid(); }
 
     const igorLinearAddress & offset = m_offset;
-    const igor_section_handle & segmentId = m_segmentId;
+    const igor_segment_handle & segmentId = m_segmentId;
     const uint16_t & sessionId = m_sessionId;
 
 private:
     igorLinearAddress m_offset;
-    igor_section_handle m_segmentId;
+    igor_segment_handle m_segmentId;
     uint16_t m_sessionId;
 
     enum compareType {

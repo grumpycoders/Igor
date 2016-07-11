@@ -165,19 +165,19 @@ igor_result c_elfLoader::load(BFile reader, IgorLocalSession * pSession)
             sectionName.append("%c", character);
         }
 
-        igor_section_handle sectionHandle;
-        pDataBase->create_section(pSectionHeader->m_addr, pSectionHeader->m_size, sectionHandle);
+        igor_segment_handle segmentHandle;
+        pDataBase->create_section(pSectionHeader->m_addr, pSectionHeader->m_size, segmentHandle);
 
         reader->seek(pSectionHeader->m_offset);
-        pDataBase->load_section_data(sectionHandle, reader, pSectionHeader->m_size);
+        pDataBase->load_section_data(segmentHandle, reader, pSectionHeader->m_size);
 
-        igorAddress start(pSession, pSectionHeader->m_addr, sectionHandle);
+        igorAddress start(pSession, pSectionHeader->m_addr, segmentHandle);
         igorAddress end = start + pSectionHeader->m_size;
-        igorAddress supposedEntry(pSession, entryPoint, sectionHandle);
+        igorAddress supposedEntry(pSession, entryPoint, segmentHandle);
 
         if ((start <= supposedEntry) && (supposedEntry < end))
         {
-            entryPointSection = sectionHandle;
+            entryPointSection = segmentHandle;
             foundEntryPointSection = true;
         }
     }

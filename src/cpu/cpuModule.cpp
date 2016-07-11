@@ -24,7 +24,7 @@ uint32_t c_cpu_module::getColorForType(c_cpu_module::e_colors blockType)
 	{
 	case c_cpu_module::DEFAULT:
 	default:
-		return 0xFF808080;
+		return 0xFFFFFFFF;
 	case c_cpu_module::KNOWN_SYMBOL:
 		return 0xFFE08030;
 	case c_cpu_module::MNEMONIC_DEFAULT:

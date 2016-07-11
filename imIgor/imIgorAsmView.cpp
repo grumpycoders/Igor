@@ -66,11 +66,11 @@ void imIgorAsmView::Update()
 
 			currentEntry.m_address = analyzeState.m_PC;
 
-			igor_section_handle hSection = m_pSession->getSectionFromAddress(analyzeState.m_PC);
+			igor_segment_handle hSection = m_pSession->getSegmentFromAddress(analyzeState.m_PC);
 			if (hSection != 0xFFFF)
 			{
 				String sectionName;
-				if (m_pSession->getSectionName(hSection, sectionName))
+				if (m_pSession->getSegmentName(hSection, sectionName))
 				{
 					currentEntry.m_text.append("%s:", sectionName.to_charp());
 				}

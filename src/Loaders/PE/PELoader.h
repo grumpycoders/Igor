@@ -61,7 +61,7 @@ public:
         u16     NumberOfRelocations;
         u16     NumberOfLinenumbers;
         u32     Characteristics;
-        igor_section_handle sectionId;
+        igor_segment_handle sectionId;
     };
 
     std::vector<s_segmentData> m_segments;

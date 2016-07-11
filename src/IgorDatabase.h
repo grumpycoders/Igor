@@ -124,7 +124,7 @@ struct s_igorDatabase
 
     std::vector<c_cpu_module*> m_cpu_modules;
     Balau::TQueue<s_analysisRequest> m_analysisRequests;
-    std::vector<s_igorSection*> m_sections;
+    std::vector<s_igorSegment*> m_segments;
 
     uint16_t m_sessionId;
 
@@ -202,11 +202,11 @@ struct s_igorDatabase
 
     int readString(igorAddress address, Balau::String& outputString);
 
-    igor_result create_section(igorLinearAddress virtualAddress, u64 size, igor_section_handle& outputSectionHandle);
+    igor_result create_section(igorLinearAddress virtualAddress, u64 size, igor_segment_handle& outputsegmentHandle);
     igor_result set_section_name(const Balau::String& sectionName);
-    igor_result set_section_option(igor_section_handle sectionHandle, e_igor_section_option option);
-    igor_result load_section_data(igor_section_handle sectionHandle, BFile reader, u64 size);
-    igor_result load_section_data(igor_section_handle sectionHandle, const void* data, u64 size);
+    igor_result set_section_option(igor_segment_handle segmentHandle, e_igor_section_option option);
+    igor_result load_section_data(igor_segment_handle segmentHandle, BFile reader, u64 size);
+    igor_result load_section_data(igor_segment_handle segmentHandle, const void* data, u64 size);
 
     igor_result declare_name(igorAddress virtualAddress, Balau::String name);
     igor_result declare_symbolType(igorAddress virtualAddress, e_symbolType type);
@@ -222,17 +222,20 @@ struct s_igorDatabase
 
     igorAddress getEntryPoint();
     
-    s_igorSection* getSection(igor_section_handle sectionHandle);
-    igor_section_handle getSectionFromAddress(igorAddress virtualAddress);
-    igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle);
-    u64 getSectionSize(igor_section_handle sectionHandle);
-    igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name);
-    igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name);
+    igor_result getSegments(std::vector<igor_segment_handle>& outputSegments);
+    s_igorSegment* getSegment(igor_segment_handle segmentHandle);
+    igor_segment_handle getSegmentFromAddress(igorAddress virtualAddress);
+    igorAddress getSegmentStartVirtualAddress(igor_segment_handle segmentHandle);
+    u64 getSegmentSize(igor_segment_handle segmentHandle);
+    igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name);
+    igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name);
 
     igorAddress m_entryPoint;
 
     std::tuple<igorAddress, igorAddress, size_t> getRanges();
     igorAddress linearToVirtual(u64);
+
+    igor_result executeCommand(Balau::String& command);
 
     bool getSymbolName(igorAddress address, Balau::String& name);
 
@@ -240,7 +243,7 @@ struct s_igorDatabase
     void unlock() { m_lock.leave(); }
 
 private:
-    s_igorSection* findSectionFromAddress(igorAddress address);
+    s_igorSegment* findSectionFromAddress(igorAddress address);
     s_symbolDefinition* get_Symbol(igorAddress virtualAddress);
     Balau::Lock m_lock;
 };

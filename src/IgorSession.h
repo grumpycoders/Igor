@@ -141,14 +141,18 @@ class IgorSession
     virtual igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize) = 0;
 
     virtual igorAddress getEntryPoint() = 0;
-    virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) = 0;
-    virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) = 0;
-    virtual u64 getSectionSize(igor_section_handle sectionHandle) = 0;
-    virtual igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name) = 0;
-    virtual igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name) = 0;
+
+    virtual igor_result getSegments(std::vector<igor_segment_handle>& outputSegments) = 0;
+    virtual igor_segment_handle getSegmentFromAddress(igorAddress virtualAddress) = 0;
+    virtual igorAddress getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) = 0;
+    virtual u64 getSegment(igor_segment_handle segmentHandle) = 0;
+    virtual igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) = 0;
+    virtual igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) = 0;
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() = 0;
     virtual igorAddress linearToVirtual(u64) = 0;
+
+    virtual igor_result executeCommand(Balau::String& command) = 0;
 
     virtual bool getSymbolName(igorAddress, Balau::String& name) = 0;
 

@@ -183,7 +183,7 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
         db.safeFinalize(stmt);
 
         stmt = db.safeStmt("INSERT INTO main.sections (virtualAddress, option, rawData, instructionSize) VALUES(?1, ?2, ?3, ?4);");
-        for (auto & section : m_pDatabase->m_sections) {
+        for (auto & section : m_pDatabase->m_segments) {
             db.safeBind(stmt, 1, (sqlite3_int64) section->m_virtualAddress);
             db.safeBind(stmt, 2, (sqlite3_int64) section->m_option);
             if (section->m_rawData) {
@@ -399,14 +399,18 @@ igor_result IgorLocalSession::flag_address_as_u32(igorAddress virtualAddress) { 
 igor_result IgorLocalSession::flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize) { return m_pDatabase->flag_address_as_instruction(virtualAddress, instructionSize); }
 
 igorAddress IgorLocalSession::getEntryPoint() { return m_pDatabase->getEntryPoint(); }
-igor_section_handle IgorLocalSession::getSectionFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSectionFromAddress(virtualAddress); }
-igorAddress IgorLocalSession::getSectionStartVirtualAddress(igor_section_handle sectionHandle) { return m_pDatabase->getSectionStartVirtualAddress(sectionHandle); }
-igor_result IgorLocalSession::setSectionName(igor_section_handle sectionHandle, Balau::String& name) { return m_pDatabase->setSectionName(sectionHandle, name); }
-igor_result IgorLocalSession::getSectionName(igor_section_handle sectionHandle, Balau::String& name) { return m_pDatabase->getSectionName(sectionHandle, name); }
-u64 IgorLocalSession::getSectionSize(igor_section_handle sectionHandle) { return m_pDatabase->getSectionSize(sectionHandle); }
-std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }
-igorAddress IgorLocalSession::linearToVirtual(u64 linear) { return m_pDatabase->linearToVirtual(linear); }
 
+igor_result IgorLocalSession::getSegments(std::vector<igor_segment_handle>& outputSegments) { return m_pDatabase->getSegments(outputSegments); }
+igor_segment_handle IgorLocalSession::getSegmentFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSegmentFromAddress(virtualAddress); }
+igorAddress IgorLocalSession::getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) { return m_pDatabase->getSegmentStartVirtualAddress(segmentHandle); }
+igor_result IgorLocalSession::setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) { return m_pDatabase->setSegmentName(segmentHandle, name); }
+igor_result IgorLocalSession::getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) { return m_pDatabase->getSegmentName(segmentHandle, name); }
+u64 IgorLocalSession::getSegment(igor_segment_handle segmentHandle) { return m_pDatabase->getSegmentSize(segmentHandle); }
+
+std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }
+
+igorAddress IgorLocalSession::linearToVirtual(u64 linear) { return m_pDatabase->linearToVirtual(linear); }
+igor_result IgorLocalSession::executeCommand(Balau::String& command) { return m_pDatabase->executeCommand(command); }
 bool IgorLocalSession::getSymbolName(igorAddress address, Balau::String& name) { return m_pDatabase->getSymbolName(address, name); }
 
 void IgorLocalSession::addReference(igorAddress referencedAddress, igorAddress referencedFrom) { m_pDatabase->addReference(referencedAddress, referencedFrom); }

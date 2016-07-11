@@ -241,7 +241,9 @@ public:
 						}
 						else
 						{
+							O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
 							O << formatImm(DispVal);
+							O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
 						}
 					}
                 }
@@ -319,7 +321,9 @@ public:
 			}
 			else
 			{
+				O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
 				O << formatImm(DispSpec.getImm());
+				O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
 			}
 		}
 		else {

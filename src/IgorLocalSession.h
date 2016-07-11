@@ -71,16 +71,20 @@ class IgorLocalSession : public IgorSession {
     virtual igorAddress get_next_valid_address_after(igorAddress virtualAddress) override;
     virtual igor_result flag_address_as_u32(igorAddress virtualAddress) override;
     virtual igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize) override;
-
+    
     virtual igorAddress getEntryPoint() override;
-    virtual igor_section_handle getSectionFromAddress(igorAddress virtualAddress) override;
-    virtual igorAddress getSectionStartVirtualAddress(igor_section_handle sectionHandle) override;
-    virtual u64 getSectionSize(igor_section_handle sectionHandle) override;
-    virtual igor_result setSectionName(igor_section_handle sectionHandle, Balau::String& name) override;
-    virtual igor_result getSectionName(igor_section_handle sectionHandle, Balau::String& name) override;
+
+    virtual igor_result getSegments(std::vector<igor_segment_handle>& outputSegments) override;
+    virtual igor_segment_handle getSegmentFromAddress(igorAddress virtualAddress) override;
+    virtual igorAddress getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) override;
+    virtual u64 getSegment(igor_segment_handle segmentHandle) override;
+    virtual igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) override;
+    virtual igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) override;
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() override;
     virtual igorAddress linearToVirtual(u64) override;
+
+    virtual igor_result executeCommand(Balau::String& command) override;
 
     virtual bool getSymbolName(igorAddress, Balau::String& name) override;
 

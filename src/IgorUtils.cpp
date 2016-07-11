@@ -24,10 +24,10 @@ bool igor_export_to_text(std::function<bool(const char * fmt, va_list ap)> outpu
     igorAddress entryPointAddress = session->getEntryPoint();
 
     c_cpu_module* pCpu = session->getCpuForAddress(entryPointAddress);
-    igor_section_handle sectionHandle = session->getSectionFromAddress(entryPointAddress);
+    igor_segment_handle segmentHandle = session->getSegmentFromAddress(entryPointAddress);
 
-    igorAddress sectionStart = session->getSectionStartVirtualAddress(sectionHandle);
-    u64 sectionSize = session->getSectionSize(sectionHandle);
+    igorAddress sectionStart = session->getSegmentStartVirtualAddress(segmentHandle);
+    u64 sectionSize = session->getSegment(segmentHandle);
 
     s_analyzeState analyzeState;
     analyzeState.m_PC = sectionStart;

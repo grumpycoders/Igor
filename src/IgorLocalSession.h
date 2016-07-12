@@ -77,7 +77,7 @@ class IgorLocalSession : public IgorSession {
     virtual igor_result getSegments(std::vector<igor_segment_handle>& outputSegments) override;
     virtual igor_segment_handle getSegmentFromAddress(igorAddress virtualAddress) override;
     virtual igorAddress getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) override;
-    virtual u64 getSegment(igor_segment_handle segmentHandle) override;
+    virtual u64 getSegmentSize(igor_segment_handle segmentHandle) override;
     virtual igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) override;
     virtual igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) override;
 

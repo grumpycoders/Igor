@@ -405,7 +405,7 @@ igor_segment_handle IgorLocalSession::getSegmentFromAddress(igorAddress virtualA
 igorAddress IgorLocalSession::getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) { return m_pDatabase->getSegmentStartVirtualAddress(segmentHandle); }
 igor_result IgorLocalSession::setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) { return m_pDatabase->setSegmentName(segmentHandle, name); }
 igor_result IgorLocalSession::getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) { return m_pDatabase->getSegmentName(segmentHandle, name); }
-u64 IgorLocalSession::getSegment(igor_segment_handle segmentHandle) { return m_pDatabase->getSegmentSize(segmentHandle); }
+u64 IgorLocalSession::getSegmentSize(igor_segment_handle segmentHandle) { return m_pDatabase->getSegmentSize(segmentHandle); }
 
 std::tuple<igorAddress, igorAddress, size_t> IgorLocalSession::getRanges() { return m_pDatabase->getRanges(); }
 

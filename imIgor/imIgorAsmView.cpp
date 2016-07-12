@@ -7,6 +7,7 @@
 
 #include <imgui.h>
 #include <BString.h>
+#include <SDL.h>
 
 using namespace Balau;
 
@@ -16,216 +17,257 @@ imIgorAsmView::imIgorAsmView(IgorSession* pSession)
 	m_cursorPosition = pSession->getEntryPoint();
 }
 
+void imIgorAsmView::goToAddress(igorAddress newAddress)
+{
+    if (newAddress.isValid())
+    {
+        m_history.push(m_cursorPosition);
+        m_cursorPosition = newAddress;
+    }
+}
+
+void imIgorAsmView::popAddress()
+{
+    if (!m_history.empty())
+    {
+        m_cursorPosition = m_history.top();
+        m_history.pop();
+    }
+}
+
 void imIgorAsmView::Update()
 {
-	IgorSession* pSession = m_pSession;
-	assert(pSession);
+    IgorSession* pIgorSession = m_pSession;
 
-	ImGui::Begin(pSession->getSessionName().to_charp());
+    ImGui::BeginChild("Assembly", ImVec2(0, -30), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-	struct s_textCacheEntry
-	{
-		igorAddress m_address;
-		Balau::String m_text;
-	};
-	std::vector<s_textCacheEntry> m_textCache;
+    if (ImGui::IsKeyPressed(SDLK_UP& ~SDLK_SCANCODE_MASK, true) || (ImGui::GetIO().MouseWheel >= 1))
+    {
+        m_cursorPosition = m_pSession->get_next_valid_address_before(m_cursorPosition - 1);        
+    }
+    if (ImGui::IsKeyPressed(SDLK_DOWN& ~SDLK_SCANCODE_MASK, true) || (ImGui::GetIO().MouseWheel <= -1))
+    {
+        m_cursorPosition = m_pSession->get_next_valid_address_after(m_cursorPosition + 1);
+    }
+    if (ImGui::IsKeyPressed(SDLK_PAGEUP& ~SDLK_SCANCODE_MASK, true))
+    {
+        m_cursorPosition = m_pSession->get_next_valid_address_before(m_cursorPosition - 10);
+    }
+    if (ImGui::IsKeyPressed(SDLK_PAGEDOWN& ~SDLK_SCANCODE_MASK, true))
+    {
+        m_cursorPosition = m_pSession->get_next_valid_address_after(m_cursorPosition + 10);
+    }
+    if (ImGui::IsKeyPressed(SDLK_ESCAPE& ~SDLK_SCANCODE_MASK, true))
+    {
+        popAddress();
+    }
 
-	ImVec2 displayStart = ImGui::GetCursorPos();
-	float lineHeight = ImGui::GetTextLineHeight();
+    struct s_textCacheEntry
+    {
+        igorAddress m_address;
+        Balau::String m_text;
+    };
+    std::vector<s_textCacheEntry> m_textCache;
 
-	// compute how many lines of text we can fit
-	int itemStart = 0;
-	int itemEnd = 0;
-	ImGui::CalcListClipping(INT_MAX, lineHeight, &itemStart, &itemEnd);
+    ImVec2 displayStart = ImGui::GetCursorPos();
+    float lineHeight = ImGui::GetTextLineHeight();
 
-	igorAddress destinationPC;
-	destinationPC.makeInvalid();
+    // compute how many lines of text we can fit
+    int itemStart = 0;
+    int itemEnd = 0;
+    ImGui::CalcListClipping(INT_MAX, lineHeight, &itemStart, &itemEnd);
 
-	igorAddress currentPC = m_cursorPosition;
-	int numLinesToDraw = itemEnd - itemStart; // should always be itemEnd
+    igorAddress currentPC = m_cursorPosition;
+    if (currentPC.isValid())
+    {
+        int numLinesToDraw = itemEnd - itemStart; // should always be itemEnd
 
-	IgorSession* m_pSession = pSession;
+        IgorSession* m_pSession = pIgorSession;
 
-	{
-		c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
+        {
+            c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
 
-		s_analyzeState analyzeState;
-		analyzeState.m_PC = currentPC;
-		analyzeState.pCpu = pCpu;
-		analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
-		analyzeState.pSession = m_pSession;
-		analyzeState.m_cpu_analyse_result = NULL;
-		if (pCpu)
-		{
-			analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
-		}
+            s_analyzeState analyzeState;
+            analyzeState.m_PC = currentPC;
+            analyzeState.pCpu = pCpu;
+            analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
+            analyzeState.pSession = m_pSession;
+            analyzeState.m_cpu_analyse_result = NULL;
+            if (pCpu)
+            {
+                analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+            }
 
-		while (m_textCache.size() < numLinesToDraw)
-		{
-			s_textCacheEntry currentEntry;
+            while (m_textCache.size() < numLinesToDraw)
+            {
+                s_textCacheEntry currentEntry;
 
-			currentEntry.m_address = analyzeState.m_PC;
+                currentEntry.m_address = analyzeState.m_PC;
 
-			igor_segment_handle hSection = m_pSession->getSegmentFromAddress(analyzeState.m_PC);
-			if (hSection != 0xFFFF)
-			{
-				String sectionName;
-				if (m_pSession->getSegmentName(hSection, sectionName))
-				{
-					currentEntry.m_text.append("%s:", sectionName.to_charp());
-				}
-			}
+                igor_segment_handle hSection = m_pSession->getSegmentFromAddress(analyzeState.m_PC);
+                if (hSection != 0xFFFF)
+                {
+                    String sectionName;
+                    if (m_pSession->getSegmentName(hSection, sectionName))
+                    {
+                        currentEntry.m_text.append("%s:", sectionName.to_charp());
+                    }
+                }
 
-			currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
+                currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
 
-			Balau::String symbolName;
-			if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
-			{
-				s_textCacheEntry symbolNameEntry;
+                Balau::String symbolName;
+                if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
+                {
+                    s_textCacheEntry symbolNameEntry;
 
-				symbolNameEntry.m_address = analyzeState.m_PC;
-				symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
-				symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
+                    symbolNameEntry.m_address = analyzeState.m_PC;
+                    symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
+                    symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
 
-				m_textCache.push_back(symbolNameEntry);
-			}
+                    m_textCache.push_back(symbolNameEntry);
+                }
 
-			// display cross references
-			{
-				std::vector<igorAddress> crossReferences;
-				m_pSession->getReferences(analyzeState.m_PC, crossReferences);
+                // display cross references
+                {
+                    std::vector<igorAddress> crossReferences;
+                    m_pSession->getReferences(analyzeState.m_PC, crossReferences);
 
-				for (int i = 0; i < crossReferences.size(); i++)
-				{
-					s_textCacheEntry crossRefEntry;
-					crossRefEntry.m_address = analyzeState.m_PC;
-					crossRefEntry.m_text.append(currentEntry.m_text.to_charp());
-					crossRefEntry.m_text.append("                            xref: "); // alignment of xref
+                    for (int i = 0; i < crossReferences.size(); i++)
+                    {
+                        s_textCacheEntry crossRefEntry;
+                        crossRefEntry.m_address = analyzeState.m_PC;
+                        crossRefEntry.m_text.append(currentEntry.m_text.to_charp());
+                        crossRefEntry.m_text.append("                            xref: "); // alignment of xref
 
-					Balau::String symbolName;
-					if (m_pSession->getSymbolName(crossReferences[i], symbolName))
-					{
-						crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-					}
-					else
-					{
-						crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-					}
+                        Balau::String symbolName;
+                        if (m_pSession->getSymbolName(crossReferences[i], symbolName))
+                        {
+                            crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
+                        }
+                        else
+                        {
+                            crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
+                        }
 
-					m_textCache.push_back(crossRefEntry);
-				}
-			}
+                        m_textCache.push_back(crossRefEntry);
+                    }
+                }
 
-			currentEntry.m_text.append("         "); // alignment of code/data
+                currentEntry.m_text.append("         "); // alignment of code/data
 
-			if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
-			{
-				/*
-				Balau::String mnemonic;
-				pCpu->getMnemonic(&analyzeState, mnemonic);
+                if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
+                {
+                    /*
+                    Balau::String mnemonic;
+                    pCpu->getMnemonic(&analyzeState, mnemonic);
 
-				const int numMaxOperand = 4;
+                    const int numMaxOperand = 4;
 
-				Balau::String operandStrings[numMaxOperand];
+                    Balau::String operandStrings[numMaxOperand];
 
-				int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
-				EAssert(numMaxOperand >= numOperandsInInstruction);
+                    int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
+                    EAssert(numMaxOperand >= numOperandsInInstruction);
 
-				for (int i = 0; i < numOperandsInInstruction; i++)
-				{
-				pCpu->getOperand(&analyzeState, i, operandStrings[i]);
-				}
-				*/
+                    for (int i = 0; i < numOperandsInInstruction; i++)
+                    {
+                    pCpu->getOperand(&analyzeState, i, operandStrings[i]);
+                    }
+                    */
 
-				pCpu->printInstruction(&analyzeState, currentEntry.m_text, true);
+                    pCpu->printInstruction(&analyzeState, currentEntry.m_text, true);
 
-				m_textCache.push_back(currentEntry);
+                    m_textCache.push_back(currentEntry);
 
-				analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
-			}
-			else
-			{
-				currentEntry.m_text.append("db       0x%02X", m_pSession->readU8(analyzeState.m_PC));
+                    analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
+                }
+                else
+                {
+                    currentEntry.m_text.append("db       0x%02X", m_pSession->readU8(analyzeState.m_PC));
 
-				m_textCache.push_back(currentEntry);
+                    m_textCache.push_back(currentEntry);
 
-				analyzeState.m_PC++;
-			}
-		}
+                    analyzeState.m_PC++;
+                }
+            }
 
-		delete analyzeState.m_cpu_analyse_result;
-	}
+            delete analyzeState.m_cpu_analyse_result;
+        }
 
-	// draw the text cache
+        // draw the text cache
 
-	int currentLine = 0;
+        int currentLine = 0;
 
-	while (currentLine < m_textCache.size())
-	{
-		// draw the text while honoring color changes
-		float currentX = 0;
-		Balau::String& currentText = m_textCache[currentLine].m_text;
-		Balau::String::List stringList = currentText.split(';');
+        while (currentLine < m_textCache.size())
+        {
+            // draw the text while honoring color changes
+            float currentX = 0;
+            Balau::String& currentText = m_textCache[currentLine].m_text;
+            Balau::String::List stringList = currentText.split(';');
 
-		//dc.SetTextForeground(*wxBLACK);
+            //dc.SetTextForeground(*wxBLACK);
 
-		ImVec4 currentColor = ImColor(1.f, 1.f, 1.f);
+            ImVec4 currentColor = ImColor(1.f, 1.f, 1.f);
 
-		c_cpu_module::e_colors currentType = c_cpu_module::DEFAULT;
+            c_cpu_module::e_colors currentType = c_cpu_module::DEFAULT;
 
-		for (int i = 0; i < stringList.size(); i++)
-		{
-			if (strstr(stringList[i].to_charp(), "C="))
-			{
-				int blockType;
-				int numParsedElements = stringList[i].scanf("C=%d", &blockType);
-				assert(numParsedElements == 1);
-				assert(blockType >= 0);
-				assert(blockType < c_cpu_module::COLOR_MAX);
+            for (int i = 0; i < stringList.size(); i++)
+            {
+                if (strstr(stringList[i].to_charp(), "C="))
+                {
+                    int blockType;
+                    int numParsedElements = stringList[i].scanf("C=%d", &blockType);
+                    assert(numParsedElements == 1);
+                    assert(blockType >= 0);
+                    assert(blockType < c_cpu_module::COLOR_MAX);
 
-				currentType = (c_cpu_module::e_colors)blockType;
+                    currentType = (c_cpu_module::e_colors)blockType;
 
-			}
-			else
-			{
-				currentColor = ImColor(c_cpu_module::getColorForType(currentType));
-				ImGui::SetCursorPosX(currentX);
-				ImGui::SetCursorPosY(displayStart.y + currentLine * lineHeight);
+                }
+                else
+                {
+                    currentColor = ImColor(c_cpu_module::getColorForType(currentType));
+                    ImGui::SetCursorPosX(currentX);
+                    ImGui::SetCursorPosY(displayStart.y + currentLine * lineHeight);
 
-				ImVec2 textSize = ImGui::CalcTextSize(stringList[i].to_charp());
+                    ImVec2 textSize = ImGui::CalcTextSize(stringList[i].to_charp());
 
-				if ((currentType == c_cpu_module::KNOWN_SYMBOL) || (currentType == c_cpu_module::MEMORY_ADDRESS))
-				{
-					if (ImGui::Selectable(stringList[i].to_charp(), false, ImGuiSelectableFlags_AllowDoubleClick, textSize))
-					{
-						destinationPC = m_pSession->findSymbol(stringList[i].to_charp());
+                    if ((currentType == c_cpu_module::KNOWN_SYMBOL) || (currentType == c_cpu_module::MEMORY_ADDRESS))
+                    {
+                        if (ImGui::Selectable(stringList[i].to_charp(), false, ImGuiSelectableFlags_AllowDoubleClick, textSize))
+                        {
+                            if (ImGui::IsMouseDoubleClicked(0))
+                            {
+                                igorAddress address = m_pSession->findSymbol(stringList[i].to_charp());
 
-						if (destinationPC.isNotValid())
-						{
-							u64 offset;
-							if (stringList[i].scanf("0x%016llX", &offset))
-							{
-								// TODO: need to find a section here
-								destinationPC = igorAddress(m_pSession, offset, -1);
-							}
-						}
-					}
-				}
+                                if (address.isValid())
+                                {
+                                    goToAddress(address);
+                                }
+                                else
+                                {
+                                    u64 offset;
+                                    if (stringList[i].scanf("0x%016llX", &offset))
+                                    {
+                                        // TODO: need to find a section here
+                                        goToAddress(igorAddress(m_pSession, offset, -1));
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-				ImGui::SetCursorPosX(currentX);
-				ImGui::SetCursorPosY(displayStart.y + currentLine * lineHeight);
-				ImGui::TextColored(currentColor, stringList[i].to_charp());
+                    ImGui::SetCursorPosX(currentX);
+                    ImGui::SetCursorPosY(displayStart.y + currentLine * lineHeight);
+                    ImGui::TextColored(currentColor, stringList[i].to_charp());
 
-				currentX += textSize.x;
-			}
-		}
+                    currentX += textSize.x;
+                }
+            }
 
-		currentLine++;
-	}
-	ImGui::End();
+            currentLine++;
+        }
+    }
 
-	if (destinationPC.isValid())
-	{
-		m_cursorPosition = destinationPC;
-	}
+    ImGui::EndChild();
 }

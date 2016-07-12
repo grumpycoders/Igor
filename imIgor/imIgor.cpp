@@ -18,6 +18,8 @@
 #pragma comment(lib, "version.lib")
 #pragma comment(lib, "Opengl32.lib")
 
+#include "imIgorAsmView.h"
+
 using namespace Balau;
 
 class ImSession
@@ -31,9 +33,7 @@ public:
     {
         m_commandBuffer[0] = 0;
 
-        s_disassemblyWindow* pDisassemblyWindow = new s_disassemblyWindow;
-        pDisassemblyWindow->m_currentPC = pIgorSession->getEntryPoint();
-
+        imIgorAsmView* pDisassemblyWindow = new imIgorAsmView(pIgorSession);
         m_pDisassemblyWindows.push_back(pDisassemblyWindow);
     }
 
@@ -41,12 +41,7 @@ public:
 
 private:
 
-    struct s_disassemblyWindow
-    {
-        igorAddress m_currentPC;
-    };
-
-    void drawDisassemblyWindow(s_disassemblyWindow* pDisassemblyWindow);
+    void drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow);
     void drawCommandWindow();
     void drawSymbolListWindow();
     void drawSegmentWindow();
@@ -63,7 +58,7 @@ private:
     };
     char m_commandBuffer[commandBufferSize];
 
-    std::vector<s_disassemblyWindow*> m_pDisassemblyWindows;
+    std::vector<imIgorAsmView*> m_pDisassemblyWindows;
 };
 
 void ImSession::drawCommandWindow()
@@ -118,15 +113,47 @@ void ImSession::drawSegmentWindow()
     std::vector<igor_segment_handle> segments;
     m_pIgorSession->getSegments(segments);
 
+    ImGui::Begin("Segments", &m_segmentsListWindowOpen);
+
+    ImGui::Columns(3);
+
+    ImGui::Text("name");
+    ImGui::NextColumn();
+    ImGui::Text("Start");
+    ImGui::NextColumn();
+    ImGui::Text("Size");
+    ImGui::NextColumn();
+    ImGui::Separator();
+    ImGui::Separator();
+
+    for (int i = 0; i < segments.size(); i++)
+    {
+        Balau::String name;
+        m_pIgorSession->getSegmentName(segments[i], name);
+        igorAddress segmentsStart = m_pIgorSession->getSegmentStartVirtualAddress(segments[i]);
+        m_pIgorSession->getSegmentStartVirtualAddress(segments[i]);
+        u64 segmentSize = m_pIgorSession->getSegmentSize(segments[i]);
+        igorAddress segmentEnd = segmentsStart + segmentSize;
+
+        ImGui::Text(name.to_charp());
+        ImGui::NextColumn();
+        ImGui::Text("0x%llX", segmentsStart.offset);
+        ImGui::NextColumn();
+        ImGui::Text("0x%llX", segmentEnd.offset);
+        ImGui::NextColumn();
+        ImGui::Separator();
+    }
+
+    ImGui::Columns(1);
+
+    ImGui::End();
 }
 
-void ImSession::drawDisassemblyWindow(s_disassemblyWindow* pDisassemblyWindow)
+void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
 {
-    IgorSession* pIgorSession = m_pIgorSession;
-
-    ImGui::Begin(pIgorSession->getSessionName().to_charp(), 0, ImGuiWindowFlags_MenuBar);
-
     bool goToAddressPopup = false;
+
+    ImGui::Begin(m_pIgorSession->getSessionName().to_charp(), 0, ImGuiWindowFlags_MenuBar);
 
     // menu bar
     if (ImGui::BeginMenuBar())
@@ -145,7 +172,7 @@ void ImSession::drawDisassemblyWindow(s_disassemblyWindow* pDisassemblyWindow)
             if (ImGui::MenuItem("Go to address"))
             {
                 goToAddressPopup = true;
-                
+
             }
             ImGui::EndMenu();
         }
@@ -153,7 +180,7 @@ void ImSession::drawDisassemblyWindow(s_disassemblyWindow* pDisassemblyWindow)
         ImGui::EndMenuBar();
     }
 
-    if(goToAddressPopup)
+    if (goToAddressPopup)
         ImGui::OpenPopup("Go to address");
 
     if (ImGui::BeginPopupModal("Go to address"))
@@ -169,199 +196,9 @@ void ImSession::drawDisassemblyWindow(s_disassemblyWindow* pDisassemblyWindow)
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
-    }
+    }    
 
-
-    ImGui::BeginChild("Assembly", ImVec2(0, -30));
-
-    struct s_textCacheEntry
-    {
-        igorAddress m_address;
-        Balau::String m_text;
-    };
-    std::vector<s_textCacheEntry> m_textCache;
-
-    ImVec2 displayStart = ImGui::GetCursorPos();
-    float lineHeight = ImGui::GetTextLineHeight();
-
-    // compute how many lines of text we can fit
-    int itemStart = 0;
-    int itemEnd = 0;
-    ImGui::CalcListClipping(INT_MAX, lineHeight, &itemStart, &itemEnd);
-
-    igorAddress currentPC = pDisassemblyWindow->m_currentPC;
-    int numLinesToDraw = itemEnd - itemStart; // should always be itemEnd
-
-    IgorSession* m_pSession = pIgorSession;
-
-    {
-        c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
-
-        s_analyzeState analyzeState;
-        analyzeState.m_PC = currentPC;
-        analyzeState.pCpu = pCpu;
-        analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
-        analyzeState.pSession = m_pSession;
-        analyzeState.m_cpu_analyse_result = NULL;
-        if (pCpu)
-        {
-            analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
-        }
-
-        while (m_textCache.size() < numLinesToDraw)
-        {
-            s_textCacheEntry currentEntry;
-
-            currentEntry.m_address = analyzeState.m_PC;
-
-            igor_segment_handle hSection = m_pSession->getSegmentFromAddress(analyzeState.m_PC);
-            if (hSection != 0xFFFF)
-            {
-                String sectionName;
-                if (m_pSession->getSegmentName(hSection, sectionName))
-                {
-                    currentEntry.m_text.append("%s:", sectionName.to_charp());
-                }
-            }
-
-            currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
-
-            Balau::String symbolName;
-            if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
-            {
-                s_textCacheEntry symbolNameEntry;
-
-                symbolNameEntry.m_address = analyzeState.m_PC;
-                symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
-                symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-
-                m_textCache.push_back(symbolNameEntry);
-            }
-
-            // display cross references
-            {
-                std::vector<igorAddress> crossReferences;
-                m_pSession->getReferences(analyzeState.m_PC, crossReferences);
-
-                for (int i = 0; i < crossReferences.size(); i++)
-                {
-                    s_textCacheEntry crossRefEntry;
-                    crossRefEntry.m_address = analyzeState.m_PC;
-                    crossRefEntry.m_text.append(currentEntry.m_text.to_charp());
-                    crossRefEntry.m_text.append("                            xref: "); // alignment of xref
-
-                    Balau::String symbolName;
-                    if (m_pSession->getSymbolName(crossReferences[i], symbolName))
-                    {
-                        crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-                    }
-                    else
-                    {
-                        crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-                    }
-
-                    m_textCache.push_back(crossRefEntry);
-                }
-            }
-
-            currentEntry.m_text.append("         "); // alignment of code/data
-
-            if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
-            {
-                /*
-                Balau::String mnemonic;
-                pCpu->getMnemonic(&analyzeState, mnemonic);
-
-                const int numMaxOperand = 4;
-
-                Balau::String operandStrings[numMaxOperand];
-
-                int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
-                EAssert(numMaxOperand >= numOperandsInInstruction);
-
-                for (int i = 0; i < numOperandsInInstruction; i++)
-                {
-                pCpu->getOperand(&analyzeState, i, operandStrings[i]);
-                }
-                */
-
-                pCpu->printInstruction(&analyzeState, currentEntry.m_text, true);
-
-                m_textCache.push_back(currentEntry);
-
-                analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
-            }
-            else
-            {
-                currentEntry.m_text.append("db       0x%02X", m_pSession->readU8(analyzeState.m_PC));
-
-                m_textCache.push_back(currentEntry);
-
-                analyzeState.m_PC++;
-            }
-        }
-
-        delete analyzeState.m_cpu_analyse_result;
-    }
-
-    // draw the text cache
-
-    int currentLine = 0;
-
-    while (currentLine < m_textCache.size())
-    {
-        // draw the text while honoring color changes
-        float currentX = 0;
-        Balau::String& currentText = m_textCache[currentLine].m_text;
-        Balau::String::List stringList = currentText.split(';');
-
-        //dc.SetTextForeground(*wxBLACK);
-
-        ImVec4 currentColor = ImColor(1.f, 1.f, 1.f);
-
-        c_cpu_module::e_colors currentType = c_cpu_module::DEFAULT;
-
-        for (int i = 0; i < stringList.size(); i++)
-        {
-            if (strstr(stringList[i].to_charp(), "C="))
-            {
-                int blockType;
-                int numParsedElements = stringList[i].scanf("C=%d", &blockType);
-                assert(numParsedElements == 1);
-                assert(blockType >= 0);
-                assert(blockType < c_cpu_module::COLOR_MAX);
-
-                currentType = (c_cpu_module::e_colors)blockType;
-
-            }
-            else
-            {
-                currentColor = ImColor(c_cpu_module::getColorForType(currentType));
-                ImGui::SetCursorPosX(currentX);
-                ImGui::SetCursorPosY(displayStart.y + currentLine * lineHeight);
-
-                ImVec2 textSize = ImGui::CalcTextSize(stringList[i].to_charp());
-
-                if ((currentType == c_cpu_module::KNOWN_SYMBOL) || (currentType == c_cpu_module::MEMORY_ADDRESS))
-                {
-                    if (ImGui::Selectable(stringList[i].to_charp(), false, ImGuiSelectableFlags_AllowDoubleClick, textSize))
-                    {
-                        currentType = currentType;
-                    }
-                }
-
-                ImGui::SetCursorPosX(currentX);
-                ImGui::SetCursorPosY(displayStart.y + currentLine * lineHeight);
-                ImGui::TextColored(currentColor, stringList[i].to_charp());
-
-                currentX += textSize.x;
-            }
-        }
-
-        currentLine++;
-    }
-
-    ImGui::EndChild();
+    pDisassemblyWindow->Update();
 
     // commands
     ImGui::Separator();
@@ -371,6 +208,9 @@ void ImSession::drawDisassemblyWindow(s_disassemblyWindow* pDisassemblyWindow)
 
 void ImSession::process()
 {
+    ImGui::GetStyle().WindowRounding = 0.f;
+    ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w = 0.95f;
+
     IgorSession* pIgorSession = m_pIgorSession;
 
     ImGui::PushID(pIgorSession->getSessionName().to_charp());
@@ -466,6 +306,12 @@ void* initImIgor(void*)
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+                if (ImGui::MenuItem("New database"))
+                {
+                    IgorSession* pNewIgorSession = new IgorLocalSession();
+                    ImSession* pNewSession = new ImSession(pNewIgorSession);
+                    sessions.push_back(pNewSession);
+                }
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Edit"))

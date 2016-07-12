@@ -145,7 +145,7 @@ class IgorSession
     virtual igor_result getSegments(std::vector<igor_segment_handle>& outputSegments) = 0;
     virtual igor_segment_handle getSegmentFromAddress(igorAddress virtualAddress) = 0;
     virtual igorAddress getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) = 0;
-    virtual u64 getSegment(igor_segment_handle segmentHandle) = 0;
+    virtual u64 getSegmentSize(igor_segment_handle segmentHandle) = 0;
     virtual igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) = 0;
     virtual igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) = 0;
 

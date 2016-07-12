@@ -27,7 +27,7 @@ bool igor_export_to_text(std::function<bool(const char * fmt, va_list ap)> outpu
     igor_segment_handle segmentHandle = session->getSegmentFromAddress(entryPointAddress);
 
     igorAddress sectionStart = session->getSegmentStartVirtualAddress(segmentHandle);
-    u64 sectionSize = session->getSegment(segmentHandle);
+    u64 sectionSize = session->getSegmentSize(segmentHandle);
 
     s_analyzeState analyzeState;
     analyzeState.m_PC = sectionStart;

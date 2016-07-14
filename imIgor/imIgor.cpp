@@ -169,9 +169,19 @@ void ImSession::drawSegmentWindow()
         if(bDeleteSegment)
             ImGui::OpenPopup("Delete segment");
 
-        if (ImGui::BeginPopup("Delete segment"))
+        if (ImGui::BeginPopupModal("Delete segment",0, ImGuiWindowFlags_NoResize))
         {
-            ImGui::Selectable("Test", false);
+            ImGui::Text("Are you sure?");
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+
+            if (ImGui::Button("Cancel", ImVec2(120, 0)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
             ImGui::EndPopup();
         }
         ImGui::PopID();

@@ -126,6 +126,8 @@ void ImSession::drawSegmentWindow()
     ImGui::Separator();
     ImGui::Separator();
 
+    int hoovertedSegmentId = -1;
+
     for (int i = 0; i < segments.size(); i++)
     {
         Balau::String name;
@@ -135,13 +137,44 @@ void ImSession::drawSegmentWindow()
         u64 segmentSize = m_pIgorSession->getSegmentSize(segments[i]);
         igorAddress segmentEnd = segmentsStart + segmentSize;
 
-        ImGui::Text(name.to_charp());
+        ImGui::Selectable(name.to_charp(), false, ImGuiSelectableFlags_SpanAllColumns);
         ImGui::NextColumn();
         ImGui::Text("0x%llX", segmentsStart.offset);
         ImGui::NextColumn();
         ImGui::Text("0x%llX", segmentEnd.offset);
         ImGui::NextColumn();
         ImGui::Separator();
+
+        ImGui::PushID(i);
+        if (ImGui::IsMouseClicked(1))
+        {
+            ImGui::OpenPopup("Edit segment");
+        }
+
+        bool bDeleteSegment = false;
+        if (ImGui::BeginPopup("Edit segment"))
+        {
+            if (ImGui::Selectable("Delete", false))
+            {
+                bDeleteSegment = true;
+                
+            }
+            if (ImGui::Selectable("Edit", false))
+            {
+
+            }
+            ImGui::EndPopup();
+        }
+
+        if(bDeleteSegment)
+            ImGui::OpenPopup("Delete segment");
+
+        if (ImGui::BeginPopup("Delete segment"))
+        {
+            ImGui::Selectable("Test", false);
+            ImGui::EndPopup();
+        }
+        ImGui::PopID();
     }
 
     ImGui::Columns(1);

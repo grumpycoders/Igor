@@ -149,48 +149,50 @@ void ImSession::drawSegmentWindow()
         ImGui::NextColumn();
         ImGui::Separator();
 
-        ImGui::PushID(i);
-        if (ImGui::IsMouseClicked(1))
+        // handle segment specific popup
         {
-            if (hoovertedSegmentId != -1)
-                ImGui::OpenPopup("Edit segment");
+            ImGui::PushID(i);
+            if (ImGui::IsMouseClicked(1))
+            {
+                if (hoovertedSegmentId != -1)
+                    ImGui::OpenPopup("Edit segment");
+            }
+
+            bool bDeleteSegment = false;
+            if (ImGui::BeginPopup("Edit segment"))
+            {
+                if (ImGui::Selectable("Delete", false))
+                {
+                    bDeleteSegment = true;
+
+                }
+                if (ImGui::Selectable("Edit", false))
+                {
+
+                }
+                ImGui::EndPopup();
+            }
+
+            if (bDeleteSegment)
+                ImGui::OpenPopup("Delete segment");
+
+            if (ImGui::BeginPopupModal("Delete segment", 0, ImGuiWindowFlags_NoResize))
+            {
+                ImGui::Text("Are you sure?");
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::SameLine();
+
+                if (ImGui::Button("Cancel", ImVec2(120, 0)))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+            ImGui::PopID();
         }
-
-
-        bool bDeleteSegment = false;
-        if (ImGui::BeginPopup("Edit segment"))
-        {
-            if (ImGui::Selectable("Delete", false))
-            {
-                bDeleteSegment = true;
-                
-            }
-            if (ImGui::Selectable("Edit", false))
-            {
-
-            }
-            ImGui::EndPopup();
-        }
-
-        if(bDeleteSegment)
-            ImGui::OpenPopup("Delete segment");
-
-        if (ImGui::BeginPopupModal("Delete segment",0, ImGuiWindowFlags_NoResize))
-        {
-            ImGui::Text("Are you sure?");
-            if (ImGui::Button("OK", ImVec2(120, 0)))
-            {
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::SameLine();
-
-            if (ImGui::Button("Cancel", ImVec2(120, 0)))
-            {
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-        ImGui::PopID();
     }
 
     ImGui::Columns(1);
@@ -281,6 +283,16 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
     // menu bar
     if (ImGui::BeginMenuBar())
     {
+        if (ImGui::BeginMenu("Files"))
+        {
+            if (ImGui::MenuItem("Save database"))
+            {
+                m_pIgorSession->serialize("test.igor");
+            }
+
+            ImGui::EndMenu();
+        }
+
         if (ImGui::BeginMenu("Windows"))
         {
             if (ImGui::MenuItem("Commands")) m_commandWindowOpen = true;

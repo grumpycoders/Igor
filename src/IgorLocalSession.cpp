@@ -400,6 +400,7 @@ igor_result IgorLocalSession::flag_address_as_instruction(igorAddress virtualAdd
 
 igorAddress IgorLocalSession::getEntryPoint() { return m_pDatabase->getEntryPoint(); }
 
+igor_result IgorLocalSession::create_segment(igorLinearAddress virtualAddress, u64 size, igor_segment_handle& outputsegmentHandle) { return m_pDatabase->create_segment(virtualAddress, size, outputsegmentHandle); }
 igor_result IgorLocalSession::getSegments(std::vector<igor_segment_handle>& outputSegments) { return m_pDatabase->getSegments(outputSegments); }
 igor_segment_handle IgorLocalSession::getSegmentFromAddress(igorAddress virtualAddress) { return m_pDatabase->getSegmentFromAddress(virtualAddress); }
 igorAddress IgorLocalSession::getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) { return m_pDatabase->getSegmentStartVirtualAddress(segmentHandle); }

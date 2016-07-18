@@ -173,7 +173,7 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
         segmentData.Characteristics = reader->readU32().get();
 
         igor_segment_handle segmentHandle;
-        db->create_section(m_ImageBase + segmentData.VirtualAddress, segmentData.Misc, segmentHandle);
+        db->create_segment(m_ImageBase + segmentData.VirtualAddress, segmentData.Misc, segmentHandle);
 		Balau::String sectionName;
 		sectionName.append((char*)segmentData.Name);
 		db->setSegmentName(segmentHandle, sectionName);
@@ -181,23 +181,23 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
         // IMAGE_SCN_CNT_CODE
         if (segmentData.Characteristics & 0x00000020)
         {
-            db->set_section_option(segmentHandle, IGOR_SECTION_OPTION_CODE);
+            db->set_segment_option(segmentHandle, IGOR_SECTION_OPTION_CODE);
         }
 
         //IMAGE_SCN_MEM_EXECUTE
         if (segmentData.Characteristics & 0x20000000)
         {
-            db->set_section_option(segmentHandle, IGOR_SECTION_OPTION_EXECUTE);
+            db->set_segment_option(segmentHandle, IGOR_SECTION_OPTION_EXECUTE);
         }
 
         //IMAGE_SCN_MEM_READ
         if (segmentData.Characteristics & 0x40000000)
         {
-            db->set_section_option(segmentHandle, IGOR_SECTION_OPTION_READ);
+            db->set_segment_option(segmentHandle, IGOR_SECTION_OPTION_READ);
         }
 
         reader->seek(segmentData.PointerToRawData);
-        db->load_section_data(segmentHandle, reader, segmentData.SizeOfRawData);
+        db->load_segment_data(segmentHandle, reader, segmentData.SizeOfRawData);
 
         segmentData.sectionId = segmentHandle;
 

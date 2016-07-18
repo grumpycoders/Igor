@@ -142,6 +142,7 @@ class IgorSession
 
     virtual igorAddress getEntryPoint() = 0;
 
+    virtual igor_result create_segment(igorLinearAddress virtualAddress, u64 size, igor_segment_handle& outputsegmentHandle) = 0;
     virtual igor_result getSegments(std::vector<igor_segment_handle>& outputSegments) = 0;
     virtual igor_segment_handle getSegmentFromAddress(igorAddress virtualAddress) = 0;
     virtual igorAddress getSegmentStartVirtualAddress(igor_segment_handle segmentHandle) = 0;

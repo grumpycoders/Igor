@@ -95,8 +95,8 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
         section.getContents(sectionContents);
 
         igor_segment_handle segmentHandle;
-        m_session->getDB()->create_section(sectionAddr, sectionSize, segmentHandle);
-        m_session->getDB()->load_section_data(segmentHandle, sectionContents.data(), sectionContents.size());
+        m_session->getDB()->create_segment(sectionAddr, sectionSize, segmentHandle);
+        m_session->getDB()->load_segment_data(segmentHandle, sectionContents.data(), sectionContents.size());
 
         // relocation in this section
 #if 0

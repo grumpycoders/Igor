@@ -241,7 +241,7 @@ igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 
 }
 
-igor_result s_igorDatabase::create_section(igorLinearAddress virtualAddress, u64 size, igor_segment_handle& segmentHandle)
+igor_result s_igorDatabase::create_segment(igorLinearAddress virtualAddress, u64 size, igor_segment_handle& segmentHandle)
 {
     Balau::ScopeLock sl(m_lock);
     size_t current = m_segments.size();
@@ -257,7 +257,7 @@ igor_result s_igorDatabase::create_section(igorLinearAddress virtualAddress, u64
     return IGOR_SUCCESS;
 }
 
-igor_result s_igorDatabase::set_section_option(igor_segment_handle segmentHandle, e_igor_section_option option)
+igor_result s_igorDatabase::set_segment_option(igor_segment_handle segmentHandle, e_igor_section_option option)
 {
     Balau::ScopeLock sl(m_lock);
     s_igorSegment* pSection = m_segments[segmentHandle];
@@ -267,7 +267,7 @@ igor_result s_igorDatabase::set_section_option(igor_segment_handle segmentHandle
     return IGOR_SUCCESS;
 }
 
-igor_result s_igorDatabase::load_section_data(igor_segment_handle segmentHandle, BFile reader, u64 size)
+igor_result s_igorDatabase::load_segment_data(igor_segment_handle segmentHandle, BFile reader, u64 size)
 {
     Balau::ScopeLock sl(m_lock);
     s_igorSegment* pSection = m_segments[segmentHandle];
@@ -280,7 +280,7 @@ igor_result s_igorDatabase::load_section_data(igor_segment_handle segmentHandle,
     return IGOR_SUCCESS;
 }
 
-igor_result s_igorDatabase::load_section_data(igor_segment_handle segmentHandle, const void* data, u64 size)
+igor_result s_igorDatabase::load_segment_data(igor_segment_handle segmentHandle, const void* data, u64 size)
 {
     Balau::ScopeLock sl(m_lock);
     s_igorSegment* pSection = m_segments[segmentHandle];

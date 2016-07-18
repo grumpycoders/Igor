@@ -124,8 +124,8 @@ igor_result c_dmpLoader::load(BFile reader, IgorLocalSession * pSession)
                     // read the data
                     reader->seek(currentRva);
                     igor_segment_handle segmentHandle;
-                    pSession->getDB()->create_section(startOfMemory, dataSize, segmentHandle);
-                    pSession->getDB()->load_section_data(segmentHandle, reader, dataSize);
+                    pSession->getDB()->create_segment(startOfMemory, dataSize, segmentHandle);
+                    pSession->getDB()->load_segment_data(segmentHandle, reader, dataSize);
 
                     currentRva += dataSize;
                 }

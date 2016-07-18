@@ -166,10 +166,10 @@ igor_result c_elfLoader::load(BFile reader, IgorLocalSession * pSession)
         }
 
         igor_segment_handle segmentHandle;
-        pDataBase->create_section(pSectionHeader->m_addr, pSectionHeader->m_size, segmentHandle);
+        pDataBase->create_segment(pSectionHeader->m_addr, pSectionHeader->m_size, segmentHandle);
 
         reader->seek(pSectionHeader->m_offset);
-        pDataBase->load_section_data(segmentHandle, reader, pSectionHeader->m_size);
+        pDataBase->load_segment_data(segmentHandle, reader, pSectionHeader->m_size);
 
         igorAddress start(pSession, pSectionHeader->m_addr, segmentHandle);
         igorAddress end = start + pSectionHeader->m_size;

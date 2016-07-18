@@ -202,11 +202,11 @@ struct s_igorDatabase
 
     int readString(igorAddress address, Balau::String& outputString);
 
-    igor_result create_section(igorLinearAddress virtualAddress, u64 size, igor_segment_handle& outputsegmentHandle);
-    igor_result set_section_name(const Balau::String& sectionName);
-    igor_result set_section_option(igor_segment_handle segmentHandle, e_igor_section_option option);
-    igor_result load_section_data(igor_segment_handle segmentHandle, BFile reader, u64 size);
-    igor_result load_section_data(igor_segment_handle segmentHandle, const void* data, u64 size);
+    igor_result create_segment(igorLinearAddress virtualAddress, u64 size, igor_segment_handle& outputsegmentHandle);
+    igor_result set_segment_name(const Balau::String& sectionName);
+    igor_result set_segment_option(igor_segment_handle segmentHandle, e_igor_section_option option);
+    igor_result load_segment_data(igor_segment_handle segmentHandle, BFile reader, u64 size);
+    igor_result load_segment_data(igor_segment_handle segmentHandle, const void* data, u64 size);
 
     igor_result declare_name(igorAddress virtualAddress, Balau::String name);
     igor_result declare_symbolType(igorAddress virtualAddress, e_symbolType type);

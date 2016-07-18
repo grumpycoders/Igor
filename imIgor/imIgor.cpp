@@ -121,7 +121,7 @@ void ImSession::drawSegmentWindow()
     ImGui::NextColumn();
     ImGui::Text("Start");
     ImGui::NextColumn();
-    ImGui::Text("Size");
+    ImGui::Text("End");
     ImGui::NextColumn();
     ImGui::Separator();
     ImGui::Separator();
@@ -138,6 +138,10 @@ void ImSession::drawSegmentWindow()
         igorAddress segmentEnd = segmentsStart + segmentSize;
 
         ImGui::Selectable(name.to_charp(), false, ImGuiSelectableFlags_SpanAllColumns);
+
+        if(ImGui::IsItemHovered())
+            hoovertedSegmentId = i;
+
         ImGui::NextColumn();
         ImGui::Text("0x%llX", segmentsStart.offset);
         ImGui::NextColumn();
@@ -148,8 +152,10 @@ void ImSession::drawSegmentWindow()
         ImGui::PushID(i);
         if (ImGui::IsMouseClicked(1))
         {
-            ImGui::OpenPopup("Edit segment");
+            if (hoovertedSegmentId != -1)
+                ImGui::OpenPopup("Edit segment");
         }
+
 
         bool bDeleteSegment = false;
         if (ImGui::BeginPopup("Edit segment"))
@@ -188,6 +194,80 @@ void ImSession::drawSegmentWindow()
     }
 
     ImGui::Columns(1);
+
+    // handle right click when not hovering a segment
+    {
+        if (ImGui::IsMouseClicked(1))
+        {
+            if (hoovertedSegmentId == -1)
+                ImGui::OpenPopup("New Segment");
+        }
+
+        static char segmentName[256];
+        static char startAddressString[256]; // needs to be string because 64bit pointers
+        static char endAddressString[256];
+
+        bool bCreateSegment = false;
+        if (ImGui::BeginPopup("New Segment"))
+        {
+            if (ImGui::Selectable("Create New Segment", false))
+            {
+                bCreateSegment = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        if (bCreateSegment)
+        {
+            strcpy(segmentName, "");
+            strcpy(startAddressString, "0");
+            strcpy(endAddressString, "0");
+            ImGui::OpenPopup("Create New Segment");
+        }
+
+        if (ImGui::BeginPopupModal("Create New Segment", 0))
+        {
+            ImGui::InputText("Segment name", segmentName, sizeof(segmentName));
+
+            ImGui::Text("0x"); ImGui::SameLine();
+            ImGui::InputText("Start Address", startAddressString, sizeof(startAddressString), ImGuiInputTextFlags_CharsHexadecimal);
+
+            ImGui::Text("0x"); ImGui::SameLine();
+            ImGui::InputText("End Address", endAddressString, sizeof(endAddressString), ImGuiInputTextFlags_CharsHexadecimal);
+
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                // try to create new segment
+                u64 startAddress = 0;
+                u64 endAddress = 0;
+
+                sscanf(startAddressString, "%llX", &startAddress);
+                sscanf(endAddressString, "%llX", &endAddress);
+
+                if(endAddress > startAddress)
+                {
+                    u64 size = endAddress - startAddress;
+                    igor_segment_handle newHandle;
+                    m_pIgorSession->create_segment(startAddress, size, newHandle);
+
+                    if (newHandle != -1)
+                    {
+                        m_pIgorSession->setSegmentName(newHandle, Balau::String(segmentName));
+                    }
+                }                                
+
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+
+            if (ImGui::Button("Cancel", ImVec2(120, 0)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
 
     ImGui::End();
 }

@@ -155,13 +155,11 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
         db.safeBind(stmt, 1, "CPU");
         db.safeBind(stmt, 2, m_pDatabase->m_cpu_modules[0]->getTag());
         db.safeWriteStep(stmt);
-        db.safeFinalize(stmt);
         db.safeReset(stmt);
         db.safeBind(stmt, 1, "Name");
         db.safeBind(stmt, 2, getSessionName());
         db.safeWriteStep(stmt);
         db.safeFinalize(stmt);
-        db.safeReset(stmt);
 
         stmt = db.safeStmt("INSERT INTO main.symbols (address, name, type) VALUES(?1, ?2, ?3);");
         for (auto & symbol : m_pDatabase->m_symbolMap) {
@@ -246,9 +244,8 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::de
             String value = (char *) sqlite3_column_text(stmt, 1);
             if (name == "CPU") {
                 c_cpu_module * cpu = c_cpu_factory::createCpuFromString(value);
-                if (!cpu)
-                    throw GeneralException(String("Unknown CPU:") + value);
-                igorDatabase->m_cpu_modules.push_back(cpu);
+                if(cpu)
+                    igorDatabase->m_cpu_modules.push_back(cpu);
             } else if (name == "Name") {
                 session->setSessionName(value);
             }
@@ -260,19 +257,16 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::de
             r = db.safeStep(stmt);
             if (r == SQLITE_DONE)
                 break;
+            u64 virtualAddress = sqlite3_column_int64(stmt, 0);
+            String name = (char *)sqlite3_column_text(stmt, 1);
+            s_igorDatabase::e_symbolType type = (s_igorDatabase::e_symbolType)sqlite3_column_int(stmt, 2);
 
-        }
-        for (auto & symbol : igorDatabase->m_symbolMap) {
-            db.safeBind(stmt, 1, (sqlite3_int64)symbol.first.offset);
-            db.safeBind(stmt, 2, symbol.second.m_name);
-            db.safeBind(stmt, 3, symbol.second.m_type);
-            db.safeWriteStep(stmt);
-            db.safeReset(stmt);
+            igorAddress address(session, igorLinearAddress(virtualAddress), 0);
+            s_igorDatabase::s_symbolDefinition& symbol = igorDatabase->m_symbolMap[address];
+            symbol.m_name = name;
+            symbol.m_type = type;
         }
         db.safeFinalize(stmt);
-
-
-        db.safeWriteStmt("COMMIT TRANSACTION;");
 
         db.closeDB();
     }

@@ -287,7 +287,7 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
         {
             if (ImGui::MenuItem("Save database"))
             {
-                m_pIgorSession->serialize("test.igor");
+                m_pIgorSession->serialize("file:test.igor");
             }
 
             ImGui::EndMenu();
@@ -426,7 +426,14 @@ void* initImIgor(void*)
 				String errorMsg1, errorMsg2;
 				IgorSession * session = NULL;
 
-				std::tie(result, session, errorMsg1, errorMsg2) = IgorAsyncLoadBinary(event.drop.file);
+                if (strstr(event.drop.file, ".igor"))
+                {
+                    std::tie(result, session, errorMsg1, errorMsg2) = IgorLocalSession::deserialize(event.drop.file);
+                }
+                else
+                {
+                    std::tie(result, session, errorMsg1, errorMsg2) = IgorAsyncLoadBinary(event.drop.file);
+                }
 
 				if (result == IGOR_SUCCESS)
 				{

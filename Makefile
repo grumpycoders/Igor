@@ -160,10 +160,8 @@ clean:
 
 deepclean:
 	git clean -f -d -x
-	git submodule foreach git clean -f -d -x
-	git submodule foreach git submodule foreach git clean -f -d -x
+	git submodule foreach --recursive git clean -f -d -x
 	git reset --hard HEAD
-	git submodule foreach git reset --hard HEAD
-	git submodule foreach git submodule foreach git reset --hard HEAD
+	git submodule foreach --recursive git reset --hard HEAD
 
 .PHONY: clean deepclean strip Balau llvm tests all

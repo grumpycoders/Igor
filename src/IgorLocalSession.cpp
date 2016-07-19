@@ -192,10 +192,14 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
             if (section->m_rawData) {
                 AAssert(section->m_rawDataSize < std::numeric_limits<int>::max(), "Section too big to serialize");
                 db.safeBindBlob(stmt, 5, (int) section->m_rawDataSize);
+            } else {
+                db.safeBind(stmt, 5);
             }
             if (section->m_instructionSize) {
                 AAssert(section->m_size < std::numeric_limits<int>::max(), "Section too big to serialize");
                 db.safeBindBlob(stmt, 6, (int) section->m_size);
+            } else {
+                db.safeBind(stmt, 6);
             }
             db.safeWriteStep(stmt);
             sqlite3_int64 rowid = db.lastInsertRowID();

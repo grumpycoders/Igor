@@ -127,27 +127,27 @@ public:
     IgorLLVMX86InstPrinter(const MCAsmInfo &MAI, const MCInstrInfo &MII, const MCRegisterInfo &MRI)
         : X86IntelInstPrinter(MAI, MII, MRI)
     {
-		PrintImmHex = true;
-	}
+        PrintImmHex = true;
+    }
 
-	void generateReferences(igorAddress& address)
-	{
-		m_pSession->addReference(address, m_pStatus->PCBefore);
-	}
+    void generateReferences(igorAddress& address)
+    {
+        m_pSession->addReference(address, m_pStatus->PCBefore);
+    }
 
     void setStatus(LLVMStatus * pStatus) { m_pStatus = pStatus; }
     virtual void printInst(const MCInst *MI, raw_ostream &OS, StringRef Annot)
-	{
-		const MCInstrDesc &Desc = MII.get(MI->getOpcode());
-		bool isFlowControl = Desc.mayAffectControlFlow(*MI, MRI);
+    {
+        const MCInstrDesc &Desc = MII.get(MI->getOpcode());
+        bool isFlowControl = Desc.mayAffectControlFlow(*MI, MRI);
 
-		if(isFlowControl)
-			OS << c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true).to_charp();
+        if(isFlowControl)
+            OS << c_cpu_module::startColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true).to_charp();
 
         X86IntelInstPrinter::printInst(MI, OS, Annot);
 
-		if (isFlowControl)
-			OS << c_cpu_module::finishColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true).to_charp();
+        if (isFlowControl)
+            OS << c_cpu_module::finishColor(c_cpu_module::MNEMONIC_FLOW_CONTROL, true).to_charp();
 
     }
     virtual void printRegName(raw_ostream &OS, unsigned RegNo) const {
@@ -182,7 +182,7 @@ public:
 
             igorAddress abs = m_pStatus->PCAfter + DispSpec.getImm();
 
-			generateReferences(abs);
+            generateReferences(abs);
 
             Balau::String symbolName;
             if (m_pSession->getSymbolName(abs, symbolName))
@@ -228,24 +228,24 @@ public:
                         }
                     }
 
-					{
-						igorAddress abs(m_pSession, DispVal, -1);
-						generateReferences(abs);
+                    {
+                        igorAddress abs(m_pSession, DispVal, -1);
+                        generateReferences(abs);
 
-						Balau::String symbolName;
-						if (m_pSession->getSymbolName(abs, symbolName))
-						{
-							O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
-							O << symbolName.to_charp();
-							O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
-						}
-						else
-						{
-							O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
-							O << formatImm(DispVal);
-							O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
-						}
-					}
+                        Balau::String symbolName;
+                        if (m_pSession->getSymbolName(abs, symbolName))
+                        {
+                            O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
+                            O << symbolName.to_charp();
+                            O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
+                        }
+                        else
+                        {
+                            O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
+                            O << formatImm(DispVal);
+                            O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
+                        }
+                    }
                 }
             }
         }
@@ -264,21 +264,21 @@ public:
             int64_t imm = Op.getImm();
             igorAddress abs = m_pStatus->PCAfter + imm;
 
-			generateReferences(abs);
+            generateReferences(abs);
 
-			Balau::String symbolName;
-			if (m_pSession->getSymbolName(abs, symbolName))
-			{
-				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
-				O << symbolName.to_charp();
-				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
-			}
-			else
-			{
-				O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
-				O << formatHex(abs.offset);
-				O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
-			}
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(abs, symbolName))
+            {
+                O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
+                O << symbolName.to_charp();
+                O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
+            }
+            else
+            {
+                O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
+                O << formatHex(abs.offset);
+                O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
+            }
         } else {
             assert(Op.isExpr() && "unknown pcrel immediate operand");
             // If a symbolic branch target was added as a constant expression then print
@@ -294,44 +294,44 @@ public:
         }
     }
     virtual void printMemOffset(const MCInst *MI, unsigned Op, raw_ostream &O) {
- 		const MCOperand &DispSpec = MI->getOperand(Op);
-		const MCOperand &SegReg = MI->getOperand(Op + 1);
+        const MCOperand &DispSpec = MI->getOperand(Op);
+        const MCOperand &SegReg = MI->getOperand(Op + 1);
 
-		// If this has a segment register, print it.
-		if (SegReg.getReg()) {
-			printOperand(MI, Op + 1, O);
-			O << ':';
-		}
+        // If this has a segment register, print it.
+        if (SegReg.getReg()) {
+            printOperand(MI, Op + 1, O);
+            O << ':';
+        }
 
-		O << '[';
+        O << '[';
 
-		if (DispSpec.isImm())
-		{
-			int64_t imm = DispSpec.getImm();
-			igorAddress abs(m_pSession, imm, -1);
+        if (DispSpec.isImm())
+        {
+            int64_t imm = DispSpec.getImm();
+            igorAddress abs(m_pSession, imm, -1);
 
-			generateReferences(abs);
+            generateReferences(abs);
 
-			Balau::String symbolName;
-			if (m_pSession->getSymbolName(abs, symbolName))
-			{
-				O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
-				O << symbolName.to_charp();
-				O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
-			}
-			else
-			{
-				O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
-				O << formatImm(DispSpec.getImm());
-				O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
-			}
-		}
-		else {
-			assert(DispSpec.isExpr() && "non-immediate displacement?");
-			O << *DispSpec.getExpr();
-		}
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(abs, symbolName))
+            {
+                O << c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
+                O << symbolName.to_charp();
+                O << c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL, true).to_charp();
+            }
+            else
+            {
+                O << c_cpu_module::startColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
+                O << formatImm(DispSpec.getImm());
+                O << c_cpu_module::finishColor(c_cpu_module::MEMORY_ADDRESS, true).to_charp();
+            }
+        }
+        else {
+            assert(DispSpec.isExpr() && "non-immediate displacement?");
+            O << *DispSpec.getExpr();
+        }
 
-		O << ']';
+        O << ']';
     }
     virtual void printInstructionText(const char * text, raw_ostream &OS) {
         int ns = 8;
@@ -550,26 +550,26 @@ igor_result c_cpu_x86_llvm::getOperand(s_analyzeState * pState, int operandIndex
 
 void c_cpu_x86_llvm::generateReferences(s_analyzeState * pState)
 {
-	c_x86_llvm_analyse_result* pAnalyseResult = (c_x86_llvm_analyse_result*)pState->m_cpu_analyse_result;
-	MCInst& inst = pAnalyseResult->m_inst;
+    c_x86_llvm_analyse_result* pAnalyseResult = (c_x86_llvm_analyse_result*)pState->m_cpu_analyse_result;
+    MCInst& inst = pAnalyseResult->m_inst;
 
-	const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());
-	uint64_t tsflags = desc.TSFlags;
+    const MCInstrDesc & desc = m_tls.get()->m_pMII->get(inst.getOpcode());
+    uint64_t tsflags = desc.TSFlags;
 
-	std::string outStr;
-	raw_string_ostream out(outStr);
+    std::string outStr;
+    raw_string_ostream out(outStr);
 
-	LLVMStatus llvmStatus;
-	llvmStatus.PCBefore = pState->m_cpu_analyse_result->m_startOfInstruction;
-	llvmStatus.PCAfter = llvmStatus.PCBefore + pState->m_cpu_analyse_result->m_instructionSize;
+    LLVMStatus llvmStatus;
+    llvmStatus.PCBefore = pState->m_cpu_analyse_result->m_startOfInstruction;
+    llvmStatus.PCAfter = llvmStatus.PCBefore + pState->m_cpu_analyse_result->m_instructionSize;
 
-	m_tls.get()->m_pPrinter->setSession(pState->pSession);
-	m_tls.get()->m_pPrinter->setStatus(&llvmStatus);
-	m_tls.get()->m_pPrinter->printInst(&inst, out, "");
-	m_tls.get()->m_pPrinter->setSession(NULL);
+    m_tls.get()->m_pPrinter->setSession(pState->pSession);
+    m_tls.get()->m_pPrinter->setStatus(&llvmStatus);
+    m_tls.get()->m_pPrinter->printInst(&inst, out, "");
+    m_tls.get()->m_pPrinter->setSession(NULL);
 
-	out.flush();
-	Balau::String instruction = outStr;
-	instruction.do_replace_all('\t', ' ');
-	instruction.do_trim();
+    out.flush();
+    Balau::String instruction = outStr;
+    instruction.do_replace_all('\t', ' ');
+    instruction.do_trim();
 }

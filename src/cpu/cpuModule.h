@@ -66,33 +66,33 @@ public:
         KNOWN_SYMBOL,
         MNEMONIC_DEFAULT,
         MNEMONIC_FLOW_CONTROL,
-		MEMORY_ADDRESS,
+        MEMORY_ADDRESS,
 
         OPERAND_REGISTER,
         OPERAND_IMMEDIATE,
 
-		COLOR_MAX
+        COLOR_MAX
     };
 
-	static Balau::String startColor(e_colors color, bool bUseColor = true)
-	{
-		if (!bUseColor)
-		{
-			return "";
-		}
+    static Balau::String startColor(e_colors color, bool bUseColor = true)
+    {
+        if (!bUseColor)
+        {
+            return "";
+        }
 
-		Balau::String colorString;
-		colorString.append(";C=%d;", color);
+        Balau::String colorString;
+        colorString.append(";C=%d;", color);
 
-		return colorString;
-	}
+        return colorString;
+    }
 
-	static Balau::String finishColor(e_colors, bool bUseColor = true)
-	{
-		return startColor(DEFAULT, bUseColor);
-	}
+    static Balau::String finishColor(e_colors, bool bUseColor = true)
+    {
+        return startColor(DEFAULT, bUseColor);
+    }
 
-	static uint32_t getColorForType(c_cpu_module::e_colors blockType);
+    static uint32_t getColorForType(c_cpu_module::e_colors blockType);
 };
 
 class c_cpu_factory

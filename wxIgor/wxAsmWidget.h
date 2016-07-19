@@ -69,7 +69,7 @@ public:
     void updateSelectedText();
     void goToSelectedSymbol();
     void goToAddress(igorAddress address);
-	void popAddress();
+    void popAddress();
 
     struct s_textCacheEntry
     {
@@ -79,7 +79,7 @@ public:
     std::vector<s_textCacheEntry> m_textCache;
     bool m_textCacheIsDirty;
 
-	std::stack<igorAddress> m_history;
+    std::stack<igorAddress> m_history;
 
     Balau::String m_selectedText;
 

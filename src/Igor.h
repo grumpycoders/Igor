@@ -24,16 +24,16 @@ typedef uint16_t igor_segment_handle;
 class igor_section_handle
 {
 public:
-	uint16_t m_value;
+    uint16_t m_value;
 
-	bool isValid()
-	{
-		if (m_value != 0xFFFF)
-		{
-			return true;
-		}
-		return false;
-	}
+    bool isValid()
+    {
+        if (m_value != 0xFFFF)
+        {
+            return true;
+        }
+        return false;
+    }
 };
 */
 typedef u64 igorLinearAddress;
@@ -84,12 +84,12 @@ struct igorAddress {
     }
 
     // may need more than that, like going to the session and check section limits.
-	void makeInvalid()
-	{
-		m_sessionId = 0;
-		m_offset = 0;
-		m_segmentId = -1;
-	}
+    void makeInvalid()
+    {
+        m_sessionId = 0;
+        m_offset = 0;
+        m_segmentId = -1;
+    }
     bool isValid() { return m_sessionId != 0; }
     bool isNotValid() { return !isValid(); }
 

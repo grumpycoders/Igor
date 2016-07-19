@@ -13,8 +13,8 @@ using namespace Balau;
 
 imIgorAsmView::imIgorAsmView(IgorSession* pSession)
 {
-	m_pSession = pSession;
-	m_cursorPosition = pSession->getEntryPoint();
+    m_pSession = pSession;
+    m_cursorPosition = pSession->getEntryPoint();
 }
 
 void imIgorAsmView::goToAddress(igorAddress newAddress)

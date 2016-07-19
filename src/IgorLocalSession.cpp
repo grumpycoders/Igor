@@ -96,9 +96,9 @@ void IgorAnalysisManagerLocal::Do() {
 
 IgorLocalSession::IgorLocalSession() : m_pDatabase(new s_igorDatabase)
 {
-	m_nTasks = 0;
-	m_instructions = 0;
-	m_pDatabase->m_sessionId = getId();
+    m_nTasks = 0;
+    m_instructions = 0;
+    m_pDatabase->m_sessionId = getId();
 }
 
 void IgorLocalSession::freeze() {

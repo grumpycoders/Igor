@@ -6,15 +6,15 @@
 class imIgorAsmView
 {
 public:
-	imIgorAsmView(IgorSession* pSession);
+    imIgorAsmView(IgorSession* pSession);
 
     void goToAddress(igorAddress newAddress);
     void popAddress();
-	void Update();
+    void Update();
 
 private:
-	IgorSession* m_pSession;
-	igorAddress m_cursorPosition;
+    IgorSession* m_pSession;
+    igorAddress m_cursorPosition;
 
     std::stack<igorAddress> m_history;
 };

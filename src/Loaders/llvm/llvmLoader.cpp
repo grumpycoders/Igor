@@ -51,8 +51,8 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
     llvm::Triple targetTriple("unknown-unknown-unknown");
     targetTriple.setArch(Triple::ArchType(o->getArch()));
 
-	if (o->isCOFF())
-		return IGOR_FAILURE;
+    if (o->isCOFF())
+        return IGOR_FAILURE;
 
     if (o->isMachO())
         targetTriple.setObjectFormat(Triple::MachO);

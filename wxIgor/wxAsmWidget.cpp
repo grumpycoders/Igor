@@ -145,15 +145,15 @@ void c_wxAsmWidget::updateTextCache()
 
             currentEntry.m_address = analyzeState.m_PC;
 
-			igor_section_handle hSection = m_pSession->getSectionFromAddress(analyzeState.m_PC);
-			if (hSection != 0xFFFF)
-			{
-				String sectionName;
-				if (m_pSession->getSectionName(hSection, sectionName))
-				{
-					currentEntry.m_text.append("%s:", sectionName.to_charp());
-				}
-			}
+            igor_section_handle hSection = m_pSession->getSectionFromAddress(analyzeState.m_PC);
+            if (hSection != 0xFFFF)
+            {
+                String sectionName;
+                if (m_pSession->getSectionName(hSection, sectionName))
+                {
+                    currentEntry.m_text.append("%s:", sectionName.to_charp());
+                }
+            }
 
             currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
 
@@ -271,15 +271,15 @@ void c_wxAsmWidget::OnDraw(wxDC& dc)
         {
             if (strstr(stringList[i].to_charp(), "C="))
             {
-				int blockType;
-				int numParsedElements = stringList[i].scanf("C=%d", &blockType);
-				assert(numParsedElements == 1);
-				assert(blockType >= 0);
-				assert(blockType < c_cpu_module::COLOR_MAX);
+                int blockType;
+                int numParsedElements = stringList[i].scanf("C=%d", &blockType);
+                assert(numParsedElements == 1);
+                assert(blockType >= 0);
+                assert(blockType < c_cpu_module::COLOR_MAX);
 
-				c_cpu_module::e_colors currentType = (c_cpu_module::e_colors)blockType;
+                c_cpu_module::e_colors currentType = (c_cpu_module::e_colors)blockType;
 
-				dc.SetTextForeground(wxColour(c_cpu_module::getColorForType(currentType)));
+                dc.SetTextForeground(wxColour(c_cpu_module::getColorForType(currentType)));
 
             }
             else
@@ -337,7 +337,7 @@ void c_wxAsmWidget::OnMouseLeftDown(wxMouseEvent& event)
 
 void c_wxAsmWidget::goToAddress(igorAddress address)
 {
-	m_history.push(m_currentPosition);
+    m_history.push(m_currentPosition);
     m_currentPosition = address;
 
     Refresh();
@@ -345,12 +345,12 @@ void c_wxAsmWidget::goToAddress(igorAddress address)
 
 void c_wxAsmWidget::popAddress()
 {
-	if (!m_history.empty())
-	{
-		m_currentPosition = m_history.top();
-		m_history.pop();
-		Refresh();
-	}
+    if (!m_history.empty())
+    {
+        m_currentPosition = m_history.top();
+        m_history.pop();
+        Refresh();
+    }
 }
 
 void c_wxAsmWidget::goToSelectedSymbol()
@@ -469,9 +469,9 @@ void c_wxAsmWidget::OnKeyDown(wxKeyEvent& event)
     case 'C':
         m_pSession->add_code_analysis_task(GetAddressOfCursor());
         break;
-	case WXK_BACK:
-		popAddress();
-		break;
+    case WXK_BACK:
+        popAddress();
+        break;
     case WXK_LEFT:
         moveCaret(-1, 0);
         break;

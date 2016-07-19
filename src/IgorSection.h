@@ -43,7 +43,7 @@ struct s_igorSegment
         memset(m_instructionSize, 0, m_size);
     }
 
-	Balau::String m_name;
+    Balau::String m_name;
     igorLinearAddress m_virtualAddress;
     u64 m_size;
     u8* m_rawData;

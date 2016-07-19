@@ -76,7 +76,7 @@ using namespace Balau;
 
 igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
 {
-	reader->seek(0);
+    reader->seek(0);
 
     bool success = false;
     // DOS .EXE header
@@ -174,9 +174,9 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
 
         igor_segment_handle segmentHandle;
         db->create_segment(m_ImageBase + segmentData.VirtualAddress, segmentData.Misc, segmentHandle);
-		Balau::String sectionName;
-		sectionName.append((char*)segmentData.Name);
-		db->setSegmentName(segmentHandle, sectionName);
+        Balau::String sectionName;
+        sectionName.append((char*)segmentData.Name);
+        db->setSegmentName(segmentHandle, sectionName);
 
         // IMAGE_SCN_CNT_CODE
         if (segmentData.Characteristics & 0x00000020)
@@ -214,7 +214,7 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
         }
     }
 
-	loadDebug(db, reader, session);
+    loadDebug(db, reader, session);
     loadImports(db, reader);
 
     EAssert(foundEntryPointSection, "Couldn't find entry point's section");
@@ -326,102 +326,102 @@ int c_PELoader::loadOptionalHeader64(BFile reader)
 
 void loadUDT(c_PELoader* pLoader, PSYM Sym, PSYMD Symd, s_igorDatabase * db, IgorLocalSession * session)
 {
-	char* typeName = TPILookupTypeName(Symd->TpiHdr, Sym->Udt.typind);
-	IAssert(typeName, "Failed to fine type name");
+    char* typeName = TPILookupTypeName(Symd->TpiHdr, Sym->Udt.typind);
+    IAssert(typeName, "Failed to fine type name");
 
-	char* symbolDeclaration = TPIGetSymbolDeclaration(Symd->TpiHdr, typeName, (char*)Sym->Udt.name);
-	/*
-	TPIGetSymbolDeclaration(Symd->TpiHdr,
-	TPILookupTypeName(Symd->TpiHdr, Sym->Udt.typind),
-	(char*)Sym->Udt.name
-	));
-	*/
+    char* symbolDeclaration = TPIGetSymbolDeclaration(Symd->TpiHdr, typeName, (char*)Sym->Udt.name);
+    /*
+    TPIGetSymbolDeclaration(Symd->TpiHdr,
+    TPILookupTypeName(Symd->TpiHdr, Sym->Udt.typind),
+    (char*)Sym->Udt.name
+    ));
+    */
 }
 
 void loadPub32(c_PELoader* pLoader, PSYM Sym, PSYMD Symd, s_igorDatabase * db, IgorLocalSession * session)
 {
-	/*
-	printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
-	Sym->Pub32.seg, // 0x0c
-	Sym->Pub32.pubsymflags.fCode ? " code" : "",
-	Sym->Pub32.pubsymflags.fFunction ? " function" : "",
-	Sym->Pub32.off, Sym->Pub32.name, // 0x08 0x0e
-	Sym->Data32.typind); // 0x04
-	printf("\n");*/
+    /*
+    printf("S_PUB32| [%04x] public%s%s %p = %s (type %04x)",
+    Sym->Pub32.seg, // 0x0c
+    Sym->Pub32.pubsymflags.fCode ? " code" : "",
+    Sym->Pub32.pubsymflags.fFunction ? " function" : "",
+    Sym->Pub32.off, Sym->Pub32.name, // 0x08 0x0e
+    Sym->Data32.typind); // 0x04
+    printf("\n");*/
 
-	//if (Sym->Pub32.pubsymflags.fFunction)
-	int segmentIndex = Sym->Pub32.seg - 1;
-	if (segmentIndex < pLoader->m_segments.size())
-	{
-		// TODO: which section ?
-		igorAddress symbolAddress(db, pLoader->m_ImageBase + pLoader->m_segments[segmentIndex].VirtualAddress + Sym->Pub32.off, -1);
-		db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
+    //if (Sym->Pub32.pubsymflags.fFunction)
+    int segmentIndex = Sym->Pub32.seg - 1;
+    if (segmentIndex < pLoader->m_segments.size())
+    {
+        // TODO: which section ?
+        igorAddress symbolAddress(db, pLoader->m_ImageBase + pLoader->m_segments[segmentIndex].VirtualAddress + Sym->Pub32.off, -1);
+        db->declare_name(symbolAddress, (const char*)Sym->Pub32.name);
 
-		if (Sym->Pub32.pubsymflags.fFunction)
-			session->add_code_analysis_task(symbolAddress);
-	}
-	else
-	{
-		// this happens for symbols in segment index 0
-	}
+        if (Sym->Pub32.pubsymflags.fFunction)
+            session->add_code_analysis_task(symbolAddress);
+    }
+    else
+    {
+        // this happens for symbols in segment index 0
+    }
 }
 
 void loadData32(c_PELoader* pLoader, PSYM Sym, PSYMD Symd, s_igorDatabase * db, IgorLocalSession * session)
 {
-	/*
-	char *type = TPILookupTypeName(Symd->TpiHdr, Sym->Data32.typind);
-	char *decl = TPIGetSymbolDeclaration(Symd->TpiHdr, type, (char*)Sym->Data32.name);
-	printf("S_%sDATA32| data [%s; type %04x] %p = %s",
-	Sym->Sym.rectyp == S_LDATA32 ? "L" : "G",
-	Sym->Sym.rectyp == S_LDATA32 ? "local" : "global",
-	Sym->Data32.typind, Sym->Data32.off, decl);
-	*/
-	if (Sym->Data32.seg == 0)
-	{
-		// TODO: which section ?
-		igorAddress symbolAddress(db, pLoader->m_ImageBase + Sym->Data32.off, -1);
-		db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
-	}
-	else
-	{
-		int segmentIndex = Sym->Data32.seg - 1;
-		if (segmentIndex < pLoader->m_segments.size())
-		{
-			// TODO: which section ?
-			igorAddress symbolAddress(db, pLoader->m_ImageBase + pLoader->m_segments[Sym->Data32.seg - 1].VirtualAddress + Sym->Data32.off, -1);
-			db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
-		}
-	}
+    /*
+    char *type = TPILookupTypeName(Symd->TpiHdr, Sym->Data32.typind);
+    char *decl = TPIGetSymbolDeclaration(Symd->TpiHdr, type, (char*)Sym->Data32.name);
+    printf("S_%sDATA32| data [%s; type %04x] %p = %s",
+    Sym->Sym.rectyp == S_LDATA32 ? "L" : "G",
+    Sym->Sym.rectyp == S_LDATA32 ? "local" : "global",
+    Sym->Data32.typind, Sym->Data32.off, decl);
+    */
+    if (Sym->Data32.seg == 0)
+    {
+        // TODO: which section ?
+        igorAddress symbolAddress(db, pLoader->m_ImageBase + Sym->Data32.off, -1);
+        db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
+    }
+    else
+    {
+        int segmentIndex = Sym->Data32.seg - 1;
+        if (segmentIndex < pLoader->m_segments.size())
+        {
+            // TODO: which section ?
+            igorAddress symbolAddress(db, pLoader->m_ImageBase + pLoader->m_segments[Sym->Data32.seg - 1].VirtualAddress + Sym->Data32.off, -1);
+            db->declare_name(symbolAddress, (const char*)Sym->Data32.name);
+        }
+    }
 }
 
 void ProcessTypeRecord(PHDR pHdr, PlfRecord plr);
 
 void ProcessTypeRecordStructure(PHDR pHdr, PlfStructure pls)
 {
-	DWORD dBytes;
-	PBYTE pbName = TPIRecordValue(pls->data, &dBytes);
+    DWORD dBytes;
+    PBYTE pbName = TPIRecordValue(pls->data, &dBytes);
 
-	ULONG dBase = 0;
-	ULONG dSize = 0;
-	PlfRecord plr = TPILookupTypeRecord(pHdr, pls->field, &dBase, &dSize);
-	if(plr)
-	{
-		IAssert(plr->leaf == LF_FIELDLIST);
-	}
+    ULONG dBase = 0;
+    ULONG dSize = 0;
+    PlfRecord plr = TPILookupTypeRecord(pHdr, pls->field, &dBase, &dSize);
+    if(plr)
+    {
+        IAssert(plr->leaf == LF_FIELDLIST);
+    }
 }
 
 void ProcessTypeRecord(PHDR pHdr, PlfRecord plr)
 {
-	LEAF_ENUM_e leafType = (LEAF_ENUM_e)plr->leaf;
+    LEAF_ENUM_e leafType = (LEAF_ENUM_e)plr->leaf;
 
-	switch (leafType)
-	{
-	case LF_STRUCTURE:
-		ProcessTypeRecordStructure(pHdr, &plr->Structure);
-		break;
-	default:
-		break;
-	}
+    switch (leafType)
+    {
+    case LF_STRUCTURE:
+        ProcessTypeRecordStructure(pHdr, &plr->Structure);
+        break;
+    default:
+        break;
+    }
 }
 
 void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession * session)
@@ -462,41 +462,41 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
             {
                 PPDB pPdb = PdbOpen(pdbName.to_charp());
 
-				if (pPdb == NULL)
-				{
-					// try in the current folder
-					pPdb = PdbOpen(pdbName.to_charp(pdbName.strrchr('\\')+1));
-				}
+                if (pPdb == NULL)
+                {
+                    // try in the current folder
+                    pPdb = PdbOpen(pdbName.to_charp(pdbName.strrchr('\\')+1));
+                }
 
                 if (pPdb)
                 {
-					//SYMDumpSymbols(pPdb->Symd, 0xFFFF);
+                    //SYMDumpSymbols(pPdb->Symd, 0xFFFF);
 
-					// types
-					{
-						PHDR pHdr = pPdb->Symd->TpiHdr;
-						ULONG dTypes = pHdr->tiMac - pHdr->tiMin;
-						ULONG dBase = pHdr->cbHdr;
-						PVOID pData = ((PUCHAR)pHdr + dBase);
-						PlfRecord plr;
+                    // types
+                    {
+                        PHDR pHdr = pPdb->Symd->TpiHdr;
+                        ULONG dTypes = pHdr->tiMac - pHdr->tiMin;
+                        ULONG dBase = pHdr->cbHdr;
+                        PVOID pData = ((PUCHAR)pHdr + dBase);
+                        PlfRecord plr;
 
-						printf("TPI version: %lu\nIndex range: %lX..%lX\nType count: %lu\n",
-							pHdr->vers, pHdr->tiMin, pHdr->tiMac - 1, dTypes);
+                        printf("TPI version: %lu\nIndex range: %lX..%lX\nType count: %lu\n",
+                            pHdr->vers, pHdr->tiMin, pHdr->tiMac - 1, dTypes);
 
-						for (ULONG i = 0; i < dTypes; i++)
-						{
-							ULONG dSize = *(PWORD)pData;
-							dBase += sizeof(WORD);
-							plr = (PlfRecord)((PUCHAR)pHdr + dBase);
+                        for (ULONG i = 0; i < dTypes; i++)
+                        {
+                            ULONG dSize = *(PWORD)pData;
+                            dBase += sizeof(WORD);
+                            plr = (PlfRecord)((PUCHAR)pHdr + dBase);
 
-							//printf("// %6lX: %04hX %08lX\n", pHdr->tiMin + i, plr->leaf, dBase - sizeof(WORD));
+                            //printf("// %6lX: %04hX %08lX\n", pHdr->tiMin + i, plr->leaf, dBase - sizeof(WORD));
 
-							ProcessTypeRecord(pHdr, plr);
+                            ProcessTypeRecord(pHdr, plr);
 
-							dBase += dSize;
-							pData = (char*)pHdr + dBase;
-						}
-					}
+                            dBase += dSize;
+                            pData = (char*)pHdr + dBase;
+                        }
+                    }
 
                     PSYM Sym = pPdb->Symd->SymRecs;
                     while (Sym < pPdb->Symd->SymMac)
@@ -505,12 +505,12 @@ void c_PELoader::loadDebug(s_igorDatabase * db, BFile reader, IgorLocalSession *
                         {
                             switch (Sym->Sym.rectyp)
                             {                                
-								case S_UDT: loadUDT(this, Sym, pPdb->Symd, db, session); break;
-								case S_PUB32: loadPub32(this, Sym, pPdb->Symd, db, session); break;
+                                case S_UDT: loadUDT(this, Sym, pPdb->Symd, db, session); break;
+                                case S_PUB32: loadPub32(this, Sym, pPdb->Symd, db, session); break;
                                 case S_LDATA32: loadData32(this, Sym, pPdb->Symd, db, session); break;
                                 case S_GDATA32: loadData32(this, Sym, pPdb->Symd, db, session); break;
                                 default:
-									break;
+                                    break;
                             }
                         }
 

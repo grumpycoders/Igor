@@ -79,8 +79,8 @@ private:
             return NULL;
         }
         ScopedLambda sl([&]() { wxApp::GetInstance()->OnExit(); });
-		startIgorAsyncWorker();
-		m_queue.push(NULL);
+        startIgorAsyncWorker();
+        m_queue.push(NULL);
         wxApp::GetInstance()->OnRun();
 
         return NULL;

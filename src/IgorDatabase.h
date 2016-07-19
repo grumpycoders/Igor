@@ -84,7 +84,7 @@ struct s_igorDatabase
     struct igorAddressCompare : public std::binary_function<const igorAddress, const igorAddress, bool>
     {
     public:
-        bool operator()(const igorAddress x, const igorAddress y) // returns x>y
+        bool operator()(const igorAddress x, const igorAddress y) const // returns x>y
         {
             return (x.m_offset > y.m_offset);
         }

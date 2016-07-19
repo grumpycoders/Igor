@@ -10,7 +10,7 @@
 
 #include <getopt.h>
 
-#include "google/protobuf/stubs/common.h"
+//#include "google/protobuf/stubs/common.h"
 
 #include "Loaders/IgorLoaders.h"
 
@@ -94,6 +94,7 @@ igorAddress igorAddress::operator-(igorLinearAddress d) const {
     return ret;
 }
 
+#if 0
 class GoogleProtoBufs : public AtStart, public AtExit {
 public:
       GoogleProtoBufs() : AtStart(10), AtExit(10) { }
@@ -106,6 +107,7 @@ public:
 };
 
 static GoogleProtoBufs gprotobufs;
+#endif
 
 #ifdef USE_WXWIDGETS
 #include "wxIgor/wxIgorShared.h"

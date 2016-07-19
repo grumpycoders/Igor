@@ -161,7 +161,8 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
         reader->seek(optionalHeaderOffset + m_SizeOfOptionalHeader + i * 40);
 
         s_segmentData segmentData;
-        reader->read(segmentData.Name, 8);
+        ssize_t l = reader->read(segmentData.Name, 8);
+        EAssert(l == 8, "Couldn't read segment name");
         segmentData.Misc = reader->readU32().get(); // u32   PhysicalAddress union with u32   VirtualSize; (depends if it's a DLL or a .EXE)
         segmentData.VirtualAddress = reader->readU32().get();
         segmentData.SizeOfRawData = reader->readU32().get();
@@ -175,7 +176,7 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
         igor_segment_handle segmentHandle;
         db->create_segment(m_ImageBase + segmentData.VirtualAddress, segmentData.Misc, segmentHandle);
         Balau::String sectionName;
-        sectionName.append((char*)segmentData.Name);
+        sectionName.append("%s", (char*)segmentData.Name);
         db->setSegmentName(segmentHandle, sectionName);
 
         // IMAGE_SCN_CNT_CODE
@@ -406,7 +407,7 @@ void ProcessTypeRecordStructure(PHDR pHdr, PlfStructure pls)
     PlfRecord plr = TPILookupTypeRecord(pHdr, pls->field, &dBase, &dSize);
     if(plr)
     {
-        IAssert(plr->leaf == LF_FIELDLIST);
+        IAssert(plr->leaf == LF_FIELDLIST, "plf record not a leaf");
     }
 }
 

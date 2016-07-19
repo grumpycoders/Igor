@@ -19,7 +19,7 @@ llvm-build/lib/Target/X86 \
 
 CPPFLAGS_NO_ARCH += -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS
 
-LIBS = z uuid protobuf sqlite3 curses curl cares
+LIBS = z uuid sqlite3 curses curl cares
 
 ifeq ($(SYSTEM),Darwin)
     LIBS += pthread iconv
@@ -31,7 +31,7 @@ ifeq ($(SYSTEM),Linux)
     CONFIG_H = Balau/linux-config.h
 endif
 
-vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_llvm:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor:src/Loaders/llvm
+vpath %.cpp src:src/cpu:src/cpu/x86:src/cpu/x86_llvm:src/Loaders:src/Loaders/PE:src/Loaders/Elf:src/Loaders/Dmp:src/PDB:wxIgor:src/Loaders/llvm
 vpath %.cc src/protobufs
 vpath %.proto src/protobufs
 
@@ -51,8 +51,7 @@ IgorWS.cpp \
 \
 IgorLLVM.cpp \
 \
-IgorProto.pb.cc \
-\
+IgorLoaders.cpp \
 llvmLoader.cpp\
 PELoader.cpp \
 elfLoader.cpp \
@@ -156,7 +155,6 @@ dep: $(ALL_DEPS)
 clean:
 	rm -f $(ALL_OBJECTS) $(ALL_DEPS) $(TARGET)
 	$(MAKE) -C Balau clean
-	$(MAKE) -C llvm-build clean
 
 deepclean:
 	git clean -f -d -x

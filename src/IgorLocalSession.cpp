@@ -2,7 +2,7 @@
 #include "IgorLocalSession.h"
 #include "IgorSqlite.h"
 
-#include "google/protobuf/io/zero_copy_stream.h"
+//#include "google/protobuf/io/zero_copy_stream.h"
 
 #include <Printer.h>
 #include <BString.h>

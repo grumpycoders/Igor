@@ -55,6 +55,9 @@
     <ClCompile Include="src\IgorDatabase.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
+    <ClCompile Include="src\IgorScripting.cpp">
+      <Filter>Igor</Filter>
+    </ClCompile>
     <ClCompile Include="src\IgorSection.cpp">
       <Filter>Igor</Filter>
     </ClCompile>
@@ -139,6 +142,9 @@
       <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorDatabase.h">
+      <Filter>Igor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IgorScripting.h">
       <Filter>Igor</Filter>
     </ClInclude>
     <ClInclude Include="src\IgorSection.h">

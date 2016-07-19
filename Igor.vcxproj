@@ -191,6 +191,7 @@
     <ClCompile Include="src\IgorHttpSession.cpp" />
     <ClCompile Include="src\IgorLLVM.cpp" />
     <ClCompile Include="src\IgorLocalSession.cpp" />
+    <ClCompile Include="src\IgorScripting.cpp" />
     <ClCompile Include="src\IgorSection.cpp" />
     <ClCompile Include="src\IgorSession.cpp" />
     <ClCompile Include="src\IgorSqlite.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="src\IgorLLVM.h" />
     <ClInclude Include="src\IgorLocalSession.h" />
     <ClInclude Include="src\IgorMemory.h" />
+    <ClInclude Include="src\IgorScripting.h" />
     <ClInclude Include="src\IgorSection.h" />
     <ClInclude Include="src\IgorSession.h" />
     <ClInclude Include="src\IgorSqlite.h" />

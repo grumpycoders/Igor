@@ -89,9 +89,8 @@ public:
         RAssert(r == SQLITE_OK, "Unable to bind value: %s", getError(r).to_charp());
     }
     void safeBind(sqlite3_stmt * stmt, int pt, const char * stmtStr, ssize_t L = -1) {
-        AAssert(L < std::numeric_limits<int>::max(), "Query too long");
-        int sqlite3_bind_text(sqlite3_stmt*, int, const char*, int n, void(*)(void*));
-        int r = sqlite3_bind_text(stmt, pt, stmtStr, (int) L, NULL);
+        AAssert(L < std::numeric_limits<int>::max(), "Query too long");        
+        int r = sqlite3_bind_text(stmt, pt, stmtStr, (int) L, SQLITE_TRANSIENT);
         RAssert(r == SQLITE_OK, "Unable to bind value: %s", getError(r).to_charp());
     }
     template<size_t L>

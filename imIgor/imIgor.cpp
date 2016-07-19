@@ -90,13 +90,13 @@ void ImSession::drawSymbolListWindow()
     {
         Balau::String addressString;
         addressString.append("0x%08llX", start->first.offset);
-/*        wxListItem newItem;
-        newItem.SetId(itemId);
-        newItem.SetText(addressString.to_charp());
-        int itemIndex = m_symbolList->InsertItem(newItem);
+        /*        wxListItem newItem;
+                newItem.SetId(itemId);
+                newItem.SetText(addressString.to_charp());
+                int itemIndex = m_symbolList->InsertItem(newItem);
 
 
-        m_symbolList->SetItem(itemIndex, 2, start->second.m_name.to_charp());*/
+                m_symbolList->SetItem(itemIndex, 2, start->second.m_name.to_charp());*/
 
         itemId++;
         start++;
@@ -139,7 +139,7 @@ void ImSession::drawSegmentWindow()
 
         ImGui::Selectable(name.to_charp(), false, ImGuiSelectableFlags_SpanAllColumns);
 
-        if(ImGui::IsItemHovered())
+        if (ImGui::IsItemHovered())
             hoovertedSegmentId = i;
 
         ImGui::NextColumn();
@@ -246,7 +246,7 @@ void ImSession::drawSegmentWindow()
                 sscanf(startAddressString, "%llX", &startAddress);
                 sscanf(endAddressString, "%llX", &endAddress);
 
-                if(endAddress > startAddress)
+                if (endAddress > startAddress)
                 {
                     u64 size = endAddress - startAddress;
                     igor_segment_handle newHandle;
@@ -256,7 +256,7 @@ void ImSession::drawSegmentWindow()
                     {
                         m_pIgorSession->setSegmentName(newHandle, Balau::String(segmentName));
                     }
-                }                                
+                }
 
                 ImGui::CloseCurrentPopup();
             }
@@ -287,7 +287,7 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
         {
             if (ImGui::MenuItem("Save database"))
             {
-                m_pIgorSession->serialize("file:test.igor");
+                m_pIgorSession->serialize("test.igor");
             }
 
             ImGui::EndMenu();
@@ -331,7 +331,7 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
-    }    
+    }
 
     pDisassemblyWindow->Update();
 
@@ -365,66 +365,66 @@ void ImSession::process()
 
 void* initImIgor(void*)
 {
-	startIgorAsyncWorker();
+    startIgorAsyncWorker();
 
-	// Setup SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
-	{
-		printf("Error: %s\n", SDL_GetError());
-		return NULL;
-	}
+    // Setup SDL
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
+    {
+        printf("Error: %s\n", SDL_GetError());
+        return NULL;
+    }
 
-	// Setup window
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-	SDL_DisplayMode current;
-	SDL_GetCurrentDisplayMode(0, &current);
-	SDL_Window *window = SDL_CreateWindow("ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-	SDL_GLContext glcontext = SDL_GL_CreateContext(window);
-	gl3wInit();
+    // Setup window
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_DisplayMode current;
+    SDL_GetCurrentDisplayMode(0, &current);
+    SDL_Window *window = SDL_CreateWindow("ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    SDL_GLContext glcontext = SDL_GL_CreateContext(window);
+    gl3wInit();
 
-	// enable file dropping
-	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+    // enable file dropping
+    SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
 
-	// Setup ImGui binding
-	ImGui_ImplSdlGL3_Init(window);
+    // Setup ImGui binding
+    ImGui_ImplSdlGL3_Init(window);
 
-	// Load Fonts
-	// (there is a default font, this is only if you want to change it. see extra_fonts/README.txt for more details)
-	//ImGuiIO& io = ImGui::GetIO();
-	//io.Fonts->AddFontDefault();
-	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/Cousine-Regular.ttf", 15.0f);
-	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/DroidSans.ttf", 16.0f);
-	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyClean.ttf", 13.0f);
-	//io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyTiny.ttf", 10.0f);
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    // Load Fonts
+    // (there is a default font, this is only if you want to change it. see extra_fonts/README.txt for more details)
+    //ImGuiIO& io = ImGui::GetIO();
+    //io.Fonts->AddFontDefault();
+    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/Cousine-Regular.ttf", 15.0f);
+    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/DroidSans.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyClean.ttf", 13.0f);
+    //io.Fonts->AddFontFromFileTTF("../../extra_fonts/ProggyTiny.ttf", 10.0f);
+    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 
-	bool show_test_window = true;
-	bool show_another_window = false;
-	ImVec4 clear_color = ImColor(114, 144, 154);
+    bool show_test_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImColor(114, 144, 154);
 
-	std::vector<ImSession*> sessions;
+    std::vector<ImSession*> sessions;
 
-	// Main loop
-	bool done = false;
-	while (!done)
-	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			ImGui_ImplSdlGL3_ProcessEvent(&event);
-			if (event.type == SDL_QUIT)
-				done = true;
-			if (event.type == SDL_DROPFILE)
-			{
-				igor_result result;
-				String errorMsg1, errorMsg2;
-				IgorSession * session = NULL;
+    // Main loop
+    bool done = false;
+    while (!done)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            ImGui_ImplSdlGL3_ProcessEvent(&event);
+            if (event.type == SDL_QUIT)
+                done = true;
+            if (event.type == SDL_DROPFILE)
+            {
+                igor_result result;
+                String errorMsg1, errorMsg2;
+                IgorSession * session = NULL;
 
                 if (strstr(event.drop.file, ".igor"))
                 {
@@ -435,70 +435,70 @@ void* initImIgor(void*)
                     std::tie(result, session, errorMsg1, errorMsg2) = IgorAsyncLoadBinary(event.drop.file);
                 }
 
-				if (result == IGOR_SUCCESS)
-				{
+                if (result == IGOR_SUCCESS)
+                {
                     ImSession* pNewSession = new ImSession(session);
-					sessions.push_back(pNewSession);
-				}
-			}
-		}
-		ImGui_ImplSdlGL3_NewFrame(window);
+                    sessions.push_back(pNewSession);
+                }
+            }
+        }
+        ImGui_ImplSdlGL3_NewFrame(window);
 
-		if (ImGui::BeginMainMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
                 if (ImGui::MenuItem("New database"))
                 {
                     IgorSession* pNewIgorSession = new IgorLocalSession();
                     ImSession* pNewSession = new ImSession(pNewIgorSession);
                     sessions.push_back(pNewSession);
                 }
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Edit"))
-			{
-				if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-				if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-				ImGui::Separator();
-				if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-				if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-				if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-				ImGui::EndMenu();
-			}
-			ImGui::EndMainMenuBar();
-		}
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Edit"))
+            {
+                if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+                ImGui::Separator();
+                if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+                if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+                if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
 
-		// sessions
-		for (int i = 0; i < sessions.size(); i++)
-		{
+        // sessions
+        for (int i = 0; i < sessions.size(); i++)
+        {
             sessions[i]->process();
-		}
+        }
 
-		// Rendering
-		glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
-		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui::Render();
-		SDL_GL_SwapWindow(window);
-	}
+        // Rendering
+        glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui::Render();
+        SDL_GL_SwapWindow(window);
+    }
 
-	// Cleanup
-	ImGui_ImplSdlGL3_Shutdown();
-	SDL_GL_DeleteContext(glcontext);
-	SDL_DestroyWindow(window);
-	SDL_Quit();
+    // Cleanup
+    ImGui_ImplSdlGL3_Shutdown();
+    SDL_GL_DeleteContext(glcontext);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
-	return 0;
+    return 0;
 }
 
 pthread_t imGuiThread;
 
 bool wxIgorStartup(int& argc, char** argv)
 {
-	pthread_create(&imGuiThread, NULL, initImIgor, NULL);
+    pthread_create(&imGuiThread, NULL, initImIgor, NULL);
 
-	return true;
+    return true;
 }
 
 void wxIgorExit()

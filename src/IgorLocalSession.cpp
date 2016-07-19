@@ -122,7 +122,7 @@ int IgorSessionSqlite::upgradeDB(int version) {
         safeWriteStmt("CREATE TABLE IF NOT EXISTS main.properties (name TEXT PRIMARY KEY, value);");
         safeWriteStmt("CREATE TABLE IF NOT EXISTS main.symbols (address, name TEXT PRIMARY KEY, type);");
         safeWriteStmt("CREATE TABLE IF NOT EXISTS main.'references' (addressSrc, addressDst);");
-        safeWriteStmt("CREATE TABLE IF NOT EXISTS main.sections (virtualAddress PRIMARY KEY, option, rawData BLOB, instructionSize BLOB);");
+        safeWriteStmt("CREATE TABLE IF NOT EXISTS main.sections (virtualAddress PRIMARY KEY, size, name TEXT, option, rawData BLOB, instructionSize BLOB);");
         break;
     default:
         Failure("Upgrade case not supported");
@@ -152,14 +152,17 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
         sqlite3_stmt * stmt = NULL;
 
         stmt = db.safeStmt("INSERT INTO main.properties (name, value) VALUES(?1, ?2);");
-        db.safeBind(stmt, 1, "CPU");
-        db.safeBind(stmt, 2, m_pDatabase->m_cpu_modules[0]->getTag());
-        db.safeWriteStep(stmt);
-        db.safeReset(stmt);
-        db.safeBind(stmt, 1, "Name");
-        db.safeBind(stmt, 2, getSessionName());
-        db.safeWriteStep(stmt);
-        db.safeFinalize(stmt);
+        {
+            db.safeBind(stmt, 1, "CPU");
+            db.safeBind(stmt, 2, m_pDatabase->m_cpu_modules[0]->getTag());
+            db.safeWriteStep(stmt);
+            db.safeReset(stmt);
+            db.safeBind(stmt, 1, "Name");
+            db.safeBind(stmt, 2, getSessionName());
+            db.safeWriteStep(stmt);
+            db.safeReset(stmt);
+            db.safeFinalize(stmt);
+        }
 
         stmt = db.safeStmt("INSERT INTO main.symbols (address, name, type) VALUES(?1, ?2, ?3);");
         for (auto & symbol : m_pDatabase->m_symbolMap) {
@@ -180,17 +183,19 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
         }
         db.safeFinalize(stmt);
 
-        stmt = db.safeStmt("INSERT INTO main.sections (virtualAddress, option, rawData, instructionSize) VALUES(?1, ?2, ?3, ?4);");
+        stmt = db.safeStmt("INSERT INTO main.sections (virtualAddress, size, name, option, rawData, instructionSize) VALUES(?1, ?2, ?3, ?4, ?5, ?6);");
         for (auto & section : m_pDatabase->m_segments) {
             db.safeBind(stmt, 1, (sqlite3_int64) section->m_virtualAddress);
-            db.safeBind(stmt, 2, (sqlite3_int64) section->m_option);
+            db.safeBind(stmt, 2, (sqlite3_int64)section->m_size);
+            db.safeBind(stmt, 3, section->m_name);
+            db.safeBind(stmt, 4, (sqlite3_int64) section->m_option);
             if (section->m_rawData) {
                 AAssert(section->m_rawDataSize < std::numeric_limits<int>::max(), "Section too big to serialize");
-                db.safeBindBlob(stmt, 3, (int) section->m_rawDataSize);
+                db.safeBindBlob(stmt, 5, (int) section->m_rawDataSize);
             }
             if (section->m_instructionSize) {
                 AAssert(section->m_size < std::numeric_limits<int>::max(), "Section too big to serialize");
-                db.safeBindBlob(stmt, 4, (int) section->m_size);
+                db.safeBindBlob(stmt, 6, (int) section->m_size);
             }
             db.safeWriteStep(stmt);
             sqlite3_int64 rowid = db.lastInsertRowID();
@@ -265,6 +270,46 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::de
             s_igorDatabase::s_symbolDefinition& symbol = igorDatabase->m_symbolMap[address];
             symbol.m_name = name;
             symbol.m_type = type;
+        }
+        db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("SELECT addressSrc, addressDst FROM main.'references';");
+        while (true) {
+            r = db.safeStep(stmt);
+            if (r == SQLITE_DONE)
+                break;
+            u64 addressSrcLinear = sqlite3_column_int64(stmt, 0);
+            u64 addressDstLinear = sqlite3_column_int64(stmt, 1);
+
+            igorAddress addressSrc(session, igorLinearAddress(addressSrcLinear), 0);
+            igorAddress addressDst(session, igorLinearAddress(addressDstLinear), 0);
+
+            igorDatabase->m_references.insert(std::pair<igorAddress, igorAddress>(addressDst, addressSrc));
+        }
+        db.safeFinalize(stmt);
+
+        stmt = db.safeStmt("SELECT virtualAddress, size, name, option, rawData, instructionSize FROM main.sections;");
+        while (true) {
+            r = db.safeStep(stmt);
+            if (r == SQLITE_DONE)
+                break;
+            u64 virtualAddress = sqlite3_column_int64(stmt, 0);
+            u64 size = sqlite3_column_int64(stmt, 1); 
+            String name = (char *)sqlite3_column_text(stmt, 2);
+            e_igor_section_option options = (e_igor_section_option)sqlite3_column_int64(stmt, 3);
+
+            const void* rawData = sqlite3_column_blob(stmt, 4);
+            int rawDataSize = sqlite3_column_bytes(stmt, 4);
+
+            const void* instructionTable = sqlite3_column_blob(stmt, 5);
+            int instructionSize = sqlite3_column_bytes(stmt, 5);
+
+            igor_segment_handle newSegmentHandle;
+            igorDatabase->create_segment(virtualAddress, instructionSize, newSegmentHandle);
+            igorDatabase->setSegmentName(newSegmentHandle, name);
+            igorDatabase->set_segment_option(newSegmentHandle, options);
+            igorDatabase->load_segment_data(newSegmentHandle, rawData, rawDataSize);
+            
         }
         db.safeFinalize(stmt);
 

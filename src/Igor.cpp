@@ -15,10 +15,11 @@
 #include "Loaders/IgorLoaders.h"
 
 #include "IgorDatabase.h"
-#include "IgorLocalSession.h"
 #include "IgorHttp.h"
-#include "IgorMemory.h"
+#include "IgorLocalSession.h"
 #include "IgorLLVM.h"
+#include "IgorMemory.h"
+#include "IgorScripting.h"
 #include "IgorUsers.h"
 
 FILE _iob[] = { *stdin, *stdout, *stderr };
@@ -202,6 +203,24 @@ void sLua_IgorUsers::registerMe(Lua & L) {
     PUSH_CLASS_DONE();
 }
 
+class LuaPrinterRedirect : public Printer, public LuaExecCell {
+    virtual void run(Lua & L) override { setLocal(); }
+    virtual void _print(const char * fmt, va_list ap) override {
+        // We can redirect Lua's console output here.
+        vfprintf(stderr, fmt, ap);
+    }
+};
+
+class LuaPrinter : public AtStart, public AtExit {
+    virtual void doStart() override { m_luaPrinter = new LuaPrinterRedirect; };
+    virtual void doExit() override { delete m_luaPrinter; };
+    LuaPrinterRedirect * m_luaPrinter;
+public:
+    LuaPrinterRedirect * operator->() { return m_luaPrinter; }
+};
+
+LuaPrinter s_luaPrinter;
+
 void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
 
@@ -211,21 +230,25 @@ void MainTask::Do() {
 
     igor_register_llvm();
 
-    g_luaTask = new LuaMainTask();
-    TaskMan::registerTask(g_luaTask);
-    LuaExecString strLuaHello(
-        "local jitstatus = { jit.status() } "
-        "local features = 'Features:' "
-        "for i = 2, #jitstatus do "
-        "  features = features .. ' ' .. jitstatus[i] "
-        "end "
-        "print(jit.version .. ' running on ' .. jit.os .. '/' .. jit.arch .. '.') "
-        "print(features .. '.') "
-        "print('Lua engine up and running, JIT compiler is ' .. (jitstatus[1] and 'enabled' or 'disabled') .. '.') "
-    );
-    strLuaHello.exec(g_luaTask);
-    sLua_IgorUsers luaIgorUsers;
-    luaIgorUsers.exec(g_luaTask);
+    {
+        g_luaTask = new LuaMainTask();
+        TaskMan::registerTask(g_luaTask);
+        s_luaPrinter->exec(g_luaTask);
+        IgorScriptingRegister(g_luaTask);
+        sLua_IgorUsers luaIgorUsers;
+        luaIgorUsers.exec(g_luaTask);
+        LuaExecString strLuaHello(
+            "local jitstatus = { jit.status() } "
+            "local features = 'Features:' "
+            "for i = 2, #jitstatus do "
+            "  features = features .. ' ' .. jitstatus[i] "
+            "end "
+            "print(jit.version .. ' running on ' .. jit.os .. '/' .. jit.arch .. '.') "
+            "print(features .. '.') "
+            "print('Lua engine up and running, JIT compiler is ' .. (jitstatus[1] and 'enabled' or 'disabled') .. '.') "
+        );
+        strLuaHello.exec(g_luaTask);
+    }
 
     int opt;
     while ((opt = getopt(argc, argv, "hvl:e:")) != EOF) {

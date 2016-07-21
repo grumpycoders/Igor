@@ -37,16 +37,17 @@ vpath %.proto src/protobufs
 
 IGOR_SOURCES = \
 Igor.cpp \
-IgorSqlite.cpp \
-IgorUtils.cpp \
-IgorUsers.cpp \
-IgorSession.cpp \
-IgorLocalSession.cpp \
-IgorDatabase.cpp \
-IgorSection.cpp \
 IgorAnalysis.cpp \
+IgorDatabase.cpp \
+IgorLocalSession.cpp \
 IgorHttp.cpp \
 IgorHttpSession.cpp \
+IgorScripting.cpp \
+IgorSection.cpp \
+IgorSession.cpp \
+IgorSqlite.cpp \
+IgorUsers.cpp \
+IgorUtils.cpp \
 IgorWS.cpp \
 \
 IgorLLVM.cpp \

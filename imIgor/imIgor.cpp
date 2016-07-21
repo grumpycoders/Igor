@@ -79,6 +79,9 @@ void ImSession::drawCommandWindow()
 
 void ImSession::drawSymbolListWindow()
 {
+    if (!m_symbolListWindowOpen)
+        return;
+
     s_igorDatabase::t_symbolMap::iterator start;
     s_igorDatabase::t_symbolMap::iterator end;
     m_pIgorSession->lock();
@@ -86,23 +89,27 @@ void ImSession::drawSymbolListWindow()
 
     int itemId = 0;
 
+    ImGui::Begin("Symbols", &m_symbolListWindowOpen);
+
     while (start != end)
     {
-        Balau::String addressString;
-        addressString.append("0x%08llX", start->first.offset);
-        /*        wxListItem newItem;
-                newItem.SetId(itemId);
-                newItem.SetText(addressString.to_charp());
-                int itemIndex = m_symbolList->InsertItem(newItem);
-
-
-                m_symbolList->SetItem(itemIndex, 2, start->second.m_name.to_charp());*/
+        Balau::String label;
+        label.append("0x%08llX %s", start->first.offset, start->second.m_name.to_charp());
+        if (ImGui::Selectable(label.to_charp(), false, ImGuiSelectableFlags_AllowDoubleClick))
+        {
+            if (ImGui::IsMouseDoubleClicked(0))
+            {
+                m_pDisassemblyWindows[0]->goToAddress(start->first);
+            }
+        }
 
         itemId++;
         start++;
     }
 
     m_pIgorSession->unlock();
+
+    ImGui::End();
 }
 
 void ImSession::drawSegmentWindow()
@@ -320,8 +327,19 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
 
     if (ImGui::BeginPopupModal("Go to address"))
     {
+        static char addressString[256];
+
+        ImGui::InputText("Address", addressString, sizeof(addressString), ImGuiInputTextFlags_CharsHexadecimal);
+
         if (ImGui::Button("OK", ImVec2(120, 0)))
         {
+            String destinationString(addressString);
+            u64 offset = 0;
+            if (destinationString.scanf("%016llX", &offset) == 1)
+            {
+                pDisassemblyWindow->goToAddress(igorAddress(m_pIgorSession, offset, -1));
+            }
+
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();

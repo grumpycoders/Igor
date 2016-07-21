@@ -176,7 +176,7 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
         igor_segment_handle segmentHandle;
         db->create_segment(m_ImageBase + segmentData.VirtualAddress, segmentData.Misc, segmentHandle);
         Balau::String sectionName;
-        sectionName.append("%s", (char*)segmentData.Name);
+        sectionName.append("%s", segmentData.Name);
         db->setSegmentName(segmentHandle, sectionName);
 
         // IMAGE_SCN_CNT_CODE

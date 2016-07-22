@@ -20,6 +20,30 @@ struct s_analysisRequest
     igorAddress m_pc;
 };
 
+class s_IgorProperty
+{
+public:
+    enum e_property
+    {
+        Code,
+        SymbolNamed,
+        OperandOffset,
+    };
+
+    e_property m_type;
+    int m_propertySize;
+};
+
+// TODO: ideally, all that stuff would be stack allocated on the calling site
+class s_IgorPropertyBag
+{
+public:
+    int getNumProperties();
+    s_IgorProperty* getProperty(int index);
+private:
+    std::vector<s_IgorProperty*> m_properties;
+};
+
 struct s_igorDatabase
 {
     s_igorDatabase();
@@ -241,6 +265,9 @@ struct s_igorDatabase
 
     void lock() { m_lock.enter(); }
     void unlock() { m_lock.leave(); }
+
+    // give all the properties of a given address
+    void getProperties(igorAddress address, s_IgorPropertyBag& outputPropertyBag);
 
 private:
     s_igorSegment* findSectionFromAddress(igorAddress address);

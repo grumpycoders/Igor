@@ -646,3 +646,4 @@ igor_result s_igorDatabase::executeCommand(Balau::String& command)
     
     return IGOR_SUCCESS;
 }
+

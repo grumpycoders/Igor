@@ -26,20 +26,94 @@ public:
     enum e_property
     {
         Code,
-        SymbolNamed,
-        OperandOffset,
+        Data,
+        Symbol,
+        CrossReferences,
+        OperandParameter,
+        Comment,
     };
 
+    s_IgorProperty(e_property type)
+    {
+        m_type = type;
+    }
+
     e_property m_type;
-    int m_propertySize;
+};
+
+class s_IgorPropertyCode : public s_IgorProperty
+{
+public:
+    s_IgorPropertyCode() : s_IgorProperty(Code)
+    {
+    }
+
+    Balau::String m_instruction;
+    int m_instructionSize;
+};
+
+class s_IgorPropertyData : public s_IgorProperty
+{
+public:
+    s_IgorPropertyData() : s_IgorProperty(Data)
+    {
+    }
+
+    std::vector<u8> m_bytes;
+};
+
+class s_IgorPropertySymbol : public s_IgorProperty
+{
+public:
+    s_IgorPropertySymbol() : s_IgorProperty(Symbol)
+    {
+
+    }
+
+    Balau::String m_symbol;
+};
+
+class s_IgorPropertyCrossReference : public s_IgorProperty
+{
+public:
+    s_IgorPropertyCrossReference() : s_IgorProperty(CrossReferences)
+    {
+
+    }
+
+    std::vector<igorAddress> m_crossReferences;
 };
 
 // TODO: ideally, all that stuff would be stack allocated on the calling site
 class s_IgorPropertyBag
 {
 public:
-    int getNumProperties();
-    s_IgorProperty* getProperty(int index);
+    ~s_IgorPropertyBag()
+    {
+        for (int i = 0; i < m_properties.size(); i++)
+        {
+            delete m_properties[i];
+        }
+    }
+
+    void addProperty(s_IgorProperty* newProperty)
+    {
+        m_properties.push_back(newProperty);
+    }
+
+    s_IgorProperty* findProperty(s_IgorProperty::e_property propertyType)
+    {
+        for (int i = 0; i < m_properties.size(); i++)
+        {
+            if (m_properties[i]->m_type == propertyType)
+            {
+                return m_properties[i];
+            }
+        }
+
+        return NULL;
+    }
+
 private:
     std::vector<s_IgorProperty*> m_properties;
 };
@@ -267,7 +341,7 @@ struct s_igorDatabase
     void unlock() { m_lock.leave(); }
 
     // give all the properties of a given address
-    void getProperties(igorAddress address, s_IgorPropertyBag& outputPropertyBag);
+    igor_result getProperties(igorAddress address, s_IgorPropertyBag& outputPropertyBag);
 
 private:
     s_igorSegment* findSectionFromAddress(igorAddress address);

@@ -35,6 +35,83 @@ void imIgorAsmView::popAddress()
     }
 }
 
+igorAddress imIgorAsmView::generateTextForAddress(igorAddress address)
+{
+    s_textCacheEntry currentEntry;
+
+    s_IgorPropertyBag propertyBag;
+    m_pSession->getProperties(address, propertyBag);
+
+    igor_segment_handle hSection = m_pSession->getSegmentFromAddress(address);
+    if (hSection != 0xFFFF)
+    {
+        String sectionName;
+        if (m_pSession->getSegmentName(hSection, sectionName))
+        {
+            currentEntry.m_text.append("%s:", sectionName.to_charp());
+        }
+    }
+
+    currentEntry.m_text.append("%016llX: ", address.offset);
+
+    if (s_IgorPropertySymbol* pPropertySymbol = (s_IgorPropertySymbol*)propertyBag.findProperty(s_IgorProperty::Symbol))
+    {
+        s_textCacheEntry symbolNameEntry;
+
+        symbolNameEntry.m_address = address;
+        symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
+        symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), pPropertySymbol->m_symbol.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
+
+        m_textCache.push_back(symbolNameEntry);
+    }
+
+    // display cross references
+    {
+        std::vector<igorAddress> crossReferences;
+        m_pSession->getReferences(address, crossReferences);
+
+        for (int i = 0; i < crossReferences.size(); i++)
+        {
+            s_textCacheEntry crossRefEntry;
+            crossRefEntry.m_address = address;
+            crossRefEntry.m_text.append(currentEntry.m_text.to_charp());
+            crossRefEntry.m_text.append("                            xref: "); // alignment of xref
+
+            Balau::String symbolName;
+            if (m_pSession->getSymbolName(crossReferences[i], symbolName))
+            {
+                crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
+            }
+            else
+            {
+                crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
+            }
+
+            m_textCache.push_back(crossRefEntry);
+        }
+    }
+
+    currentEntry.m_text.append("         "); // alignment of code/data
+
+    if (s_IgorPropertyCode* pPropertyCode = (s_IgorPropertyCode*)propertyBag.findProperty(s_IgorProperty::Code))
+    {
+        currentEntry.m_text.append("%s", pPropertyCode->m_instruction.to_charp());
+        m_textCache.push_back(currentEntry);
+
+        address += pPropertyCode->m_instructionSize;
+    }
+    else
+    {
+        currentEntry.m_text.append("db       0x%02X", m_pSession->readU8(address));
+
+        m_textCache.push_back(currentEntry);
+
+        address++;
+    }
+
+    return address;
+}
+
 void imIgorAsmView::Update()
 {
     IgorSession* pIgorSession = m_pSession;
@@ -62,12 +139,7 @@ void imIgorAsmView::Update()
         popAddress();
     }
 
-    struct s_textCacheEntry
-    {
-        igorAddress m_address;
-        Balau::String m_text;
-    };
-    std::vector<s_textCacheEntry> m_textCache;
+    m_textCache.clear();
 
     ImVec2 displayStart = ImGui::GetCursorPos();
     float lineHeight = ImGui::GetTextLineHeight();
@@ -81,117 +153,12 @@ void imIgorAsmView::Update()
     if (currentPC.isValid())
     {
         int numLinesToDraw = itemEnd - itemStart; // should always be itemEnd
-
-        IgorSession* m_pSession = pIgorSession;
-
+        while (m_textCache.size() < numLinesToDraw)
         {
-            c_cpu_module* pCpu = m_pSession->getCpuForAddress(currentPC);
+            if (!currentPC.isValid())
+                break;
 
-            s_analyzeState analyzeState;
-            analyzeState.m_PC = currentPC;
-            analyzeState.pCpu = pCpu;
-            analyzeState.pCpuState = m_pSession->getCpuStateForAddress(currentPC);
-            analyzeState.pSession = m_pSession;
-            analyzeState.m_cpu_analyse_result = NULL;
-            if (pCpu)
-            {
-                analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
-            }
-
-            while (m_textCache.size() < numLinesToDraw)
-            {
-                s_textCacheEntry currentEntry;
-
-                currentEntry.m_address = analyzeState.m_PC;
-
-                igor_segment_handle hSection = m_pSession->getSegmentFromAddress(analyzeState.m_PC);
-                if (hSection != 0xFFFF)
-                {
-                    String sectionName;
-                    if (m_pSession->getSegmentName(hSection, sectionName))
-                    {
-                        currentEntry.m_text.append("%s:", sectionName.to_charp());
-                    }
-                }
-
-                currentEntry.m_text.append("%016llX: ", analyzeState.m_PC.offset);
-
-                Balau::String symbolName;
-                if (m_pSession->getSymbolName(analyzeState.m_PC, symbolName))
-                {
-                    s_textCacheEntry symbolNameEntry;
-
-                    symbolNameEntry.m_address = analyzeState.m_PC;
-                    symbolNameEntry.m_text.append(currentEntry.m_text.to_charp());
-                    symbolNameEntry.m_text.append("%s%s%s:", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-
-                    m_textCache.push_back(symbolNameEntry);
-                }
-
-                // display cross references
-                {
-                    std::vector<igorAddress> crossReferences;
-                    m_pSession->getReferences(analyzeState.m_PC, crossReferences);
-
-                    for (int i = 0; i < crossReferences.size(); i++)
-                    {
-                        s_textCacheEntry crossRefEntry;
-                        crossRefEntry.m_address = analyzeState.m_PC;
-                        crossRefEntry.m_text.append(currentEntry.m_text.to_charp());
-                        crossRefEntry.m_text.append("                            xref: "); // alignment of xref
-
-                        Balau::String symbolName;
-                        if (m_pSession->getSymbolName(crossReferences[i], symbolName))
-                        {
-                            crossRefEntry.m_text.append("%s%s 0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), symbolName.to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-                        }
-                        else
-                        {
-                            crossRefEntry.m_text.append("%s0x%08llX%s", c_cpu_module::startColor(c_cpu_module::KNOWN_SYMBOL).to_charp(), crossReferences[i].offset, c_cpu_module::finishColor(c_cpu_module::KNOWN_SYMBOL).to_charp());
-                        }
-
-                        m_textCache.push_back(crossRefEntry);
-                    }
-                }
-
-                currentEntry.m_text.append("         "); // alignment of code/data
-
-                if (m_pSession->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
-                {
-                    /*
-                    Balau::String mnemonic;
-                    pCpu->getMnemonic(&analyzeState, mnemonic);
-
-                    const int numMaxOperand = 4;
-
-                    Balau::String operandStrings[numMaxOperand];
-
-                    int numOperandsInInstruction = pCpu->getNumOperands(&analyzeState);
-                    EAssert(numMaxOperand >= numOperandsInInstruction);
-
-                    for (int i = 0; i < numOperandsInInstruction; i++)
-                    {
-                    pCpu->getOperand(&analyzeState, i, operandStrings[i]);
-                    }
-                    */
-
-                    pCpu->printInstruction(&analyzeState, currentEntry.m_text, true);
-
-                    m_textCache.push_back(currentEntry);
-
-                    analyzeState.m_PC = analyzeState.m_cpu_analyse_result->m_startOfInstruction + analyzeState.m_cpu_analyse_result->m_instructionSize;
-                }
-                else
-                {
-                    currentEntry.m_text.append("db       0x%02X", m_pSession->readU8(analyzeState.m_PC));
-
-                    m_textCache.push_back(currentEntry);
-
-                    analyzeState.m_PC++;
-                }
-            }
-
-            delete analyzeState.m_cpu_analyse_result;
+            currentPC = generateTextForAddress(currentPC);
         }
 
         // draw the text cache

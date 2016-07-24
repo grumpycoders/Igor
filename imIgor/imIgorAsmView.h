@@ -13,6 +13,15 @@ public:
     void Update();
 
 private:
+    struct s_textCacheEntry
+    {
+        igorAddress m_address;
+        Balau::String m_text;
+    };
+    std::vector<s_textCacheEntry> m_textCache;
+
+    igorAddress generateTextForAddress(igorAddress address);
+
     IgorSession* m_pSession;
     igorAddress m_cursorPosition;
 

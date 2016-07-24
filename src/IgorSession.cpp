@@ -198,3 +198,76 @@ IgorSession * IgorSession::find(uint16_t id) {
 
     return NULL;
 }
+
+igor_result IgorSession::getProperties(igorAddress address, s_IgorPropertyBag& outputPropertyBag)
+{
+    // does this address map a segment?
+    igor_segment_handle hSegment = getSegmentFromAddress(address);
+    if (hSegment == -1)
+    {
+        // no segment, so no properties?
+        return IGOR_SUCCESS;
+    }
+
+    // is this code?
+    if (is_address_flagged_as_code(address))
+    {
+        // is there a cpu declared for this address?
+        c_cpu_module* pCpu = getCpuForAddress(address);
+        if (pCpu)
+        {
+            s_analyzeState analyzeState;
+            analyzeState.m_PC = address;
+            analyzeState.pCpu = pCpu;
+            analyzeState.pCpuState = getCpuStateForAddress(address);
+            analyzeState.pSession = this;
+            analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
+            if (pCpu->analyze(&analyzeState) == IGOR_SUCCESS)
+            {
+                s_IgorPropertyCode* pPropertyCode = new s_IgorPropertyCode();
+                pCpu->printInstruction(&analyzeState, pPropertyCode->m_instruction, true);
+                pPropertyCode->m_instructionSize = analyzeState.m_cpu_analyse_result->m_instructionSize;
+
+                outputPropertyBag.addProperty(pPropertyCode);
+            }
+            delete analyzeState.m_cpu_analyse_result;
+        }
+    }
+    else
+    {
+        // add one byte of data
+        s_IgorPropertyData* pPropertyData = new s_IgorPropertyData();
+        u8 data = readU8(address);
+        pPropertyData->m_bytes.push_back(data);
+
+        outputPropertyBag.addProperty(pPropertyData);
+    }
+
+    // is there a symbol?
+    {
+        String symbolName;
+        if (getSymbolName(address, symbolName))
+        {
+            s_IgorPropertySymbol* pPropertySymbol = new s_IgorPropertySymbol();
+            pPropertySymbol->m_symbol = symbolName;
+
+            outputPropertyBag.addProperty(pPropertySymbol);
+        }
+    }
+
+    // is there cross references?
+    {
+        std::vector<igorAddress> crossReferences;
+        getReferences(address, crossReferences);
+
+        if (crossReferences.size())
+        {
+            s_IgorPropertyCrossReference* pPropertyCrossReference = new s_IgorPropertyCrossReference();
+            pPropertyCrossReference->m_crossReferences = crossReferences;
+
+            outputPropertyBag.addProperty(pPropertyCrossReference);
+        }
+    }
+    return IGOR_SUCCESS;
+}
+

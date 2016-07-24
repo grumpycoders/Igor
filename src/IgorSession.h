@@ -165,6 +165,8 @@ class IgorSession
     virtual void lock() = 0;
     virtual void unlock() = 0;
 
+    virtual igor_result getProperties(igorAddress address, s_IgorPropertyBag& outputPropertyBag);
+
   protected:
     void assignNewUUID();
     void activate();

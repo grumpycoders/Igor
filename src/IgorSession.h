@@ -160,6 +160,8 @@ class IgorSession
     virtual void addReference(igorAddress referencedAddress, igorAddress referencedFrom) = 0;
     virtual void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom) = 0;
 
+    virtual igor_result loadAdditionalBinary(igorAddress address, BFile& file) = 0;
+
     void deactivate();
 
     virtual void lock() = 0;

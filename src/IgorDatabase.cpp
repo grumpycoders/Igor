@@ -43,7 +43,7 @@ c_cpu_state* s_igorDatabase::getCpuStateForAddress(igorAddress PC)
     return NULL;
 }
 
-s_igorSegment* s_igorDatabase::findSectionFromAddress(igorAddress address)
+s_igorSegment* s_igorDatabase::findSegmentFromAddress(igorAddress address)
 {
     Balau::ScopeLock sl(m_lock);
     for(auto & i : m_segments)
@@ -62,7 +62,7 @@ s_igorSegment* s_igorDatabase::findSectionFromAddress(igorAddress address)
 igor_result s_igorDatabase::readS64(igorAddress address, s64& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -84,7 +84,7 @@ igor_result s_igorDatabase::readS64(igorAddress address, s64& output)
 igor_result s_igorDatabase::readU64(igorAddress address, u64& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -107,7 +107,7 @@ igor_result s_igorDatabase::readU64(igorAddress address, u64& output)
 igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -129,7 +129,7 @@ igor_result s_igorDatabase::readS32(igorAddress address, s32& output)
 igor_result s_igorDatabase::readU32(igorAddress address, u32& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -152,7 +152,7 @@ igor_result s_igorDatabase::readU32(igorAddress address, u32& output)
 igor_result s_igorDatabase::readS16(igorAddress address, s16& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -175,7 +175,7 @@ igor_result s_igorDatabase::readS16(igorAddress address, s16& output)
 igor_result s_igorDatabase::readU16(igorAddress address, u16& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -198,7 +198,7 @@ igor_result s_igorDatabase::readU16(igorAddress address, u16& output)
 igor_result s_igorDatabase::readS8(igorAddress address, s8& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -221,7 +221,7 @@ igor_result s_igorDatabase::readS8(igorAddress address, s8& output)
 igor_result s_igorDatabase::readU8(igorAddress address, u8& output)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(address);
+    s_igorSegment* pSection = findSegmentFromAddress(address);
 
     if (pSection == NULL)
     {
@@ -267,6 +267,35 @@ igor_result s_igorDatabase::set_segment_option(igor_segment_handle segmentHandle
     return IGOR_SUCCESS;
 }
 
+igor_result s_igorDatabase::load_data_from_file(igorAddress address, BFile& reader)
+{
+    Balau::ScopeLock sl(m_lock);
+
+    reader->seek(0, SEEK_END);
+    off64_t size = reader->tell();
+    reader->seek(0, SEEK_SET);
+
+    for (u64 i = 0; i < size; i++)
+    {
+        igor_segment_handle hSegment = getSegmentFromAddress(address);
+        u8 value = reader->readU8().get();
+
+        if (hSegment != 0xFFFF)
+        {
+            s_igorSegment* pSegment = m_segments[hSegment];
+
+            u64 offset = address.offset - pSegment->m_virtualAddress;
+
+            pSegment->setRawData(offset, value);
+        }
+
+        address++;
+    }
+
+
+    return IGOR_SUCCESS;
+}
+
 igor_result s_igorDatabase::load_segment_data(igor_segment_handle segmentHandle, BFile reader, u64 size)
 {
     Balau::ScopeLock sl(m_lock);
@@ -285,9 +314,12 @@ igor_result s_igorDatabase::load_segment_data(igor_segment_handle segmentHandle,
     Balau::ScopeLock sl(m_lock);
     s_igorSegment* pSection = m_segments[segmentHandle];
 
-    pSection->m_rawData = new u8[size];
-    memcpy(pSection->m_rawData, data, size);
-    pSection->m_rawDataSize = size;
+    if(size)
+    {
+        pSection->m_rawData = new u8[size];
+        memcpy(pSection->m_rawData, data, size);
+        pSection->m_rawDataSize = size;
+    }
 
     return IGOR_SUCCESS;
 }
@@ -385,7 +417,7 @@ igor_result s_igorDatabase::flag_address_as_u32(igorAddress virtualAddress)
 igor_result s_igorDatabase::flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(virtualAddress);
+    s_igorSegment* pSection = findSegmentFromAddress(virtualAddress);
 
     if (pSection == NULL)
     {
@@ -418,7 +450,7 @@ igor_result s_igorDatabase::flag_address_as_instruction(igorAddress virtualAddre
 igor_result s_igorDatabase::is_address_flagged_as_code(igorAddress virtualAddress)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(virtualAddress);
+    s_igorSegment* pSection = findSegmentFromAddress(virtualAddress);
 
     if (pSection == NULL)
     {
@@ -445,7 +477,7 @@ igor_result s_igorDatabase::is_address_flagged_as_code(igorAddress virtualAddres
 igorAddress s_igorDatabase::get_next_valid_address_before(igorAddress virtualAddress)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(virtualAddress);
+    s_igorSegment* pSection = findSegmentFromAddress(virtualAddress);
 
     if (pSection == NULL)
     {
@@ -468,7 +500,7 @@ igorAddress s_igorDatabase::get_next_valid_address_before(igorAddress virtualAdd
 igorAddress s_igorDatabase::get_next_valid_address_after(igorAddress virtualAddress)
 {
     Balau::ScopeLock sl(m_lock);
-    s_igorSegment* pSection = findSectionFromAddress(virtualAddress);
+    s_igorSegment* pSection = findSegmentFromAddress(virtualAddress);
 
     if (pSection == NULL)
     {

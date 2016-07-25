@@ -92,6 +92,8 @@ class IgorLocalSession : public IgorSession {
     virtual void addReference(igorAddress referencedAddress, igorAddress referencedFrom);
     virtual void getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom);
 
+    virtual igor_result loadAdditionalBinary(igorAddress address, BFile& file);
+
     virtual void lock() { m_pDatabase->lock(); }
     virtual void unlock() { m_pDatabase->unlock(); }
 

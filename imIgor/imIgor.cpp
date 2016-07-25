@@ -5,6 +5,7 @@
 #include <IgorAsyncActions.h>
 
 #include <BString.h>
+#include <MMap.h>
 
 #include <vector>
 
@@ -162,11 +163,12 @@ void ImSession::drawSegmentWindow()
             if (ImGui::IsMouseClicked(1))
             {
                 if (hoovertedSegmentId != -1)
-                    ImGui::OpenPopup("Edit segment");
+                    ImGui::OpenPopup("Segment");
             }
 
             bool bDeleteSegment = false;
-            if (ImGui::BeginPopup("Edit segment"))
+            bool bEditSegment = false;
+            if (ImGui::BeginPopup("Segment"))
             {
                 if (ImGui::Selectable("Delete", false))
                 {
@@ -175,13 +177,15 @@ void ImSession::drawSegmentWindow()
                 }
                 if (ImGui::Selectable("Edit", false))
                 {
-
+                    bEditSegment = true;
                 }
                 ImGui::EndPopup();
             }
 
             if (bDeleteSegment)
                 ImGui::OpenPopup("Delete segment");
+            if (bEditSegment)
+                ImGui::OpenPopup("Edit segment");
 
             if (ImGui::BeginPopupModal("Delete segment", 0, ImGuiWindowFlags_NoResize))
             {
@@ -198,6 +202,26 @@ void ImSession::drawSegmentWindow()
                 }
                 ImGui::EndPopup();
             }
+
+            if (ImGui::BeginPopupModal("Edit segment"))
+            {
+                ImGui::Text("CPU: ");
+                ImGui::SameLine();
+
+                c_cpu_module* pCpu = m_pIgorSession->getCpuForAddress(segmentsStart);
+
+                if (pCpu == NULL)
+                {
+                    ImGui::Text("none");
+                }
+                else
+                {
+                    ImGui::Text(pCpu->getTag().to_charp());
+                }
+
+                ImGui::EndPopup();
+            }
+
             ImGui::PopID();
         }
     }
@@ -284,6 +308,7 @@ void ImSession::drawSegmentWindow()
 void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
 {
     bool goToAddressPopup = false;
+    bool loadAdditionBinaryPopup = false;
 
     ImGui::Begin(m_pIgorSession->getSessionName().to_charp(), 0, ImGuiWindowFlags_MenuBar);
 
@@ -295,6 +320,11 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
             if (ImGui::MenuItem("Save database"))
             {
                 m_pIgorSession->serialize("test.igor");
+            }
+
+            if (ImGui::MenuItem("Load additional binary"))
+            {
+                loadAdditionBinaryPopup = true;
             }
 
             ImGui::EndMenu();
@@ -322,6 +352,9 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
         ImGui::EndMenuBar();
     }
 
+    if (loadAdditionBinaryPopup)
+        ImGui::OpenPopup("Load additional binary");
+
     if (goToAddressPopup)
         ImGui::OpenPopup("Go to address");
 
@@ -348,6 +381,39 @@ void ImSession::drawDisassemblyWindow(imIgorAsmView* pDisassemblyWindow)
         {
             ImGui::CloseCurrentPopup();
         }
+        ImGui::EndPopup();
+    }
+
+    if (ImGui::BeginPopupModal("Load additional binary"))
+    {
+        static char addressString[256] = "";
+        static char fileString[1024] = "";
+
+        ImGui::InputText("File", fileString, sizeof(fileString));
+        ImGui::InputText("Address", addressString, sizeof(addressString), ImGuiInputTextFlags_CharsHexadecimal);
+
+        if (ImGui::Button("OK", ImVec2(120, 0)))
+        {
+            String destinationAddressString(addressString);
+            u64 offset = 0;
+            if (destinationAddressString.scanf("%016llX", &offset) == 1)
+            {
+                igorAddress addressToLoad(m_pIgorSession, offset, -1);
+                IO<MMap> reader(new MMap(fileString));
+                reader->open();
+                m_pIgorSession->loadAdditionalBinary(addressToLoad, BFile(reader));
+                reader->close();
+            }
+
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+
         ImGui::EndPopup();
     }
 

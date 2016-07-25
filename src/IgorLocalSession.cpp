@@ -153,10 +153,13 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
 
         stmt = db.safeStmt("INSERT INTO main.properties (name, value) VALUES(?1, ?2);");
         {
-            db.safeBind(stmt, 1, "CPU");
-            db.safeBind(stmt, 2, m_pDatabase->m_cpu_modules[0]->getTag());
-            db.safeWriteStep(stmt);
-            db.safeReset(stmt);
+            if (m_pDatabase->m_cpu_modules.size())
+            {
+                db.safeBind(stmt, 1, "CPU");
+                db.safeBind(stmt, 2, m_pDatabase->m_cpu_modules[0]->getTag());
+                db.safeWriteStep(stmt);
+                db.safeReset(stmt);
+            }
             db.safeBind(stmt, 1, "Name");
             db.safeBind(stmt, 2, getSessionName());
             db.safeWriteStep(stmt);
@@ -309,7 +312,7 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::de
             int instructionSize = sqlite3_column_bytes(stmt, 5);
 
             igor_segment_handle newSegmentHandle;
-            igorDatabase->create_segment(virtualAddress, instructionSize, newSegmentHandle);
+            igorDatabase->create_segment(virtualAddress, size, newSegmentHandle);
             igorDatabase->setSegmentName(newSegmentHandle, name);
             igorDatabase->set_segment_option(newSegmentHandle, options);
             igorDatabase->load_segment_data(newSegmentHandle, rawData, rawDataSize);
@@ -459,3 +462,5 @@ bool IgorLocalSession::getSymbolName(igorAddress address, Balau::String& name) {
 
 void IgorLocalSession::addReference(igorAddress referencedAddress, igorAddress referencedFrom) { m_pDatabase->addReference(referencedAddress, referencedFrom); }
 void IgorLocalSession::getReferences(igorAddress referencedAddress, std::vector<igorAddress>& referencedFrom) { m_pDatabase->getReferences(referencedAddress, referencedFrom); }
+
+igor_result IgorLocalSession::loadAdditionalBinary(igorAddress address, BFile& file) { return m_pDatabase->load_data_from_file(address, file); }

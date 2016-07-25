@@ -43,6 +43,8 @@ struct s_igorSegment
         memset(m_instructionSize, 0, m_size);
     }
 
+    igor_result setRawData(u64 offset, u8 dataValue);
+
     Balau::String m_name;
     igorLinearAddress m_virtualAddress;
     u64 m_size;

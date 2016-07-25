@@ -305,6 +305,7 @@ struct s_igorDatabase
     igor_result set_segment_option(igor_segment_handle segmentHandle, e_igor_section_option option);
     igor_result load_segment_data(igor_segment_handle segmentHandle, BFile reader, u64 size);
     igor_result load_segment_data(igor_segment_handle segmentHandle, const void* data, u64 size);
+    igor_result load_data_from_file(igorAddress address, BFile& reader);
 
     igor_result declare_name(igorAddress virtualAddress, Balau::String name);
     igor_result declare_symbolType(igorAddress virtualAddress, e_symbolType type);
@@ -344,7 +345,7 @@ struct s_igorDatabase
     igor_result getProperties(igorAddress address, s_IgorPropertyBag& outputPropertyBag);
 
 private:
-    s_igorSegment* findSectionFromAddress(igorAddress address);
+    s_igorSegment* findSegmentFromAddress(igorAddress address);
     s_symbolDefinition* get_Symbol(igorAddress virtualAddress);
     Balau::Lock m_lock;
 };

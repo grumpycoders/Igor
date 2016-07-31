@@ -95,13 +95,25 @@ public:
     static uint32_t getColorForType(c_cpu_module::e_colors blockType);
 };
 
+struct s_cpuConstructionFlags
+{
+    Balau::String m_name;
+};
+
+struct s_cpuInfo
+{
+    const char* m_moduleName;
+    const char** m_supportedCpuList;
+    c_cpu_module*(*m_cpuContructionFunc)(s_cpuConstructionFlags* pFlags);
+};
+
 class c_cpu_factory
 {
 public:
+    static void initialize();
     static c_cpu_module* createCpuFromString(const Balau::String &);
-protected:
-    c_cpu_factory() { m_list.push_back(this); }
-    virtual c_cpu_module* maybeCreateCpu(const Balau::String &) = 0;
+    static void getCpuList(std::vector<Balau::String>& cpuList);
+
 private:
-    static std::vector<c_cpu_factory*> m_list;
+    static std::vector<const s_cpuInfo*> m_list;
 };

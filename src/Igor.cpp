@@ -210,7 +210,7 @@ class LuaPrinterRedirect : public Printer, public LuaExecCell {
         vfprintf(stderr, fmt, ap);
     }
 };
-
+/*
 class LuaPrinter : public AtStart, public AtExit {
     virtual void doStart() override { m_luaPrinter = new LuaPrinterRedirect; };
     virtual void doExit() override { delete m_luaPrinter; };
@@ -220,12 +220,13 @@ public:
 };
 
 LuaPrinter s_luaPrinter;
-
+*/
 void MainTask::Do() {
     Printer::log(M_STATUS, "Igor starting up");
 
     Printer::enable(M_INFO | M_STATUS | M_WARNING | M_ERROR | M_ALERT);
 
+    c_cpu_factory::initialize();
     c_IgorLoaders::initialize();
 
     igor_register_llvm();
@@ -233,7 +234,7 @@ void MainTask::Do() {
     {
         g_luaTask = new LuaMainTask();
         TaskMan::registerTask(g_luaTask);
-        s_luaPrinter->exec(g_luaTask);
+//        s_luaPrinter->exec(g_luaTask);
         IgorScriptingRegister(g_luaTask);
         sLua_IgorUsers luaIgorUsers;
         luaIgorUsers.exec(g_luaTask);

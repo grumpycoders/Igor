@@ -315,7 +315,7 @@ struct s_igorDatabase
     igor_result flag_address_as_instruction(igorAddress virtualAddress, u8 instructionSize);
 
 
-    igor_result is_address_flagged_as_code(igorAddress virtualAddress);
+    bool is_address_flagged_as_code(igorAddress virtualAddress);
     igorAddress get_next_valid_address_before(igorAddress virtualAddress);
     igorAddress get_next_valid_address_after(igorAddress virtualAddress);
 
@@ -328,6 +328,7 @@ struct s_igorDatabase
     u64 getSegmentSize(igor_segment_handle segmentHandle);
     igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name);
     igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name);
+    igor_result setSegmentCPU(igor_segment_handle segmentHandle, Balau::String& cpuName);
 
     igorAddress m_entryPoint;
 

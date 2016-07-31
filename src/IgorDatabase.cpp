@@ -447,30 +447,30 @@ igor_result s_igorDatabase::flag_address_as_instruction(igorAddress virtualAddre
     return IGOR_SUCCESS;
 }
 
-igor_result s_igorDatabase::is_address_flagged_as_code(igorAddress virtualAddress)
+bool s_igorDatabase::is_address_flagged_as_code(igorAddress virtualAddress)
 {
     Balau::ScopeLock sl(m_lock);
     s_igorSegment* pSection = findSegmentFromAddress(virtualAddress);
 
     if (pSection == NULL)
     {
-        return IGOR_FAILURE;
+        return false;
     }
 
     if (pSection->m_instructionSize == nullptr)
     {
-        return IGOR_FAILURE;
+        return false;
     }
 
     u8* pInstructionSize = &pSection->m_instructionSize[(virtualAddress.offset - pSection->m_virtualAddress)];
 
     if (*pInstructionSize)
     {
-        return IGOR_SUCCESS;
+        return true;
     }
     else
     {
-        return IGOR_FAILURE;
+        return false;
     }
 }
 
@@ -602,6 +602,14 @@ igor_result s_igorDatabase::getSegmentName(igor_segment_handle segmentHandle, Ba
         return IGOR_SUCCESS;
     }
     return IGOR_FAILURE;
+}
+
+igor_result s_igorDatabase::setSegmentCPU(igor_segment_handle segmentHandle, Balau::String& cpuName)
+{
+    c_cpu_module* pModule = c_cpu_factory::createCpuFromString(cpuName);
+    m_cpu_modules.push_back(pModule);
+
+    return IGOR_SUCCESS;
 }
 
 std::tuple<igorAddress, igorAddress, size_t> s_igorDatabase::getRanges()

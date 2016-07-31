@@ -21,6 +21,10 @@ public:
     {
         return new c_PELoader;
     }
+    static void getCpuList(std::vector<Balau::String>& cpuList)
+    {
+        cpuList.push_back("x86");
+    }
 
     igor_result load(BFile reader, IgorLocalSession *session);
     int loadOptionalHeader386(BFile reader);

@@ -66,7 +66,7 @@ class IgorLocalSession : public IgorSession {
     virtual int readString(igorAddress address, Balau::String& outputString) override;
     virtual c_cpu_module* getCpuForAddress(igorAddress PC) override;
     virtual c_cpu_state* getCpuStateForAddress(igorAddress PC) override;
-    virtual igor_result is_address_flagged_as_code(igorAddress virtualAddress) override;
+    virtual bool is_address_flagged_as_code(igorAddress virtualAddress) override;
     virtual igorAddress get_next_valid_address_before(igorAddress virtualAddress) override;
     virtual igorAddress get_next_valid_address_after(igorAddress virtualAddress) override;
     virtual igor_result flag_address_as_u32(igorAddress virtualAddress) override;
@@ -81,6 +81,7 @@ class IgorLocalSession : public IgorSession {
     virtual u64 getSegmentSize(igor_segment_handle segmentHandle) override;
     virtual igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) override;
     virtual igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) override;
+    virtual igor_result setSegmentCPU(igor_segment_handle segmentHandle, Balau::String& cpuName) override;
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() override;
     virtual igorAddress linearToVirtual(u64) override;

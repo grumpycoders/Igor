@@ -2,20 +2,47 @@
 #include "IgorSession.h"
 #include "cpuModule.h"
 
-std::vector<c_cpu_factory*> c_cpu_factory::m_list;
+#include "x86_llvm/cpu_x86_llvm.h"
+
+std::vector<const s_cpuInfo*> c_cpu_factory::m_list;
+
+void c_cpu_factory::initialize()
+{
+    c_cpu_x86_llvm::registerCpuModule(m_list);
+}
 
 c_cpu_module * c_cpu_factory::createCpuFromString(const Balau::String & desc)
 {
-    c_cpu_module * cpu = NULL;
-
-    for (auto & factory : m_list)
+    for (int i = 0; i < m_list.size(); i++)
     {
-        cpu = factory->maybeCreateCpu(desc);
-        if (cpu)
-            return cpu;
+        const char** thisCpuList = m_list[i]->m_supportedCpuList;
+        while (*thisCpuList)
+        {
+            if (Balau::String(*thisCpuList) == desc)
+            {
+                return m_list[i]->m_cpuContructionFunc(NULL);
+            }
+            
+            thisCpuList++;
+        }
     }
 
-    return cpu;
+    return NULL;
+}
+
+void c_cpu_factory::getCpuList(std::vector<Balau::String>& cpuList)
+{
+    c_cpu_module * cpu = NULL;
+
+    for(int i=0; i<m_list.size(); i++)
+    {
+        const char** thisCpuList = m_list[i]->m_supportedCpuList;
+        while (*thisCpuList)
+        {
+            cpuList.push_back(Balau::String(*thisCpuList));
+            thisCpuList++;
+        }
+    }
 }
 
 uint32_t c_cpu_module::getColorForType(c_cpu_module::e_colors blockType)
@@ -39,3 +66,4 @@ uint32_t c_cpu_module::getColorForType(c_cpu_module::e_colors blockType)
         return 0xFF770055;
     }
 }
+

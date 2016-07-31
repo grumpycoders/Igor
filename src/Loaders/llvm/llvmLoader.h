@@ -23,6 +23,10 @@ public:
     {
         return new c_LLVMLoader;
     }
+    static void getCpuList(std::vector<Balau::String>& cpuList)
+    {
+        cpuList.push_back("x86");
+    }
 
 private:
     igor_result loadObject(llvm::object::ObjectFile* o);

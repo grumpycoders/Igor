@@ -3,6 +3,7 @@
 
 #include <Igor.h>
 #include <IgorAsyncActions.h>
+#include <cpu/cpuModule.h>
 
 #include <BString.h>
 #include <MMap.h>
@@ -138,11 +139,12 @@ void ImSession::drawSegmentWindow()
 
     for (int i = 0; i < segments.size(); i++)
     {
+        igor_segment_handle hSegment = segments[i];
         Balau::String name;
-        m_pIgorSession->getSegmentName(segments[i], name);
-        igorAddress segmentsStart = m_pIgorSession->getSegmentStartVirtualAddress(segments[i]);
-        m_pIgorSession->getSegmentStartVirtualAddress(segments[i]);
-        u64 segmentSize = m_pIgorSession->getSegmentSize(segments[i]);
+        m_pIgorSession->getSegmentName(hSegment, name);
+        igorAddress segmentsStart = m_pIgorSession->getSegmentStartVirtualAddress(hSegment);
+        m_pIgorSession->getSegmentStartVirtualAddress(hSegment);
+        u64 segmentSize = m_pIgorSession->getSegmentSize(hSegment);
         igorAddress segmentEnd = segmentsStart + segmentSize;
 
         ImGui::Selectable(name.to_charp(), false, ImGuiSelectableFlags_SpanAllColumns);
@@ -217,6 +219,17 @@ void ImSession::drawSegmentWindow()
                 else
                 {
                     ImGui::Text(pCpu->getTag().to_charp());
+                }
+
+                std::vector<String> cpuList;
+                c_cpu_factory::getCpuList(cpuList);
+
+                for (int cpuId = 0; cpuId < cpuList.size(); cpuId++)
+                {
+                    if (ImGui::Selectable(cpuList[cpuId].to_charp()))
+                    {
+                        m_pIgorSession->setSegmentCPU(hSegment, cpuList[cpuId]);
+                    }
                 }
 
                 ImGui::EndPopup();

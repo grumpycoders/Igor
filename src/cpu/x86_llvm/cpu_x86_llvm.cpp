@@ -573,3 +573,22 @@ void c_cpu_x86_llvm::generateReferences(s_analyzeState * pState)
     instruction.do_replace_all('\t', ' ');
     instruction.do_trim();
 }
+
+const char* g_llvm_supported_cpus[] =
+{
+    "x86",
+    "x64",
+    NULL,
+};
+
+const s_cpuInfo g_llvmCpuInfo =
+{
+    "llvm",
+    g_llvm_supported_cpus,
+    c_cpu_x86_llvm::create,
+};
+
+void c_cpu_x86_llvm::registerCpuModule(std::vector<const s_cpuInfo*>& cpuList)
+{
+    cpuList.push_back(&g_llvmCpuInfo);
+}

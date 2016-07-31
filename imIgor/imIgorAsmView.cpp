@@ -14,15 +14,15 @@ using namespace Balau;
 imIgorAsmView::imIgorAsmView(IgorSession* pSession)
 {
     m_pSession = pSession;
-    m_cursorPosition = pSession->getEntryPoint();
+    m_windowTop = pSession->getEntryPoint();
 }
 
 void imIgorAsmView::goToAddress(igorAddress newAddress)
 {
     if (newAddress.isValid())
     {
-        m_history.push(m_cursorPosition);
-        m_cursorPosition = newAddress;
+        m_history.push(m_windowTop);
+        m_windowTop = newAddress;
     }
 }
 
@@ -30,7 +30,7 @@ void imIgorAsmView::popAddress()
 {
     if (!m_history.empty())
     {
-        m_cursorPosition = m_history.top();
+        m_windowTop = m_history.top();
         m_history.pop();
     }
 }
@@ -38,6 +38,7 @@ void imIgorAsmView::popAddress()
 igorAddress imIgorAsmView::generateTextForAddress(igorAddress address)
 {
     s_textCacheEntry currentEntry;
+    currentEntry.m_address = address;
 
     s_IgorPropertyBag propertyBag;
     m_pSession->getProperties(address, propertyBag);
@@ -120,19 +121,19 @@ void imIgorAsmView::Update()
 
     if (ImGui::IsKeyPressed(SDLK_UP& ~SDLK_SCANCODE_MASK, true) || (ImGui::GetIO().MouseWheel >= 1))
     {
-        m_cursorPosition = m_pSession->get_next_valid_address_before(m_cursorPosition - 1);        
+        m_windowTop = m_pSession->get_next_valid_address_before(m_windowTop - 1);        
     }
     if (ImGui::IsKeyPressed(SDLK_DOWN& ~SDLK_SCANCODE_MASK, true) || (ImGui::GetIO().MouseWheel <= -1))
     {
-        m_cursorPosition = m_pSession->get_next_valid_address_after(m_cursorPosition + 1);
+        m_windowTop = m_pSession->get_next_valid_address_after(m_windowTop + 1);
     }
     if (ImGui::IsKeyPressed(SDLK_PAGEUP& ~SDLK_SCANCODE_MASK, true))
     {
-        m_cursorPosition = m_pSession->get_next_valid_address_before(m_cursorPosition - 10);
+        m_windowTop = m_pSession->get_next_valid_address_before(m_windowTop - 10);
     }
     if (ImGui::IsKeyPressed(SDLK_PAGEDOWN& ~SDLK_SCANCODE_MASK, true))
     {
-        m_cursorPosition = m_pSession->get_next_valid_address_after(m_cursorPosition + 10);
+        m_windowTop = m_pSession->get_next_valid_address_after(m_windowTop + 10);
     }
     if (ImGui::IsKeyPressed(SDLK_ESCAPE& ~SDLK_SCANCODE_MASK, true))
     {
@@ -149,7 +150,7 @@ void imIgorAsmView::Update()
     int itemEnd = 0;
     ImGui::CalcListClipping(INT_MAX, lineHeight, &itemStart, &itemEnd);
 
-    igorAddress currentPC = m_cursorPosition;
+    igorAddress currentPC = m_windowTop;
     if (currentPC.isValid())
     {
         int numLinesToDraw = itemEnd - itemStart; // should always be itemEnd
@@ -171,6 +172,8 @@ void imIgorAsmView::Update()
             float currentX = 0;
             Balau::String& currentText = m_textCache[currentLine].m_text;
             Balau::String::List stringList = currentText.split(';');
+
+            currentPC = m_textCache[currentLine].m_address;
 
             //dc.SetTextForeground(*wxBLACK);
 
@@ -227,6 +230,14 @@ void imIgorAsmView::Update()
                     ImGui::SetCursorPosX(currentX);
                     ImGui::SetCursorPosY(displayStart.y + currentLine * lineHeight);
                     ImGui::TextColored(currentColor, stringList[i].to_charp());
+
+                    if (ImGui::IsItemHovered())
+                    {
+                        if(ImGui::IsKeyPressed(SDLK_c& ~SDLK_SCANCODE_MASK, true))
+                        {
+                            m_pSession->add_code_analysis_task(currentPC);
+                        }
+                    }
 
                     currentX += textSize.x;
                 }

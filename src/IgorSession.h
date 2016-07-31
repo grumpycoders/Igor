@@ -131,7 +131,7 @@ class IgorSession
     virtual int readString(igorAddress address, Balau::String& outputString) = 0;
     virtual c_cpu_module* getCpuForAddress(igorAddress PC) = 0;
     virtual c_cpu_state* getCpuStateForAddress(igorAddress PC) = 0;
-    virtual igor_result is_address_flagged_as_code(igorAddress virtualAddress) = 0;
+    virtual bool is_address_flagged_as_code(igorAddress virtualAddress) = 0;
     virtual igorAddress get_next_valid_address_before(igorAddress virtualAddress) = 0;
     virtual igorAddress get_next_valid_address_after(igorAddress virtualAddress) = 0;
 
@@ -149,6 +149,7 @@ class IgorSession
     virtual u64 getSegmentSize(igor_segment_handle segmentHandle) = 0;
     virtual igor_result setSegmentName(igor_segment_handle segmentHandle, Balau::String& name) = 0;
     virtual igor_result getSegmentName(igor_segment_handle segmentHandle, Balau::String& name) = 0;
+    virtual igor_result setSegmentCPU(igor_segment_handle segmentHandle, Balau::String& cpuName) = 0;
 
     virtual std::tuple<igorAddress, igorAddress, size_t> getRanges() = 0;
     virtual igorAddress linearToVirtual(u64) = 0;

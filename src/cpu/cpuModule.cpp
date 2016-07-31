@@ -3,12 +3,14 @@
 #include "cpuModule.h"
 
 #include "x86_llvm/cpu_x86_llvm.h"
+#include "sh2/sh2.h"
 
 std::vector<const s_cpuInfo*> c_cpu_factory::m_list;
 
 void c_cpu_factory::initialize()
 {
     c_cpu_x86_llvm::registerCpuModule(m_list);
+    c_sh2::registerCpuModule(m_list);
 }
 
 c_cpu_module * c_cpu_factory::createCpuFromString(const Balau::String & desc)

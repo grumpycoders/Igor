@@ -32,8 +32,6 @@ public:
         return new c_cpu_x86_llvm(X64);
     }
 
-    static s_cpuInfo m_cpuInfo;
-
     static void registerCpuModule(std::vector<const s_cpuInfo*>& cpuList);
 
     c_cpu_x86_llvm(e_cpu_type cpuType);

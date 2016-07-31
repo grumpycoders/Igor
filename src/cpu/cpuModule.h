@@ -56,7 +56,10 @@ public:
     virtual int getNumOperands(s_analyzeState* pState) = 0;
     virtual igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor = false) = 0;
 
-    virtual c_cpu_analyse_result* allocateCpuSpecificAnalyseResult() = 0;
+    virtual c_cpu_analyse_result* allocateCpuSpecificAnalyseResult()
+    {
+        return new c_cpu_analyse_result;
+    }
 
     virtual void generateReferences(s_analyzeState* pState) = 0;
 

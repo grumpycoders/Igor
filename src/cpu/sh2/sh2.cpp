@@ -1,5 +1,10 @@
 #include "sh2.h"
-#include <basetsd.h>
+
+#include <stdint.h>
+#define UINT32 uint32_t
+#define UINT16 uint16_t
+#define INT32 int32_t
+
 #include "IgorSession.h"
 
 c_sh2::c_sh2()

@@ -1,8 +1,12 @@
 // license:BSD-3-Clause
 // copyright-holders:Juergen Buchmueller
 
-#include <basetsd.h>
+#include <stdint.h>
 #include <stdio.h>
+
+#define UINT32 uint32_t
+#define UINT16 uint16_t
+#define INT32 int32_t
 
 const UINT32 DASMFLAG_SUPPORTED = 0x80000000;   // are disassembly flags supported?
 const UINT32 DASMFLAG_STEP_OUT = 0x40000000;   // this instruction should be the end of a step out sequence

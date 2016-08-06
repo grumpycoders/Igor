@@ -170,13 +170,15 @@ class IgorSession
 
     virtual igor_result getProperties(igorAddress address, s_IgorPropertyBag& outputPropertyBag);
 
+    igorAddress m_hexViewAddress;
+
   protected:
     void assignNewUUID();
     void activate();
 
   private:
     uint16_t m_id; // this is local to the process, don't save it
-
+    
     Balau::String m_uuid, m_name;
     static Balau::RWLock m_listLock;
     static IgorSession * m_head;

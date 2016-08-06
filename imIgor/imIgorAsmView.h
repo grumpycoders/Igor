@@ -23,7 +23,6 @@ private:
     igorAddress generateTextForAddress(igorAddress address);
 
     IgorSession* m_pSession;
-    igorAddress m_windowTop;
 
     std::stack<igorAddress> m_history;
 };

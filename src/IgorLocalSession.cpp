@@ -160,10 +160,18 @@ std::tuple<igor_result, String, String> IgorLocalSession::serialize(const char *
                 db.safeWriteStep(stmt);
                 db.safeReset(stmt);
             }
-            db.safeBind(stmt, 1, "Name");
-            db.safeBind(stmt, 2, getSessionName());
-            db.safeWriteStep(stmt);
-            db.safeReset(stmt);
+            {
+                db.safeBind(stmt, 1, "Name");
+                db.safeBind(stmt, 2, getSessionName());
+                db.safeWriteStep(stmt);
+                db.safeReset(stmt);
+            }
+            {
+                db.safeBind(stmt, 1, "HexViewOffset");
+                db.safeBind(stmt, 2, (sqlite3_int64)m_hexViewAddress.offset);
+                db.safeWriteStep(stmt);
+                db.safeReset(stmt);
+            }
             db.safeFinalize(stmt);
         }
 
@@ -260,6 +268,11 @@ std::tuple<igor_result, IgorLocalSession *, String, String> IgorLocalSession::de
                     igorDatabase->m_cpu_modules.push_back(cpu);
             } else if (name == "Name") {
                 session->setSessionName(value);
+            }
+            else if (name == "HexViewOffset") {
+                u64 offset;
+                value.scanf("%lld", &offset);
+                session->m_hexViewAddress = igorAddress(session, igorLinearAddress(offset), 0);
             }
         }
         db.safeFinalize(stmt);

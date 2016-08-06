@@ -104,6 +104,7 @@ class IgorLocalSession : public IgorSession {
         RUNNING,
         STOPPING,
     } m_status = IDLE;
+
     s_igorDatabase * m_pDatabase = NULL;
     std::atomic<uint64_t> m_instructions;
     std::atomic<uint64_t> m_nTasks;

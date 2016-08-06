@@ -52,16 +52,15 @@ public:
     virtual igor_result analyze(s_analyzeState* pState) = 0;
     virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
 
-    virtual igor_result getMnemonic(s_analyzeState* pState, Balau::String& outputString) = 0;
-    virtual int getNumOperands(s_analyzeState* pState) = 0;
-    virtual igor_result getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor = false) = 0;
-
     virtual c_cpu_analyse_result* allocateCpuSpecificAnalyseResult()
     {
         return new c_cpu_analyse_result;
     }
 
-    virtual void generateReferences(s_analyzeState* pState) = 0;
+    virtual void generateReferences(s_analyzeState* pState)
+    {
+
+    }
 
     enum e_colors
     {

@@ -14,15 +14,14 @@ using namespace Balau;
 imIgorAsmView::imIgorAsmView(IgorSession* pSession)
 {
     m_pSession = pSession;
-    m_windowTop = pSession->getEntryPoint();
 }
 
 void imIgorAsmView::goToAddress(igorAddress newAddress)
 {
     if (newAddress.isValid())
     {
-        m_history.push(m_windowTop);
-        m_windowTop = newAddress;
+        m_history.push(m_pSession->m_hexViewAddress);
+        m_pSession->m_hexViewAddress = newAddress;
     }
 }
 
@@ -30,7 +29,7 @@ void imIgorAsmView::popAddress()
 {
     if (!m_history.empty())
     {
-        m_windowTop = m_history.top();
+        m_pSession->m_hexViewAddress = m_history.top();
         m_history.pop();
     }
 }
@@ -121,19 +120,19 @@ void imIgorAsmView::Update()
 
     if (ImGui::IsKeyPressed(SDLK_UP& ~SDLK_SCANCODE_MASK, true) || (ImGui::GetIO().MouseWheel >= 1))
     {
-        m_windowTop = m_pSession->get_next_valid_address_before(m_windowTop - 1);        
+        m_pSession->m_hexViewAddress = m_pSession->get_next_valid_address_before(m_pSession->m_hexViewAddress - 1);
     }
     if (ImGui::IsKeyPressed(SDLK_DOWN& ~SDLK_SCANCODE_MASK, true) || (ImGui::GetIO().MouseWheel <= -1))
     {
-        m_windowTop = m_pSession->get_next_valid_address_after(m_windowTop + 1);
+        m_pSession->m_hexViewAddress = m_pSession->get_next_valid_address_after(m_pSession->m_hexViewAddress + 1);
     }
     if (ImGui::IsKeyPressed(SDLK_PAGEUP& ~SDLK_SCANCODE_MASK, true))
     {
-        m_windowTop = m_pSession->get_next_valid_address_before(m_windowTop - 10);
+        m_pSession->m_hexViewAddress = m_pSession->get_next_valid_address_before(m_pSession->m_hexViewAddress - 10);
     }
     if (ImGui::IsKeyPressed(SDLK_PAGEDOWN& ~SDLK_SCANCODE_MASK, true))
     {
-        m_windowTop = m_pSession->get_next_valid_address_after(m_windowTop + 10);
+        m_pSession->m_hexViewAddress = m_pSession->get_next_valid_address_after(m_pSession->m_hexViewAddress + 10);
     }
     if (ImGui::IsKeyPressed(SDLK_ESCAPE& ~SDLK_SCANCODE_MASK, true))
     {
@@ -150,7 +149,7 @@ void imIgorAsmView::Update()
     int itemEnd = 0;
     ImGui::CalcListClipping(INT_MAX, lineHeight, &itemStart, &itemEnd);
 
-    igorAddress currentPC = m_windowTop;
+    igorAddress currentPC = m_pSession->m_hexViewAddress;
     if (currentPC.isValid())
     {
         int numLinesToDraw = itemEnd - itemStart; // should always be itemEnd

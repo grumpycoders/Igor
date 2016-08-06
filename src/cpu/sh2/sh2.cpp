@@ -45,26 +45,6 @@ igor_result c_sh2::printInstruction(s_analyzeState* pState, Balau::String& outpu
     return IGOR_SUCCESS;
 }
 
-igor_result c_sh2::getMnemonic(s_analyzeState* pState, Balau::String& outputString)
-{
-    return IGOR_FAILURE;
-}
-
-int c_sh2::getNumOperands(s_analyzeState* pState)
-{
-    return 0;
-}
-
-igor_result c_sh2::getOperand(s_analyzeState* pState, int operandIndex, Balau::String& outputString, bool bUseColor)
-{
-    return IGOR_FAILURE;
-}
-
-void c_sh2::generateReferences(s_analyzeState* pState)
-{
-
-}
-
 const char* g_sh2_supported_cpus[] =
 {
     "sh2",

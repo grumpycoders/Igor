@@ -49,8 +49,8 @@ class c_cpu_module
 public:
     virtual ~c_cpu_module() { }
     virtual Balau::String getTag() const = 0;
-    virtual igor_result analyze(s_analyzeState* pState) = 0;
-    virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
+    virtual igor_result analyze(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
+    //virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
 
     virtual c_cpu_analyse_result* allocateCpuSpecificAnalyseResult()
     {

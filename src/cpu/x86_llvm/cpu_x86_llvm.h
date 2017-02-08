@@ -29,7 +29,8 @@ public:
 
     static c_cpu_module* create(s_cpuConstructionFlags*)
     {
-        return new c_cpu_x86_llvm(X64);
+        //return new c_cpu_x86_llvm(X64);
+		return NULL;
     }
 
     static void registerCpuModule(std::vector<const s_cpuInfo*>& cpuList);

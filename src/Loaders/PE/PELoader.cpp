@@ -5,6 +5,7 @@
 #include "IgorDatabase.h"
 #include "IgorLocalSession.h"
 #include "cpu/x86_llvm/cpu_x86_llvm.h"
+#include "cpu/i386/i386_mame.h"
 #include "PDB/pdb.h"
 #include "PDB/tpi.h"
 
@@ -131,17 +132,17 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
     igor_cpu_handle cpuHandle;
     s_igorDatabase * db = session->getDB();
 
-    c_cpu_x86_llvm* pCpu = NULL;
+	c_cpu_module* pCpu = NULL;
 
     switch (m_Machine)
     {
         case IMAGE_FILE_MACHINE_I386:
-            pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X86);
+            pCpu = new c_i386_mame();
             //pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_32bits;
             loadOptionalHeader386(reader);
             break;
         case IMAGE_FILE_MACHINE_AMD64:
-            pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X64);
+            pCpu = new c_i386_mame();
             //pCpu->m_defaultState.m_executionMode = c_cpu_x86_state::_64bits;
             loadOptionalHeader64(reader);
             break;
@@ -212,6 +213,8 @@ igor_result c_PELoader::load(BFile reader, IgorLocalSession * session)
         {
             entryPointSection = segmentHandle;
             foundEntryPointSection = true;
+
+			db->declare_name(supposedEntry, "start");
         }
     }
 

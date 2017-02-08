@@ -66,11 +66,11 @@ igor_result c_LLVMLoader::loadObject(ObjectFile* o)
     c_cpu_x86_llvm* pCpu = NULL;
     if (!strcmp(objectTarget->getName(), "x86-64"))
     {
-        pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X64);
+        //pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X64);
     }
     else if (!strcmp(objectTarget->getName(), "x86"))
     {
-        pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X86);
+        //pCpu = new c_cpu_x86_llvm(c_cpu_x86_llvm::X86);
     }
 
     igor_cpu_handle cpuHandle;

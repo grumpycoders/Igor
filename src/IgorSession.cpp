@@ -146,6 +146,8 @@ IgorSession::IgorSession() {
     m_next = m_head;
     m_prev = NULL;
     m_head = this;
+
+	m_hexViewAddress = igorAddress(m_id, 0, -1);
 }
 
 IgorSession::~IgorSession() {
@@ -222,10 +224,13 @@ igor_result IgorSession::getProperties(igorAddress address, s_IgorPropertyBag& o
             analyzeState.pCpuState = getCpuStateForAddress(address);
             analyzeState.pSession = this;
             analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
-            if (pCpu->analyze(&analyzeState) == IGOR_SUCCESS)
+
+			String restultString;
+
+            if (pCpu->analyze(&analyzeState, restultString) == IGOR_SUCCESS)
             {
                 s_IgorPropertyCode* pPropertyCode = new s_IgorPropertyCode();
-                pCpu->printInstruction(&analyzeState, pPropertyCode->m_instruction, true);
+				pPropertyCode->m_instruction = restultString;
                 pPropertyCode->m_instructionSize = analyzeState.m_cpu_analyse_result->m_instructionSize;
 
                 outputPropertyBag.addProperty(pPropertyCode);

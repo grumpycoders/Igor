@@ -205,9 +205,8 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
             if (currentPC != startPC) {
                 String disassembledString;
                 String val, address;
-                igor_result r = pCpu->analyze(&analyzeState);
+                igor_result r = pCpu->analyze(&analyzeState, disassembledString);
                 EAssert(r == IGOR_SUCCESS, "Doesn't make sense to rewind when it's not an instruction (yet)");
-                pCpu->printInstruction(&analyzeState, disassembledString);
                 const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize + (startPC - currentPC);
                 Json::Value v;
                 v["type"] = "instcont";
@@ -247,10 +246,10 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 continue;
             }
             currentPC = analyzeState.m_PC;
-            if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS)) {
-                String disassembledString;
+			String disassembledString;
+            if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState, disassembledString) == IGOR_SUCCESS)) {
+                
                 String val, address;
-                pCpu->printInstruction(&analyzeState, disassembledString);
                 analyzeState.m_PC = currentPC;
                 const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize;
                 Json::Value v;

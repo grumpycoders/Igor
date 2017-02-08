@@ -10,6 +10,7 @@ std::vector<c_IgorLoaders::s_registeredLoader> c_IgorLoaders::m_loaders;
 void c_IgorLoaders::initialize()
 {
     // llvm
+	if(0)
     {
         s_registeredLoader llvmLoader;
         llvmLoader.m_isSupported = &c_LLVMLoader::isSupported;

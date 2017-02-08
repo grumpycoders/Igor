@@ -1,23 +1,6 @@
 // license:BSD-3-Clause
 // copyright-holders:Juergen Buchmueller
-
-#include <stdint.h>
-#include <stdio.h>
-
-#define UINT32 uint32_t
-#define UINT16 uint16_t
-#define INT32 int32_t
-
-const UINT32 DASMFLAG_SUPPORTED = 0x80000000;   // are disassembly flags supported?
-const UINT32 DASMFLAG_STEP_OUT = 0x40000000;   // this instruction should be the end of a step out sequence
-const UINT32 DASMFLAG_STEP_OVER = 0x20000000;   // this instruction should be stepped over by setting a breakpoint afterwards
-const UINT32 DASMFLAG_OVERINSTMASK = 0x18000000;   // number of extra instructions to skip when stepping over
-const UINT32 DASMFLAG_OVERINSTSHIFT = 27;           // bits to shift after masking to get the value
-const UINT32 DASMFLAG_LENGTHMASK = 0x0000ffff;   // the low 16-bits contain the actual length
-
-#define DASMFLAG_STEP_OVER_EXTRA(x)         ((x) << DASMFLAG_OVERINSTSHIFT)
-
-//#include "emu.h"
+#include "emu.h"
 //#include "debugger.h"
 //#include "sh2.h"
 

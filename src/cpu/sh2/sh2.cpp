@@ -14,7 +14,7 @@ c_sh2::c_sh2()
 
 unsigned DasmSH2(char *buffer, unsigned pc, UINT16 opcode);
 
-igor_result c_sh2::analyze(s_analyzeState* pState)
+igor_result c_sh2::analyze(s_analyzeState* pState, Balau::String& outputString, bool bUseColor)
 {
     char printBuffer[1024];
 
@@ -28,19 +28,7 @@ igor_result c_sh2::analyze(s_analyzeState* pState)
     pState->m_cpu_analyse_result->m_instructionSize = 2;
     pState->m_PC += 2;
 
-    return IGOR_SUCCESS;
-}
-
-igor_result c_sh2::printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor)
-{
-    char printBuffer[1024];
-
-    u16 opcode0 = pState->pSession->readU8(pState->m_cpu_analyse_result->m_startOfInstruction);
-    u16 opcode1 = pState->pSession->readU8(pState->m_cpu_analyse_result->m_startOfInstruction + 1);
-
-    unsigned int flags = DasmSH2(printBuffer, pState->m_PC.offset, (opcode0 << 8) | opcode1);
-
-    outputString = printBuffer;
+	outputString = printBuffer;
 
     return IGOR_SUCCESS;
 }

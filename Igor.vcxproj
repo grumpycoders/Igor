@@ -113,7 +113,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_TIMESPEC_DEFINED;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;PTW32_STATIC_LIB;USE_WXWIDGETS;LTC_SOURCE;LTM_DESC;USE_LTM;LTC_NO_PROTOTYPES;_SCL_SECURE_NO_WARNINGS;CARES_STATICLIB;USE_ARES;__STDC_CONSTANT_MACROS;__STDC_LIMIT_MACROS;__STDC_FORMAT_MACROS;_DEBUG;DEBUGBUILD;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\getopt;Balau\win32\regex;Balau\win32\c-ares;Balau\win32\curl\include;Balau\win32\project\curl;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;llvm\include;llvm\lib;llvm-vs2015_x64\include;llvm-vs2015_x64\lib\Target\X86;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;src\cpu;msvc;Balau\includes;Balau\includes\msc;Balau\libev;Balau\win32;Balau\win32\pthreads-win32;Balau\win32\iconv;Balau\win32\zlib;Balau\win32\getopt;Balau\win32\regex;Balau\win32\c-ares;Balau\win32\curl\include;Balau\win32\project\curl;Balau\LuaJIT\src;Balau\src\jsoncpp\include;Balau\libtommath;Balau\libtomcrypt\src\headers;wxwidgets\include;llvm\include;llvm\lib;llvm-vs2015_x64\include;llvm-vs2015_x64\lib\Target\X86;wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4290;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>$(SolutionDir)\Balau\msvc-config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <SDLCheck>true</SDLCheck>
@@ -180,8 +180,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\cpu\cpuModule.cpp" />
+    <ClCompile Include="src\cpu\i386\i386dasm.cpp" />
+    <ClCompile Include="src\cpu\i386\i386_mame.cpp" />
     <ClCompile Include="src\cpu\sh2\sh2.cpp" />
     <ClCompile Include="src\cpu\sh2\sh2dasm.cpp" />
+    <ClCompile Include="src\cpu\strformat.cpp" />
     <ClCompile Include="src\cpu\x86_llvm\cpu_x86_llvm.cpp" />
     <ClCompile Include="src\Igor.cpp" />
     <ClCompile Include="src\IgorAnalysis.cpp">
@@ -214,6 +217,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cpu\cpuModule.h" />
+    <ClInclude Include="src\cpu\emu.h" />
+    <ClInclude Include="src\cpu\i386\i386_mame.h" />
     <ClInclude Include="src\cpu\sh2\sh2.h" />
     <ClInclude Include="src\cpu\x86_llvm\cpu_x86_llvm.h" />
     <ClInclude Include="src\Igor.h" />

@@ -38,7 +38,7 @@ void IgorAnalysis::Do()
             break;
         }
 
-        if (m_pCpu->analyze(&m_analyzeState, resultString) != IGOR_SUCCESS)
+        if (m_pCpu->analyze(&m_analyzeState) != IGOR_SUCCESS)
         {
             m_analyzeState.m_analyzeResult = e_analyzeResult::stop_analysis;
         }

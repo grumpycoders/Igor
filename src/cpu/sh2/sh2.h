@@ -14,7 +14,7 @@ public:
 
     c_sh2();
     virtual Balau::String getTag() const override { return "sh2"; }
-    virtual igor_result analyze(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) override;
+    virtual igor_result analyze(s_analyzeState* pState) override;
     //virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) override;
 
 

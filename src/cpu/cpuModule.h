@@ -2,6 +2,8 @@
 
 #include "Igor.h"
 
+#include <vector>
+
 class c_cpu_module;
 
 class c_cpu_state
@@ -37,9 +39,13 @@ struct s_analyzeState
     c_cpu_module* pCpu;
     c_cpu_state* pCpuState;
     IgorSession* pSession;
+	bool m_useColor;
 
     // output
     c_cpu_analyse_result* m_cpu_analyse_result;
+
+	Balau::String m_disassembly; // raw disassembly
+	std::vector<Balau::String> m_operands;
 
     e_analyzeResult m_analyzeResult;
 };
@@ -49,8 +55,10 @@ class c_cpu_module
 public:
     virtual ~c_cpu_module() { }
     virtual Balau::String getTag() const = 0;
-    virtual igor_result analyze(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
-    //virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) = 0;
+    virtual igor_result analyze(s_analyzeState* pState) = 0;
+
+	virtual igor_result splitOperands(Balau::String& instruction, Balau::String::List& splitOperands);
+	virtual igorLinearAddress getAsAddress(Balau::String& operand);
 
     virtual c_cpu_analyse_result* allocateCpuSpecificAnalyseResult()
     {

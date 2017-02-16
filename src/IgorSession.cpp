@@ -225,12 +225,10 @@ igor_result IgorSession::getProperties(igorAddress address, s_IgorPropertyBag& o
             analyzeState.pSession = this;
             analyzeState.m_cpu_analyse_result = pCpu->allocateCpuSpecificAnalyseResult();
 
-			String restultString;
-
-            if (pCpu->analyze(&analyzeState, restultString) == IGOR_SUCCESS)
+            if (pCpu->analyze(&analyzeState) == IGOR_SUCCESS)
             {
                 s_IgorPropertyCode* pPropertyCode = new s_IgorPropertyCode();
-				pPropertyCode->m_instruction = restultString;
+				pPropertyCode->m_instruction = analyzeState.m_disassembly;
                 pPropertyCode->m_instructionSize = analyzeState.m_cpu_analyse_result->m_instructionSize;
 
                 outputPropertyBag.addProperty(pPropertyCode);

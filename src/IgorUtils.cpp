@@ -46,10 +46,9 @@ bool igor_export_to_text(std::function<bool(const char * fmt, va_list ap)> outpu
                 break;
         }
 
-		String disassembledString;
-        if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState, disassembledString) == IGOR_SUCCESS))
+        if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS))
         {
-            success = vararg_lambda(output, "%016llx  %s\n", analyzeState.m_cpu_analyse_result->m_startOfInstruction.offset, disassembledString.to_charp(0));
+            success = vararg_lambda(output, "%016llx  %s\n", analyzeState.m_cpu_analyse_result->m_startOfInstruction.offset, analyzeState.m_disassembly.to_charp(0));
             if (!success)
                 break;
 

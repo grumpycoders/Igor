@@ -503,7 +503,7 @@ igor_result c_cpu_x86_llvm::analyze(s_analyzeState * pState)
 
     return IGOR_SUCCESS;
 }
-
+/*
 igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::String& outputString, bool bUseColor)
 {
     c_x86_llvm_analyse_result* pAnalyseResult = (c_x86_llvm_analyse_result*)pState->m_cpu_analyse_result;
@@ -532,6 +532,7 @@ igor_result c_cpu_x86_llvm::printInstruction(s_analyzeState * pState, Balau::Str
 
     return IGOR_SUCCESS;
 }
+*/
 
 igor_result c_cpu_x86_llvm::getMnemonic(s_analyzeState * pState, Balau::String& outputString)
 {

@@ -14,7 +14,7 @@ public:
 
 	c_i386_mame();
 	virtual Balau::String getTag() const override { return "i386"; }
-	virtual igor_result analyze(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) override;
+	virtual igor_result analyze(s_analyzeState* pState) override;
 	//virtual igor_result printInstruction(s_analyzeState* pState, Balau::String& outputString, bool bUseColor = false) override;
 
 

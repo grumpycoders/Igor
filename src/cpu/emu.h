@@ -22,6 +22,7 @@
 typedef uint64_t flags_t;
 
 // Extra flags for Igor
+const flags_t DASMFLAG_OPERAND_IS_CODE_ADDRESS = 0x200000000;
 const flags_t DASMFLAG_STOP = 0x100000000; // last instruction to be disassembled
 
 const flags_t DASMFLAG_SUPPORTED = 0x80000000;   // are disassembly flags supported?

@@ -71,3 +71,37 @@ uint32_t c_cpu_module::getColorForType(c_cpu_module::e_colors blockType)
     }
 }
 
+int c_cpu_module::splitOperands(Balau::String& instruction, Balau::String::List& splitOperands)
+{
+	Balau::String::List stringList = instruction.split(' ');
+
+	for (int i = 0; i < stringList.size(); i++)
+	{
+		if (stringList[i].strlen())
+		{
+			Balau::String::List splitComma = stringList[i].split(',');
+			for(int j=0; j<splitComma.size(); j++)
+			{
+				splitOperands.push_back(splitComma[j]);
+			}
+		}
+	}
+
+	return IGOR_SUCCESS;
+}
+
+igorLinearAddress c_cpu_module::getAsAddress(Balau::String& operand)
+{
+	igorLinearAddress convertedAddress = -1;
+
+	u64 rawAddress;
+	if (
+		(operand.sscanf("%llXh", &rawAddress) == 1) ||
+		(operand.sscanf("%llX", &rawAddress) == 1)
+		)
+	{
+		convertedAddress = rawAddress;
+	}
+
+	return convertedAddress;
+}

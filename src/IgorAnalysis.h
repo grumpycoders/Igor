@@ -19,7 +19,6 @@ public:
     void Do();
     const char * getName() const { return m_name.to_charp(); }
 private:
-	Balau::String resultString;
     s_analyzeState m_analyzeState;
     s_igorDatabase * m_pDatabase = NULL;
     IgorLocalSession * m_session;

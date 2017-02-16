@@ -203,14 +203,13 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
 
         while (linear <= linearLast) {
             if (currentPC != startPC) {
-                String disassembledString;
                 String val, address;
-                igor_result r = pCpu->analyze(&analyzeState, disassembledString);
+                igor_result r = pCpu->analyze(&analyzeState);
                 EAssert(r == IGOR_SUCCESS, "Doesn't make sense to rewind when it's not an instruction (yet)");
                 const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize + (startPC - currentPC);
                 Json::Value v;
                 v["type"] = "instcont";
-                v["disasm"] = disassembledString.to_charp();
+                v["disasm"] = analyzeState.m_disassembly.to_charp();
                 address.set("%016" PRIx64, startPC.offset);
                 v["start"] = address.to_charp();
                 analyzeState.m_PC = currentPC;
@@ -246,15 +245,14 @@ bool RestDisasmAction::safeDo(HttpServer * server, Http::Request & req, HttpServ
                 continue;
             }
             currentPC = analyzeState.m_PC;
-			String disassembledString;
-            if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState, disassembledString) == IGOR_SUCCESS)) {
+            if (session->is_address_flagged_as_code(analyzeState.m_PC) && (pCpu->analyze(&analyzeState) == IGOR_SUCCESS)) {
                 
                 String val, address;
                 analyzeState.m_PC = currentPC;
                 const uint64_t nBytes = analyzeState.m_cpu_analyse_result->m_instructionSize;
                 Json::Value v;
                 v["type"] = "inst";
-                v["disasm"] = disassembledString.to_charp();
+                v["disasm"] = analyzeState.m_disassembly.to_charp();
                 address.set("%016" PRIx64, analyzeState.m_PC.offset);
                 val.set("%02X", session->readU8(analyzeState.m_PC));
                 v["byte"] = val.to_charp();

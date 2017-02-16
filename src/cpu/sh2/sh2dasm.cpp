@@ -15,9 +15,9 @@ static const char *const regname[16] = {
 	"R8", "R9", "R10","R11","R12","R13","R14","SP"
 };
 
-static UINT32 op0000(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0000(char *buffer, UINT32 pc, UINT16 opcode)
 {
-	UINT32  flags = 0;
+	flags_t  flags = 0;
 	switch(opcode & 0x3f)
 	{
 	case 0x02:
@@ -129,13 +129,13 @@ static UINT32 op0000(char *buffer, UINT32 pc, UINT16 opcode)
 	return flags;
 }
 
-static UINT32 op0001(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0001(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	sprintf(buffer, "MOV.L   %s,@($%02X,%s)", regname[Rm], (opcode & 15) * 4, regname[Rn]);
 	return 0;
 }
 
-static UINT32 op0010(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0010(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	switch (opcode & 15)
 	{
@@ -191,7 +191,7 @@ static UINT32 op0010(char *buffer, UINT32 pc, UINT16 opcode)
 	return 0;
 }
 
-static UINT32 op0011(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0011(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	switch (opcode & 15)
 	{
@@ -247,9 +247,9 @@ static UINT32 op0011(char *buffer, UINT32 pc, UINT16 opcode)
 	return 0;
 }
 
-static UINT32 op0100(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0100(char *buffer, UINT32 pc, UINT16 opcode)
 {
-	UINT32 flags = 0;
+	flags_t flags = 0;
 	switch(opcode & 0x3F)
 	{
 	case 0x00:
@@ -376,13 +376,13 @@ static UINT32 op0100(char *buffer, UINT32 pc, UINT16 opcode)
 	return flags;
 }
 
-static UINT32 op0101(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0101(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	sprintf(buffer, "MOV.L   @($%02X,%s),%s", (opcode & 15) * 4, regname[Rm], regname[Rn]);
 	return 0;
 }
 
-static UINT32 op0110(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0110(char *buffer, UINT32 pc, UINT16 opcode)
 
 {
 	switch(opcode & 0xF)
@@ -439,13 +439,13 @@ static UINT32 op0110(char *buffer, UINT32 pc, UINT16 opcode)
 	return 0;
 }
 
-static UINT32 op0111(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op0111(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	sprintf(buffer, "ADD     #$%02X,%s", opcode & 0xff, regname[Rn]);
 	return 0;
 }
 
-static UINT32 op1000(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1000(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	switch((opcode >> 8) & 15)
 	{
@@ -482,27 +482,27 @@ static UINT32 op1000(char *buffer, UINT32 pc, UINT16 opcode)
 	return 0;
 }
 
-static UINT32 op1001(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1001(char *buffer, UINT32 pc, UINT16 opcode)
 {
-	sprintf(buffer, "MOV.W   @($%04X,PC),%s [%08X]", (opcode & 0xff) * 2, regname[Rn], pc+((opcode & 0xff) * 2)+2);
+	sprintf(buffer, "MOV.W   $%08X,%s", pc + ((opcode & 0xff) * 2) + 2, regname[Rn]);
 	return 0;
 }
 
-static UINT32 op1010(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1010(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	sprintf(buffer, "BRA     $%08X", SIGNX12(opcode & 0xfff) * 2 + pc + 2);
-	return 0;
+	return DASMFLAG_STOP;
 }
 
-static UINT32 op1011(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1011(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	sprintf(buffer, "BSR     $%08X", SIGNX12(opcode & 0xfff) * 2 + pc + 2);
 	return DASMFLAG_STEP_OVER | DASMFLAG_STEP_OVER_EXTRA(1);
 }
 
-static UINT32 op1100(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1100(char *buffer, UINT32 pc, UINT16 opcode)
 {
-	UINT32 flags = 0;
+	flags_t flags = 0;
 	switch((opcode >> 8) & 15)
 	{
 	case  0:
@@ -528,7 +528,7 @@ static UINT32 op1100(char *buffer, UINT32 pc, UINT16 opcode)
 		sprintf(buffer, "MOV.L   @($%04X,GBR),R0", (opcode & 0xff) * 4);
 		break;
 	case  7:
-		sprintf(buffer, "MOVA    @($%04X,PC),R0 [%08X]", (opcode & 0xff) * 4, ((pc + 2) & ~3) + (opcode & 0xff) * 4);
+		sprintf(buffer, "MOVA    @($%08X),R0", ((pc + 2) & ~3) + (opcode & 0xff) * 4);
 		break;
 	case  8:
 		sprintf(buffer, "TST     #$%02X,R0", opcode & 0xff);
@@ -558,27 +558,27 @@ static UINT32 op1100(char *buffer, UINT32 pc, UINT16 opcode)
 	return flags;
 }
 
-static UINT32 op1101(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1101(char *buffer, UINT32 pc, UINT16 opcode)
 {
-	sprintf(buffer, "MOV.L   @($%02X,PC),%s [%08X]", (opcode * 4) & 0xff, regname[Rn], ((pc + 2) & ~3) + (opcode & 0xff) * 4);
+	sprintf(buffer, "MOV.L   @($%08X),%s", ((pc + 2) & ~3) + (opcode & 0xff) * 4, regname[Rn]);
 	return 0;
 }
 
-static UINT32 op1110(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1110(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	sprintf(buffer, "MOV     #$%02X,%s", (opcode & 0xff), regname[Rn]);
 	return 0;
 }
 
-static UINT32 op1111(char *buffer, UINT32 pc, UINT16 opcode)
+static flags_t op1111(char *buffer, UINT32 pc, UINT16 opcode)
 {
 	sprintf(buffer, "unknown $%04X", opcode);
 	return 0;
 }
 
-unsigned DasmSH2(char *buffer, unsigned pc, UINT16 opcode)
+flags_t DasmSH2(char *buffer, unsigned pc, UINT16 opcode)
 {
-	UINT32 flags;
+	flags_t flags;
 
 	pc += 2;
 
